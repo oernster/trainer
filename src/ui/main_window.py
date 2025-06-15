@@ -58,7 +58,7 @@ class MainWindow(QMainWindow):
         # Initialize managers
         self.config_manager = config_manager or ConfigManager()
         self.theme_manager = ThemeManager()
-        
+
         # Install default config to AppData on first run
         self.config_manager.install_default_config_to_appdata()
 
@@ -442,22 +442,24 @@ class MainWindow(QMainWindow):
         try:
             # Reload configuration
             self.config = self.config_manager.load_config()
-            
+
             # Update theme if changed
             if self.config:
                 self.theme_manager.set_theme(self.config.display.theme)
-                
+
             logger.info("Settings reloaded after save")
-            
+
         except ConfigurationError as e:
             logger.error(f"Failed to reload settings: {e}")
-            self.show_error_message("Configuration Error", f"Failed to reload settings: {e}")
+            self.show_error_message(
+                "Configuration Error", f"Failed to reload settings: {e}"
+            )
 
     def show_about_dialog(self):
         """Show about dialog."""
         # Get config path for display
         config_path = self.config_manager.config_path
-        
+
         about_text = f"""
         <h3>{__app_display_name__}</h3>
         <p>Version {__version__}</p>

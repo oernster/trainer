@@ -149,37 +149,39 @@ def main():
     try:
         # Initialize configuration manager (will use AppData on Windows)
         config_manager = ConfigManager()
-        
+
         # Install default config to AppData if needed
         if config_manager.install_default_config_to_appdata():
             logger.info("Default configuration installed to AppData")
-        
+
         # Load configuration
         config = config_manager.load_config()
         logger.info(f"Configuration loaded from: {config_manager.config_path}")
-        
+
         # Create main window with shared config manager
         window = MainWindow(config_manager)
-        
+
         # Check if API credentials are configured
         if not config_manager.validate_api_credentials():
             logger.info("API credentials not configured - showing settings dialog")
-            
+
             # Import here to avoid circular imports
             from src.ui.settings_dialog import SettingsDialog
-            
+
             # Show settings dialog on first launch
             settings_dialog = SettingsDialog(config_manager, window)
             settings_dialog.setWindowTitle("Initial Setup - API Configuration Required")
-            
+
             # Add a message to the dialog
-            info_text = ("Welcome to Trainer!\n\n"
-                        "To get started, please configure your Transport API credentials.\n"
-                        "You can get free API credentials from https://transportapi.com/")
-            
+            info_text = (
+                "Welcome to Trainer!\n\n"
+                "To get started, please configure your Transport API credentials.\n"
+                "You can get free API credentials from https://transportapi.com/"
+            )
+
             # Show the dialog
             result = settings_dialog.exec()
-            
+
             if result == settings_dialog.DialogCode.Accepted:
                 # Reload config after settings saved
                 config = config_manager.load_config()
@@ -189,7 +191,7 @@ def main():
                 window.show_info_message(
                     "Configuration Required",
                     "API credentials are required for the application to function properly.\n"
-                    "You can configure them later via Settings → Options."
+                    "You can configure them later via Settings → Options.",
                 )
 
         # Create train manager with updated config
@@ -201,7 +203,7 @@ def main():
         # Start auto-refresh only if enabled in config and API is configured
         if config_manager.validate_api_credentials():
             train_manager.start_auto_refresh()
-            
+
             # Do initial data fetch
             QTimer.singleShot(
                 1000, train_manager.fetch_trains

@@ -86,9 +86,10 @@ class ConfigManager:
         else:
             self.config_path = Path(config_path)
         self.config: Optional[ConfigData] = None
-        
+
         # Log the config path for debugging
         import logging
+
         logger = logging.getLogger(__name__)
         logger.info(f"ConfigManager initialized with path: {self.config_path}")
 
@@ -96,73 +97,78 @@ class ConfigManager:
     def get_default_config_path() -> Path:
         """
         Get the default configuration file path.
-        
+
         On Windows, uses AppData/Roaming/Trainer/config.json
         On other systems, uses current directory/config.json
-        
+
         For executable builds, always prefer AppData on Windows to ensure writability.
-        
+
         Returns:
             Path: Default configuration file path
         """
-        if os.name == 'nt':  # Windows
-            appdata = os.environ.get('APPDATA')
+        if os.name == "nt":  # Windows
+            appdata = os.environ.get("APPDATA")
             if appdata:
                 config_dir = Path(appdata) / "Trainer"
                 config_dir.mkdir(parents=True, exist_ok=True)
                 return config_dir / "config.json"
-        
+
         # For non-Windows or if APPDATA not available, check if we're in an executable
         # If so, try to use a writable location
         import sys
-        if getattr(sys, 'frozen', False):  # Running as executable
+
+        if getattr(sys, "frozen", False):  # Running as executable
             # Try to use user's home directory
             home_dir = Path.home()
             config_dir = home_dir / ".trainer"
             config_dir.mkdir(parents=True, exist_ok=True)
             return config_dir / "config.json"
-        
+
         # Fallback to current directory for development
         return Path("config.json")
 
     def install_default_config_to_appdata(self) -> bool:
         """
         Install default configuration to AppData directory on Windows.
-        
+
         Returns:
             bool: True if successful, False otherwise
         """
         try:
-            if os.name != 'nt':  # Not Windows
+            if os.name != "nt":  # Not Windows
                 return False
-                
-            appdata = os.environ.get('APPDATA')
+
+            appdata = os.environ.get("APPDATA")
             if not appdata:
                 return False
-                
+
             # Create Trainer directory in AppData
             config_dir = Path(appdata) / "Trainer"
             config_dir.mkdir(parents=True, exist_ok=True)
-            
+
             # Create default config in AppData
             appdata_config_path = config_dir / "config.json"
-            
+
             # Only create if it doesn't exist
             if not appdata_config_path.exists():
                 default_config = ConfigData(
-                    api=APIConfig(app_id="YOUR_APP_ID_HERE", app_key="YOUR_APP_KEY_HERE"),
+                    api=APIConfig(
+                        app_id="YOUR_APP_ID_HERE", app_key="YOUR_APP_KEY_HERE"
+                    ),
                     stations=StationConfig(),
                     refresh=RefreshConfig(),
                     display=DisplayConfig(),
                 )
-                
+
                 with open(appdata_config_path, "w", encoding="utf-8") as f:
-                    json.dump(default_config.model_dump(), f, indent=2, ensure_ascii=False)
-                
+                    json.dump(
+                        default_config.model_dump(), f, indent=2, ensure_ascii=False
+                    )
+
                 return True
-            
+
             return True  # Already exists
-            
+
         except Exception as e:
             print(f"Failed to install config to AppData: {e}")
             return False
@@ -180,11 +186,14 @@ class ConfigManager:
             ConfigurationError: If the configuration file is invalid
         """
         import logging
+
         logger = logging.getLogger(__name__)
         logger.info(f"Loading config from: {self.config_path}")
-        
+
         if not self.config_path.exists():
-            logger.info(f"Config file doesn't exist, creating default at: {self.config_path}")
+            logger.info(
+                f"Config file doesn't exist, creating default at: {self.config_path}"
+            )
             self.create_default_config()
 
         try:
@@ -209,9 +218,10 @@ class ConfigManager:
             ConfigurationError: If saving fails
         """
         import logging
+
         logger = logging.getLogger(__name__)
         logger.info(f"Saving config to: {self.config_path}")
-        
+
         try:
             # Ensure directory exists
             self.config_path.parent.mkdir(parents=True, exist_ok=True)

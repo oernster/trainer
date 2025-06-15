@@ -117,15 +117,16 @@ def prepare_build_directory():
 def create_lgpl_license_files():
     """Create LGPL3 license files for PySide6 compliance."""
     print("📄 Creating LGPL3 license files for PySide6 compliance...")
-    
+
     # Create licenses directory
     licenses_dir = Path("licenses")
     licenses_dir.mkdir(exist_ok=True)
-    
+
     # Create LGPL3 license file
     lgpl3_file = licenses_dir / "LGPL-3.0.txt"
-    with open(lgpl3_file, 'w', encoding='utf-8') as f:
-        f.write("""GNU LESSER GENERAL PUBLIC LICENSE
+    with open(lgpl3_file, "w", encoding="utf-8") as f:
+        f.write(
+            """GNU LESSER GENERAL PUBLIC LICENSE
 Version 3, 29 June 2007
 
 This application uses PySide6, which is licensed under the LGPL v3.
@@ -142,12 +143,14 @@ For LGPL compliance, this application provides the following:
 
 If you wish to obtain the source code for PySide6 or modify it,
 please visit the official PySide6 repository.
-""")
-    
+"""
+        )
+
     # Create third-party licenses file
     third_party_file = licenses_dir / "THIRD_PARTY_LICENSES.txt"
-    with open(third_party_file, 'w', encoding='utf-8') as f:
-        f.write(f"""{__app_name__} Third-Party Licenses
+    with open(third_party_file, "w", encoding="utf-8") as f:
+        f.write(
+            f"""{__app_name__} Third-Party Licenses
 
 This application includes the following third-party components:
 
@@ -164,8 +167,9 @@ This application includes the following third-party components:
    Please check individual package licenses for details.
 
 For complete license texts, see the licenses/ directory.
-""")
-    
+"""
+        )
+
     print(f"  Created {lgpl3_file}")
     print(f"  Created {third_party_file}")
 
@@ -248,13 +252,13 @@ def build_executable(nuitka_command):
 def create_clean_distribution():
     """Create a clean main.dist directory with only exe, licenses, and icon."""
     print("📦 Creating clean distribution in main.dist...")
-    
+
     # Create main.dist directory
     dist_dir = Path("main.dist")
     if dist_dir.exists():
         shutil.rmtree(dist_dir)
     dist_dir.mkdir(exist_ok=True)
-    
+
     # Find and copy the executable
     exe_found = False
     for exe_name in ["trainer.exe", "main.exe"]:
@@ -265,25 +269,25 @@ def create_clean_distribution():
             print(f"  Copied {exe_path} → {dest_exe}")
             exe_found = True
             break
-    
+
     if not exe_found:
         print("  ❌ No executable found to copy")
         return False
-    
+
     # Copy license files
     licenses_src = Path("licenses")
     if licenses_src.exists():
         licenses_dest = dist_dir / "licenses"
         shutil.copytree(licenses_src, licenses_dest)
         print(f"  Copied {licenses_src} → {licenses_dest}")
-    
+
     # Copy icon file
     icon_candidates = [
         "assets/train_icon.ico",
         "assets/train_icon_32.png",
         "assets/train_icon.svg",
     ]
-    
+
     for icon_path in icon_candidates:
         icon_src = Path(icon_path)
         if icon_src.exists():
@@ -291,7 +295,7 @@ def create_clean_distribution():
             shutil.copy2(icon_src, icon_dest)
             print(f"  Copied {icon_src} → {icon_dest}")
             break
-    
+
     return True
 
 
@@ -301,17 +305,17 @@ def verify_build():
     exe_path = Path("trainer.exe")
     if not exe_path.exists():
         exe_path = Path("main.exe")
-    
+
     if exe_path.exists():
         size_mb = exe_path.stat().st_size / (1024 * 1024)
         print(f"✅ Executable created: {exe_path}")
         print(f"  Size: {size_mb:.1f} MB")
         print(f"  Location: {exe_path.absolute()}")
-        
+
         # Create clean distribution
         if create_clean_distribution():
             print("✅ Clean distribution created in main.dist/")
-            
+
             # List contents of main.dist
             dist_dir = Path("main.dist")
             print("  Contents:")
@@ -319,7 +323,7 @@ def verify_build():
                 if item.is_file():
                     size_mb = item.stat().st_size / (1024 * 1024)
                     print(f"    {item.relative_to(dist_dir)} ({size_mb:.1f} MB)")
-        
+
         return True
     else:
         print("❌ Executable not found after build")
