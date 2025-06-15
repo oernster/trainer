@@ -1,0 +1,31 @@
+[run]
+source = src
+omit =
+    src/__init__.py
+    src/*/test_*.py
+    tests/*
+    */venv/*
+    */virtualenv/*
+    */.tox/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    if TYPE_CHECKING:
+    @abstractmethod
+    @abc.abstractmethod
+
+precision = 1
+show_missing = True
+skip_covered = False
+
+[html]
+directory = htmlcov
+title = Trainer Train Times - Test Coverage Report
+
+[xml]
+output = coverage.xml

@@ -1,0 +1,17 @@
+Trainer Third-Party Licenses
+
+This application includes the following third-party components:
+
+1. PySide6 (Qt for Python)
+   License: LGPL v3
+   Website: https://www.qt.io/qt-for-python
+   Source: https://code.qt.io/cgit/pyside/pyside-setup.git/
+
+2. Python Standard Library
+   License: Python Software Foundation License
+   Website: https://www.python.org/
+
+3. Other dependencies as listed in requirements.txt
+   Please check individual package licenses for details.
+
+For complete license texts, see the licenses/ directory.

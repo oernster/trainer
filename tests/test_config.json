@@ -1,0 +1,27 @@
+{
+  "api": {
+    "app_id": "test_app_id",
+    "app_key": "test_app_key",
+    "base_url": "https://transportapi.com/v3/uk",
+    "timeout_seconds": 30,
+    "max_retries": 2,
+    "rate_limit_per_minute": 10
+  },
+  "stations": {
+    "from_code": "FLE",
+    "from_name": "Fleet",
+    "to_code": "WAT",
+    "to_name": "London Waterloo"
+  },
+  "refresh": {
+    "auto_enabled": false,
+    "interval_minutes": 5,
+    "manual_enabled": true
+  },
+  "display": {
+    "max_trains": 50,
+    "time_window_hours": 10,
+    "show_cancelled": true,
+    "theme": "dark"
+  }
+}

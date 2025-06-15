@@ -1,0 +1,17 @@
+GNU LESSER GENERAL PUBLIC LICENSE
+Version 3, 29 June 2007
+
+This application uses PySide6, which is licensed under the LGPL v3.
+The full text of the LGPL v3 license can be found at:
+https://www.gnu.org/licenses/lgpl-3.0.html
+
+PySide6 source code is available at:
+https://code.qt.io/cgit/pyside/pyside-setup.git/
+
+For LGPL compliance, this application provides the following:
+1. This license notice
+2. Information about PySide6 usage
+3. Links to obtain PySide6 source code
+
+If you wish to obtain the source code for PySide6 or modify it,
+please visit the official PySide6 repository.
