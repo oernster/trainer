@@ -25,6 +25,7 @@ A modern PySide6 desktop application that displays real-time train departure inf
 ![Trainer](https://github.com/user-attachments/assets/03f30926-d067-4c4d-9480-01f38b87ae37)
 
 ## 🚀 Quick Start
+
 ### Note that you can build an exe as well using ```python build.py``` which uses nuitka --onefile.
 
 ### Prerequisites
@@ -104,6 +105,7 @@ A modern PySide6 desktop application that displays real-time train departure inf
 ```
 
 ### Application Icon
+
 The application uses a custom SVG train icon located at `assets/train_icon.svg`. This icon appears in:
 - Window title bar
 - System taskbar/dock
@@ -111,8 +113,6 @@ The application uses a custom SVG train icon located at `assets/train_icon.svg`.
 - System notifications (if implemented)
 
 If the SVG icon is not found, the application gracefully falls back to using the Unicode train emoji (🚂) in the window title.
-}
-```
 
 ## 🏗️ Architecture
 
