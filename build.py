@@ -181,16 +181,17 @@ def build_executable(nuitka_command):
     # Create LGPL license files first
     create_lgpl_license_files()
 
-    # Determine the best icon file to use
+    # Determine the best icon file to use (prioritize ICO for Windows)
     icon_file = None
     icon_candidates = [
-        "assets/train_icon_32.png",  # PNG for Windows compatibility
-        "assets/train_icon.ico",  # ICO if available
+        "assets/train_icon.ico",  # ICO preferred for Windows
+        "assets/train_icon_32.png",  # PNG fallback
         "assets/train_icon.svg",  # SVG fallback
     ]
 
     for candidate in icon_candidates:
-        if Path(candidate).exists():
+        candidate_path = Path(candidate)
+        if candidate_path.exists() and candidate_path.stat().st_size > 0:
             icon_file = candidate
             print(f"  Using icon: {icon_file}")
             break
@@ -281,20 +282,32 @@ def create_clean_distribution():
         shutil.copytree(licenses_src, licenses_dest)
         print(f"  Copied {licenses_src} → {licenses_dest}")
 
-    # Copy icon file
+    # Copy icon file (only if it has content and is useful for distribution)
+    # Note: ICO files are embedded in the executable by Nuitka, so we only copy
+    # them if they're valid and might be useful for shortcuts/file associations
     icon_candidates = [
         "assets/train_icon.ico",
         "assets/train_icon_32.png",
         "assets/train_icon.svg",
     ]
 
+    icon_copied = False
     for icon_path in icon_candidates:
         icon_src = Path(icon_path)
-        if icon_src.exists():
+        if icon_src.exists() and icon_src.stat().st_size > 0:
+            # For ICO files, only copy if they're reasonably sized (not empty)
+            if icon_path.endswith('.ico') and icon_src.stat().st_size < 100:
+                print(f"  Skipping {icon_src} (too small, likely empty)")
+                continue
+            
             icon_dest = dist_dir / icon_src.name
             shutil.copy2(icon_src, icon_dest)
             print(f"  Copied {icon_src} → {icon_dest}")
+            icon_copied = True
             break
+    
+    if not icon_copied:
+        print("  ℹ️ No icon file copied (icon is embedded in executable)")
 
     return True
 
@@ -358,13 +371,19 @@ def main():
 
     print("\n🎉 Build completed successfully!")
     print("\nDistribution created in main.dist/ containing:")
-    print("- trainer.exe (single executable)")
+    print("- trainer.exe (single executable with embedded icon)")
     print("- licenses/ (LGPL3 compliance files)")
-    print("- train_icon.ico (application icon)")
+    
+    # Check if icon was copied to distribution
+    dist_dir = Path("main.dist")
+    icon_files = list(dist_dir.glob("train_icon.*"))
+    if icon_files:
+        print(f"- {icon_files[0].name} (application icon for shortcuts)")
+    
     print("\nNext steps:")
     print("1. Test the executable: main.dist/trainer.exe")
     print("2. Distribute the entire main.dist/ folder")
-    print("\nNote: The executable is self-contained with all dependencies.")
+    print("\nNote: The executable is self-contained with all dependencies and embedded icon.")
 
 
 if __name__ == "__main__":

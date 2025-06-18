@@ -27,9 +27,11 @@ from PySide6.QtGui import QAction, QIcon, QKeySequence
 from ..models.train_data import TrainData
 from ..managers.config_manager import ConfigManager, ConfigurationError
 from ..managers.theme_manager import ThemeManager
+from ..managers.weather_manager import WeatherManager
 from .train_widgets import TrainListWidget
+from .weather_widgets import WeatherWidget
 from .settings_dialog import SettingsDialog
-from version import __version__, __app_display_name__
+from version import __version__, __app_display_name__, get_about_text
 
 logger = logging.getLogger(__name__)
 
@@ -75,6 +77,7 @@ class MainWindow(QMainWindow):
 
         # UI components
         self.train_list_widget: Optional[TrainListWidget] = None
+        self.weather_widget: Optional[WeatherWidget] = None
         self.last_update_label: Optional[QLabel] = None
         self.next_update_label: Optional[QLabel] = None
         self.time_window_label: Optional[QLabel] = None
@@ -84,11 +87,16 @@ class MainWindow(QMainWindow):
         self.train_count_label: Optional[QLabel] = None
         self.theme_status: Optional[QLabel] = None
         self.auto_refresh_status: Optional[QLabel] = None
+        self.weather_status: Optional[QLabel] = None
+        
+        # Weather manager
+        self.weather_manager: Optional[WeatherManager] = None
 
         # Setup UI
         self.setup_ui()
         self.setup_application_icon()
         self.setup_theme_system()
+        self.setup_weather_system()
         self.apply_theme()
         self.connect_signals()
 
@@ -97,8 +105,8 @@ class MainWindow(QMainWindow):
     def setup_ui(self):
         """Initialize UI components."""
         self.setWindowTitle(__app_display_name__)
-        self.setMinimumSize(800, 700)  # Increased height for 16-hour view
-        self.resize(1000, 800)  # Larger default size
+        self.setMinimumSize(800, 900)  # Increased height for weather widgets
+        self.resize(1000, 1000)  # Larger default size for weather integration
 
         # Central widget
         central_widget = QWidget()
@@ -111,6 +119,14 @@ class MainWindow(QMainWindow):
 
         # Header
         self.setup_header(layout)
+
+        # Weather widget (always create, show/hide based on config)
+        self.weather_widget = WeatherWidget()
+        layout.addWidget(self.weather_widget)
+        
+        # Hide initially if weather is disabled
+        if not (self.config and hasattr(self.config, 'weather') and self.config.weather and self.config.weather.enabled):
+            self.weather_widget.hide()
 
         # Train list with extended capacity
         self.train_list_widget = TrainListWidget(max_trains=50)
@@ -209,9 +225,11 @@ class MainWindow(QMainWindow):
         self.train_count_label = QLabel("0 trains")
         self.theme_status = QLabel(f"Theme: {self.theme_manager.current_theme.title()}")
         self.auto_refresh_status = QLabel("Auto-refresh: OFF")
+        self.weather_status = QLabel("Weather: OFF")
 
         self.status_bar.addWidget(self.connection_status)
         self.status_bar.addPermanentWidget(self.train_count_label)
+        self.status_bar.addPermanentWidget(self.weather_status)
         self.status_bar.addPermanentWidget(self.theme_status)
         self.status_bar.addPermanentWidget(self.auto_refresh_status)
 
@@ -261,6 +279,57 @@ class MainWindow(QMainWindow):
         """Setup theme switching system."""
         # Connect theme change signal
         self.theme_manager.theme_changed.connect(self.on_theme_changed)
+    
+    def setup_weather_system(self):
+        """Setup weather integration system."""
+        if not self.config or not hasattr(self.config, 'weather') or not self.config.weather:
+            logger.warning("Weather configuration not available")
+            self.update_weather_status(False)
+            return
+        
+        try:
+            # Initialize weather manager (even if disabled, for potential later enabling)
+            self.weather_manager = WeatherManager(self.config.weather)
+            
+            # Connect weather widget if it exists
+            if self.weather_widget:
+                # Connect weather widget signals
+                self.weather_widget.weather_refresh_requested.connect(self.refresh_weather)
+                self.weather_widget.weather_settings_requested.connect(self.show_settings_dialog)
+                
+                # Update weather widget config
+                self.weather_widget.update_config(self.config.weather)
+            
+            # Connect weather manager Qt signals to weather widget
+            self.weather_manager.weather_updated.connect(self.on_weather_updated)
+            self.weather_manager.weather_error.connect(self.on_weather_error)
+            self.weather_manager.loading_state_changed.connect(self.on_weather_loading_changed)
+            
+            # Connect weather manager signals directly to weather widget
+            if self.weather_widget:
+                self.weather_manager.weather_updated.connect(self.weather_widget.on_weather_updated)
+                self.weather_manager.weather_error.connect(self.weather_widget.on_weather_error)
+                self.weather_manager.loading_state_changed.connect(self.weather_widget.on_weather_loading)
+            
+            # Update weather status and visibility
+            enabled = self.config.weather.enabled
+            self.update_weather_status(enabled)
+            
+            if self.weather_widget:
+                self.weather_widget.setVisible(enabled)
+            
+            if enabled:
+                logger.info("Weather system initialized and enabled")
+                # Start initial weather fetch
+                self.refresh_weather()
+            else:
+                logger.info("Weather system initialized but disabled")
+            
+        except Exception as e:
+            logger.error(f"Failed to initialize weather system: {e}")
+            self.update_weather_status(False)
+            if self.weather_widget:
+                self.weather_widget.hide()
 
     def toggle_theme(self):
         """Toggle between light and dark themes."""
@@ -291,6 +360,19 @@ class MainWindow(QMainWindow):
         # Update train list widget
         if self.train_list_widget:
             self.train_list_widget.apply_theme(theme_name)
+
+        # Update weather widget
+        if self.weather_widget:
+            # Create theme colors dictionary for weather widget
+            theme_colors = {
+                'background_primary': '#1a1a1a' if theme_name == 'dark' else '#ffffff',
+                'background_secondary': '#2d2d2d' if theme_name == 'dark' else '#f5f5f5',
+                'background_hover': '#404040' if theme_name == 'dark' else '#e0e0e0',
+                'text_primary': '#ffffff' if theme_name == 'dark' else '#000000',
+                'primary_accent': '#4fc3f7',
+                'border_primary': '#404040' if theme_name == 'dark' else '#cccccc',
+            }
+            self.weather_widget.apply_theme(theme_colors)
 
         # Emit signal for other components
         self.theme_changed.emit(theme_name)
@@ -399,6 +481,52 @@ class MainWindow(QMainWindow):
                     "Auto-refresh is OFF - Click to enable"
                 )
 
+    def update_weather_status(self, enabled: bool):
+        """
+        Update weather status display.
+        
+        Args:
+            enabled: Whether weather integration is enabled
+        """
+        if self.weather_status:
+            status = "ON" if enabled else "OFF"
+            self.weather_status.setText(f"Weather: {status}")
+            
+            # Color coding
+            if enabled:
+                self.weather_status.setStyleSheet("color: #4caf50;")  # Green
+            else:
+                self.weather_status.setStyleSheet("color: #666666;")  # Gray
+
+    def refresh_weather(self):
+        """Trigger manual weather refresh."""
+        if self.weather_manager:
+            # Run async refresh
+            import asyncio
+            loop = asyncio.get_event_loop()
+            if loop.is_running():
+                asyncio.create_task(self.weather_manager.refresh_weather())
+            else:
+                asyncio.run(self.weather_manager.refresh_weather())
+            logger.info("Manual weather refresh requested")
+
+    def on_weather_updated(self, weather_data):
+        """Handle weather data update."""
+        logger.info("Weather data updated in main window")
+        # Weather widget will be updated automatically via observer pattern
+
+    def on_weather_error(self, error_message: str):
+        """Handle weather error."""
+        logger.warning(f"Weather error: {error_message}")
+        # Could show in status bar or as notification
+
+    def on_weather_loading_changed(self, is_loading: bool):
+        """Handle weather loading state change."""
+        if is_loading:
+            logger.info("Weather data loading...")
+        else:
+            logger.info("Weather data loading complete")
+
     def show_error_message(self, title: str, message: str):
         """
         Show error message dialog.
@@ -446,6 +574,26 @@ class MainWindow(QMainWindow):
             # Update theme if changed
             if self.config:
                 self.theme_manager.set_theme(self.config.display.theme)
+                
+                # Update weather system if configuration changed
+                if hasattr(self.config, 'weather') and self.config.weather:
+                    if self.config.weather.enabled and not self.weather_manager:
+                        # Weather was enabled, initialize system
+                        self.setup_weather_system()
+                    elif self.weather_manager:
+                        # Update existing weather manager configuration
+                        self.weather_manager.update_config(self.config.weather)
+                        
+                        # Update weather widget configuration
+                        if self.weather_widget:
+                            self.weather_widget.update_config(self.config.weather)
+                            self.weather_widget.setVisible(self.config.weather.enabled)
+                    
+                    # Update weather status
+                    self.update_weather_status(self.config.weather.enabled)
+                elif hasattr(self.config, 'weather'):
+                    # Weather config exists but is None, disable weather
+                    self.update_weather_status(False)
 
             logger.info("Settings reloaded after save")
 
@@ -456,26 +604,13 @@ class MainWindow(QMainWindow):
             )
 
     def show_about_dialog(self):
-        """Show about dialog."""
+        """Show about dialog using centralized version system."""
         # Get config path for display
         config_path = self.config_manager.config_path
-
-        about_text = f"""
-        <h3>{__app_display_name__}</h3>
-        <p>Version {__version__}</p>
-        <p><b>Author: Oliver Ernster</b></p>
-        <p>A modern PySide6 application for displaying real-time train departure information.</p>
-        <p><b>Features:</b></p>
-        <ul>
-        <li>Light/Dark theme switching</li>
-        <li>16-hour time window</li>
-        <li>Real-time updates</li>
-        <li>Custom train icon</li>
-        <li>API configuration via Settings menu</li>
-        </ul>
-        <p>Built with PySide6 and Transport API</p>
-        <p><small>Config: {config_path}</small></p>
-        """
+        
+        # Use centralized about text with config path
+        about_text = get_about_text()
+        about_text += f"<p><small>Config: {config_path}</small></p>"
 
         msg_box = QMessageBox(self)
         msg_box.setIcon(QMessageBox.Icon.Information)
@@ -491,4 +626,13 @@ class MainWindow(QMainWindow):
     def closeEvent(self, event):
         """Handle window close event."""
         logger.info("Application closing")
+        
+        # Shutdown weather manager if it exists
+        if self.weather_manager:
+            try:
+                self.weather_manager.shutdown()
+                logger.info("Weather manager shutdown complete")
+            except Exception as e:
+                logger.warning(f"Error shutting down weather manager: {e}")
+        
         event.accept()

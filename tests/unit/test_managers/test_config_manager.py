@@ -411,6 +411,7 @@ class TestConfigManager:
 
         # Verify summary contains expected keys
         expected_keys = {
+            "app_version",
             "theme",
             "refresh_interval",
             "time_window",
@@ -418,6 +419,10 @@ class TestConfigManager:
             "auto_refresh",
             "api_configured",
             "route",
+            "weather_enabled",
+            "weather_location",
+            "weather_refresh",
+            "weather_provider",
         }
         assert set(summary.keys()) == expected_keys
 

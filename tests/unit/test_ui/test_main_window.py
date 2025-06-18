@@ -199,7 +199,7 @@ class TestMainWindow:
         # Check window properties
         assert "Trainer" in window.windowTitle()
         assert window.minimumSize().width() == 800
-        assert window.minimumSize().height() == 700
+        assert window.minimumSize().height() == 900
 
         # Check UI components exist
         assert window.train_list_widget is not None
@@ -482,6 +482,11 @@ class TestMainWindow:
         # Mock the config manager to return a new config
         new_config = Mock()
         new_config.display.theme = "light"
+        
+        # Mock weather config to avoid weather manager issues
+        mock_weather_config = Mock()
+        mock_weather_config.enabled = False  # Disable weather to avoid refresh issues
+        new_config.weather = mock_weather_config
 
         with patch.object(
             window.config_manager, "load_config", return_value=new_config
@@ -530,9 +535,11 @@ class TestMainWindow:
             # Check that the about text contains expected content
             call_args = mock_box.setText.call_args[0][0]
             assert "Trainer" in call_args
-            assert "Version 1.0.0" in call_args
+            # Use regex to match any version format (e.g., "Version 1.0.0", "Version 2.0.0", etc.)
+            import re
+            assert re.search(r"Version \d+\.\d+\.\d+", call_args), f"Version pattern not found in: {call_args}"
             assert "Oliver Ernster" in call_args
-            assert "Light/Dark theme switching" in call_args
+            assert "Dark/Light theme support" in call_args
 
             mock_box.exec.assert_called_once()
 

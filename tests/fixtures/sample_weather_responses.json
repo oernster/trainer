@@ -1,0 +1,211 @@
+{
+  "openmeteo_forecast_response": {
+    "latitude": 51.5,
+    "longitude": -0.125,
+    "generationtime_ms": 0.123,
+    "utc_offset_seconds": 0,
+    "timezone": "Europe/London",
+    "timezone_abbreviation": "GMT",
+    "elevation": 25.0,
+    "hourly_units": {
+      "time": "iso8601",
+      "temperature_2m": "°C",
+      "relative_humidity_2m": "%",
+      "weather_code": "wmo code"
+    },
+    "hourly": {
+      "time": [
+        "2025-06-18T00:00",
+        "2025-06-18T03:00",
+        "2025-06-18T06:00",
+        "2025-06-18T09:00",
+        "2025-06-18T12:00",
+        "2025-06-18T15:00",
+        "2025-06-18T18:00",
+        "2025-06-18T21:00"
+      ],
+      "temperature_2m": [12.5, 11.8, 13.2, 16.7, 19.4, 21.1, 18.9, 15.3],
+      "relative_humidity_2m": [78, 82, 75, 65, 58, 52, 61, 71],
+      "weather_code": [1, 2, 1, 0, 0, 1, 2, 3]
+    },
+    "daily_units": {
+      "time": "iso8601",
+      "temperature_2m_max": "°C",
+      "temperature_2m_min": "°C",
+      "weather_code": "wmo code"
+    },
+    "daily": {
+      "time": [
+        "2025-06-18",
+        "2025-06-19",
+        "2025-06-20",
+        "2025-06-21",
+        "2025-06-22",
+        "2025-06-23",
+        "2025-06-24"
+      ],
+      "temperature_2m_max": [21.1, 23.4, 19.8, 17.2, 20.5, 22.7, 24.1],
+      "temperature_2m_min": [11.8, 13.2, 12.1, 10.9, 12.8, 14.5, 15.2],
+      "weather_code": [1, 0, 2, 61, 1, 0, 2]
+    }
+  },
+  "openmeteo_error_response": {
+    "error": true,
+    "reason": "Invalid coordinates"
+  },
+  "test_weather_data": {
+    "location": {
+      "name": "London Waterloo",
+      "latitude": 51.5045,
+      "longitude": -0.1097
+    },
+    "current_weather": {
+      "timestamp": "2025-06-18T12:00:00",
+      "temperature": 19.4,
+      "humidity": 58,
+      "weather_code": 0,
+      "description": "Clear sky"
+    },
+    "hourly_forecast": [
+      {
+        "timestamp": "2025-06-18T00:00:00",
+        "temperature": 12.5,
+        "humidity": 78,
+        "weather_code": 1,
+        "description": "Mainly clear"
+      },
+      {
+        "timestamp": "2025-06-18T03:00:00",
+        "temperature": 11.8,
+        "humidity": 82,
+        "weather_code": 2,
+        "description": "Partly cloudy"
+      },
+      {
+        "timestamp": "2025-06-18T06:00:00",
+        "temperature": 13.2,
+        "humidity": 75,
+        "weather_code": 1,
+        "description": "Mainly clear"
+      },
+      {
+        "timestamp": "2025-06-18T09:00:00",
+        "temperature": 16.7,
+        "humidity": 65,
+        "weather_code": 0,
+        "description": "Clear sky"
+      },
+      {
+        "timestamp": "2025-06-18T12:00:00",
+        "temperature": 19.4,
+        "humidity": 58,
+        "weather_code": 0,
+        "description": "Clear sky"
+      },
+      {
+        "timestamp": "2025-06-18T15:00:00",
+        "temperature": 21.1,
+        "humidity": 52,
+        "weather_code": 1,
+        "description": "Mainly clear"
+      },
+      {
+        "timestamp": "2025-06-18T18:00:00",
+        "temperature": 18.9,
+        "humidity": 61,
+        "weather_code": 2,
+        "description": "Partly cloudy"
+      },
+      {
+        "timestamp": "2025-06-18T21:00:00",
+        "temperature": 15.3,
+        "humidity": 71,
+        "weather_code": 3,
+        "description": "Overcast"
+      }
+    ],
+    "daily_forecast": [
+      {
+        "date": "2025-06-18",
+        "temperature_max": 21.1,
+        "temperature_min": 11.8,
+        "temperature_avg": 16.45,
+        "humidity": 65,
+        "weather_code": 1,
+        "description": "Mainly clear"
+      },
+      {
+        "date": "2025-06-19",
+        "temperature_max": 23.4,
+        "temperature_min": 13.2,
+        "temperature_avg": 18.3,
+        "humidity": 60,
+        "weather_code": 0,
+        "description": "Clear sky"
+      },
+      {
+        "date": "2025-06-20",
+        "temperature_max": 19.8,
+        "temperature_min": 12.1,
+        "temperature_avg": 15.95,
+        "humidity": 70,
+        "weather_code": 2,
+        "description": "Partly cloudy"
+      },
+      {
+        "date": "2025-06-21",
+        "temperature_max": 17.2,
+        "temperature_min": 10.9,
+        "temperature_avg": 14.05,
+        "humidity": 75,
+        "weather_code": 61,
+        "description": "Slight rain"
+      },
+      {
+        "date": "2025-06-22",
+        "temperature_max": 20.5,
+        "temperature_min": 12.8,
+        "temperature_avg": 16.65,
+        "humidity": 68,
+        "weather_code": 1,
+        "description": "Mainly clear"
+      },
+      {
+        "date": "2025-06-23",
+        "temperature_max": 22.7,
+        "temperature_min": 14.5,
+        "temperature_avg": 18.6,
+        "humidity": 55,
+        "weather_code": 0,
+        "description": "Clear sky"
+      },
+      {
+        "date": "2025-06-24",
+        "temperature_max": 24.1,
+        "temperature_min": 15.2,
+        "temperature_avg": 19.65,
+        "humidity": 50,
+        "weather_code": 2,
+        "description": "Partly cloudy"
+      }
+    ]
+  },
+  "weather_error_scenarios": {
+    "network_timeout": {
+      "error_type": "NetworkException",
+      "message": "Request timeout after 10 seconds"
+    },
+    "invalid_coordinates": {
+      "error_type": "WeatherDataException",
+      "message": "Invalid latitude/longitude coordinates"
+    },
+    "api_rate_limit": {
+      "error_type": "WeatherRateLimitException",
+      "message": "API rate limit exceeded"
+    },
+    "malformed_response": {
+      "error_type": "WeatherDataException",
+      "message": "Invalid JSON response from weather API"
+    }
+  }
+}
