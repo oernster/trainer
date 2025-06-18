@@ -2,7 +2,7 @@
 
 **Author: Oliver Ernster**
 
-A modern PySide6 desktop application that displays real-time train departure information from Fleet to London Waterloo using the Transport API, featuring a sleek dark theme interface with automatic refresh capabilities.
+A modern PySide6 desktop application that displays real-time train departure information from Source to Desination train stations using the Transport API, featuring a sleek dark theme interface with automatic refresh capabilities.
 
 ![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
 ![PySide6](https://img.shields.io/badge/PySide6-6.5+-green.svg)
