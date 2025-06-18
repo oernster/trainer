@@ -54,6 +54,7 @@ class MainWindow(QMainWindow):
     refresh_requested = Signal()
     theme_changed = Signal(str)
     auto_refresh_toggle_requested = Signal()
+    astronomy_manager_ready = Signal()  # New signal for when astronomy manager is ready
 
     def __init__(self, config_manager: Optional[ConfigManager] = None):
         """Initialize the main window."""
@@ -163,17 +164,23 @@ class MainWindow(QMainWindow):
         self.astronomy_widget = AstronomyWidget()
         layout.addWidget(self.astronomy_widget)
 
-        # Show astronomy widget if astronomy is enabled (even without API key)
-        if not (
+        # Always show astronomy widget by default - it will show placeholder content if no API key
+        # Only hide if explicitly disabled in config
+        should_show_astronomy = True
+        if (
             self.config
             and hasattr(self.config, "astronomy")
             and self.config.astronomy
-            and self.config.astronomy.enabled
+            and not self.config.astronomy.enabled
         ):
-            self.astronomy_widget.hide()
-        else:
-            # Show the widget even if API key is missing - user can configure it
+            should_show_astronomy = False
+        
+        if should_show_astronomy:
             self.astronomy_widget.show()
+            logger.info("Astronomy widget shown (will show placeholder if no API key)")
+        else:
+            self.astronomy_widget.hide()
+            logger.info("Astronomy widget hidden (disabled in config)")
 
         # Train list with extended capacity
         self.train_list_widget = TrainListWidget(max_trains=50)
@@ -437,12 +444,24 @@ class MainWindow(QMainWindow):
 
     def setup_astronomy_system(self):
         """Setup astronomy integration system."""
+        # Handle missing astronomy configuration gracefully
         if (
             not self.config
             or not hasattr(self.config, "astronomy")
             or not self.config.astronomy
         ):
-            logger.warning("Astronomy configuration not available")
+            logger.info("Astronomy configuration not available - widget will show placeholder")
+            # Still connect widget signals and show placeholder content
+            if self.astronomy_widget:
+                # Connect astronomy widget signals even without config
+                self.astronomy_widget.astronomy_refresh_requested.connect(
+                    self.refresh_astronomy
+                )
+                self.astronomy_widget.nasa_link_clicked.connect(
+                    self.on_nasa_link_clicked
+                )
+                logger.info("Astronomy widget signals connected (no config)")
+            
             self.update_astronomy_status(False)
             return
 
@@ -487,7 +506,8 @@ class MainWindow(QMainWindow):
                     )
 
                 logger.info("Astronomy system initialized with API key")
-                # Data will be fetched when UI is shown via showEvent
+                # Emit signal to indicate astronomy manager is ready for data fetch
+                self.astronomy_manager_ready.emit()
             else:
                 logger.info(
                     "Astronomy system initialized without API key - widget will show placeholder"
@@ -497,7 +517,10 @@ class MainWindow(QMainWindow):
             enabled = self.config.astronomy.enabled
             self.update_astronomy_status(enabled)
 
+            # Only hide the widget if explicitly disabled in config
+            # Always show by default (will show placeholder if no API key)
             if self.astronomy_widget:
+                # Only hide if explicitly disabled, otherwise show by default
                 self.astronomy_widget.setVisible(enabled)
 
         except Exception as e:
@@ -819,12 +842,16 @@ class MainWindow(QMainWindow):
                 try:
                     loop = asyncio.get_running_loop()
                     # If we're in an async context, create a task
-                    asyncio.create_task(self.astronomy_manager.refresh_astronomy())
-                    logger.info("Manual astronomy refresh requested (async task)")
+                    # Additional null check to satisfy Pylance
+                    if self.astronomy_manager:
+                        asyncio.create_task(self.astronomy_manager.refresh_astronomy())
+                        logger.info("Manual astronomy refresh requested (async task)")
                 except RuntimeError:
                     # No running loop, create a new one
                     def run_refresh():
-                        asyncio.run(self.astronomy_manager.refresh_astronomy())
+                        # Additional null check to satisfy Pylance
+                        if self.astronomy_manager:
+                            asyncio.run(self.astronomy_manager.refresh_astronomy())
 
                     # Use QTimer to run in next event loop iteration
                     QTimer.singleShot(0, run_refresh)
@@ -930,6 +957,7 @@ class MainWindow(QMainWindow):
                 if hasattr(self.config, "astronomy") and self.config.astronomy:
                     # Check if we need to reinitialize the astronomy system
                     needs_reinit = False
+                    needs_data_fetch = False
 
                     if self.config.astronomy.enabled:
                         if (
@@ -938,6 +966,7 @@ class MainWindow(QMainWindow):
                         ):
                             # Astronomy was enabled and API key is now available
                             needs_reinit = True
+                            needs_data_fetch = True
                         elif (
                             self.astronomy_manager
                             and not self.config.astronomy.has_valid_api_key()
@@ -953,9 +982,19 @@ class MainWindow(QMainWindow):
                             self.astronomy_manager.update_config(self.config.astronomy)
 
                     if needs_reinit:
-                        # Reinitialize astronomy system
+                        # Reinitialize astronomy system completely
                         self.setup_astronomy_system()
                         logger.info("Astronomy system reinitialized with new API key")
+                        
+                        # Reset the astronomy data fetched flag so showEvent can trigger fetch
+                        if hasattr(self, "_astronomy_data_fetched"):
+                            delattr(self, "_astronomy_data_fetched")
+                            logger.info("Reset astronomy data fetched flag for new manager")
+
+                    # CRITICAL FIX: Emit signal to trigger immediate data fetch for new/updated API key
+                    if needs_data_fetch and self.astronomy_manager:
+                        logger.info("Emitting astronomy manager ready signal to trigger data fetch")
+                        self.astronomy_manager_ready.emit()
 
                     # Always update astronomy widget configuration
                     if self.astronomy_widget:
@@ -967,6 +1006,16 @@ class MainWindow(QMainWindow):
                 elif hasattr(self.config, "astronomy"):
                     # Astronomy config exists but is None, disable astronomy
                     self.update_astronomy_status(False)
+                else:
+                    # FIRST-TIME SETUP: No astronomy config existed before, now it does
+                    # This handles the case where config.json was just created for the first time
+                    logger.info("First-time astronomy setup detected - initializing astronomy system")
+                    self.setup_astronomy_system()
+                    
+                    # Reset the astronomy data fetched flag for first-time setup
+                    if hasattr(self, "_astronomy_data_fetched"):
+                        delattr(self, "_astronomy_data_fetched")
+                        logger.info("Reset astronomy data fetched flag for first-time setup")
 
             logger.info("Settings reloaded after save")
 
@@ -1172,8 +1221,24 @@ class MainWindow(QMainWindow):
 
     def connect_signals(self):
         """Connect internal signals."""
-        # Additional signal connections can be added here
-        pass
+        # Connect astronomy manager ready signal to trigger data fetch
+        self.astronomy_manager_ready.connect(self._on_astronomy_manager_ready)
+
+    def _on_astronomy_manager_ready(self):
+        """Handle astronomy manager ready signal - trigger immediate data fetch."""
+        if self.astronomy_manager:
+            logger.info("Astronomy manager ready signal received - triggering data fetch")
+            self.refresh_astronomy()
+            
+            # Start auto-refresh if enabled
+            if (self.config and
+                hasattr(self.config, "astronomy") and
+                self.config.astronomy and
+                self.config.astronomy.enabled):
+                self.astronomy_manager.start_auto_refresh()
+                logger.info("Auto-refresh started for newly configured astronomy")
+        else:
+            logger.warning("Astronomy manager ready signal received but no manager available")
 
     def showEvent(self, event):
         """Handle window show event - trigger astronomy data fetch when UI is displayed."""
@@ -1183,8 +1248,8 @@ class MainWindow(QMainWindow):
         if not hasattr(self, "_astronomy_data_fetched"):
             self._astronomy_data_fetched = True
             if self.astronomy_manager:
-                logger.info("UI displayed - triggering astronomy data fetch")
-                self.refresh_astronomy()
+                logger.info("UI displayed - emitting astronomy manager ready signal")
+                self.astronomy_manager_ready.emit()
 
     def closeEvent(self, event):
         """Handle window close event."""

@@ -491,6 +491,7 @@ class TestMainWindow:
         # Mock astronomy config with proper structure for setVisible() call
         mock_astronomy_config = Mock()
         mock_astronomy_config.enabled = True
+        mock_astronomy_config.has_valid_api_key.return_value = False  # No API key to avoid manager initialization
         mock_astronomy_config.display = Mock()
         mock_astronomy_config.display.show_in_forecast = True
         new_config.astronomy = mock_astronomy_config

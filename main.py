@@ -192,6 +192,9 @@ def main():
             # Create settings dialog for first launch (will show itself when ready)
             settings_dialog = SettingsDialog(config_manager, window)
             settings_dialog.setWindowTitle("Initial Setup - API Configuration Required")
+            
+            # CRITICAL FIX: Connect settings saved signal to main window
+            settings_dialog.settings_saved.connect(window.on_settings_saved)
 
             # Add a message to the dialog
             info_text = (

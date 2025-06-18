@@ -863,10 +863,16 @@ class AstronomyWidget(QWidget):
 
     def update_config(self, config: AstronomyConfig) -> None:
         """Update astronomy configuration."""
+        old_config = self._config
         self._config = config
 
         # Update visibility based on config
         self.setVisible(config.enabled and config.display.show_in_forecast)
+        
+        # If API key was just added, show loading state
+        if (old_config and not old_config.has_valid_api_key() and
+            config.has_valid_api_key()):
+            logger.info("API key newly available - astronomy widget ready for data")
 
         logger.debug("Astronomy widget configuration updated")
 
