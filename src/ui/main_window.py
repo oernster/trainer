@@ -28,8 +28,10 @@ from ..models.train_data import TrainData
 from ..managers.config_manager import ConfigManager, ConfigurationError
 from ..managers.theme_manager import ThemeManager
 from ..managers.weather_manager import WeatherManager
+from ..managers.astronomy_manager import AstronomyManager
 from .train_widgets import TrainListWidget
 from .weather_widgets import WeatherWidget
+from .astronomy_widgets import AstronomyWidget
 from .settings_dialog import SettingsDialog
 from version import __version__, __app_display_name__, get_about_text
 
@@ -56,6 +58,10 @@ class MainWindow(QMainWindow):
     def __init__(self, config_manager: Optional[ConfigManager] = None):
         """Initialize the main window."""
         super().__init__()
+        
+        # Make window completely invisible during initialization
+        self.setVisible(False)
+        self.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen, True)
 
         # Initialize managers
         self.config_manager = config_manager or ConfigManager()
@@ -78,6 +84,7 @@ class MainWindow(QMainWindow):
         # UI components
         self.train_list_widget: Optional[TrainListWidget] = None
         self.weather_widget: Optional[WeatherWidget] = None
+        self.astronomy_widget: Optional[AstronomyWidget] = None
         self.last_update_label: Optional[QLabel] = None
         self.next_update_label: Optional[QLabel] = None
         self.time_window_label: Optional[QLabel] = None
@@ -88,25 +95,38 @@ class MainWindow(QMainWindow):
         self.theme_status: Optional[QLabel] = None
         self.auto_refresh_status: Optional[QLabel] = None
         self.weather_status: Optional[QLabel] = None
+        self.astronomy_status: Optional[QLabel] = None
         
-        # Weather manager
+        # Managers
         self.weather_manager: Optional[WeatherManager] = None
+        self.astronomy_manager: Optional[AstronomyManager] = None
 
-        # Setup UI
+        # Setup theme system first to ensure proper styling from the start
+        self.setup_theme_system()
+        self.apply_theme()
+        
+        # Setup UI with theme already applied
         self.setup_ui()
         self.setup_application_icon()
-        self.setup_theme_system()
         self.setup_weather_system()
-        self.apply_theme()
+        self.setup_astronomy_system()
+        
+        # Apply theme to all widgets after creation
+        self.apply_theme_to_all_widgets()
         self.connect_signals()
 
         logger.info("Main window initialized")
+        
+        # Remove the invisible attributes but don't show yet - let main.py control when to show
+        self.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen, False)
+        self.setVisible(False)
+        # Don't call show() here - main.py will call it when ready
 
     def setup_ui(self):
         """Initialize UI components."""
         self.setWindowTitle(__app_display_name__)
-        self.setMinimumSize(800, 900)  # Increased height for weather widgets
-        self.resize(1000, 1000)  # Larger default size for weather integration
+        self.setMinimumSize(800, 1100)  # Increased height for weather + astronomy widgets
+        self.resize(1000, 1200)  # Larger default size for weather + astronomy integration
 
         # Central widget
         central_widget = QWidget()
@@ -115,7 +135,7 @@ class MainWindow(QMainWindow):
         # Main layout
         layout = QVBoxLayout(central_widget)
         layout.setContentsMargins(8, 8, 8, 8)
-        layout.setSpacing(8)
+        layout.setSpacing(0)  # Remove spacing between widgets to eliminate horizontal lines
 
         # Header
         self.setup_header(layout)
@@ -127,6 +147,17 @@ class MainWindow(QMainWindow):
         # Hide initially if weather is disabled
         if not (self.config and hasattr(self.config, 'weather') and self.config.weather and self.config.weather.enabled):
             self.weather_widget.hide()
+
+        # Astronomy widget (always create, show/hide based on config)
+        self.astronomy_widget = AstronomyWidget()
+        layout.addWidget(self.astronomy_widget)
+        
+        # Show astronomy widget if astronomy is enabled (even without API key)
+        if not (self.config and hasattr(self.config, 'astronomy') and self.config.astronomy and self.config.astronomy.enabled):
+            self.astronomy_widget.hide()
+        else:
+            # Show the widget even if API key is missing - user can configure it
+            self.astronomy_widget.show()
 
         # Train list with extended capacity
         self.train_list_widget = TrainListWidget(max_trains=50)
@@ -183,7 +214,10 @@ class MainWindow(QMainWindow):
     def setup_header(self, layout):
         """Setup header section with theme toggle."""
         header_widget = QWidget()
+        header_widget.setObjectName("headerWidget")
         header_layout = QHBoxLayout(header_widget)
+        header_layout.setContentsMargins(8, 4, 8, 4)  # Reduced margins
+        header_layout.setSpacing(8)
 
         # Status labels
         self.last_update_label = QLabel("Last Updated: --:--:--")
@@ -214,6 +248,9 @@ class MainWindow(QMainWindow):
         header_layout.addWidget(self.theme_button)
         header_layout.addWidget(self.refresh_button)
 
+        # Apply header-specific styling to remove borders
+        self.apply_header_styling(header_widget)
+
         layout.addWidget(header_widget)
 
     def setup_status_bar(self):
@@ -226,54 +263,89 @@ class MainWindow(QMainWindow):
         self.theme_status = QLabel(f"Theme: {self.theme_manager.current_theme.title()}")
         self.auto_refresh_status = QLabel("Auto-refresh: OFF")
         self.weather_status = QLabel("Weather: OFF")
+        self.astronomy_status = QLabel("Astronomy: OFF")
 
         self.status_bar.addWidget(self.connection_status)
         self.status_bar.addPermanentWidget(self.train_count_label)
         self.status_bar.addPermanentWidget(self.weather_status)
+        self.status_bar.addPermanentWidget(self.astronomy_status)
         self.status_bar.addPermanentWidget(self.theme_status)
         self.status_bar.addPermanentWidget(self.auto_refresh_status)
 
     def setup_menu_bar(self):
         """Setup application menu bar."""
+        # Ensure we're using the proper QMainWindow menu bar
         menubar = self.menuBar()
-
+        
+        # Clear any existing menu items
+        menubar.clear()
+        
+        # Set menu bar properties to ensure proper display
+        menubar.setNativeMenuBar(False)  # Force Qt menu bar on all platforms
+        
         # File menu
-        file_menu = menubar.addMenu("File")
+        file_menu = menubar.addMenu("&File")
 
-        refresh_action = QAction("Refresh", self)
+        refresh_action = QAction("&Refresh", self)
         refresh_action.setShortcut(QKeySequence("F5"))
+        refresh_action.setStatusTip("Refresh train data")
         refresh_action.triggered.connect(self.manual_refresh)
         file_menu.addAction(refresh_action)
 
         file_menu.addSeparator()
 
-        exit_action = QAction("Exit", self)
+        exit_action = QAction("E&xit", self)
         exit_action.setShortcut(QKeySequence("Ctrl+Q"))
+        exit_action.setStatusTip("Exit the application")
         exit_action.triggered.connect(self.close)
         file_menu.addAction(exit_action)
 
         # Settings menu
-        settings_menu = menubar.addMenu("Settings")
+        settings_menu = menubar.addMenu("&Settings")
 
-        options_action = QAction("Options...", self)
+        options_action = QAction("&Options...", self)
         options_action.setShortcut(QKeySequence("Ctrl+,"))
+        options_action.setStatusTip("Open application settings")
         options_action.triggered.connect(self.show_settings_dialog)
         settings_menu.addAction(options_action)
 
         # View menu
-        view_menu = menubar.addMenu("View")
+        view_menu = menubar.addMenu("&View")
 
-        self.theme_action = QAction("Switch Theme", self)
+        self.theme_action = QAction("Switch &Theme", self)
         self.theme_action.setShortcut(QKeySequence("Ctrl+T"))
+        self.theme_action.setStatusTip("Toggle between light and dark theme")
         self.theme_action.triggered.connect(self.toggle_theme)
         view_menu.addAction(self.theme_action)
+        
+        view_menu.addSeparator()
+        
+        # Weather toggle
+        self.weather_toggle_action = QAction("Show &Weather", self)
+        self.weather_toggle_action.setCheckable(True)
+        self.weather_toggle_action.setChecked(True)  # Default checked
+        self.weather_toggle_action.setStatusTip("Show/hide weather widget")
+        self.weather_toggle_action.triggered.connect(self.toggle_weather_visibility)
+        view_menu.addAction(self.weather_toggle_action)
+        
+        # Astronomy toggle
+        self.astronomy_toggle_action = QAction("Show &Astronomy", self)
+        self.astronomy_toggle_action.setCheckable(True)
+        self.astronomy_toggle_action.setChecked(True)  # Default checked
+        self.astronomy_toggle_action.setStatusTip("Show/hide astronomy widget")
+        self.astronomy_toggle_action.triggered.connect(self.toggle_astronomy_visibility)
+        view_menu.addAction(self.astronomy_toggle_action)
 
         # Help menu
-        help_menu = menubar.addMenu("Help")
+        help_menu = menubar.addMenu("&Help")
 
-        about_action = QAction("About", self)
+        about_action = QAction("&About", self)
+        about_action.setStatusTip("About this application")
         about_action.triggered.connect(self.show_about_dialog)
         help_menu.addAction(about_action)
+        
+        # Apply menu bar styling
+        self.apply_menu_bar_styling(menubar)
 
     def setup_theme_system(self):
         """Setup theme switching system."""
@@ -330,6 +402,56 @@ class MainWindow(QMainWindow):
             self.update_weather_status(False)
             if self.weather_widget:
                 self.weather_widget.hide()
+    
+    def setup_astronomy_system(self):
+        """Setup astronomy integration system."""
+        if not self.config or not hasattr(self.config, 'astronomy') or not self.config.astronomy:
+            logger.warning("Astronomy configuration not available")
+            self.update_astronomy_status(False)
+            return
+        
+        try:
+            # Always connect astronomy widget signals if it exists
+            if self.astronomy_widget:
+                # Connect astronomy widget signals
+                self.astronomy_widget.astronomy_refresh_requested.connect(self.refresh_astronomy)
+                self.astronomy_widget.nasa_link_clicked.connect(self.on_nasa_link_clicked)
+                
+                # Update astronomy widget config
+                self.astronomy_widget.update_config(self.config.astronomy)
+            
+            # Only initialize astronomy manager if API key is present
+            if self.config.astronomy.has_valid_api_key():
+                # Initialize astronomy manager
+                self.astronomy_manager = AstronomyManager(self.config.astronomy)
+                
+                # Connect astronomy manager Qt signals to astronomy widget
+                self.astronomy_manager.astronomy_updated.connect(self.on_astronomy_updated)
+                self.astronomy_manager.astronomy_error.connect(self.on_astronomy_error)
+                self.astronomy_manager.loading_state_changed.connect(self.on_astronomy_loading_changed)
+                
+                # Connect astronomy manager signals directly to astronomy widget
+                if self.astronomy_widget:
+                    self.astronomy_manager.astronomy_updated.connect(self.astronomy_widget.on_astronomy_updated)
+                    self.astronomy_manager.astronomy_error.connect(self.astronomy_widget.on_astronomy_error)
+                    self.astronomy_manager.loading_state_changed.connect(self.astronomy_widget.on_astronomy_loading)
+                
+                logger.info("Astronomy system initialized with API key")
+                # Data will be fetched when UI is shown via showEvent
+            else:
+                logger.info("Astronomy system initialized without API key - widget will show placeholder")
+            
+            # Update astronomy status and visibility
+            enabled = self.config.astronomy.enabled
+            self.update_astronomy_status(enabled)
+            
+            if self.astronomy_widget:
+                self.astronomy_widget.setVisible(enabled)
+            
+        except Exception as e:
+            logger.error(f"Failed to initialize astronomy system: {e}")
+            self.update_astronomy_status(False)
+            # Don't hide the widget - let it show the error/placeholder state
 
     def toggle_theme(self):
         """Toggle between light and dark themes."""
@@ -357,6 +479,16 @@ class MainWindow(QMainWindow):
         if self.theme_status:
             self.theme_status.setText(f"Theme: {theme_name.title()}")
 
+        # Update menu bar styling
+        menubar = self.menuBar()
+        if menubar:
+            self.apply_menu_bar_styling(menubar)
+        
+        # Update header styling
+        header_widget = self.findChild(QWidget, "headerWidget")
+        if header_widget:
+            self.apply_header_styling(header_widget)
+
         # Update train list widget
         if self.train_list_widget:
             self.train_list_widget.apply_theme(theme_name)
@@ -374,6 +506,19 @@ class MainWindow(QMainWindow):
             }
             self.weather_widget.apply_theme(theme_colors)
 
+        # Update astronomy widget
+        if self.astronomy_widget:
+            # Use same theme colors for astronomy widget
+            theme_colors = {
+                'background_primary': '#1a1a1a' if theme_name == 'dark' else '#ffffff',
+                'background_secondary': '#2d2d2d' if theme_name == 'dark' else '#f5f5f5',
+                'background_hover': '#404040' if theme_name == 'dark' else '#e0e0e0',
+                'text_primary': '#ffffff' if theme_name == 'dark' else '#000000',
+                'primary_accent': '#4fc3f7',
+                'border_primary': '#404040' if theme_name == 'dark' else '#cccccc',
+            }
+            self.astronomy_widget.apply_theme(theme_colors)
+
         # Emit signal for other components
         self.theme_changed.emit(theme_name)
 
@@ -383,8 +528,62 @@ class MainWindow(QMainWindow):
         """Apply current theme styling."""
         main_style = self.theme_manager.get_main_window_stylesheet()
         widget_style = self.theme_manager.get_widget_stylesheet()
+        
+        # Add custom styling to remove borders under menu bar
+        if self.theme_manager.current_theme == 'dark':
+            custom_style = """
+            QMainWindow {
+                border: none;
+            }
+            QMainWindow::separator {
+                border: none;
+                background: transparent;
+            }
+            """
+        else:
+            custom_style = """
+            QMainWindow {
+                border: none;
+            }
+            QMainWindow::separator {
+                border: none;
+                background: transparent;
+            }
+            """
 
-        self.setStyleSheet(main_style + widget_style)
+        self.setStyleSheet(main_style + widget_style + custom_style)
+
+    def apply_theme_to_all_widgets(self):
+        """Apply theme to all widgets after creation."""
+        current_theme = self.theme_manager.current_theme
+        
+        # Apply theme to train list widget
+        if self.train_list_widget:
+            self.train_list_widget.apply_theme(current_theme)
+
+        # Apply theme to weather widget
+        if self.weather_widget:
+            theme_colors = {
+                'background_primary': '#1a1a1a' if current_theme == 'dark' else '#ffffff',
+                'background_secondary': '#2d2d2d' if current_theme == 'dark' else '#f5f5f5',
+                'background_hover': '#404040' if current_theme == 'dark' else '#e0e0e0',
+                'text_primary': '#ffffff' if current_theme == 'dark' else '#000000',
+                'primary_accent': '#4fc3f7',
+                'border_primary': '#404040' if current_theme == 'dark' else '#cccccc',
+            }
+            self.weather_widget.apply_theme(theme_colors)
+
+        # Apply theme to astronomy widget
+        if self.astronomy_widget:
+            theme_colors = {
+                'background_primary': '#1a1a1a' if current_theme == 'dark' else '#ffffff',
+                'background_secondary': '#2d2d2d' if current_theme == 'dark' else '#f5f5f5',
+                'background_hover': '#404040' if current_theme == 'dark' else '#e0e0e0',
+                'text_primary': '#ffffff' if current_theme == 'dark' else '#000000',
+                'primary_accent': '#4fc3f7',
+                'border_primary': '#404040' if current_theme == 'dark' else '#cccccc',
+            }
+            self.astronomy_widget.apply_theme(theme_colors)
 
     def manual_refresh(self):
         """Trigger manual refresh of train data."""
@@ -527,6 +726,70 @@ class MainWindow(QMainWindow):
         else:
             logger.info("Weather data loading complete")
 
+    def update_astronomy_status(self, enabled: bool):
+        """
+        Update astronomy status display.
+        
+        Args:
+            enabled: Whether astronomy integration is enabled
+        """
+        if self.astronomy_status:
+            status = "ON" if enabled else "OFF"
+            self.astronomy_status.setText(f"Astronomy: {status}")
+            
+            # Color coding
+            if enabled:
+                self.astronomy_status.setStyleSheet("color: #4caf50;")  # Green
+            else:
+                self.astronomy_status.setStyleSheet("color: #666666;")  # Gray
+
+    def refresh_astronomy(self):
+        """Trigger manual astronomy refresh."""
+        if self.astronomy_manager:
+            # Run async refresh using QTimer to defer to next event loop iteration
+            import asyncio
+            try:
+                # Check if there's already an event loop
+                try:
+                    loop = asyncio.get_running_loop()
+                    # If we're in an async context, create a task
+                    asyncio.create_task(self.astronomy_manager.refresh_astronomy())
+                    logger.info("Manual astronomy refresh requested (async task)")
+                except RuntimeError:
+                    # No running loop, create a new one
+                    def run_refresh():
+                        asyncio.run(self.astronomy_manager.refresh_astronomy())
+                    
+                    # Use QTimer to run in next event loop iteration
+                    QTimer.singleShot(0, run_refresh)
+                    logger.info("Manual astronomy refresh requested (new event loop)")
+            except Exception as e:
+                logger.warning(f"Failed to refresh astronomy: {e}")
+        else:
+            logger.info("Astronomy refresh requested but no manager available (missing API key)")
+
+    def on_astronomy_updated(self, astronomy_data):
+        """Handle astronomy data update."""
+        logger.info("Astronomy data updated in main window")
+        # Astronomy widget will be updated automatically via observer pattern
+
+    def on_astronomy_error(self, error_message: str):
+        """Handle astronomy error."""
+        logger.warning(f"Astronomy error: {error_message}")
+        # Could show in status bar or as notification
+
+    def on_astronomy_loading_changed(self, is_loading: bool):
+        """Handle astronomy loading state change."""
+        if is_loading:
+            logger.info("Astronomy data loading...")
+        else:
+            logger.info("Astronomy data loading complete")
+
+    def on_nasa_link_clicked(self, url: str):
+        """Handle NASA link clicks."""
+        logger.info(f"NASA link clicked: {url}")
+        # Link will be opened automatically by the astronomy widget
+
     def show_error_message(self, title: str, message: str):
         """
         Show error message dialog.
@@ -594,6 +857,40 @@ class MainWindow(QMainWindow):
                 elif hasattr(self.config, 'weather'):
                     # Weather config exists but is None, disable weather
                     self.update_weather_status(False)
+                
+                # Update astronomy system if configuration changed
+                if hasattr(self.config, 'astronomy') and self.config.astronomy:
+                    # Check if we need to reinitialize the astronomy system
+                    needs_reinit = False
+                    
+                    if self.config.astronomy.enabled:
+                        if not self.astronomy_manager and self.config.astronomy.has_valid_api_key():
+                            # Astronomy was enabled and API key is now available
+                            needs_reinit = True
+                        elif self.astronomy_manager and not self.config.astronomy.has_valid_api_key():
+                            # API key was removed, shutdown manager
+                            self.astronomy_manager.shutdown()
+                            self.astronomy_manager = None
+                            logger.info("Astronomy manager shutdown due to missing API key")
+                        elif self.astronomy_manager:
+                            # Update existing astronomy manager configuration
+                            self.astronomy_manager.update_config(self.config.astronomy)
+                    
+                    if needs_reinit:
+                        # Reinitialize astronomy system
+                        self.setup_astronomy_system()
+                        logger.info("Astronomy system reinitialized with new API key")
+                    
+                    # Always update astronomy widget configuration
+                    if self.astronomy_widget:
+                        self.astronomy_widget.update_config(self.config.astronomy)
+                        self.astronomy_widget.setVisible(self.config.astronomy.enabled)
+                    
+                    # Update astronomy status
+                    self.update_astronomy_status(self.config.astronomy.enabled)
+                elif hasattr(self.config, 'astronomy'):
+                    # Astronomy config exists but is None, disable astronomy
+                    self.update_astronomy_status(False)
 
             logger.info("Settings reloaded after save")
 
@@ -618,10 +915,200 @@ class MainWindow(QMainWindow):
         msg_box.setText(about_text)
         msg_box.exec()
 
+    def toggle_weather_visibility(self):
+        """Toggle weather widget visibility."""
+        if self.weather_widget:
+            is_visible = self.weather_widget.isVisible()
+            self.weather_widget.setVisible(not is_visible)
+            
+            # Update menu action text
+            if self.weather_toggle_action:
+                self.weather_toggle_action.setChecked(not is_visible)
+            
+            logger.info(f"Weather widget {'hidden' if is_visible else 'shown'}")
+    
+    def toggle_astronomy_visibility(self):
+        """Toggle astronomy widget visibility."""
+        if self.astronomy_widget:
+            is_visible = self.astronomy_widget.isVisible()
+            self.astronomy_widget.setVisible(not is_visible)
+            
+            # Update menu action text
+            if self.astronomy_toggle_action:
+                self.astronomy_toggle_action.setChecked(not is_visible)
+            
+            logger.info(f"Astronomy widget {'hidden' if is_visible else 'shown'}")
+    
+    def apply_menu_bar_styling(self, menubar):
+        """Apply styling to the menu bar."""
+        # Get current theme colors
+        if self.theme_manager.current_theme == 'dark':
+            menu_style = """
+            QMenuBar {
+                background-color: #2d2d2d;
+                color: #ffffff;
+                border: none;
+                border-bottom: none;
+                padding: 2px;
+                margin: 0px;
+            }
+            QMenuBar::item {
+                background-color: transparent;
+                padding: 4px 8px;
+                margin: 0px;
+                border: none;
+            }
+            QMenuBar::item:selected {
+                background-color: #4fc3f7;
+                color: #ffffff;
+            }
+            QMenuBar::item:pressed {
+                background-color: #0288d1;
+            }
+            QMenu {
+                background-color: #2d2d2d;
+                color: #ffffff;
+                border: 1px solid #404040;
+            }
+            QMenu::item {
+                padding: 4px 20px;
+                background-color: transparent;
+            }
+            QMenu::item:selected {
+                background-color: #4fc3f7;
+                color: #ffffff;
+            }
+            QMenu::separator {
+                height: 1px;
+                background-color: #404040;
+                margin: 2px 0px;
+            }
+            """
+        else:
+            menu_style = """
+            QMenuBar {
+                background-color: #f0f0f0;
+                color: #000000;
+                border: none;
+                border-bottom: none;
+                padding: 2px;
+                margin: 0px;
+            }
+            QMenuBar::item {
+                background-color: transparent;
+                padding: 4px 8px;
+                margin: 0px;
+                border: none;
+            }
+            QMenuBar::item:selected {
+                background-color: #4fc3f7;
+                color: #ffffff;
+            }
+            QMenuBar::item:pressed {
+                background-color: #0288d1;
+            }
+            QMenu {
+                background-color: #ffffff;
+                color: #000000;
+                border: 1px solid #cccccc;
+            }
+            QMenu::item {
+                padding: 4px 20px;
+                background-color: transparent;
+            }
+            QMenu::item:selected {
+                background-color: #4fc3f7;
+                color: #ffffff;
+            }
+            QMenu::separator {
+                height: 1px;
+                background-color: #cccccc;
+                margin: 2px 0px;
+            }
+            """
+        
+        menubar.setStyleSheet(menu_style)
+    
+    def apply_header_styling(self, header_widget):
+        """Apply styling to the header widget to remove borders."""
+        # Get current theme colors
+        if self.theme_manager.current_theme == 'dark':
+            header_style = """
+            QWidget#headerWidget {
+                background-color: #1a1a1a;
+                border: none;
+                padding: 0px;
+                margin: 0px;
+            }
+            QLabel {
+                color: #ffffff;
+                background-color: transparent;
+                border: none;
+                padding: 2px;
+            }
+            QPushButton {
+                background-color: #2d2d2d;
+                border: 1px solid #404040;
+                border-radius: 4px;
+                color: #ffffff;
+                padding: 4px 8px;
+            }
+            QPushButton:hover {
+                background-color: #404040;
+                border-color: #4fc3f7;
+            }
+            QPushButton:pressed {
+                background-color: #4fc3f7;
+            }
+            """
+        else:
+            header_style = """
+            QWidget#headerWidget {
+                background-color: #ffffff;
+                border: none;
+                padding: 0px;
+                margin: 0px;
+            }
+            QLabel {
+                color: #000000;
+                background-color: transparent;
+                border: none;
+                padding: 2px;
+            }
+            QPushButton {
+                background-color: #f0f0f0;
+                border: 1px solid #cccccc;
+                border-radius: 4px;
+                color: #000000;
+                padding: 4px 8px;
+            }
+            QPushButton:hover {
+                background-color: #e0e0e0;
+                border-color: #4fc3f7;
+            }
+            QPushButton:pressed {
+                background-color: #4fc3f7;
+                color: #ffffff;
+            }
+            """
+        
+        header_widget.setStyleSheet(header_style)
+
     def connect_signals(self):
         """Connect internal signals."""
         # Additional signal connections can be added here
         pass
+
+    def showEvent(self, event):
+        """Handle window show event - trigger astronomy data fetch when UI is displayed."""
+        super().showEvent(event)
+        
+        # Only fetch astronomy data once when window is first shown
+        if not hasattr(self, '_astronomy_data_fetched'):
+            self._astronomy_data_fetched = True
+            if self.astronomy_manager:
+                logger.info("UI displayed - triggering astronomy data fetch")
+                self.refresh_astronomy()
 
     def closeEvent(self, event):
         """Handle window close event."""
@@ -634,5 +1121,13 @@ class MainWindow(QMainWindow):
                 logger.info("Weather manager shutdown complete")
             except Exception as e:
                 logger.warning(f"Error shutting down weather manager: {e}")
+        
+        # Shutdown astronomy manager if it exists
+        if self.astronomy_manager:
+            try:
+                self.astronomy_manager.shutdown()
+                logger.info("Astronomy manager shutdown complete")
+            except Exception as e:
+                logger.warning(f"Error shutting down astronomy manager: {e}")
         
         event.accept()

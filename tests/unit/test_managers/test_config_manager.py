@@ -600,13 +600,10 @@ class TestConfigManagerMissingCoverage:
         assert "config.json" in str(path)
         assert ".trainer" in str(path)
 
-    @pytest.mark.skipif(os.name == "nt", reason="Cannot mock PosixPath on Windows")
+    @pytest.mark.skipif(os.name == "nt", reason="Cannot test PosixPath behavior on Windows")
     def test_get_default_config_path_non_windows_executable(self, monkeypatch):
         """Test get_default_config_path on non-Windows as executable (lines 118-123)."""
-        # This test would run on actual Unix systems
-        # Mock non-Windows environment
-        monkeypatch.setattr("os.name", "posix")
-
+        # This test only runs on Unix-like systems
         # Mock getattr to return True for sys.frozen check
         import sys
 
@@ -623,6 +620,30 @@ class TestConfigManagerMissingCoverage:
 
         assert ".trainer" in str(path)
         assert "config.json" in str(path)
+
+    def test_get_default_config_path_windows_executable_mode(self, monkeypatch):
+        """Test get_default_config_path on Windows in executable mode (alternative test)."""
+        # Mock Windows environment
+        monkeypatch.setattr("os.name", "nt")
+        monkeypatch.setenv("APPDATA", "C:/Users/Test/AppData/Roaming")
+
+        # Mock getattr to return True for sys.frozen check (executable mode)
+        import sys
+
+        original_getattr = getattr
+
+        def mock_getattr(obj, name, default=None):
+            if obj is sys and name == "frozen":
+                return True
+            return original_getattr(obj, name, default)
+
+        monkeypatch.setattr("builtins.getattr", mock_getattr)
+
+        path = ConfigManager.get_default_config_path()
+
+        assert "Trainer" in str(path)
+        assert "config.json" in str(path)
+        assert "AppData" in str(path)
 
     def test_get_default_config_path_non_windows_development(self, monkeypatch):
         """Test get_default_config_path on non-Windows in development (lines 125-126)."""
@@ -848,3 +869,401 @@ class TestConfigManagerMissingCoverage:
 
         # Should return error dict when config is None
         assert summary == {"error": "Configuration not loaded"}
+
+
+class TestConfigManagerWeatherIntegration:
+    """Test weather-related configuration management methods."""
+
+    def test_update_weather_config_success(self, temp_config_file):
+        """Test successful weather configuration update."""
+        manager = ConfigManager(temp_config_file)
+        config = manager.load_config()
+        
+        # Ensure weather config exists
+        assert config.weather is not None
+        original_enabled = config.weather.enabled
+        
+        # Update weather config
+        manager.update_weather_config(enabled=not original_enabled, refresh_interval_minutes=15)
+        
+        # Verify changes
+        updated_config = manager.load_config()
+        assert updated_config.weather is not None
+        assert updated_config.weather.enabled == (not original_enabled)
+        assert updated_config.weather.refresh_interval_minutes == 15
+
+    def test_update_weather_config_no_config_loaded(self):
+        """Test update_weather_config when config is None."""
+        with tempfile.NamedTemporaryFile(delete=True) as temp_file:
+            temp_path = temp_file.name
+        
+        manager = ConfigManager(temp_path)
+        # Don't load config, so self.config is None
+        
+        # Should load config and then update
+        manager.update_weather_config(enabled=False)
+        
+        # Verify config was loaded and updated
+        config = manager.load_config()
+        assert config.weather is not None
+        assert config.weather.enabled == False
+
+    def test_update_weather_config_invalid_data(self, temp_config_file):
+        """Test update_weather_config with invalid data."""
+        manager = ConfigManager(temp_config_file)
+        config = manager.load_config()
+        
+        # Try to update with invalid weather config data
+        with pytest.raises(ConfigurationError) as exc_info:
+            manager.update_weather_config(refresh_interval_minutes=-1)  # Invalid negative value
+        
+        assert "Invalid weather configuration" in str(exc_info.value)
+
+    def test_update_weather_config_no_weather_config(self, monkeypatch):
+        """Test update_weather_config when weather config is None."""
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+            # Create config without weather section
+            config_data = {
+                "api": {"app_id": "test", "app_key": "test"},
+                "stations": {"from_code": "FLE", "from_name": "Fleet", "to_code": "WAT", "to_name": "London Waterloo"},
+                "refresh": {"auto_enabled": True, "interval_minutes": 2, "manual_enabled": True},
+                "display": {"max_trains": 50, "time_window_hours": 10, "show_cancelled": True, "theme": "dark"},
+                "weather": None,
+                "astronomy": None
+            }
+            json.dump(config_data, f)
+            temp_path = f.name
+
+        try:
+            manager = ConfigManager(temp_path)
+            config = manager.load_config()
+            
+            # Weather config should be created by ConfigData.__init__
+            assert config.weather is not None
+            
+            # Should be able to update weather config
+            manager.update_weather_config(enabled=False)
+            
+            updated_config = manager.load_config()
+            assert updated_config.weather is not None
+            assert updated_config.weather.enabled == False
+        finally:
+            os.unlink(temp_path)
+
+    def test_get_weather_config_success(self, temp_config_file):
+        """Test successful weather configuration retrieval."""
+        manager = ConfigManager(temp_config_file)
+        
+        weather_config = manager.get_weather_config()
+        
+        assert weather_config is not None
+        assert hasattr(weather_config, 'enabled')
+        assert hasattr(weather_config, 'refresh_interval_minutes')
+
+    def test_get_weather_config_no_config_loaded(self):
+        """Test get_weather_config when config is None."""
+        with tempfile.NamedTemporaryFile(delete=True) as temp_file:
+            temp_path = temp_file.name
+        
+        manager = ConfigManager(temp_path)
+        # Don't load config, so self.config is None
+        
+        # Should load config and return weather config
+        weather_config = manager.get_weather_config()
+        
+        assert weather_config is not None
+
+    def test_get_weather_config_config_none_after_load(self, monkeypatch):
+        """Test get_weather_config when config is None after load attempt."""
+        with tempfile.NamedTemporaryFile(delete=True) as temp_file:
+            temp_path = temp_file.name
+
+        manager = ConfigManager(temp_path)
+
+        # Mock load_config to not set self.config
+        def mock_load_config():
+            # Don't set self.config, leave it as None
+            pass
+
+        monkeypatch.setattr(manager, "load_config", mock_load_config)
+
+        weather_config = manager.get_weather_config()
+
+        # Should return None when config is None
+        assert weather_config is None
+
+    def test_is_weather_enabled_true(self, temp_config_file):
+        """Test is_weather_enabled when weather is enabled."""
+        manager = ConfigManager(temp_config_file)
+        config = manager.load_config()
+        
+        # Ensure weather is enabled
+        assert config.weather is not None
+        config.weather.enabled = True
+        manager.save_config(config)
+        
+        assert manager.is_weather_enabled() == True
+
+    def test_is_weather_enabled_false(self, temp_config_file):
+        """Test is_weather_enabled when weather is disabled."""
+        manager = ConfigManager(temp_config_file)
+        config = manager.load_config()
+        
+        # Disable weather
+        assert config.weather is not None
+        config.weather.enabled = False
+        manager.save_config(config)
+        
+        assert manager.is_weather_enabled() == False
+
+    def test_is_weather_enabled_no_weather_config(self, monkeypatch):
+        """Test is_weather_enabled when weather config is None."""
+        manager = ConfigManager()
+        
+        # Mock get_weather_config to return None
+        def mock_get_weather_config():
+            return None
+        
+        monkeypatch.setattr(manager, "get_weather_config", mock_get_weather_config)
+        
+        assert manager.is_weather_enabled() == False
+
+    def test_get_config_summary_no_weather_config(self, monkeypatch):
+        """Test get_config_summary when weather config is None (line 374)."""
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+            # Create config with basic structure
+            config_data = {
+                "api": {"app_id": "test", "app_key": "test"},
+                "stations": {"from_code": "FLE", "from_name": "Fleet", "to_code": "WAT", "to_name": "London Waterloo"},
+                "refresh": {"auto_enabled": True, "interval_minutes": 2, "manual_enabled": True},
+                "display": {"max_trains": 50, "time_window_hours": 10, "show_cancelled": True, "theme": "dark"},
+                "weather": None,
+                "astronomy": None
+            }
+            json.dump(config_data, f)
+            temp_path = f.name
+
+        try:
+            manager = ConfigManager(temp_path)
+            
+            # Mock the config to have None weather after loading
+            def mock_load_config():
+                from src.managers.config_manager import ConfigData, APIConfig, StationConfig, RefreshConfig, DisplayConfig
+                manager.config = ConfigData(
+                    api=APIConfig(app_id="test", app_key="test"),
+                    stations=StationConfig(),
+                    refresh=RefreshConfig(),
+                    display=DisplayConfig()
+                )
+                # Force weather to None after initialization
+                manager.config.weather = None
+                return manager.config
+            
+            monkeypatch.setattr(manager, "load_config", mock_load_config)
+            
+            summary = manager.get_config_summary()
+            
+            # Should have weather_enabled = False (line 374)
+            assert summary["weather_enabled"] == False
+            assert "weather_location" not in summary
+            assert "weather_refresh" not in summary
+            assert "weather_provider" not in summary
+        finally:
+            os.unlink(temp_path)
+
+
+class TestConfigManagerMigration:
+    """Test configuration migration functionality."""
+
+    def test_migrate_config_if_needed_no_config(self):
+        """Test migrate_config_if_needed when config is None."""
+        manager = ConfigManager()
+        # Don't load config, so self.config is None
+        
+        result = manager.migrate_config_if_needed()
+        
+        # Should return False when config is None
+        assert result == False
+
+    def test_migrate_config_if_needed_weather_migration_needed(self, temp_config_file, monkeypatch):
+        """Test migrate_config_if_needed when weather migration is needed."""
+        manager = ConfigManager(temp_config_file)
+        config = manager.load_config()
+        
+        # Mock WeatherConfigMigrator to indicate migration is needed
+        def mock_is_migration_needed(weather_dict):
+            return True
+        
+        def mock_migrate_to_current_version(weather_dict):
+            # Return migrated weather config
+            migrated = weather_dict.copy()
+            migrated['version'] = '2.0'  # Simulate version update
+            return migrated
+        
+        monkeypatch.setattr("src.managers.config_manager.WeatherConfigMigrator.is_migration_needed", mock_is_migration_needed)
+        monkeypatch.setattr("src.managers.config_manager.WeatherConfigMigrator.migrate_to_current_version", mock_migrate_to_current_version)
+        
+        result = manager.migrate_config_if_needed()
+        
+        # Should return True indicating migration was performed
+        assert result == True
+
+    def test_migrate_config_if_needed_no_weather_config(self, monkeypatch):
+        """Test migrate_config_if_needed when weather config is missing."""
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+            # Create config without weather section
+            config_data = {
+                "api": {"app_id": "test", "app_key": "test"},
+                "stations": {"from_code": "FLE", "from_name": "Fleet", "to_code": "WAT", "to_name": "London Waterloo"},
+                "refresh": {"auto_enabled": True, "interval_minutes": 2, "manual_enabled": True},
+                "display": {"max_trains": 50, "time_window_hours": 10, "show_cancelled": True, "theme": "dark"}
+                # No weather or astronomy sections
+            }
+            json.dump(config_data, f)
+            temp_path = f.name
+
+        try:
+            manager = ConfigManager(temp_path)
+            
+            # Mock the config to simulate missing weather config
+            def mock_load_config():
+                from src.managers.config_manager import ConfigData, APIConfig, StationConfig, RefreshConfig, DisplayConfig
+                manager.config = ConfigData(
+                    api=APIConfig(app_id="test", app_key="test"),
+                    stations=StationConfig(),
+                    refresh=RefreshConfig(),
+                    display=DisplayConfig()
+                )
+                return manager.config
+            
+            # Load config first
+            config = manager.load_config()
+            
+            # Manually set weather to None to simulate missing config
+            config.weather = None
+            manager.config = config
+            
+            result = manager.migrate_config_if_needed()
+            
+            # Should return True indicating weather config was added
+            assert result == True
+            
+            # Verify weather config was added
+            assert manager.config.weather is not None
+        finally:
+            os.unlink(temp_path)
+
+    def test_migrate_config_if_needed_weather_config_none(self, temp_config_file, monkeypatch):
+        """Test migrate_config_if_needed when weather config is explicitly None."""
+        manager = ConfigManager(temp_config_file)
+        config = manager.load_config()
+        
+        # Force weather config to None
+        config.weather = None
+        manager.config = config
+        
+        result = manager.migrate_config_if_needed()
+        
+        # Should return True indicating weather config was added
+        assert result == True
+        
+        # Verify weather config was added
+        assert manager.config.weather is not None
+
+    def test_migrate_config_if_needed_no_migration_needed(self, temp_config_file, monkeypatch):
+        """Test migrate_config_if_needed when no migration is needed."""
+        manager = ConfigManager(temp_config_file)
+        config = manager.load_config()
+        
+        # Mock WeatherConfigMigrator to indicate no migration is needed
+        def mock_is_migration_needed(weather_dict):
+            return False
+        
+        monkeypatch.setattr("src.managers.config_manager.WeatherConfigMigrator.is_migration_needed", mock_is_migration_needed)
+        
+        result = manager.migrate_config_if_needed()
+        
+        # Should return False indicating no migration was performed
+        assert result == False
+
+    def test_migrate_config_if_needed_exception_handling(self, temp_config_file, monkeypatch):
+        """Test migrate_config_if_needed exception handling."""
+        manager = ConfigManager(temp_config_file)
+        config = manager.load_config()
+        
+        # Mock WeatherConfigMigrator to raise an exception
+        def mock_is_migration_needed(weather_dict):
+            raise ValueError("Migration error")
+        
+        monkeypatch.setattr("src.managers.config_manager.WeatherConfigMigrator.is_migration_needed", mock_is_migration_needed)
+        
+        result = manager.migrate_config_if_needed()
+        
+        # Should return False when exception occurs
+        assert result == False
+
+
+@pytest.fixture
+def temp_config_file():
+    """Create a temporary configuration file for testing."""
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+        # Create a complete test configuration
+        config_data = {
+            "api": {
+                "app_id": "test_id",
+                "app_key": "test_key",
+                "base_url": "https://transportapi.com/v3/uk",
+                "timeout_seconds": 10,
+                "max_retries": 3,
+                "rate_limit_per_minute": 30,
+            },
+            "stations": {
+                "from_code": "FLE",
+                "from_name": "Fleet",
+                "to_code": "WAT",
+                "to_name": "London Waterloo",
+            },
+            "refresh": {
+                "auto_enabled": True,
+                "interval_minutes": 2,
+                "manual_enabled": True,
+            },
+            "display": {
+                "max_trains": 50,
+                "time_window_hours": 10,
+                "show_cancelled": True,
+                "theme": "dark",
+            },
+            "weather": {
+                "enabled": True,
+                "api_provider": "openweathermap",
+                "api_key": "test_weather_key",
+                "location": {
+                    "name": "London Waterloo",
+                    "latitude": 51.5045,
+                    "longitude": -0.1097,
+                    "country_code": "GB"
+                },
+                "refresh_interval_minutes": 15,
+                "units": "metric",
+                "language": "en"
+            },
+            "astronomy": {
+                "enabled": True,
+                "location": {
+                    "name": "London Waterloo",
+                    "latitude": 51.5045,
+                    "longitude": -0.1097,
+                    "timezone": "Europe/London"
+                },
+                "refresh_interval_minutes": 60
+            }
+        }
+        json.dump(config_data, f)
+        temp_path = f.name
+
+    yield temp_path
+
+    # Cleanup
+    if os.path.exists(temp_path):
+        os.unlink(temp_path)

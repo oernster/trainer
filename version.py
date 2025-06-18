@@ -7,8 +7,8 @@ weather integration features and build system information.
 """
 
 # Core application information
-__version__ = "2.0.0"  # Major version bump for weather integration
-__version_info__ = (2, 0, 0)
+__version__ = "3.0.0"  # Major version bump for weather integration
+__version_info__ = (3, 0, 0)
 __app_name__ = "Trainer"
 __app_display_name__ = "Trainer - Train Times with Weather Integration"
 __author__ = "Oliver Ernster"
@@ -24,7 +24,8 @@ __features__ = [
     "Dark/Light theme support",
     "Configurable refresh intervals",
     "Weather data for destination location",
-    "No API key required for weather data"
+    "No API key required for weather data",
+    "Astronomical information with a 7 day outlook"
 ]
 
 # Weather integration information

@@ -115,15 +115,15 @@ class WeatherItemWidget(WeatherDisplayComponent):
     
     def setup_ui(self) -> None:
         """Setup the weather item UI."""
-        self.setFixedSize(80, 120) if not self._is_daily else self.setFixedSize(100, 120)
+        self.setFixedSize(100, 180) if not self._is_daily else self.setFixedSize(120, 180)  # Much larger size for dramatically bigger icons
         # Note: WeatherItemWidget inherits from QWidget, not QFrame
         # Frame styling will be handled via CSS
         
-        # Main layout
+        # Main layout with adjusted margins to create visually equal spacing
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(4, 4, 4, 4)
+        layout.setContentsMargins(4, 4, 4, 10)  # Less top margin, more bottom margin for visual balance
         layout.setSpacing(2)
-        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        # Remove center alignment - let content flow naturally with adjusted margins
         
         # Time/Date label
         self._time_label = QLabel("--:--")
@@ -131,10 +131,10 @@ class WeatherItemWidget(WeatherDisplayComponent):
         self._time_label.setFont(QFont("Arial", 8))
         layout.addWidget(self._time_label)
         
-        # Weather icon
+        # Weather icon - dramatically larger size using stylesheet
         self._icon_label = QLabel("❓")
         self._icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._icon_label.setFont(QFont("Arial", 20))
+        self._icon_label.setStyleSheet("font-size: 48px; font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji';")
         layout.addWidget(self._icon_label)
         
         # Temperature
@@ -214,13 +214,14 @@ class WeatherItemWidget(WeatherDisplayComponent):
         hover_color = self._theme_colors.get('background_hover', '#404040')
         accent_color = self._theme_colors.get('primary_accent', '#4fc3f7')
         
-        # Apply styling
+        # Apply styling with no padding - spacing controlled by layout margins
         style = f"""
         WeatherItemWidget {{
             background-color: {bg_color};
             border: 1px solid {border_color};
-            border-radius: 4px;
+            border-radius: 12px;
             color: {text_color};
+            padding: 0px;
         }}
         WeatherItemWidget:hover {{
             background-color: {hover_color};
@@ -230,6 +231,8 @@ class WeatherItemWidget(WeatherDisplayComponent):
             color: {text_color};
             background: transparent;
             border: none;
+            margin: 0px;
+            padding: 0px;
         }}
         """
         self.setStyleSheet(style)
@@ -247,40 +250,33 @@ class WeatherItemWidget(WeatherDisplayComponent):
         super().enterEvent(event)
 
 
-class WeatherForecastWidget(QScrollArea):
+class WeatherForecastWidget(QWidget):
     """
-    Base class for weather forecast display widgets.
+    Simple weather forecast display widget with guaranteed rounded corners.
     
-    Provides horizontal scrolling for weather items.
+    Uses QWidget for clean, direct styling control.
     """
     
     def __init__(self, parent=None):
         """Initialize forecast widget."""
         super().__init__(parent)
         self._weather_items: List[WeatherItemWidget] = []
-        self._container_widget: Optional[QWidget] = None
-        self._container_layout: Optional[QHBoxLayout] = None
+        self._container_layout: QHBoxLayout
         self.setup_ui()
     
     def setup_ui(self) -> None:
         """Setup the forecast widget UI."""
-        self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
-        self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        self.setFixedHeight(140)
-        self.setWidgetResizable(True)
+        self.setFixedHeight(200)  # Much larger height for dramatically bigger weather icons
         
-        # Container widget for weather items
-        self._container_widget = QWidget()
-        self._container_layout = QHBoxLayout(self._container_widget)
-        self._container_layout.setContentsMargins(4, 4, 4, 4)
-        self._container_layout.setSpacing(4)
+        # Simple horizontal layout for weather items
+        self._container_layout = QHBoxLayout(self)
+        self._container_layout.setContentsMargins(8, 8, 8, 8)
+        self._container_layout.setSpacing(6)
         self._container_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        
-        self.setWidget(self._container_widget)
     
     def update_weather_forecast(
-        self, 
-        weather_data: List[WeatherData], 
+        self,
+        weather_data: List[WeatherData],
         is_daily: bool = False,
         config: Optional[WeatherConfig] = None
     ) -> None:
@@ -306,12 +302,10 @@ class WeatherForecastWidget(QScrollArea):
             item.weather_item_hovered.connect(self._on_weather_item_hovered)
             
             self._weather_items.append(item)
-            if self._container_layout:
-                self._container_layout.addWidget(item)
+            self._container_layout.addWidget(item)
         
         # Add stretch to push items to the left
-        if self._container_layout:
-            self._container_layout.addStretch()
+        self._container_layout.addStretch()
         
         logger.info(f"Updated weather forecast with {len(weather_data)} items")
     
@@ -322,42 +316,28 @@ class WeatherForecastWidget(QScrollArea):
         self._weather_items.clear()
         
         # Clear layout
-        if self._container_layout:
-            while self._container_layout.count():
-                child = self._container_layout.takeAt(0)
-                if child.widget():
-                    child.widget().deleteLater()
+        while self._container_layout.count():
+            child = self._container_layout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
     
     def apply_theme(self, theme_colors: Dict[str, str]) -> None:
-        """Apply theme to all weather items."""
+        """Apply theme to all weather items and frame."""
         for item in self._weather_items:
             item.apply_theme(theme_colors)
         
-        # Apply theme to scroll area
+        # Apply theme directly with !important to force rounded corners
         bg_color = theme_colors.get('background_primary', '#1a1a1a')
         border_color = theme_colors.get('border_primary', '#404040')
         
-        style = f"""
-        QScrollArea {{
-            background-color: {bg_color};
-            border: 1px solid {border_color};
-            border-radius: 4px;
-        }}
-        QScrollBar:horizontal {{
-            background-color: {bg_color};
-            height: 12px;
-            border-radius: 6px;
-        }}
-        QScrollBar::handle:horizontal {{
-            background-color: {border_color};
-            border-radius: 6px;
-            min-width: 20px;
-        }}
-        QScrollBar::handle:horizontal:hover {{
-            background-color: {theme_colors.get('primary_accent', '#4fc3f7')};
-        }}
-        """
-        self.setStyleSheet(style)
+        # Force rounded corners with !important
+        self.setStyleSheet(f"""
+            background-color: {bg_color} !important;
+            border: 1px solid {border_color} !important;
+            border-radius: 12px !important;
+            margin: 0px !important;
+            padding: 0px !important;
+        """)
     
     def _on_weather_item_clicked(self, weather_data: WeatherData) -> None:
         """Handle weather item click."""
@@ -439,10 +419,10 @@ class WeatherWidget(QWidget):
     
     def setup_ui(self) -> None:
         """Setup the weather widget UI."""
-        # Main layout
+        # Main layout with balanced padding and proper spacing
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(4)
+        layout.setContentsMargins(6, 6, 6, 6)  # Equal padding on all sides
+        layout.setSpacing(16)  # Proper spacing to separate sections and prevent text overlap
         
         # Daily forecast section
         self._daily_label = QLabel("Today's Weather (3-hourly)")
@@ -460,16 +440,11 @@ class WeatherWidget(QWidget):
         self._weekly_forecast_widget = DailyForecastWidget()
         layout.addWidget(self._weekly_forecast_widget)
         
-        # Status label for messages
-        self._status_label = QLabel("")
-        self._status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._status_label.setFont(QFont("Arial", 8))
-        self._status_label.hide()
-        layout.addWidget(self._status_label)
+        # Status label removed - no longer needed
         
-        # Set size policy
+        # Set size policy with reasonable height
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        self.setFixedHeight(320)  # Height for two forecast layers
+        self.setFixedHeight(440)  # Much larger height for dramatically bigger weather icons
     
     def update_config(self, config: WeatherConfig) -> None:
         """Update weather configuration."""
@@ -514,13 +489,24 @@ class WeatherWidget(QWidget):
         if self._weekly_label:
             self._weekly_label.setStyleSheet(label_style)
         
-        # Apply theme to main widget
+        # Apply theme to main widget WITHOUT borders - let children handle their own borders
         widget_style = f"""
         WeatherWidget {{
             background-color: {bg_color};
-            border: 1px solid {theme_colors.get('border_primary', '#404040')};
-            border-radius: 4px;
-            margin: 4px 0px;
+            border: none;
+            border-radius: 0px;
+            margin: 0px;
+            padding: 0px;
+        }}
+        WeatherWidget QWidget {{
+            border: none;
+            margin: 0px;
+            padding: 0px;
+        }}
+        WeatherWidget QFrame {{
+            border: none;
+            margin: 0px;
+            padding: 0px;
         }}
         """
         self.setStyleSheet(widget_style)
@@ -541,47 +527,31 @@ class WeatherWidget(QWidget):
                 weather_data.daily_forecast, self._config
             )
         
-        # Update status
-        self._show_status(f"Updated: {weather_data.last_updated.strftime('%H:%M')}", False)
+        # Status updates removed - no longer showing status messages
         
         logger.info("Weather widget updated with new forecast data")
     
     def on_weather_error(self, error: Exception) -> None:
         """Handle weather error."""
-        error_msg = f"Weather error: {str(error)[:50]}..."
-        self._show_status(error_msg, True)
+        # Status messages disabled - only log errors
         logger.error(f"Weather widget received error: {error}")
     
     def on_weather_loading(self, is_loading: bool) -> None:
         """Handle weather loading state change."""
         self._is_loading = is_loading
         
-        if is_loading:
-            self._show_status("Loading weather data...", False)
-        else:
-            # Clear loading message after a short delay
-            QTimer.singleShot(1000, self._clear_status)
+        # Loading status messages removed - no longer showing status
+        pass
     
     def _show_status(self, message: str, is_error: bool = False) -> None:
-        """Show status message."""
-        if self._status_label:
-            self._status_label.setText(message)
-            
-            # Style based on message type
-            if is_error:
-                self._status_label.setStyleSheet("color: #f44336;")  # Red
-            else:
-                self._status_label.setStyleSheet("color: #4caf50;")  # Green
-            
-            self._status_label.show()
-            
-            # Auto-hide after 5 seconds
-            self._status_timer.start(5000)
+        """Show status message - disabled."""
+        # Status messages disabled to eliminate unwanted widget below weather sections
+        pass
     
     def _clear_status(self) -> None:
-        """Clear status message."""
-        if self._status_label:
-            self._status_label.hide()
+        """Clear status message - disabled."""
+        # Status messages disabled
+        pass
     
     def get_current_forecast(self) -> Optional[WeatherForecastData]:
         """Get current weather forecast."""

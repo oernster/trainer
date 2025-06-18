@@ -14,8 +14,12 @@ from pathlib import Path
 from typing import Optional
 from pydantic import BaseModel, Field
 
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 from version import __version__, __app_display_name__
 from .weather_config import WeatherConfig, WeatherConfigFactory, WeatherConfigMigrator
+from .astronomy_config import AstronomyConfig
 
 logger = logging.getLogger(__name__)
 
@@ -58,19 +62,25 @@ class DisplayConfig(BaseModel):
 
 
 class ConfigData(BaseModel):
-    """Main configuration data model with weather integration."""
+    """Main configuration data model with weather and astronomy integration."""
 
     api: APIConfig
     stations: StationConfig
     refresh: RefreshConfig
     display: DisplayConfig
     weather: Optional[WeatherConfig] = None
+    astronomy: Optional[AstronomyConfig] = None
     
     def __init__(self, **data):
-        """Initialize ConfigData with optional weather config."""
+        """Initialize ConfigData with optional weather and astronomy config."""
         # If weather config is not provided, create default
         if 'weather' not in data or data['weather'] is None:
             data['weather'] = WeatherConfigFactory.create_waterloo_config()
+        
+        # If astronomy config is not provided, create default
+        if 'astronomy' not in data or data['astronomy'] is None:
+            data['astronomy'] = AstronomyConfig.create_default()
+        
         super().__init__(**data)
 
 
@@ -173,6 +183,7 @@ class ConfigManager:
                     refresh=RefreshConfig(),
                     display=DisplayConfig(),
                     weather=WeatherConfigFactory.create_waterloo_config(),
+                    astronomy=AstronomyConfig.create_default(),
                 )
 
                 with open(appdata_config_path, "w", encoding="utf-8") as f:
@@ -258,6 +269,7 @@ class ConfigManager:
             refresh=RefreshConfig(),
             display=DisplayConfig(),
             weather=WeatherConfigFactory.create_waterloo_config(),
+            astronomy=AstronomyConfig.create_default(),
         )
         self.save_config(default_config)
 

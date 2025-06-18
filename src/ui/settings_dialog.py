@@ -36,6 +36,7 @@ from ..api.api_manager import (
     AuthenticationException,
 )
 from ..managers.theme_manager import ThemeManager
+from ..managers.astronomy_config import AstronomyConfig
 
 
 class HorizontalSpinWidget(QWidget):
@@ -223,6 +224,11 @@ class SettingsDialog(QDialog):
             parent: Parent widget
         """
         super().__init__(parent)
+        
+        # Make dialog completely invisible during initialization
+        self.setVisible(False)
+        self.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen, True)
+        
         self.config_manager = config_manager
         self.config: Optional[ConfigData] = None
 
@@ -238,13 +244,25 @@ class SettingsDialog(QDialog):
 
         self.setup_ui()
         self.load_current_settings()
+        
+        # Apply theme styling
+        self.apply_theme_styling()
+        
+        # Don't show here - let exec() handle it when called
 
     def setup_ui(self):
         """Setup the user interface."""
         self.setWindowTitle("Settings - Trainer by Oliver Ernster")
         self.setModal(True)
-        self.setMinimumSize(500, 400)
-        self.resize(600, 500)
+        self.setMinimumSize(800, 550)
+        self.resize(850, 580)
+        
+        # Center the dialog on screen
+        from PySide6.QtGui import QGuiApplication
+        screen = QGuiApplication.primaryScreen().geometry()
+        x = (screen.width() - 850) // 2
+        y = (screen.height() - 580) // 2
+        self.move(x, y)
 
         # Main layout
         layout = QVBoxLayout(self)
@@ -255,6 +273,7 @@ class SettingsDialog(QDialog):
 
         # Setup tabs
         self.setup_api_tab()
+        self.setup_nasa_tab()
         self.setup_stations_tab()
         self.setup_display_tab()
         self.setup_refresh_tab()
@@ -262,8 +281,11 @@ class SettingsDialog(QDialog):
         # Button layout
         button_layout = QHBoxLayout()
 
-        self.test_button = QPushButton("Test API Connection")
+        self.test_button = QPushButton("Test Transport API")
         self.test_button.clicked.connect(self.test_api_connection)
+
+        self.test_nasa_button = QPushButton("Test NASA API")
+        self.test_nasa_button.clicked.connect(self.test_nasa_api_connection)
 
         self.reset_button = QPushButton("Reset to Defaults")
         self.reset_button.clicked.connect(self.reset_to_defaults)
@@ -276,6 +298,7 @@ class SettingsDialog(QDialog):
         self.save_button.setDefault(True)
 
         button_layout.addWidget(self.test_button)
+        button_layout.addWidget(self.test_nasa_button)
         button_layout.addWidget(self.reset_button)
         button_layout.addStretch()
         button_layout.addWidget(self.cancel_button)
@@ -298,7 +321,7 @@ class SettingsDialog(QDialog):
             "Sign up for a free account to get your App ID and App Key."
         )
         info_label.setWordWrap(True)
-        info_label.setStyleSheet("color: #666; font-style: italic;")
+        info_label.setStyleSheet("color: #cccccc; font-style: italic; background: transparent;")
         api_form.addRow(info_label)
 
         # App ID
@@ -312,8 +335,8 @@ class SettingsDialog(QDialog):
         self.app_key_edit.setEchoMode(QLineEdit.EchoMode.Password)
 
         self.show_key_button = QPushButton("Show Key")
-        self.show_key_button.setMinimumWidth(100)
-        self.show_key_button.setMaximumWidth(100)
+        self.show_key_button.setMinimumWidth(120)
+        self.show_key_button.setMaximumWidth(120)
         self.show_key_button.clicked.connect(self.toggle_key_visibility)
 
         key_layout = QHBoxLayout()
@@ -342,9 +365,112 @@ class SettingsDialog(QDialog):
 
         layout.addWidget(api_group)
         layout.addWidget(settings_group)
-        layout.addStretch()
 
-        self.tab_widget.addTab(api_widget, "API")
+        self.tab_widget.addTab(api_widget, "Transport API")
+
+    def setup_nasa_tab(self):
+        """Setup NASA API configuration tab."""
+        nasa_widget = QWidget()
+        main_layout = QHBoxLayout(nasa_widget)  # Use horizontal layout for better space usage
+        
+        # Left column
+        left_column = QVBoxLayout()
+        
+        # NASA API Credentials Group
+        nasa_group = QGroupBox("NASA API Configuration")
+        nasa_form = QFormLayout(nasa_group)
+
+        # Compact info label
+        info_label = QLabel("Get your NASA API key from https://api.nasa.gov/")
+        info_label.setStyleSheet("color: #cccccc; font-style: italic; background: transparent;")
+        nasa_form.addRow(info_label)
+
+        # NASA API Key
+        self.nasa_api_key_edit = QLineEdit()
+        self.nasa_api_key_edit.setPlaceholderText("Enter your NASA API key")
+        self.nasa_api_key_edit.setEchoMode(QLineEdit.EchoMode.Password)
+
+        self.show_nasa_key_button = QPushButton("Show")
+        self.show_nasa_key_button.setFixedWidth(120)
+        self.show_nasa_key_button.clicked.connect(self.toggle_nasa_key_visibility)
+
+        nasa_key_layout = QHBoxLayout()
+        nasa_key_layout.addWidget(self.nasa_api_key_edit)
+        nasa_key_layout.addWidget(self.show_nasa_key_button)
+        nasa_form.addRow("API Key:", nasa_key_layout)
+
+        # Astronomy Settings Group
+        astronomy_group = QGroupBox("Location & Settings")
+        astronomy_form = QFormLayout(astronomy_group)
+
+        # Enable astronomy
+        self.astronomy_enabled_check = QCheckBox("Enable astronomy integration")
+        astronomy_form.addRow("", self.astronomy_enabled_check)
+
+        # Location settings in compact form
+        self.astronomy_location_edit = QLineEdit()
+        self.astronomy_location_edit.setPlaceholderText("London")
+        self.astronomy_location_edit.setText("London")
+        astronomy_form.addRow("Location:", self.astronomy_location_edit)
+
+        # Coordinates in one row
+        coords_layout = QHBoxLayout()
+        self.astronomy_latitude_edit = QLineEdit()
+        self.astronomy_latitude_edit.setPlaceholderText("51.5074")
+        self.astronomy_latitude_edit.setText("51.5074")
+        self.astronomy_latitude_edit.setFixedWidth(100)
+        
+        self.astronomy_longitude_edit = QLineEdit()
+        self.astronomy_longitude_edit.setPlaceholderText("-0.1278")
+        self.astronomy_longitude_edit.setText("-0.1278")
+        self.astronomy_longitude_edit.setFixedWidth(100)
+        
+        coords_layout.addWidget(QLabel("Lat:"))
+        coords_layout.addWidget(self.astronomy_latitude_edit)
+        coords_layout.addWidget(QLabel("Lng:"))
+        coords_layout.addWidget(self.astronomy_longitude_edit)
+        coords_layout.addStretch()
+        astronomy_form.addRow("Coordinates:", coords_layout)
+
+        # Update interval
+        self.astronomy_update_interval_spin = HorizontalSpinWidget(
+            60, 1440, 360, 60, " min", theme_manager=self.theme_manager
+        )
+        astronomy_form.addRow("Update Interval:", self.astronomy_update_interval_spin)
+
+        left_column.addWidget(nasa_group)
+        left_column.addWidget(astronomy_group)
+        
+        # Right column - NASA Services
+        right_column = QVBoxLayout()
+        
+        services_group = QGroupBox("NASA Services")
+        services_layout = QVBoxLayout(services_group)
+
+        self.apod_service_check = QCheckBox("Astronomy Picture of the Day")
+        self.apod_service_check.setChecked(True)
+        services_layout.addWidget(self.apod_service_check)
+
+        self.neows_service_check = QCheckBox("Near Earth Objects")
+        self.neows_service_check.setChecked(True)
+        services_layout.addWidget(self.neows_service_check)
+
+        self.iss_service_check = QCheckBox("International Space Station")
+        self.iss_service_check.setChecked(True)
+        services_layout.addWidget(self.iss_service_check)
+
+        self.epic_service_check = QCheckBox("Earth Imaging Camera")
+        self.epic_service_check.setChecked(False)
+        services_layout.addWidget(self.epic_service_check)
+
+        right_column.addWidget(services_group)
+        right_column.addStretch()
+        
+        # Add columns to main layout
+        main_layout.addLayout(left_column)
+        main_layout.addLayout(right_column)
+
+        self.tab_widget.addTab(nasa_widget, "NASA API")
 
     def setup_stations_tab(self):
         """Setup station configuration tab."""
@@ -375,7 +501,6 @@ class SettingsDialog(QDialog):
         form.addRow("To Name:", self.to_name_edit)
 
         layout.addWidget(stations_group)
-        layout.addStretch()
 
         self.tab_widget.addTab(stations_widget, "Stations")
 
@@ -409,7 +534,6 @@ class SettingsDialog(QDialog):
         form.addRow("", self.show_cancelled_check)
 
         layout.addWidget(display_group)
-        layout.addStretch()
 
         self.tab_widget.addTab(display_widget, "Display")
 
@@ -436,7 +560,6 @@ class SettingsDialog(QDialog):
         form.addRow("", self.manual_refresh_check)
 
         layout.addWidget(refresh_group)
-        layout.addStretch()
 
         self.tab_widget.addTab(refresh_widget, "Refresh")
 
@@ -471,6 +594,26 @@ class SettingsDialog(QDialog):
         self.refresh_interval_spin.set_value(self.config.refresh.interval_minutes)
         self.manual_refresh_check.setChecked(self.config.refresh.manual_enabled)
 
+        # NASA/Astronomy settings (load defaults if not present)
+        if self.config.astronomy:
+            astronomy_config = self.config.astronomy
+        else:
+            # Create default astronomy config if not present
+            astronomy_config = AstronomyConfig.create_default()
+
+        self.nasa_api_key_edit.setText(astronomy_config.nasa_api_key)
+        self.astronomy_enabled_check.setChecked(astronomy_config.enabled)
+        self.astronomy_location_edit.setText(astronomy_config.location_name)
+        self.astronomy_latitude_edit.setText(str(astronomy_config.location_latitude))
+        self.astronomy_longitude_edit.setText(str(astronomy_config.location_longitude))
+        self.astronomy_update_interval_spin.set_value(astronomy_config.update_interval_minutes)
+        
+        # NASA services
+        self.apod_service_check.setChecked(astronomy_config.services.apod)
+        self.neows_service_check.setChecked(astronomy_config.services.neows)
+        self.iss_service_check.setChecked(astronomy_config.services.iss)
+        self.epic_service_check.setChecked(astronomy_config.services.epic)
+
     def toggle_key_visibility(self):
         """Toggle API key visibility."""
         if self.app_key_edit.echoMode() == QLineEdit.EchoMode.Password:
@@ -479,6 +622,15 @@ class SettingsDialog(QDialog):
         else:
             self.app_key_edit.setEchoMode(QLineEdit.EchoMode.Password)
             self.show_key_button.setText("Show Key")
+
+    def toggle_nasa_key_visibility(self):
+        """Toggle NASA API key visibility."""
+        if self.nasa_api_key_edit.echoMode() == QLineEdit.EchoMode.Password:
+            self.nasa_api_key_edit.setEchoMode(QLineEdit.EchoMode.Normal)
+            self.show_nasa_key_button.setText("Hide Key")
+        else:
+            self.nasa_api_key_edit.setEchoMode(QLineEdit.EchoMode.Password)
+            self.show_nasa_key_button.setText("Show Key")
 
     def test_api_connection(self):
         """Test API connection with current credentials."""
@@ -560,6 +712,52 @@ class SettingsDialog(QDialog):
                 self, "API Test Failed", f"API connection test failed:\n\n{message}"
             )
 
+    def test_nasa_api_connection(self):
+        """Test NASA API connection with current credentials."""
+        nasa_api_key = self.nasa_api_key_edit.text().strip()
+
+        if not nasa_api_key:
+            QMessageBox.warning(
+                self,
+                "Missing NASA API Key",
+                "Please enter your NASA API key before testing.",
+            )
+            return
+
+        # Start the NASA API test in a separate thread
+        self.nasa_test_thread = NASATestThread(nasa_api_key)
+        self.nasa_test_thread.test_completed.connect(self.on_nasa_test_completed)
+        self.nasa_test_thread.start()
+
+        # Show progress dialog
+        self.nasa_progress_dialog = QProgressDialog(
+            "Testing NASA API connection...", "Cancel", 0, 0, self
+        )
+        self.nasa_progress_dialog.setWindowModality(Qt.WindowModality.WindowModal)
+        self.nasa_progress_dialog.setMinimumDuration(0)
+        self.nasa_progress_dialog.canceled.connect(self.cancel_nasa_test)
+        self.nasa_progress_dialog.show()
+
+    def cancel_nasa_test(self):
+        """Cancel the NASA API test."""
+        if hasattr(self, "nasa_test_thread") and self.nasa_test_thread.isRunning():
+            self.nasa_test_thread.terminate()
+            self.nasa_test_thread.wait()
+
+    def on_nasa_test_completed(self, success: bool, message: str):
+        """Handle NASA API test completion."""
+        if hasattr(self, "nasa_progress_dialog"):
+            self.nasa_progress_dialog.close()
+
+        if success:
+            QMessageBox.information(
+                self, "NASA API Test Successful", f"NASA API connection test passed!\n\n{message}"
+            )
+        else:
+            QMessageBox.critical(
+                self, "NASA API Test Failed", f"NASA API connection test failed:\n\n{message}"
+            )
+
     def reset_to_defaults(self):
         """Reset all settings to defaults."""
         reply = QMessageBox.question(
@@ -612,6 +810,46 @@ class SettingsDialog(QDialog):
             self.config.refresh.interval_minutes = self.refresh_interval_spin.value()
             self.config.refresh.manual_enabled = self.manual_refresh_check.isChecked()
 
+            # NASA/Astronomy settings
+            if not self.config.astronomy:
+                self.config.astronomy = AstronomyConfig.create_default()
+            
+            # Update astronomy configuration
+            try:
+                latitude = float(self.astronomy_latitude_edit.text())
+                longitude = float(self.astronomy_longitude_edit.text())
+            except ValueError:
+                QMessageBox.warning(
+                    self,
+                    "Invalid Coordinates",
+                    "Please enter valid latitude and longitude values."
+                )
+                return
+
+            # Create updated astronomy config
+            from ..managers.astronomy_config import AstronomyServiceConfig
+            services = AstronomyServiceConfig(
+                apod=self.apod_service_check.isChecked(),
+                neows=self.neows_service_check.isChecked(),
+                iss=self.iss_service_check.isChecked(),
+                epic=self.epic_service_check.isChecked()
+            )
+
+            self.config.astronomy = AstronomyConfig(
+                enabled=self.astronomy_enabled_check.isChecked(),
+                nasa_api_key=self.nasa_api_key_edit.text().strip(),
+                location_name=self.astronomy_location_edit.text().strip(),
+                location_latitude=latitude,
+                location_longitude=longitude,
+                update_interval_minutes=self.astronomy_update_interval_spin.value(),
+                timeout_seconds=self.config.astronomy.timeout_seconds,
+                max_retries=self.config.astronomy.max_retries,
+                retry_delay_seconds=self.config.astronomy.retry_delay_seconds,
+                services=services,
+                display=self.config.astronomy.display,
+                cache=self.config.astronomy.cache
+            )
+
             # Save configuration
             self.config_manager.save_config(self.config)
 
@@ -629,6 +867,114 @@ class SettingsDialog(QDialog):
             QMessageBox.critical(
                 self, "Unexpected Error", f"An unexpected error occurred: {e}"
             )
+
+    def apply_theme_styling(self):
+        """Apply theme styling to the settings dialog."""
+        if not self.theme_manager:
+            return
+            
+        # Get current theme
+        current_theme = self.theme_manager.current_theme
+        
+        # Apply dark theme styling to the dialog
+        if current_theme == 'dark':
+            dialog_style = """
+            QDialog {
+                background-color: #1a1a1a;
+                color: #ffffff;
+            }
+            QTabWidget::pane {
+                border: 1px solid #404040;
+                background-color: #1a1a1a;
+            }
+            QTabBar::tab {
+                background-color: #2d2d2d;
+                color: #ffffff;
+                padding: 8px 16px;
+                border: 1px solid #404040;
+                border-bottom: none;
+            }
+            QTabBar::tab:selected {
+                background-color: #4fc3f7;
+                color: #ffffff;
+            }
+            QGroupBox {
+                color: #ffffff;
+                border: 1px solid #404040;
+                border-radius: 4px;
+                margin-top: 8px;
+                padding-top: 8px;
+            }
+            QGroupBox::title {
+                color: #4fc3f7;
+                subcontrol-origin: margin;
+                left: 8px;
+                padding: 0 4px 0 4px;
+            }
+            QLineEdit {
+                background-color: #2d2d2d;
+                border: 1px solid #404040;
+                border-radius: 4px;
+                padding: 4px;
+                color: #ffffff;
+            }
+            QLineEdit:focus {
+                border-color: #4fc3f7;
+            }
+            QCheckBox {
+                color: #ffffff;
+            }
+            QCheckBox::indicator:checked {
+                background-color: #4fc3f7;
+                border: 1px solid #4fc3f7;
+            }
+            QComboBox {
+                background-color: #2d2d2d;
+                border: 1px solid #404040;
+                border-radius: 4px;
+                padding: 4px;
+                color: #ffffff;
+            }
+            QComboBox:focus {
+                border-color: #4fc3f7;
+            }
+            QPushButton {
+                background-color: #2d2d2d;
+                border: 1px solid #404040;
+                border-radius: 4px;
+                padding: 6px 12px;
+                color: #ffffff;
+            }
+            QPushButton:hover {
+                background-color: #404040;
+                border-color: #4fc3f7;
+            }
+            QPushButton:pressed {
+                background-color: #4fc3f7;
+            }
+            QLabel {
+                color: #ffffff;
+            }
+            """
+        else:
+            # Light theme styling
+            dialog_style = """
+            QDialog {
+                background-color: #ffffff;
+                color: #000000;
+            }
+            """
+        
+        self.setStyleSheet(dialog_style)
+
+    def exec(self):
+        """Override exec to show dialog only when fully ready."""
+        # Remove the invisible attributes and show the dialog now that everything is ready
+        self.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen, False)
+        self.setVisible(True)
+        self.show()
+        # Call parent exec
+        return super().exec()
 
 
 class APITestThread(QThread):
@@ -692,3 +1038,94 @@ class APITestThread(QThread):
             return False, f"API error: {str(e)}"
         except Exception as e:
             return False, f"Unexpected error: {str(e)}"
+
+
+class NASATestThread(QThread):
+    """Thread for testing NASA API connection without blocking the UI."""
+
+    test_completed = Signal(bool, str)  # success, message
+
+    def __init__(self, api_key: str):
+        super().__init__()
+        self.api_key = api_key
+
+    def run(self):
+        """Run the NASA API test in a separate thread."""
+        loop = None
+        try:
+            # Create event loop for this thread
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+
+            # Run the async NASA API test
+            success, message = loop.run_until_complete(self._test_nasa_api())
+
+            self.test_completed.emit(success, message)
+
+        except Exception as e:
+            self.test_completed.emit(False, f"Test failed with error: {str(e)}")
+        finally:
+            # Always clean up the loop
+            if loop is not None:
+                loop.close()
+
+    async def _test_nasa_api(self) -> tuple[bool, str]:
+        """Perform the actual NASA API test."""
+        import aiohttp
+        
+        try:
+            # Test NASA APOD API endpoint
+            url = f"https://api.nasa.gov/planetary/apod?api_key={self.api_key}"
+            
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        title = data.get('title', 'Unknown')
+                        date = data.get('date', 'Unknown')
+                        return (
+                            True,
+                            f"Successfully connected to NASA API!\n\n"
+                            f"Today's Astronomy Picture: {title}\n"
+                            f"Date: {date}\n\n"
+                            f"API Key: {self.api_key[:8]}{'*' * (len(self.api_key) - 8)}"
+                        )
+                    elif response.status == 403:
+                        return (
+                            False,
+                            f"Authentication failed (HTTP 403).\n\n"
+                            f"Your NASA API key may be invalid or has exceeded its rate limit.\n"
+                            f"Please verify your API key at https://api.nasa.gov/\n\n"
+                            f"Key: {self.api_key[:8]}{'*' * (len(self.api_key) - 8)}"
+                        )
+                    elif response.status == 429:
+                        return (
+                            False,
+                            f"Rate limit exceeded (HTTP 429).\n\n"
+                            f"Your NASA API key has exceeded its hourly rate limit.\n"
+                            f"Please wait and try again later.\n\n"
+                            f"Key: {self.api_key[:8]}{'*' * (len(self.api_key) - 8)}"
+                        )
+                    else:
+                        error_text = await response.text()
+                        return (
+                            False,
+                            f"NASA API returned HTTP {response.status}.\n\n"
+                            f"Response: {error_text[:200]}...\n\n"
+                            f"Please check your API key and try again."
+                        )
+
+        except aiohttp.ClientError as e:
+            return (
+                False,
+                f"Network error connecting to NASA API: {str(e)}\n\n"
+                f"Please check your internet connection and try again."
+            )
+        except asyncio.TimeoutError:
+            return (
+                False,
+                f"Connection to NASA API timed out.\n\n"
+                f"Please check your internet connection and try again."
+            )
+        except Exception as e:
+            return False, f"Unexpected error testing NASA API: {str(e)}"

@@ -771,11 +771,13 @@ class TestTrainManager:
         """Test real threading execution without mocking threading components."""
         # Use a simple flag to track execution
         execution_tracker = {"called": False, "exception": None}
+        execution_event = threading.Event()
 
         def mock_fetch_async():
             execution_tracker["called"] = True
             # Simulate some work without async/await to avoid coroutine warnings
             time.sleep(0.01)
+            execution_event.set()  # Signal that execution is complete
             return None
 
         # Replace the actual method with our mock
@@ -786,10 +788,11 @@ class TestTrainManager:
             # Call _start_async_fetch
             train_manager._start_async_fetch()
 
-            # Wait for thread to complete
-            time.sleep(0.3)
+            # Wait for thread to complete with timeout
+            execution_completed = execution_event.wait(timeout=2.0)
 
             # Verify execution occurred
+            assert execution_completed, "Thread execution did not complete within timeout"
             assert execution_tracker["called"] is True
 
         finally:

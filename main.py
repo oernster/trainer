@@ -14,6 +14,7 @@ from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import QTimer, QSize
 from PySide6.QtGui import QIcon
 from src.ui.main_window import MainWindow
+from src.ui.splash_screen import TrainerSplashScreen
 from src.managers.train_manager import TrainManager
 from src.managers.config_manager import ConfigManager, ConfigurationError
 from version import (
@@ -146,8 +147,17 @@ def main():
     # Setup application icon (must be done early for Windows taskbar)
     setup_application_icon(app)
 
+    # Create and show splash screen first
+    splash = TrainerSplashScreen()
+    splash.show()
+    splash.show_message("Initializing application...")
+    app.processEvents()  # Process events to show splash screen
+    
     try:
         # Initialize configuration manager (will use AppData on Windows)
+        splash.show_message("Loading configuration...")
+        app.processEvents()
+        
         config_manager = ConfigManager()
 
         # Install default config to AppData if needed
@@ -158,17 +168,28 @@ def main():
         config = config_manager.load_config()
         logger.info(f"Configuration loaded from: {config_manager.config_path}")
 
-        # Create main window with shared config manager
+        # Create main window with shared config manager (but don't show it yet)
+        splash.show_message("Creating main window...")
+        app.processEvents()
+        
         window = MainWindow(config_manager)
 
         # Check if API credentials are configured
+        splash.show_message("Checking API configuration...")
+        app.processEvents()
+        
         if not config_manager.validate_api_credentials():
             logger.info("API credentials not configured - showing settings dialog")
 
             # Import here to avoid circular imports
             from src.ui.settings_dialog import SettingsDialog
 
-            # Show settings dialog on first launch
+            # Close splash before showing settings dialog
+            splash.show_message("Opening settings dialog...")
+            app.processEvents()
+            splash.close()
+
+            # Create settings dialog for first launch (will show itself when ready)
             settings_dialog = SettingsDialog(config_manager, window)
             settings_dialog.setWindowTitle("Initial Setup - API Configuration Required")
 
@@ -179,7 +200,7 @@ def main():
                 "You can get free API credentials from https://transportapi.com/"
             )
 
-            # Show the dialog
+            # Execute the dialog (it will show itself when ready)
             result = settings_dialog.exec()
 
             if result == settings_dialog.DialogCode.Accepted:
@@ -193,15 +214,25 @@ def main():
                     "API credentials are required for the application to function properly.\n"
                     "You can configure them later via Settings → Options.",
                 )
+        else:
+            # API is configured, continue with splash screen
+            splash.show_message("Initializing train manager...")
+            app.processEvents()
 
         # Create train manager with updated config
         train_manager = TrainManager(config)
 
         # Connect signals between components
+        splash.show_message("Connecting components...")
+        app.processEvents()
+        
         connect_signals(window, train_manager)
 
         # Start auto-refresh only if enabled in config and API is configured
         if config_manager.validate_api_credentials():
+            splash.show_message("Starting auto-refresh...")
+            app.processEvents()
+            
             train_manager.start_auto_refresh()
 
             # Do initial data fetch
@@ -219,8 +250,15 @@ def main():
             ),
         )
 
-        # Show window
-        window.show()
+        # Show main window and close splash screen
+        splash.show_message("Ready!")
+        app.processEvents()
+        
+        # Small delay to show "Ready!" message
+        QTimer.singleShot(500, lambda: [
+            window.show(),
+            splash.close()
+        ])
 
         logger.info("Application initialized successfully")
 

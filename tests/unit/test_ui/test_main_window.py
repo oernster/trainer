@@ -199,7 +199,7 @@ class TestMainWindow:
         # Check window properties
         assert "Trainer" in window.windowTitle()
         assert window.minimumSize().width() == 800
-        assert window.minimumSize().height() == 900
+        assert window.minimumSize().height() == 1100
 
         # Check UI components exist
         assert window.train_list_widget is not None
@@ -488,6 +488,13 @@ class TestMainWindow:
         mock_weather_config.enabled = False  # Disable weather to avoid refresh issues
         new_config.weather = mock_weather_config
 
+        # Mock astronomy config with proper structure for setVisible() call
+        mock_astronomy_config = Mock()
+        mock_astronomy_config.enabled = True
+        mock_astronomy_config.display = Mock()
+        mock_astronomy_config.display.show_in_forecast = True
+        new_config.astronomy = mock_astronomy_config
+
         with patch.object(
             window.config_manager, "load_config", return_value=new_config
         ):
@@ -648,12 +655,12 @@ class TestMainWindow:
         menubar = window.menuBar()
         assert menubar is not None
 
-        # Check menus exist
+        # Check menus exist (menu items have & prefix for keyboard shortcuts)
         menus = [action.text() for action in menubar.actions()]
-        assert "File" in menus
-        assert "Settings" in menus
-        assert "View" in menus
-        assert "Help" in menus
+        assert "&File" in menus
+        assert "&Settings" in menus
+        assert "&View" in menus
+        assert "&Help" in menus
 
         window.close()
 

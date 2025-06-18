@@ -160,15 +160,28 @@ class AioHttpClient(HTTPClient):
     def close_sync(self) -> None:
         """Close HTTP client synchronously (for shutdown)."""
         if self._session and not self._session.closed:
-            # Mark session as closed to prevent further use
             try:
-                # Detach the session to prevent cleanup warnings
-                session = self._session
+                # Create a new event loop to properly close the session
+                import asyncio
+                try:
+                    # Try to get the current event loop
+                    loop = asyncio.get_event_loop()
+                    if loop.is_running():
+                        # If loop is running, schedule the close for later
+                        loop.create_task(self._session.close())
+                    else:
+                        # If loop is not running, run the close operation
+                        loop.run_until_complete(self._session.close())
+                except RuntimeError:
+                    # No event loop available, create a new one
+                    asyncio.run(self._session.close())
+                
                 self._session = None
-                # The session will be cleaned up by the garbage collector
-                logger.info("HTTP client session detached for cleanup")
+                logger.info("HTTP client session closed properly")
             except Exception as e:
-                logger.warning(f"Error detaching session: {e}")
+                logger.warning(f"Error closing session: {e}")
+                # Fallback: just detach the session
+                self._session = None
 
 
 class OpenMeteoWeatherSource(WeatherDataSource):
