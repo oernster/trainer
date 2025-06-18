@@ -18,6 +18,7 @@ try:
     from PySide6.QtWidgets import QApplication
     from PySide6.QtCore import Qt
     from PySide6.QtGui import QPixmap
+
     HAS_QT = True
 except ImportError:
     HAS_QT = False
@@ -54,33 +55,35 @@ class TestTrainerSplashScreenSimple:
 
     def test_init_basic(self, qapp):
         """Test basic initialization of splash screen."""
-        with patch('src.ui.splash_screen.logger') as mock_logger:
+        with patch("src.ui.splash_screen.logger") as mock_logger:
             splash = TrainerSplashScreen()
-            
+
             # Check basic properties
             assert splash is not None
             assert splash.size().width() == 400
             assert splash.size().height() == 300
-            
+
             # Check logger was called
             mock_logger.info.assert_called_with("Splash screen initialized")
-            
+
             splash.close()
 
     def test_create_icon_widget_no_icons(self, qapp):
         """Test icon widget creation when no icons exist."""
-        with patch('src.ui.splash_screen.Path') as mock_path:
+        with patch("src.ui.splash_screen.Path") as mock_path:
             # Mock Path to return non-existent files
             mock_path_obj = Mock()
             mock_path_obj.exists.return_value = False
             mock_path.return_value = mock_path_obj
-            
-            with patch('src.ui.splash_screen.logger') as mock_logger:
+
+            with patch("src.ui.splash_screen.logger") as mock_logger:
                 splash = TrainerSplashScreen()
-                
+
                 # Should warn about no icon found
-                mock_logger.warning.assert_any_call("No train icon found for splash screen")
-                
+                mock_logger.warning.assert_any_call(
+                    "No train icon found for splash screen"
+                )
+
                 splash.close()
 
     def test_create_icon_widget_svg_exists(self, qapp, temp_assets_dir):
@@ -88,56 +91,59 @@ class TestTrainerSplashScreenSimple:
         # Create dummy SVG file
         svg_file = temp_assets_dir / "train_icon.svg"
         svg_file.write_text("<svg><rect width='100' height='100'/></svg>")
-        
-        with patch('src.ui.splash_screen.Path') as mock_path:
+
+        with patch("src.ui.splash_screen.Path") as mock_path:
+
             def path_side_effect(path_str):
                 if path_str == "assets/train_icon.svg":
                     return svg_file
                 return Path(path_str)
-            
+
             mock_path.side_effect = path_side_effect
-            
-            with patch('src.ui.splash_screen.logger') as mock_logger:
+
+            with patch("src.ui.splash_screen.logger") as mock_logger:
                 splash = TrainerSplashScreen()
-                
+
                 # Check that SVG widget was created and logger called
                 mock_logger.info.assert_any_call("Splash screen using SVG icon")
-                
+
                 splash.close()
 
     def test_show_message(self, qapp):
         """Test show_message method."""
         splash = TrainerSplashScreen()
-        
-        with patch('src.ui.splash_screen.logger') as mock_logger:
-            with patch.object(splash, 'repaint') as mock_repaint:
+
+        with patch("src.ui.splash_screen.logger") as mock_logger:
+            with patch.object(splash, "repaint") as mock_repaint:
                 splash.show_message("Test message")
-                
+
                 # Check message was set and repaint called
                 assert splash.loading_label.text() == "Test message"
                 mock_repaint.assert_called_once()
-                mock_logger.debug.assert_called_with("Splash screen message: Test message")
-        
+                mock_logger.debug.assert_called_with(
+                    "Splash screen message: Test message"
+                )
+
         splash.close()
 
     def test_close_splash(self, qapp):
         """Test close_splash method."""
         splash = TrainerSplashScreen()
-        
-        with patch('src.ui.splash_screen.logger') as mock_logger:
-            with patch.object(splash, 'close') as mock_close:
+
+        with patch("src.ui.splash_screen.logger") as mock_logger:
+            with patch.object(splash, "close") as mock_close:
                 splash.close_splash()
-                
+
                 # Check logger and close were called
                 mock_logger.info.assert_called_with("Closing splash screen")
                 mock_close.assert_called_once()
-        
+
         splash.close()
 
     def test_apply_styling(self, qapp):
         """Test that styling is applied correctly."""
         splash = TrainerSplashScreen()
-        
+
         # Check that main widget has stylesheet applied
         stylesheet = splash.main_widget.styleSheet()
         assert stylesheet != ""
@@ -145,62 +151,63 @@ class TestTrainerSplashScreenSimple:
         assert "#ffffff" in stylesheet  # Text color
         assert "#4fc3f7" in stylesheet  # Border color
         assert "border-radius: 8px" in stylesheet
-        
+
         splash.close()
 
     def test_window_properties(self, qapp):
         """Test window properties are set correctly."""
         splash = TrainerSplashScreen()
-        
+
         # Check window flags
         flags = splash.windowFlags()
         assert Qt.WindowType.SplashScreen in flags
         assert Qt.WindowType.WindowStaysOnTopHint in flags
         assert Qt.WindowType.FramelessWindowHint in flags
-        
+
         splash.close()
 
     def test_pixmap_initialization(self, qapp):
         """Test that the base pixmap is properly initialized."""
         splash = TrainerSplashScreen()
-        
+
         # Check that splash screen has a pixmap
         pixmap = splash.pixmap()
         assert not pixmap.isNull()
         assert pixmap.width() == 400
         assert pixmap.height() == 300
-        
+
         splash.close()
 
     def test_ui_components_exist(self, qapp):
         """Test that all UI components are properly set up."""
         splash = TrainerSplashScreen()
-        
+
         # Check main widget exists and has correct size
-        assert hasattr(splash, 'main_widget')
+        assert hasattr(splash, "main_widget")
         assert splash.main_widget.size().width() == 400
         assert splash.main_widget.size().height() == 300
-        
+
         # Check loading label exists
-        assert hasattr(splash, 'loading_label')
+        assert hasattr(splash, "loading_label")
         assert splash.loading_label.text() == "Loading..."
-        
+
         splash.close()
 
     def test_create_icon_widget_method_directly(self, qapp):
         """Test create_icon_widget method directly."""
         splash = TrainerSplashScreen()
-        
+
         # Test when no icons exist
-        with patch('src.ui.splash_screen.Path') as mock_path:
+        with patch("src.ui.splash_screen.Path") as mock_path:
+
             def path_side_effect(path_str):
                 mock_path_obj = Mock()
                 mock_path_obj.exists.return_value = False
                 return mock_path_obj
-            
+
             mock_path.side_effect = path_side_effect
-            
+
             result = splash.create_icon_widget()
             assert result is None
-        
+
         splash.close()

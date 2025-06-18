@@ -792,7 +792,9 @@ class TestTrainManager:
             execution_completed = execution_event.wait(timeout=2.0)
 
             # Verify execution occurred
-            assert execution_completed, "Thread execution did not complete within timeout"
+            assert (
+                execution_completed
+            ), "Thread execution did not complete within timeout"
             assert execution_tracker["called"] is True
 
         finally:

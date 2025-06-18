@@ -482,7 +482,7 @@ class TestMainWindow:
         # Mock the config manager to return a new config
         new_config = Mock()
         new_config.display.theme = "light"
-        
+
         # Mock weather config to avoid weather manager issues
         mock_weather_config = Mock()
         mock_weather_config.enabled = False  # Disable weather to avoid refresh issues
@@ -544,7 +544,10 @@ class TestMainWindow:
             assert "Trainer" in call_args
             # Use regex to match any version format (e.g., "Version 1.0.0", "Version 2.0.0", etc.)
             import re
-            assert re.search(r"Version \d+\.\d+\.\d+", call_args), f"Version pattern not found in: {call_args}"
+
+            assert re.search(
+                r"Version \d+\.\d+\.\d+", call_args
+            ), f"Version pattern not found in: {call_args}"
             assert "Oliver Ernster" in call_args
             assert "Dark/Light theme support" in call_args
 

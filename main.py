@@ -152,12 +152,12 @@ def main():
     splash.show()
     splash.show_message("Initializing application...")
     app.processEvents()  # Process events to show splash screen
-    
+
     try:
         # Initialize configuration manager (will use AppData on Windows)
         splash.show_message("Loading configuration...")
         app.processEvents()
-        
+
         config_manager = ConfigManager()
 
         # Install default config to AppData if needed
@@ -171,13 +171,13 @@ def main():
         # Create main window with shared config manager (but don't show it yet)
         splash.show_message("Creating main window...")
         app.processEvents()
-        
+
         window = MainWindow(config_manager)
 
         # Check if API credentials are configured
         splash.show_message("Checking API configuration...")
         app.processEvents()
-        
+
         if not config_manager.validate_api_credentials():
             logger.info("API credentials not configured - showing settings dialog")
 
@@ -225,14 +225,14 @@ def main():
         # Connect signals between components
         splash.show_message("Connecting components...")
         app.processEvents()
-        
+
         connect_signals(window, train_manager)
 
         # Start auto-refresh only if enabled in config and API is configured
         if config_manager.validate_api_credentials():
             splash.show_message("Starting auto-refresh...")
             app.processEvents()
-            
+
             train_manager.start_auto_refresh()
 
             # Do initial data fetch
@@ -253,12 +253,9 @@ def main():
         # Show main window and close splash screen
         splash.show_message("Ready!")
         app.processEvents()
-        
+
         # Small delay to show "Ready!" message
-        QTimer.singleShot(500, lambda: [
-            window.show(),
-            splash.close()
-        ])
+        QTimer.singleShot(500, lambda: [window.show(), splash.close()])
 
         logger.info("Application initialized successfully")
 

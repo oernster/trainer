@@ -378,7 +378,9 @@ class TestSettingsDialog:
 
         # Check tab widget exists
         assert dialog.tab_widget is not None
-        assert dialog.tab_widget.count() == 5  # Transport API, NASA API, Stations, Display, Refresh
+        assert (
+            dialog.tab_widget.count() == 5
+        )  # Transport API, NASA API, Stations, Display, Refresh
 
         dialog.close()
 
@@ -1375,47 +1377,49 @@ class TestNASATestThread:
         """Test NASATestThread initialization."""
         if not HAS_QT:
             pytest.skip("PySide6 not available")
-        
+
         from src.ui.settings_dialog import NASATestThread
+
         thread = NASATestThread("test_api_key")
-        
+
         assert thread.api_key == "test_api_key"
         assert isinstance(thread, QThread)
 
-    @patch('aiohttp.ClientSession')
+    @patch("aiohttp.ClientSession")
     def test_run_success(self, mock_session, qapp):
         """Test successful NASA API test run."""
         if not HAS_QT:
             pytest.skip("PySide6 not available")
-        
+
         from src.ui.settings_dialog import NASATestThread
-        
+
         # Mock successful response
         mock_response = Mock()
         mock_response.status = 200
-        mock_response.json = AsyncMock(return_value={
-            'title': 'Test Astronomy Picture',
-            'date': '2023-01-01'
-        })
-        
+        mock_response.json = AsyncMock(
+            return_value={"title": "Test Astronomy Picture", "date": "2023-01-01"}
+        )
+
         mock_session_instance = Mock()
         mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
         mock_session_instance.__aexit__ = AsyncMock(return_value=None)
-        mock_session_instance.get.return_value.__aenter__ = AsyncMock(return_value=mock_response)
+        mock_session_instance.get.return_value.__aenter__ = AsyncMock(
+            return_value=mock_response
+        )
         mock_session_instance.get.return_value.__aexit__ = AsyncMock(return_value=None)
         mock_session.return_value = mock_session_instance
-        
+
         thread = NASATestThread("test_key")
-        
+
         # Capture the signal emission
         signal_received = []
         thread.test_completed.connect(
             lambda success, msg: signal_received.append((success, msg))
         )
-        
+
         # Run the thread
         thread.run()
-        
+
         # Check signal was emitted with success
         assert len(signal_received) == 1
         success, message = signal_received[0]
@@ -1423,109 +1427,115 @@ class TestNASATestThread:
         assert "Successfully connected to NASA API" in message
         assert "Test Astronomy Picture" in message
 
-    @patch('aiohttp.ClientSession')
+    @patch("aiohttp.ClientSession")
     def test_run_authentication_error(self, mock_session, qapp):
         """Test NASA API test run with authentication error."""
         if not HAS_QT:
             pytest.skip("PySide6 not available")
-        
+
         from src.ui.settings_dialog import NASATestThread
-        
+
         # Mock 403 response
         mock_response = Mock()
         mock_response.status = 403
-        
+
         mock_session_instance = Mock()
         mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
         mock_session_instance.__aexit__ = AsyncMock(return_value=None)
-        mock_session_instance.get.return_value.__aenter__ = AsyncMock(return_value=mock_response)
+        mock_session_instance.get.return_value.__aenter__ = AsyncMock(
+            return_value=mock_response
+        )
         mock_session_instance.get.return_value.__aexit__ = AsyncMock(return_value=None)
         mock_session.return_value = mock_session_instance
-        
+
         thread = NASATestThread("invalid_key")
-        
+
         # Capture the signal emission
         signal_received = []
         thread.test_completed.connect(
             lambda success, msg: signal_received.append((success, msg))
         )
-        
+
         # Run the thread
         thread.run()
-        
+
         # Check signal was emitted with failure
         assert len(signal_received) == 1
         success, message = signal_received[0]
         assert success is False
         assert "Authentication failed" in message
 
-    @patch('aiohttp.ClientSession')
+    @patch("aiohttp.ClientSession")
     def test_run_rate_limit_error(self, mock_session, qapp):
         """Test NASA API test run with rate limit error."""
         if not HAS_QT:
             pytest.skip("PySide6 not available")
-        
+
         from src.ui.settings_dialog import NASATestThread
-        
+
         # Mock 429 response
         mock_response = Mock()
         mock_response.status = 429
-        
+
         mock_session_instance = Mock()
         mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
         mock_session_instance.__aexit__ = AsyncMock(return_value=None)
-        mock_session_instance.get.return_value.__aenter__ = AsyncMock(return_value=mock_response)
+        mock_session_instance.get.return_value.__aenter__ = AsyncMock(
+            return_value=mock_response
+        )
         mock_session_instance.get.return_value.__aexit__ = AsyncMock(return_value=None)
         mock_session.return_value = mock_session_instance
-        
+
         thread = NASATestThread("rate_limited_key")
-        
+
         # Capture the signal emission
         signal_received = []
         thread.test_completed.connect(
             lambda success, msg: signal_received.append((success, msg))
         )
-        
+
         # Run the thread
         thread.run()
-        
+
         # Check signal was emitted with failure
         assert len(signal_received) == 1
         success, message = signal_received[0]
         assert success is False
         assert "Rate limit exceeded" in message
 
-    @patch('aiohttp.ClientSession')
+    @patch("aiohttp.ClientSession")
     def test_run_other_http_error(self, mock_session, qapp):
         """Test NASA API test run with other HTTP error."""
         if not HAS_QT:
             pytest.skip("PySide6 not available")
-        
+
         from src.ui.settings_dialog import NASATestThread
-        
+
         # Mock 500 response
         mock_response = Mock()
         mock_response.status = 500
         mock_response.text = AsyncMock(return_value="Internal Server Error")
-        
+
         mock_session_instance = Mock()
         mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
         mock_session_instance.__aexit__ = AsyncMock(return_value=None)
-        mock_session_instance.get.return_value.__aenter__ = AsyncMock(return_value=mock_response)
+        mock_session_instance.get.return_value.__aenter__ = AsyncMock(
+            return_value=mock_response
+        )
         mock_session_instance.get.return_value.__aexit__ = AsyncMock(return_value=None)
         mock_session.return_value = mock_session_instance
-        
+
         thread = NASATestThread("test_key")
-        
+
         # Capture the signal emission
         signal_received = []
         thread.test_completed.connect(
             lambda success, msg: signal_received.append((success, msg))
         )
-        
+
         # Run the thread
         thread.run()
-        
+
         # Check signal was emitted with failure
         assert len(signal_received) == 1
         success, message = signal_received[0]
@@ -1536,26 +1546,26 @@ class TestNASATestThread:
         """Test NASA API test run with network error."""
         if not HAS_QT:
             pytest.skip("PySide6 not available")
-        
+
         from src.ui.settings_dialog import NASATestThread
-        
+
         thread = NASATestThread("test_key")
-        
+
         # Mock network error in the run method
-        with patch('src.ui.settings_dialog.asyncio.new_event_loop') as mock_loop_func:
+        with patch("src.ui.settings_dialog.asyncio.new_event_loop") as mock_loop_func:
             mock_loop = Mock()
             mock_loop_func.return_value = mock_loop
             mock_loop.run_until_complete.side_effect = Exception("Network error")
-            
+
             # Capture the signal emission
             signal_received = []
             thread.test_completed.connect(
                 lambda success, msg: signal_received.append((success, msg))
             )
-            
+
             # Run the thread
             thread.run()
-            
+
             # Check signal was emitted with failure
             assert len(signal_received) == 1
             success, message = signal_received[0]
@@ -1579,7 +1589,7 @@ class TestSettingsDialogNASAFunctionality:
         assert dialog.astronomy_latitude_edit is not None
         assert dialog.astronomy_longitude_edit is not None
         assert dialog.astronomy_update_interval_spin is not None
-        
+
         # Check service checkboxes
         assert dialog.apod_service_check is not None
         assert dialog.neows_service_check is not None
@@ -1792,10 +1802,12 @@ class TestSettingsDialogNASAFunctionality:
         dialog = SettingsDialog(config_manager)
 
         # Modify astronomy config
-        from src.managers.astronomy_config import AstronomyConfig, AstronomyServiceConfig
-        services = AstronomyServiceConfig(
-            apod=False, neows=True, iss=False, epic=True
+        from src.managers.astronomy_config import (
+            AstronomyConfig,
+            AstronomyServiceConfig,
         )
+
+        services = AstronomyServiceConfig(apod=False, neows=True, iss=False, epic=True)
         dialog.config.astronomy = AstronomyConfig(
             enabled=True,
             nasa_api_key="test_nasa_key",
@@ -1803,7 +1815,7 @@ class TestSettingsDialogNASAFunctionality:
             location_latitude=12.34,
             location_longitude=56.78,
             update_interval_minutes=120,
-            services=services
+            services=services,
         )
 
         dialog.load_current_settings()
@@ -1830,16 +1842,16 @@ class TestSettingsDialogAdditionalFunctionality:
     def test_exec_method_override(self, qapp, config_manager):
         """Test the exec method override."""
         dialog = SettingsDialog(config_manager)
-        
+
         # Mock the parent exec method
-        with patch.object(QDialog, 'exec', return_value=1) as mock_exec:
+        with patch.object(QDialog, "exec", return_value=1) as mock_exec:
             # Test that exec properly shows the dialog and calls parent
             result = dialog.exec()
-            
+
             # Should call parent exec
             mock_exec.assert_called_once()
             assert result == 1
-            
+
             # Dialog should be visible after exec is called
             assert dialog.isVisible()
 
@@ -1848,13 +1860,13 @@ class TestSettingsDialogAdditionalFunctionality:
     def test_apply_theme_styling_dark_theme(self, qapp, config_manager):
         """Test applying dark theme styling."""
         dialog = SettingsDialog(config_manager)
-        
+
         # Set theme to dark
-        dialog.theme_manager.current_theme = 'dark'
-        
+        dialog.theme_manager.current_theme = "dark"
+
         # Apply styling
         dialog.apply_theme_styling()
-        
+
         # Check that stylesheet was applied
         assert dialog.styleSheet() != ""
         assert "background-color: #1a1a1a" in dialog.styleSheet()
@@ -1864,13 +1876,13 @@ class TestSettingsDialogAdditionalFunctionality:
     def test_apply_theme_styling_light_theme(self, qapp, config_manager):
         """Test applying light theme styling."""
         dialog = SettingsDialog(config_manager)
-        
+
         # Set theme to light
-        dialog.theme_manager.current_theme = 'light'
-        
+        dialog.theme_manager.current_theme = "light"
+
         # Apply styling
         dialog.apply_theme_styling()
-        
+
         # Check that stylesheet was applied
         assert dialog.styleSheet() != ""
         assert "background-color: #ffffff" in dialog.styleSheet()
@@ -1880,10 +1892,10 @@ class TestSettingsDialogAdditionalFunctionality:
     def test_apply_theme_styling_no_theme_manager(self, qapp, config_manager):
         """Test applying theme styling when theme manager is None."""
         dialog = SettingsDialog(config_manager)
-        
+
         # Set theme manager to None
         dialog.theme_manager = None
-        
+
         # Should not crash
         dialog.apply_theme_styling()
 
@@ -1908,13 +1920,13 @@ class TestSettingsDialogAdditionalFunctionality:
     def test_load_current_settings_no_astronomy_config(self, qapp, config_manager):
         """Test loading settings when astronomy config is None."""
         dialog = SettingsDialog(config_manager)
-        
+
         # Set astronomy config to None
         dialog.config.astronomy = None
-        
+
         # Should create default astronomy config
         dialog.load_current_settings()
-        
+
         # Check that default values were loaded
         assert dialog.astronomy_location_edit.text() == "London"
         assert dialog.astronomy_latitude_edit.text() == "51.5074"
@@ -1922,17 +1934,19 @@ class TestSettingsDialogAdditionalFunctionality:
 
         dialog.close()
 
-    def test_save_settings_creates_astronomy_config_when_none(self, qapp, config_manager):
+    def test_save_settings_creates_astronomy_config_when_none(
+        self, qapp, config_manager
+    ):
         """Test that save_settings creates astronomy config when it's None."""
         dialog = SettingsDialog(config_manager)
-        
+
         # Set astronomy config to None
         dialog.config.astronomy = None
-        
+
         with patch("src.ui.settings_dialog.QMessageBox"):
             with patch.object(dialog, "accept"):
                 dialog.save_settings()
-        
+
         # Should have created astronomy config
         assert dialog.config.astronomy is not None
 

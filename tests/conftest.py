@@ -8,13 +8,22 @@ import tempfile
 import json
 from pathlib import Path
 from datetime import datetime, timedelta
-from src.managers.config_manager import ConfigData, APIConfig, StationConfig, RefreshConfig, DisplayConfig
+from src.managers.config_manager import (
+    ConfigData,
+    APIConfig,
+    StationConfig,
+    RefreshConfig,
+    DisplayConfig,
+)
 from src.managers.weather_config import WeatherConfigFactory
 from src.models.train_data import TrainData, TrainStatus, ServiceType
 
 # Suppress RuntimeWarnings globally at the Python level
 warnings.filterwarnings("ignore", category=RuntimeWarning)
-warnings.filterwarnings("ignore", message="coroutine 'AsyncMockMixin._execute_mock_call' was never awaited")
+warnings.filterwarnings(
+    "ignore", message="coroutine 'AsyncMockMixin._execute_mock_call' was never awaited"
+)
+
 
 # Configure pytest to ignore RuntimeWarnings
 def pytest_configure(config):
@@ -22,12 +31,14 @@ def pytest_configure(config):
     warnings.filterwarnings("ignore", category=RuntimeWarning)
     warnings.filterwarnings("ignore", message=".*AsyncMockMixin.*was never awaited.*")
 
+
 @pytest.fixture(autouse=True)
 def suppress_runtime_warnings():
     """Automatically suppress RuntimeWarnings for all tests."""
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore", category=RuntimeWarning)
         yield
+
 
 @pytest.fixture
 def test_config():
@@ -39,27 +50,20 @@ def test_config():
             base_url="https://transportapi.com/v3/uk",
             timeout_seconds=10,
             max_retries=3,
-            rate_limit_per_minute=30
+            rate_limit_per_minute=30,
         ),
         stations=StationConfig(
-            from_code="FLE",
-            from_name="Fleet",
-            to_code="WAT",
-            to_name="London Waterloo"
+            from_code="FLE", from_name="Fleet", to_code="WAT", to_name="London Waterloo"
         ),
         refresh=RefreshConfig(
-            auto_enabled=True,
-            interval_minutes=2,
-            manual_enabled=True
+            auto_enabled=True, interval_minutes=2, manual_enabled=True
         ),
         display=DisplayConfig(
-            max_trains=50,
-            time_window_hours=10,
-            show_cancelled=True,
-            theme="dark"
+            max_trains=50, time_window_hours=10, show_cancelled=True, theme="dark"
         ),
-        weather=WeatherConfigFactory.create_waterloo_config()
+        weather=WeatherConfigFactory.create_waterloo_config(),
     )
+
 
 @pytest.fixture
 def test_api_responses():
@@ -78,25 +82,20 @@ def test_api_responses():
                         "status": "LATE",
                         "train_uid": "W12345",
                         "service": "24673004",
-                        "origin_name": "Fleet"
+                        "origin_name": "Fleet",
                     }
                 ]
             }
         },
-        "departures_empty": {
-            "departures": {
-                "all": []
-            }
-        },
-        "departures_no_data": {
-            "some_other_key": "value"
-        }
+        "departures_empty": {"departures": {"all": []}},
+        "departures_no_data": {"some_other_key": "value"},
     }
+
 
 @pytest.fixture
 def temp_config_file():
     """Provide a temporary config file for testing."""
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
         config_data = {
             "api": {
                 "app_id": "test_id",
@@ -104,34 +103,35 @@ def temp_config_file():
                 "base_url": "https://transportapi.com/v3/uk",
                 "timeout_seconds": 10,
                 "max_retries": 3,
-                "rate_limit_per_minute": 30
+                "rate_limit_per_minute": 30,
             },
             "stations": {
                 "from_code": "FLE",
                 "from_name": "Fleet",
                 "to_code": "WAT",
-                "to_name": "London Waterloo"
+                "to_name": "London Waterloo",
             },
             "refresh": {
                 "auto_enabled": True,
                 "interval_minutes": 2,
-                "manual_enabled": True
+                "manual_enabled": True,
             },
             "display": {
                 "max_trains": 50,
                 "time_window_hours": 10,
                 "show_cancelled": True,
-                "theme": "dark"
+                "theme": "dark",
             },
-            "weather": WeatherConfigFactory.create_waterloo_config().model_dump()
+            "weather": WeatherConfigFactory.create_waterloo_config().model_dump(),
         }
         json.dump(config_data, f, indent=2)
         temp_path = f.name
-    
+
     yield temp_path
-    
+
     # Cleanup
     Path(temp_path).unlink(missing_ok=True)
+
 
 @pytest.fixture
 def sample_train_data():
@@ -150,7 +150,7 @@ def sample_train_data():
             journey_duration=timedelta(minutes=47),
             current_location="Fleet",
             train_uid="W12345",
-            service_id="24673004"
+            service_id="24673004",
         ),
         TrainData(
             departure_time=datetime.now() + timedelta(minutes=15),
@@ -165,7 +165,7 @@ def sample_train_data():
             journey_duration=timedelta(minutes=44),
             current_location="Fleet",
             train_uid="W12346",
-            service_id="24673005"
+            service_id="24673005",
         ),
         TrainData(
             departure_time=datetime.now() + timedelta(minutes=25),
@@ -180,9 +180,10 @@ def sample_train_data():
             journey_duration=timedelta(minutes=47),
             current_location="Fleet",
             train_uid="W12347",
-            service_id="24673006"
-        )
+            service_id="24673006",
+        ),
     ]
+
 
 @pytest.fixture
 def large_train_dataset():
@@ -191,19 +192,21 @@ def large_train_dataset():
     for i in range(100):
         trains.append(
             TrainData(
-                departure_time=datetime.now() + timedelta(minutes=i*2),
-                scheduled_departure=datetime.now() + timedelta(minutes=i*2),
+                departure_time=datetime.now() + timedelta(minutes=i * 2),
+                scheduled_departure=datetime.now() + timedelta(minutes=i * 2),
                 destination="London Waterloo",
                 platform=str((i % 4) + 1),
                 operator="South Western Railway",
-                service_type=ServiceType.STOPPING if i % 2 == 0 else ServiceType.EXPRESS,
+                service_type=(
+                    ServiceType.STOPPING if i % 2 == 0 else ServiceType.EXPRESS
+                ),
                 status=TrainStatus.ON_TIME if i % 3 == 0 else TrainStatus.DELAYED,
                 delay_minutes=i % 10,
-                estimated_arrival=datetime.now() + timedelta(minutes=i*2 + 47),
+                estimated_arrival=datetime.now() + timedelta(minutes=i * 2 + 47),
                 journey_duration=timedelta(minutes=47),
                 current_location="Fleet",
                 train_uid=f"W{12345 + i}",
-                service_id=f"2467300{i % 10}"
+                service_id=f"2467300{i % 10}",
             )
         )
     return trains

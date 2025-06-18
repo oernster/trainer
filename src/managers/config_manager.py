@@ -16,6 +16,7 @@ from pydantic import BaseModel, Field
 
 import sys
 import os
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 from version import __version__, __app_display_name__
 from .weather_config import WeatherConfig, WeatherConfigFactory, WeatherConfigMigrator
@@ -70,17 +71,17 @@ class ConfigData(BaseModel):
     display: DisplayConfig
     weather: Optional[WeatherConfig] = None
     astronomy: Optional[AstronomyConfig] = None
-    
+
     def __init__(self, **data):
         """Initialize ConfigData with optional weather and astronomy config."""
         # If weather config is not provided, create default
-        if 'weather' not in data or data['weather'] is None:
-            data['weather'] = WeatherConfigFactory.create_waterloo_config()
-        
+        if "weather" not in data or data["weather"] is None:
+            data["weather"] = WeatherConfigFactory.create_waterloo_config()
+
         # If astronomy config is not provided, create default
-        if 'astronomy' not in data or data['astronomy'] is None:
-            data['astronomy'] = AstronomyConfig.create_default()
-        
+        if "astronomy" not in data or data["astronomy"] is None:
+            data["astronomy"] = AstronomyConfig.create_default()
+
         super().__init__(**data)
 
 
@@ -360,36 +361,38 @@ class ConfigManager:
             "api_configured": "Yes" if self.validate_api_credentials() else "No",
             "route": f"{self.config.stations.from_name} → {self.config.stations.to_name}",
         }
-        
+
         # Add weather configuration summary
         if self.config.weather:
             weather_summary = self.config.weather.to_summary_dict()
-            summary.update({
-                "weather_enabled": weather_summary["enabled"],
-                "weather_location": weather_summary["location"],
-                "weather_refresh": weather_summary["refresh_interval"],
-                "weather_provider": weather_summary["api_provider"],
-            })
+            summary.update(
+                {
+                    "weather_enabled": weather_summary["enabled"],
+                    "weather_location": weather_summary["location"],
+                    "weather_refresh": weather_summary["refresh_interval"],
+                    "weather_provider": weather_summary["api_provider"],
+                }
+            )
         else:
             summary["weather_enabled"] = False
-            
+
         return summary
-    
+
     def update_weather_config(self, **kwargs) -> None:
         """
         Update weather configuration settings.
-        
+
         Args:
             **kwargs: Weather configuration parameters to update
         """
         if self.config is None:
             self.load_config()
-            
+
         if self.config and self.config.weather:
             # Create updated weather config
             current_weather_dict = self.config.weather.model_dump()
             current_weather_dict.update(kwargs)
-            
+
             # Validate and create new weather config
             try:
                 new_weather_config = WeatherConfig(**current_weather_dict)
@@ -399,65 +402,69 @@ class ConfigManager:
             except Exception as e:
                 logger.error(f"Failed to update weather config: {e}")
                 raise ConfigurationError(f"Invalid weather configuration: {e}")
-    
+
     def get_weather_config(self) -> Optional[WeatherConfig]:
         """
         Get current weather configuration.
-        
+
         Returns:
             WeatherConfig or None if not available
         """
         if self.config is None:
             self.load_config()
-            
+
         if self.config:
             return self.config.weather
         return None
-    
+
     def is_weather_enabled(self) -> bool:
         """
         Check if weather integration is enabled.
-        
+
         Returns:
             bool: True if weather is enabled
         """
         weather_config = self.get_weather_config()
         return weather_config is not None and weather_config.enabled
-    
+
     def migrate_config_if_needed(self) -> bool:
         """
         Migrate configuration to current version if needed.
-        
+
         Returns:
             bool: True if migration was performed
         """
         if self.config is None:
             return False
-            
+
         try:
             config_dict = self.config.model_dump()
-            
+
             # Check if weather config migration is needed
-            if 'weather' in config_dict and config_dict['weather']:
-                weather_dict = config_dict['weather']
+            if "weather" in config_dict and config_dict["weather"]:
+                weather_dict = config_dict["weather"]
                 if WeatherConfigMigrator.is_migration_needed(weather_dict):
-                    migrated_weather = WeatherConfigMigrator.migrate_to_current_version(weather_dict)
-                    config_dict['weather'] = migrated_weather
-                    
+                    migrated_weather = WeatherConfigMigrator.migrate_to_current_version(
+                        weather_dict
+                    )
+                    config_dict["weather"] = migrated_weather
+
                     # Recreate config with migrated data
                     self.config = ConfigData(**config_dict)
                     self.save_config(self.config)
                     logger.info("Configuration migrated to current version")
                     return True
-            elif 'weather' not in config_dict or not config_dict['weather']:
+            elif "weather" not in config_dict or not config_dict["weather"]:
                 # Add weather config if missing or None
-                config_dict['weather'] = WeatherConfigFactory.create_waterloo_config().model_dump()
+                config_dict["weather"] = (
+                    WeatherConfigFactory.create_waterloo_config().model_dump()
+                )
                 self.config = ConfigData(**config_dict)
                 self.save_config(self.config)
                 logger.info("Added weather configuration to existing config")
                 return True
-                
+
         except Exception as e:
             logger.error(f"Configuration migration failed: {e}")
-            
+
         return False

@@ -25,7 +25,7 @@ __features__ = [
     "Configurable refresh intervals",
     "Weather data for destination location",
     "No API key required for weather data",
-    "Astronomical information with a 7 day outlook"
+    "Astronomical information with a 7 day outlook",
 ]
 
 # Weather integration information
@@ -34,11 +34,11 @@ __weather_api_provider__ = "Open-Meteo"
 __weather_api_url__ = "https://open-meteo.com/"
 __weather_features__ = [
     "3-hourly forecasts",
-    "7-day daily forecasts", 
+    "7-day daily forecasts",
     "Temperature and humidity display",
     "Weather icons for each forecast",
     "Configurable location settings",
-    "Automatic refresh intervals"
+    "Automatic refresh intervals",
 ]
 
 # Build system information
@@ -65,9 +65,11 @@ __distribution_type__ = "Single executable"
 __estimated_size_mb__ = "55-60"
 __installation_required__ = False
 
+
 def get_version_string() -> str:
     """Get formatted version string."""
     return f"{__app_name__} v{__version__}"
+
 
 def get_full_version_info() -> str:
     """Get comprehensive version information."""
@@ -81,10 +83,11 @@ Weather Provider: {__weather_api_provider__}
 Train Data Provider: {__train_api_provider__}
 """
 
+
 def get_about_text() -> str:
     """Get formatted about text for dialogs."""
     features_list = "\n".join(f"<li>{feature}</li>" for feature in __features__)
-    
+
     return f"""
 <h3>{__app_display_name__}</h3>
 <p><b>Version {__version__}</b></p>
@@ -119,6 +122,7 @@ def get_about_text() -> str:
 <p>{__copyright__}</p>
 """
 
+
 def get_build_metadata() -> dict:
     """Get metadata for build system."""
     return {
@@ -130,8 +134,9 @@ def get_build_metadata() -> dict:
         "copyright": __copyright__,
         "build_system": __build_system__,
         "weather_version": __weather_version__,
-        "estimated_size": __estimated_size_mb__
+        "estimated_size": __estimated_size_mb__,
     }
+
 
 def get_weather_info() -> dict:
     """Get weather integration information."""
@@ -140,8 +145,9 @@ def get_weather_info() -> dict:
         "provider": __weather_api_provider__,
         "api_url": __weather_api_url__,
         "features": __weather_features__,
-        "api_key_required": False
+        "api_key_required": False,
     }
+
 
 def is_weather_enabled() -> bool:
     """Check if weather integration is enabled in this build."""

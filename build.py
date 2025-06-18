@@ -296,16 +296,16 @@ def create_clean_distribution():
         icon_src = Path(icon_path)
         if icon_src.exists() and icon_src.stat().st_size > 0:
             # For ICO files, only copy if they're reasonably sized (not empty)
-            if icon_path.endswith('.ico') and icon_src.stat().st_size < 100:
+            if icon_path.endswith(".ico") and icon_src.stat().st_size < 100:
                 print(f"  Skipping {icon_src} (too small, likely empty)")
                 continue
-            
+
             icon_dest = dist_dir / icon_src.name
             shutil.copy2(icon_src, icon_dest)
             print(f"  Copied {icon_src} → {icon_dest}")
             icon_copied = True
             break
-    
+
     if not icon_copied:
         print("  ℹ️ No icon file copied (icon is embedded in executable)")
 
@@ -373,17 +373,19 @@ def main():
     print("\nDistribution created in main.dist/ containing:")
     print("- trainer.exe (single executable with embedded icon)")
     print("- licenses/ (LGPL3 compliance files)")
-    
+
     # Check if icon was copied to distribution
     dist_dir = Path("main.dist")
     icon_files = list(dist_dir.glob("train_icon.*"))
     if icon_files:
         print(f"- {icon_files[0].name} (application icon for shortcuts)")
-    
+
     print("\nNext steps:")
     print("1. Test the executable: main.dist/trainer.exe")
     print("2. Distribute the entire main.dist/ folder")
-    print("\nNote: The executable is self-contained with all dependencies and embedded icon.")
+    print(
+        "\nNote: The executable is self-contained with all dependencies and embedded icon."
+    )
 
 
 if __name__ == "__main__":

@@ -58,7 +58,7 @@ class MainWindow(QMainWindow):
     def __init__(self, config_manager: Optional[ConfigManager] = None):
         """Initialize the main window."""
         super().__init__()
-        
+
         # Make window completely invisible during initialization
         self.setVisible(False)
         self.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen, True)
@@ -96,7 +96,7 @@ class MainWindow(QMainWindow):
         self.auto_refresh_status: Optional[QLabel] = None
         self.weather_status: Optional[QLabel] = None
         self.astronomy_status: Optional[QLabel] = None
-        
+
         # Managers
         self.weather_manager: Optional[WeatherManager] = None
         self.astronomy_manager: Optional[AstronomyManager] = None
@@ -104,19 +104,19 @@ class MainWindow(QMainWindow):
         # Setup theme system first to ensure proper styling from the start
         self.setup_theme_system()
         self.apply_theme()
-        
+
         # Setup UI with theme already applied
         self.setup_ui()
         self.setup_application_icon()
         self.setup_weather_system()
         self.setup_astronomy_system()
-        
+
         # Apply theme to all widgets after creation
         self.apply_theme_to_all_widgets()
         self.connect_signals()
 
         logger.info("Main window initialized")
-        
+
         # Remove the invisible attributes but don't show yet - let main.py control when to show
         self.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen, False)
         self.setVisible(False)
@@ -125,8 +125,12 @@ class MainWindow(QMainWindow):
     def setup_ui(self):
         """Initialize UI components."""
         self.setWindowTitle(__app_display_name__)
-        self.setMinimumSize(800, 1100)  # Increased height for weather + astronomy widgets
-        self.resize(1000, 1200)  # Larger default size for weather + astronomy integration
+        self.setMinimumSize(
+            800, 1100
+        )  # Increased height for weather + astronomy widgets
+        self.resize(
+            1000, 1200
+        )  # Larger default size for weather + astronomy integration
 
         # Central widget
         central_widget = QWidget()
@@ -135,7 +139,9 @@ class MainWindow(QMainWindow):
         # Main layout
         layout = QVBoxLayout(central_widget)
         layout.setContentsMargins(8, 8, 8, 8)
-        layout.setSpacing(0)  # Remove spacing between widgets to eliminate horizontal lines
+        layout.setSpacing(
+            0
+        )  # Remove spacing between widgets to eliminate horizontal lines
 
         # Header
         self.setup_header(layout)
@@ -143,17 +149,27 @@ class MainWindow(QMainWindow):
         # Weather widget (always create, show/hide based on config)
         self.weather_widget = WeatherWidget()
         layout.addWidget(self.weather_widget)
-        
+
         # Hide initially if weather is disabled
-        if not (self.config and hasattr(self.config, 'weather') and self.config.weather and self.config.weather.enabled):
+        if not (
+            self.config
+            and hasattr(self.config, "weather")
+            and self.config.weather
+            and self.config.weather.enabled
+        ):
             self.weather_widget.hide()
 
         # Astronomy widget (always create, show/hide based on config)
         self.astronomy_widget = AstronomyWidget()
         layout.addWidget(self.astronomy_widget)
-        
+
         # Show astronomy widget if astronomy is enabled (even without API key)
-        if not (self.config and hasattr(self.config, 'astronomy') and self.config.astronomy and self.config.astronomy.enabled):
+        if not (
+            self.config
+            and hasattr(self.config, "astronomy")
+            and self.config.astronomy
+            and self.config.astronomy.enabled
+        ):
             self.astronomy_widget.hide()
         else:
             # Show the widget even if API key is missing - user can configure it
@@ -276,13 +292,13 @@ class MainWindow(QMainWindow):
         """Setup application menu bar."""
         # Ensure we're using the proper QMainWindow menu bar
         menubar = self.menuBar()
-        
+
         # Clear any existing menu items
         menubar.clear()
-        
+
         # Set menu bar properties to ensure proper display
         menubar.setNativeMenuBar(False)  # Force Qt menu bar on all platforms
-        
+
         # File menu
         file_menu = menubar.addMenu("&File")
 
@@ -317,9 +333,9 @@ class MainWindow(QMainWindow):
         self.theme_action.setStatusTip("Toggle between light and dark theme")
         self.theme_action.triggered.connect(self.toggle_theme)
         view_menu.addAction(self.theme_action)
-        
+
         view_menu.addSeparator()
-        
+
         # Weather toggle
         self.weather_toggle_action = QAction("Show &Weather", self)
         self.weather_toggle_action.setCheckable(True)
@@ -327,7 +343,7 @@ class MainWindow(QMainWindow):
         self.weather_toggle_action.setStatusTip("Show/hide weather widget")
         self.weather_toggle_action.triggered.connect(self.toggle_weather_visibility)
         view_menu.addAction(self.weather_toggle_action)
-        
+
         # Astronomy toggle
         self.astronomy_toggle_action = QAction("Show &Astronomy", self)
         self.astronomy_toggle_action.setCheckable(True)
@@ -343,7 +359,7 @@ class MainWindow(QMainWindow):
         about_action.setStatusTip("About this application")
         about_action.triggered.connect(self.show_about_dialog)
         help_menu.addAction(about_action)
-        
+
         # Apply menu bar styling
         self.apply_menu_bar_styling(menubar)
 
@@ -351,103 +367,139 @@ class MainWindow(QMainWindow):
         """Setup theme switching system."""
         # Connect theme change signal
         self.theme_manager.theme_changed.connect(self.on_theme_changed)
-    
+
     def setup_weather_system(self):
         """Setup weather integration system."""
-        if not self.config or not hasattr(self.config, 'weather') or not self.config.weather:
+        if (
+            not self.config
+            or not hasattr(self.config, "weather")
+            or not self.config.weather
+        ):
             logger.warning("Weather configuration not available")
             self.update_weather_status(False)
             return
-        
+
         try:
             # Initialize weather manager (even if disabled, for potential later enabling)
             self.weather_manager = WeatherManager(self.config.weather)
-            
+
             # Connect weather widget if it exists
             if self.weather_widget:
                 # Connect weather widget signals
-                self.weather_widget.weather_refresh_requested.connect(self.refresh_weather)
-                self.weather_widget.weather_settings_requested.connect(self.show_settings_dialog)
-                
+                self.weather_widget.weather_refresh_requested.connect(
+                    self.refresh_weather
+                )
+                self.weather_widget.weather_settings_requested.connect(
+                    self.show_settings_dialog
+                )
+
                 # Update weather widget config
                 self.weather_widget.update_config(self.config.weather)
-            
+
             # Connect weather manager Qt signals to weather widget
             self.weather_manager.weather_updated.connect(self.on_weather_updated)
             self.weather_manager.weather_error.connect(self.on_weather_error)
-            self.weather_manager.loading_state_changed.connect(self.on_weather_loading_changed)
-            
+            self.weather_manager.loading_state_changed.connect(
+                self.on_weather_loading_changed
+            )
+
             # Connect weather manager signals directly to weather widget
             if self.weather_widget:
-                self.weather_manager.weather_updated.connect(self.weather_widget.on_weather_updated)
-                self.weather_manager.weather_error.connect(self.weather_widget.on_weather_error)
-                self.weather_manager.loading_state_changed.connect(self.weather_widget.on_weather_loading)
-            
+                self.weather_manager.weather_updated.connect(
+                    self.weather_widget.on_weather_updated
+                )
+                self.weather_manager.weather_error.connect(
+                    self.weather_widget.on_weather_error
+                )
+                self.weather_manager.loading_state_changed.connect(
+                    self.weather_widget.on_weather_loading
+                )
+
             # Update weather status and visibility
             enabled = self.config.weather.enabled
             self.update_weather_status(enabled)
-            
+
             if self.weather_widget:
                 self.weather_widget.setVisible(enabled)
-            
+
             if enabled:
                 logger.info("Weather system initialized and enabled")
                 # Start initial weather fetch
                 self.refresh_weather()
             else:
                 logger.info("Weather system initialized but disabled")
-            
+
         except Exception as e:
             logger.error(f"Failed to initialize weather system: {e}")
             self.update_weather_status(False)
             if self.weather_widget:
                 self.weather_widget.hide()
-    
+
     def setup_astronomy_system(self):
         """Setup astronomy integration system."""
-        if not self.config or not hasattr(self.config, 'astronomy') or not self.config.astronomy:
+        if (
+            not self.config
+            or not hasattr(self.config, "astronomy")
+            or not self.config.astronomy
+        ):
             logger.warning("Astronomy configuration not available")
             self.update_astronomy_status(False)
             return
-        
+
         try:
             # Always connect astronomy widget signals if it exists
             if self.astronomy_widget:
                 # Connect astronomy widget signals
-                self.astronomy_widget.astronomy_refresh_requested.connect(self.refresh_astronomy)
-                self.astronomy_widget.nasa_link_clicked.connect(self.on_nasa_link_clicked)
-                
+                self.astronomy_widget.astronomy_refresh_requested.connect(
+                    self.refresh_astronomy
+                )
+                self.astronomy_widget.nasa_link_clicked.connect(
+                    self.on_nasa_link_clicked
+                )
+
                 # Update astronomy widget config
                 self.astronomy_widget.update_config(self.config.astronomy)
-            
+
             # Only initialize astronomy manager if API key is present
             if self.config.astronomy.has_valid_api_key():
                 # Initialize astronomy manager
                 self.astronomy_manager = AstronomyManager(self.config.astronomy)
-                
+
                 # Connect astronomy manager Qt signals to astronomy widget
-                self.astronomy_manager.astronomy_updated.connect(self.on_astronomy_updated)
+                self.astronomy_manager.astronomy_updated.connect(
+                    self.on_astronomy_updated
+                )
                 self.astronomy_manager.astronomy_error.connect(self.on_astronomy_error)
-                self.astronomy_manager.loading_state_changed.connect(self.on_astronomy_loading_changed)
-                
+                self.astronomy_manager.loading_state_changed.connect(
+                    self.on_astronomy_loading_changed
+                )
+
                 # Connect astronomy manager signals directly to astronomy widget
                 if self.astronomy_widget:
-                    self.astronomy_manager.astronomy_updated.connect(self.astronomy_widget.on_astronomy_updated)
-                    self.astronomy_manager.astronomy_error.connect(self.astronomy_widget.on_astronomy_error)
-                    self.astronomy_manager.loading_state_changed.connect(self.astronomy_widget.on_astronomy_loading)
-                
+                    self.astronomy_manager.astronomy_updated.connect(
+                        self.astronomy_widget.on_astronomy_updated
+                    )
+                    self.astronomy_manager.astronomy_error.connect(
+                        self.astronomy_widget.on_astronomy_error
+                    )
+                    self.astronomy_manager.loading_state_changed.connect(
+                        self.astronomy_widget.on_astronomy_loading
+                    )
+
                 logger.info("Astronomy system initialized with API key")
                 # Data will be fetched when UI is shown via showEvent
             else:
-                logger.info("Astronomy system initialized without API key - widget will show placeholder")
-            
+                logger.info(
+                    "Astronomy system initialized without API key - widget will show placeholder"
+                )
+
             # Update astronomy status and visibility
             enabled = self.config.astronomy.enabled
             self.update_astronomy_status(enabled)
-            
+
             if self.astronomy_widget:
                 self.astronomy_widget.setVisible(enabled)
-            
+
         except Exception as e:
             logger.error(f"Failed to initialize astronomy system: {e}")
             self.update_astronomy_status(False)
@@ -483,7 +535,7 @@ class MainWindow(QMainWindow):
         menubar = self.menuBar()
         if menubar:
             self.apply_menu_bar_styling(menubar)
-        
+
         # Update header styling
         header_widget = self.findChild(QWidget, "headerWidget")
         if header_widget:
@@ -497,12 +549,14 @@ class MainWindow(QMainWindow):
         if self.weather_widget:
             # Create theme colors dictionary for weather widget
             theme_colors = {
-                'background_primary': '#1a1a1a' if theme_name == 'dark' else '#ffffff',
-                'background_secondary': '#2d2d2d' if theme_name == 'dark' else '#f5f5f5',
-                'background_hover': '#404040' if theme_name == 'dark' else '#e0e0e0',
-                'text_primary': '#ffffff' if theme_name == 'dark' else '#000000',
-                'primary_accent': '#4fc3f7',
-                'border_primary': '#404040' if theme_name == 'dark' else '#cccccc',
+                "background_primary": "#1a1a1a" if theme_name == "dark" else "#ffffff",
+                "background_secondary": (
+                    "#2d2d2d" if theme_name == "dark" else "#f5f5f5"
+                ),
+                "background_hover": "#404040" if theme_name == "dark" else "#e0e0e0",
+                "text_primary": "#ffffff" if theme_name == "dark" else "#000000",
+                "primary_accent": "#4fc3f7",
+                "border_primary": "#404040" if theme_name == "dark" else "#cccccc",
             }
             self.weather_widget.apply_theme(theme_colors)
 
@@ -510,12 +564,14 @@ class MainWindow(QMainWindow):
         if self.astronomy_widget:
             # Use same theme colors for astronomy widget
             theme_colors = {
-                'background_primary': '#1a1a1a' if theme_name == 'dark' else '#ffffff',
-                'background_secondary': '#2d2d2d' if theme_name == 'dark' else '#f5f5f5',
-                'background_hover': '#404040' if theme_name == 'dark' else '#e0e0e0',
-                'text_primary': '#ffffff' if theme_name == 'dark' else '#000000',
-                'primary_accent': '#4fc3f7',
-                'border_primary': '#404040' if theme_name == 'dark' else '#cccccc',
+                "background_primary": "#1a1a1a" if theme_name == "dark" else "#ffffff",
+                "background_secondary": (
+                    "#2d2d2d" if theme_name == "dark" else "#f5f5f5"
+                ),
+                "background_hover": "#404040" if theme_name == "dark" else "#e0e0e0",
+                "text_primary": "#ffffff" if theme_name == "dark" else "#000000",
+                "primary_accent": "#4fc3f7",
+                "border_primary": "#404040" if theme_name == "dark" else "#cccccc",
             }
             self.astronomy_widget.apply_theme(theme_colors)
 
@@ -528,9 +584,9 @@ class MainWindow(QMainWindow):
         """Apply current theme styling."""
         main_style = self.theme_manager.get_main_window_stylesheet()
         widget_style = self.theme_manager.get_widget_stylesheet()
-        
+
         # Add custom styling to remove borders under menu bar
-        if self.theme_manager.current_theme == 'dark':
+        if self.theme_manager.current_theme == "dark":
             custom_style = """
             QMainWindow {
                 border: none;
@@ -556,7 +612,7 @@ class MainWindow(QMainWindow):
     def apply_theme_to_all_widgets(self):
         """Apply theme to all widgets after creation."""
         current_theme = self.theme_manager.current_theme
-        
+
         # Apply theme to train list widget
         if self.train_list_widget:
             self.train_list_widget.apply_theme(current_theme)
@@ -564,24 +620,32 @@ class MainWindow(QMainWindow):
         # Apply theme to weather widget
         if self.weather_widget:
             theme_colors = {
-                'background_primary': '#1a1a1a' if current_theme == 'dark' else '#ffffff',
-                'background_secondary': '#2d2d2d' if current_theme == 'dark' else '#f5f5f5',
-                'background_hover': '#404040' if current_theme == 'dark' else '#e0e0e0',
-                'text_primary': '#ffffff' if current_theme == 'dark' else '#000000',
-                'primary_accent': '#4fc3f7',
-                'border_primary': '#404040' if current_theme == 'dark' else '#cccccc',
+                "background_primary": (
+                    "#1a1a1a" if current_theme == "dark" else "#ffffff"
+                ),
+                "background_secondary": (
+                    "#2d2d2d" if current_theme == "dark" else "#f5f5f5"
+                ),
+                "background_hover": "#404040" if current_theme == "dark" else "#e0e0e0",
+                "text_primary": "#ffffff" if current_theme == "dark" else "#000000",
+                "primary_accent": "#4fc3f7",
+                "border_primary": "#404040" if current_theme == "dark" else "#cccccc",
             }
             self.weather_widget.apply_theme(theme_colors)
 
         # Apply theme to astronomy widget
         if self.astronomy_widget:
             theme_colors = {
-                'background_primary': '#1a1a1a' if current_theme == 'dark' else '#ffffff',
-                'background_secondary': '#2d2d2d' if current_theme == 'dark' else '#f5f5f5',
-                'background_hover': '#404040' if current_theme == 'dark' else '#e0e0e0',
-                'text_primary': '#ffffff' if current_theme == 'dark' else '#000000',
-                'primary_accent': '#4fc3f7',
-                'border_primary': '#404040' if current_theme == 'dark' else '#cccccc',
+                "background_primary": (
+                    "#1a1a1a" if current_theme == "dark" else "#ffffff"
+                ),
+                "background_secondary": (
+                    "#2d2d2d" if current_theme == "dark" else "#f5f5f5"
+                ),
+                "background_hover": "#404040" if current_theme == "dark" else "#e0e0e0",
+                "text_primary": "#ffffff" if current_theme == "dark" else "#000000",
+                "primary_accent": "#4fc3f7",
+                "border_primary": "#404040" if current_theme == "dark" else "#cccccc",
             }
             self.astronomy_widget.apply_theme(theme_colors)
 
@@ -683,14 +747,14 @@ class MainWindow(QMainWindow):
     def update_weather_status(self, enabled: bool):
         """
         Update weather status display.
-        
+
         Args:
             enabled: Whether weather integration is enabled
         """
         if self.weather_status:
             status = "ON" if enabled else "OFF"
             self.weather_status.setText(f"Weather: {status}")
-            
+
             # Color coding
             if enabled:
                 self.weather_status.setStyleSheet("color: #4caf50;")  # Green
@@ -702,6 +766,7 @@ class MainWindow(QMainWindow):
         if self.weather_manager:
             # Run async refresh
             import asyncio
+
             loop = asyncio.get_event_loop()
             if loop.is_running():
                 asyncio.create_task(self.weather_manager.refresh_weather())
@@ -729,14 +794,14 @@ class MainWindow(QMainWindow):
     def update_astronomy_status(self, enabled: bool):
         """
         Update astronomy status display.
-        
+
         Args:
             enabled: Whether astronomy integration is enabled
         """
         if self.astronomy_status:
             status = "ON" if enabled else "OFF"
             self.astronomy_status.setText(f"Astronomy: {status}")
-            
+
             # Color coding
             if enabled:
                 self.astronomy_status.setStyleSheet("color: #4caf50;")  # Green
@@ -748,6 +813,7 @@ class MainWindow(QMainWindow):
         if self.astronomy_manager:
             # Run async refresh using QTimer to defer to next event loop iteration
             import asyncio
+
             try:
                 # Check if there's already an event loop
                 try:
@@ -759,14 +825,16 @@ class MainWindow(QMainWindow):
                     # No running loop, create a new one
                     def run_refresh():
                         asyncio.run(self.astronomy_manager.refresh_astronomy())
-                    
+
                     # Use QTimer to run in next event loop iteration
                     QTimer.singleShot(0, run_refresh)
                     logger.info("Manual astronomy refresh requested (new event loop)")
             except Exception as e:
                 logger.warning(f"Failed to refresh astronomy: {e}")
         else:
-            logger.info("Astronomy refresh requested but no manager available (missing API key)")
+            logger.info(
+                "Astronomy refresh requested but no manager available (missing API key)"
+            )
 
     def on_astronomy_updated(self, astronomy_data):
         """Handle astronomy data update."""
@@ -837,58 +905,66 @@ class MainWindow(QMainWindow):
             # Update theme if changed
             if self.config:
                 self.theme_manager.set_theme(self.config.display.theme)
-                
+
                 # Update weather system if configuration changed
-                if hasattr(self.config, 'weather') and self.config.weather:
+                if hasattr(self.config, "weather") and self.config.weather:
                     if self.config.weather.enabled and not self.weather_manager:
                         # Weather was enabled, initialize system
                         self.setup_weather_system()
                     elif self.weather_manager:
                         # Update existing weather manager configuration
                         self.weather_manager.update_config(self.config.weather)
-                        
+
                         # Update weather widget configuration
                         if self.weather_widget:
                             self.weather_widget.update_config(self.config.weather)
                             self.weather_widget.setVisible(self.config.weather.enabled)
-                    
+
                     # Update weather status
                     self.update_weather_status(self.config.weather.enabled)
-                elif hasattr(self.config, 'weather'):
+                elif hasattr(self.config, "weather"):
                     # Weather config exists but is None, disable weather
                     self.update_weather_status(False)
-                
+
                 # Update astronomy system if configuration changed
-                if hasattr(self.config, 'astronomy') and self.config.astronomy:
+                if hasattr(self.config, "astronomy") and self.config.astronomy:
                     # Check if we need to reinitialize the astronomy system
                     needs_reinit = False
-                    
+
                     if self.config.astronomy.enabled:
-                        if not self.astronomy_manager and self.config.astronomy.has_valid_api_key():
+                        if (
+                            not self.astronomy_manager
+                            and self.config.astronomy.has_valid_api_key()
+                        ):
                             # Astronomy was enabled and API key is now available
                             needs_reinit = True
-                        elif self.astronomy_manager and not self.config.astronomy.has_valid_api_key():
+                        elif (
+                            self.astronomy_manager
+                            and not self.config.astronomy.has_valid_api_key()
+                        ):
                             # API key was removed, shutdown manager
                             self.astronomy_manager.shutdown()
                             self.astronomy_manager = None
-                            logger.info("Astronomy manager shutdown due to missing API key")
+                            logger.info(
+                                "Astronomy manager shutdown due to missing API key"
+                            )
                         elif self.astronomy_manager:
                             # Update existing astronomy manager configuration
                             self.astronomy_manager.update_config(self.config.astronomy)
-                    
+
                     if needs_reinit:
                         # Reinitialize astronomy system
                         self.setup_astronomy_system()
                         logger.info("Astronomy system reinitialized with new API key")
-                    
+
                     # Always update astronomy widget configuration
                     if self.astronomy_widget:
                         self.astronomy_widget.update_config(self.config.astronomy)
                         self.astronomy_widget.setVisible(self.config.astronomy.enabled)
-                    
+
                     # Update astronomy status
                     self.update_astronomy_status(self.config.astronomy.enabled)
-                elif hasattr(self.config, 'astronomy'):
+                elif hasattr(self.config, "astronomy"):
                     # Astronomy config exists but is None, disable astronomy
                     self.update_astronomy_status(False)
 
@@ -904,7 +980,7 @@ class MainWindow(QMainWindow):
         """Show about dialog using centralized version system."""
         # Get config path for display
         config_path = self.config_manager.config_path
-        
+
         # Use centralized about text with config path
         about_text = get_about_text()
         about_text += f"<p><small>Config: {config_path}</small></p>"
@@ -920,29 +996,29 @@ class MainWindow(QMainWindow):
         if self.weather_widget:
             is_visible = self.weather_widget.isVisible()
             self.weather_widget.setVisible(not is_visible)
-            
+
             # Update menu action text
             if self.weather_toggle_action:
                 self.weather_toggle_action.setChecked(not is_visible)
-            
+
             logger.info(f"Weather widget {'hidden' if is_visible else 'shown'}")
-    
+
     def toggle_astronomy_visibility(self):
         """Toggle astronomy widget visibility."""
         if self.astronomy_widget:
             is_visible = self.astronomy_widget.isVisible()
             self.astronomy_widget.setVisible(not is_visible)
-            
+
             # Update menu action text
             if self.astronomy_toggle_action:
                 self.astronomy_toggle_action.setChecked(not is_visible)
-            
+
             logger.info(f"Astronomy widget {'hidden' if is_visible else 'shown'}")
-    
+
     def apply_menu_bar_styling(self, menubar):
         """Apply styling to the menu bar."""
         # Get current theme colors
-        if self.theme_manager.current_theme == 'dark':
+        if self.theme_manager.current_theme == "dark":
             menu_style = """
             QMenuBar {
                 background-color: #2d2d2d;
@@ -1026,13 +1102,13 @@ class MainWindow(QMainWindow):
                 margin: 2px 0px;
             }
             """
-        
+
         menubar.setStyleSheet(menu_style)
-    
+
     def apply_header_styling(self, header_widget):
         """Apply styling to the header widget to remove borders."""
         # Get current theme colors
-        if self.theme_manager.current_theme == 'dark':
+        if self.theme_manager.current_theme == "dark":
             header_style = """
             QWidget#headerWidget {
                 background-color: #1a1a1a;
@@ -1091,7 +1167,7 @@ class MainWindow(QMainWindow):
                 color: #ffffff;
             }
             """
-        
+
         header_widget.setStyleSheet(header_style)
 
     def connect_signals(self):
@@ -1102,9 +1178,9 @@ class MainWindow(QMainWindow):
     def showEvent(self, event):
         """Handle window show event - trigger astronomy data fetch when UI is displayed."""
         super().showEvent(event)
-        
+
         # Only fetch astronomy data once when window is first shown
-        if not hasattr(self, '_astronomy_data_fetched'):
+        if not hasattr(self, "_astronomy_data_fetched"):
             self._astronomy_data_fetched = True
             if self.astronomy_manager:
                 logger.info("UI displayed - triggering astronomy data fetch")
@@ -1113,7 +1189,7 @@ class MainWindow(QMainWindow):
     def closeEvent(self, event):
         """Handle window close event."""
         logger.info("Application closing")
-        
+
         # Shutdown weather manager if it exists
         if self.weather_manager:
             try:
@@ -1121,7 +1197,7 @@ class MainWindow(QMainWindow):
                 logger.info("Weather manager shutdown complete")
             except Exception as e:
                 logger.warning(f"Error shutting down weather manager: {e}")
-        
+
         # Shutdown astronomy manager if it exists
         if self.astronomy_manager:
             try:
@@ -1129,5 +1205,5 @@ class MainWindow(QMainWindow):
                 logger.info("Astronomy manager shutdown complete")
             except Exception as e:
                 logger.warning(f"Error shutting down astronomy manager: {e}")
-        
+
         event.accept()
