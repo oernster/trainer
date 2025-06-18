@@ -47,7 +47,7 @@ A modern PySide6 desktop application that displays real-time train departure inf
 - **🏗️ Object-Oriented Design** - Clean architecture with proven design patterns
 
 ## 🖼️ Screenshots
-![Trainer](https://github.com/user-attachments/assets/03f30926-d067-4c4d-9480-01f38b87ae37)
+![Trainer](https://github.com/user-attachments/assets/d5c64911-ecdd-4c2a-b3a9-45a8e36c63f9)
 
 ## 🚀 Quick Start
 
