@@ -57,53 +57,42 @@ def setup_logging():
 
 def setup_application_icon(app: QApplication):
     """
-    Setup application icon from assets directory for Windows taskbar and shortcuts.
+    Setup application icon using Unicode train emoji.
 
     Args:
         app: QApplication instance
     """
-    # Try PNG files first (better Windows compatibility)
-    png_sizes = [16, 24, 32, 48, 64, 128, 256]
-    icon = QIcon()
-    png_found = False
-
-    for size in png_sizes:
-        png_path = Path(f"assets/train_icon_{size}.png")
-        if png_path.exists():
-            icon.addFile(str(png_path), QSize(size, size))
-            png_found = True
-
-    if png_found:
-        # Set application-wide icon (for taskbar, shortcuts, etc.)
+    from PySide6.QtGui import QPixmap, QPainter, QFont
+    from PySide6.QtCore import Qt
+    
+    # Create a simple icon from the train emoji
+    try:
+        # Create a pixmap for the icon
+        pixmap = QPixmap(64, 64)
+        pixmap.fill(Qt.GlobalColor.transparent)
+        
+        # Paint the emoji onto the pixmap
+        painter = QPainter(pixmap)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        
+        # Set up font for emoji
+        font = QFont()
+        font.setPointSize(48)
+        painter.setFont(font)
+        painter.setPen(Qt.GlobalColor.black)
+        
+        # Draw the train emoji centered
+        painter.drawText(pixmap.rect(), Qt.AlignmentFlag.AlignCenter, "🚂")
+        painter.end()
+        
+        # Create icon and set it
+        icon = QIcon(pixmap)
         app.setWindowIcon(icon)
-        logging.info("Application icon loaded from PNG files with multiple sizes")
-        return
-
-    # Fallback to SVG if PNG files not available
-    svg_path = Path("assets/train_icon.svg")
-    if svg_path.exists():
-        # Create QIcon from SVG
-        icon = QIcon(str(svg_path))
-
-        # Set application-wide icon (for taskbar, shortcuts, etc.)
-        app.setWindowIcon(icon)
-
-        # Set additional sizes for better Windows compatibility
-        icon.addFile(str(svg_path), QSize(16, 16))
-        icon.addFile(str(svg_path), QSize(32, 32))
-        icon.addFile(str(svg_path), QSize(48, 48))
-        icon.addFile(str(svg_path), QSize(64, 64))
-        icon.addFile(str(svg_path), QSize(128, 128))
-        icon.addFile(str(svg_path), QSize(256, 256))
-
-        # Set the icon again with all sizes
-        app.setWindowIcon(icon)
-
-        logging.info(
-            "Application icon loaded from assets/train_icon.svg with multiple sizes"
-        )
-    else:
-        logging.warning("No train icon files found in assets directory")
+        
+        logging.info("Application icon set using Unicode train emoji")
+        
+    except Exception as e:
+        logging.warning(f"Failed to create emoji icon, using default: {e}")
 
 
 def connect_signals(window: MainWindow, train_manager: TrainManager):

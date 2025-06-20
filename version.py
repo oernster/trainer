@@ -89,7 +89,7 @@ def get_about_text() -> str:
     features_list = "\n".join(f"<li>{feature}</li>" for feature in __features__)
 
     return f"""
-<h3>{__app_display_name__}</h3>
+<h3>🚂 {__app_display_name__}</h3>
 <p><b>Version {__version__}</b></p>
 <p><b>Author: {__author__}</b></p>
 <p>{__description__}</p>

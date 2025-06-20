@@ -82,11 +82,13 @@ def check_assets():
         assets_path.mkdir()
         print("✅ Created assets directory")
 
+    # Note: Application now uses Unicode train emoji (🚂) as primary icon
+    # Icon files are only needed for building standalone executables
     icon_path = assets_path / "train_icon.svg"
     if icon_path.exists():
-        print("✅ Train icon found")
+        print("✅ Train icon found (for executable builds)")
     else:
-        print("⚠️ Train icon not found - application will use Unicode fallback")
+        print("ℹ️ No train icon file - application uses Unicode emoji (🚂)")
 
     return True
 

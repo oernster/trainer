@@ -44,7 +44,7 @@ class MainWindow(QMainWindow):
 
     Features:
     - Light/Dark theme switching (defaults to dark)
-    - Custom train icon from assets/train_icon.svg
+    - Unicode train emoji (🚂) in window title and about dialog
     - Real-time train data display
     - 16-hour time window
     - Automatic and manual refresh
@@ -229,10 +229,42 @@ class MainWindow(QMainWindow):
         self.setup_menu_bar()
 
     def setup_application_icon(self):
-        """Setup application icon using Unicode train emoji in title."""
-        # Use Unicode train emoji in window title for consistent cross-platform display
+        """Setup application icon using Unicode train emoji."""
+        from PySide6.QtGui import QPixmap, QPainter, QFont
+        from PySide6.QtCore import Qt
+        
+        # Set window title with emoji
         self.setWindowTitle(f"🚂 {__app_display_name__}")
-        logger.info("Using Unicode train emoji in window title as application icon")
+        
+        # Create and set window icon from emoji
+        try:
+            # Create a pixmap for the icon
+            pixmap = QPixmap(64, 64)
+            pixmap.fill(Qt.GlobalColor.transparent)
+            
+            # Paint the emoji onto the pixmap
+            painter = QPainter(pixmap)
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+            
+            # Set up font for emoji
+            font = QFont()
+            font.setPointSize(48)
+            painter.setFont(font)
+            painter.setPen(Qt.GlobalColor.black)
+            
+            # Draw the train emoji centered
+            painter.drawText(pixmap.rect(), Qt.AlignmentFlag.AlignCenter, "🚂")
+            painter.end()
+            
+            # Create icon and set it
+            icon = QIcon(pixmap)
+            self.setWindowIcon(icon)
+            
+            logger.info("Window icon set using Unicode train emoji")
+            
+        except Exception as e:
+            logger.warning(f"Failed to create emoji window icon: {e}")
+            logger.info("Using Unicode train emoji in window title only")
 
     def setup_header(self, layout):
         """Setup header section with theme toggle."""
