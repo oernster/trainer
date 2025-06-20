@@ -28,10 +28,25 @@ from version import (
 
 def setup_logging():
     """Setup application logging with file and console output."""
+    import os
+    from pathlib import Path
+    
+    # Create log directory in user's home directory
+    if sys.platform == "darwin":  # macOS
+        log_dir = Path.home() / "Library" / "Logs" / "Trainer"
+    elif sys.platform == "win32":  # Windows
+        log_dir = Path(os.environ.get("APPDATA", Path.home())) / "Trainer" / "logs"
+    else:  # Linux and others
+        log_dir = Path.home() / ".local" / "share" / "trainer" / "logs"
+    
+    # Create log directory if it doesn't exist
+    log_dir.mkdir(parents=True, exist_ok=True)
+    log_file = log_dir / "train_times.log"
+    
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        handlers=[logging.FileHandler("train_times.log"), logging.StreamHandler()],
+        handlers=[logging.FileHandler(str(log_file)), logging.StreamHandler()],
     )
 
     # Set specific log levels for different modules
