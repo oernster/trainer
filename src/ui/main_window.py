@@ -126,12 +126,37 @@ class MainWindow(QMainWindow):
     def setup_ui(self):
         """Initialize UI components."""
         self.setWindowTitle(__app_display_name__)
-        self.setMinimumSize(
-            800, 1100
-        )  # Increased height for weather + astronomy widgets
-        self.resize(
-            1000, 1200
-        )  # Larger default size for weather + astronomy integration
+        
+        # Get screen dimensions for responsive sizing
+        screen = QApplication.primaryScreen()
+        screen_geometry = screen.availableGeometry()
+        screen_width = screen_geometry.width()
+        screen_height = screen_geometry.height()
+        
+        # Calculate responsive window size
+        # For smaller screens (like 13" laptops), scale to ~60% of normal size
+        # For larger screens, keep full size
+        is_small_screen = screen_width <= 1440 or screen_height <= 900
+        
+        if is_small_screen:
+            # Scale to approximately 60% for smaller screens
+            min_width = int(800 * 0.6)  # 480
+            min_height = int(1100 * 0.6)  # 660
+            default_width = int(1000 * 0.6)  # 600
+            default_height = int(1200 * 0.6)  # 720
+            
+            logger.info(f"Small screen detected ({screen_width}x{screen_height}), using scaled window size: {default_width}x{default_height}")
+        else:
+            # Keep original size for larger screens
+            min_width = 800
+            min_height = 1100
+            default_width = 1000
+            default_height = 1200
+            
+            logger.info(f"Large screen detected ({screen_width}x{screen_height}), using full window size: {default_width}x{default_height}")
+        
+        self.setMinimumSize(min_width, min_height)
+        self.resize(default_width, default_height)
 
         # Central widget
         central_widget = QWidget()
