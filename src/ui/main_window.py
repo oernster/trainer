@@ -134,16 +134,17 @@ class MainWindow(QMainWindow):
         screen_height = screen_geometry.height()
         
         # Calculate responsive window size
-        # For smaller screens (like 13" laptops), scale to ~60% of normal size
+        # For smaller screens (like 13" laptops), scale to ~80% for better space utilization
         # For larger screens, keep full size
-        is_small_screen = screen_width <= 1440 or screen_height <= 900
+        self.is_small_screen = screen_width <= 1440 or screen_height <= 900
+        self.ui_scale_factor = 0.8 if self.is_small_screen else 1.0
         
-        if is_small_screen:
-            # Scale to approximately 60% for smaller screens
-            min_width = int(800 * 0.6)  # 480
-            min_height = int(1100 * 0.6)  # 660
-            default_width = int(1000 * 0.6)  # 600
-            default_height = int(1200 * 0.6)  # 720
+        if self.is_small_screen:
+            # Further reduced height for 13" MacBook compatibility
+            min_width = int(800 * 0.8)  # 640
+            min_height = int(950 * 0.8)  # 760
+            default_width = int(1000 * 0.8)  # 800
+            default_height = int(1050 * 0.8)  # 840
             
             logger.info(f"Small screen detected ({screen_width}x{screen_height}), using scaled window size: {default_width}x{default_height}")
         else:
@@ -157,6 +158,9 @@ class MainWindow(QMainWindow):
         
         self.setMinimumSize(min_width, min_height)
         self.resize(default_width, default_height)
+        
+        # Center the window on the screen
+        self.center_window()
 
         # Central widget
         central_widget = QWidget()
@@ -165,15 +169,15 @@ class MainWindow(QMainWindow):
         # Main layout
         layout = QVBoxLayout(central_widget)
         layout.setContentsMargins(8, 8, 8, 8)
-        layout.setSpacing(
-            0
-        )  # Remove spacing between widgets to eliminate horizontal lines
+        # Add proper spacing between widgets to prevent overlap (scaled)
+        scaled_spacing = int(12 * self.ui_scale_factor)
+        layout.setSpacing(scaled_spacing)
 
         # Header
         self.setup_header(layout)
 
         # Weather widget (always create, show/hide based on config)
-        self.weather_widget = WeatherWidget()
+        self.weather_widget = WeatherWidget(scale_factor=self.ui_scale_factor)
         layout.addWidget(self.weather_widget)
 
         # Hide initially if weather is disabled
@@ -186,7 +190,7 @@ class MainWindow(QMainWindow):
             self.weather_widget.hide()
 
         # Astronomy widget (always create, show/hide based on config)
-        self.astronomy_widget = AstronomyWidget()
+        self.astronomy_widget = AstronomyWidget(scale_factor=self.ui_scale_factor)
         layout.addWidget(self.astronomy_widget)
 
         # Always show astronomy widget by default - it will show placeholder content if no API key
@@ -207,8 +211,15 @@ class MainWindow(QMainWindow):
             self.astronomy_widget.hide()
             logger.info("Astronomy widget hidden (disabled in config)")
 
-        # Train list with extended capacity
+        # Train list with extended capacity and reduced height for small screens
         self.train_list_widget = TrainListWidget(max_trains=50)
+        
+        # For small screens, reduce train pane height by ~20% by setting a maximum height
+        if self.is_small_screen:
+            # Calculate reduced height: base height * scale * reduction factor
+            max_train_height = int(400 * self.ui_scale_factor * 0.8)  # ~20% reduction
+            self.train_list_widget.setMaximumHeight(max_train_height)
+        
         layout.addWidget(self.train_list_widget)
 
         # Status bar
@@ -305,6 +316,12 @@ class MainWindow(QMainWindow):
         """Setup status bar with connection and theme info."""
         self.status_bar = QStatusBar()
         self.setStatusBar(self.status_bar)
+
+        # Reduce status bar height for small screens
+        if self.is_small_screen:
+            scaled_height = int(18 * self.ui_scale_factor)  # Reduced from default ~22px
+            self.status_bar.setMaximumHeight(scaled_height)
+            self.status_bar.setStyleSheet(f"QStatusBar {{ max-height: {scaled_height}px; font-size: 10px; }}")
 
         self.connection_status = QLabel("Disconnected")
         self.train_count_label = QLabel("0 trains")
@@ -1297,3 +1314,17 @@ class MainWindow(QMainWindow):
                 logger.warning(f"Error shutting down astronomy manager: {e}")
 
         event.accept()
+
+    def center_window(self):
+        """Center the window on the screen."""
+        screen = QApplication.primaryScreen()
+        screen_geometry = screen.availableGeometry()
+        window_geometry = self.frameGeometry()
+        
+        # Calculate center position
+        center_x = screen_geometry.center().x() - window_geometry.width() // 2
+        center_y = screen_geometry.center().y() - window_geometry.height() // 2
+        
+        # Move window to center
+        self.move(center_x, center_y)
+        logger.info("Window centered on screen")

@@ -104,6 +104,7 @@ class WeatherItemWidget(WeatherDisplayComponent):
         weather_data: Optional[WeatherData] = None,
         is_daily: bool = False,
         parent=None,
+        scale_factor=1.0,
     ):
         """
         Initialize weather item widget.
@@ -112,8 +113,10 @@ class WeatherItemWidget(WeatherDisplayComponent):
             weather_data: Weather data to display
             is_daily: Whether this is a daily forecast item
             parent: Parent widget
+            scale_factor: UI scale factor for responsive design
         """
         self._is_daily = is_daily
+        self._scale_factor = scale_factor
         self._time_label: Optional[QLabel] = None
         self._icon_label: Optional[QLabel] = None
         self._temp_label: Optional[QLabel] = None
@@ -126,46 +129,55 @@ class WeatherItemWidget(WeatherDisplayComponent):
 
     def setup_ui(self) -> None:
         """Setup the weather item UI."""
-        (
-            self.setFixedSize(100, 180)
-            if not self._is_daily
-            else self.setFixedSize(120, 180)
-        )  # Much larger size for dramatically bigger icons
-        # Note: WeatherItemWidget inherits from QWidget, not QFrame
-        # Frame styling will be handled via CSS
+        # Scale widget size based on screen size - reasonable compact size for small screens
+        if self._scale_factor < 1.0:  # Small screens
+            base_width = 90 if self._is_daily else 80
+            base_height = 130
+        else:  # Large screens
+            base_width = 120 if self._is_daily else 100
+            base_height = 150
+        scaled_width = int(base_width * self._scale_factor)
+        scaled_height = int(base_height * self._scale_factor)
+        self.setFixedSize(scaled_width, scaled_height)
 
-        # Main layout with adjusted margins to create visually equal spacing
+        # Main layout with minimal top margins to maximize space usage (scaled)
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(
-            4, 4, 4, 10
-        )  # Less top margin, more bottom margin for visual balance
-        layout.setSpacing(2)
-        # Remove center alignment - let content flow naturally with adjusted margins
+        scaled_margin_h = int(4 * self._scale_factor)
+        scaled_margin_v_top = 0  # Zero top margin to eliminate space at top
+        scaled_margin_v_bottom = int(8 * self._scale_factor)  # Reduced bottom margin
+        scaled_spacing = int(1 * self._scale_factor)  # Minimal spacing
+        layout.setContentsMargins(scaled_margin_h, scaled_margin_v_top, scaled_margin_h, scaled_margin_v_bottom)
+        layout.setSpacing(scaled_spacing)
 
         # Time/Date label
         self._time_label = QLabel("--:--")
         self._time_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._time_label.setFont(QFont("Arial", 8))
+        scaled_font_size = int(8 * self._scale_factor)
+        self._time_label.setFont(QFont("Arial", scaled_font_size))
         layout.addWidget(self._time_label)
 
-        # Weather icon - dramatically larger size using stylesheet
+        # Weather icon - reasonable size for smaller screens (scaled)
         self._icon_label = QLabel("❓")
         self._icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        # Use reasonable icon size for small screens - not too small
+        base_icon_size = 32 if self._scale_factor < 1.0 else 48
+        scaled_icon_size = int(base_icon_size * self._scale_factor)
         self._icon_label.setStyleSheet(
-            "font-size: 48px; font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji';"
+            f"font-size: {scaled_icon_size}px; font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji';"
         )
         layout.addWidget(self._icon_label)
 
         # Temperature
         self._temp_label = QLabel("--°")
         self._temp_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._temp_label.setFont(QFont("Arial", 10, QFont.Weight.Bold))
+        scaled_temp_font = int(10 * self._scale_factor)
+        self._temp_label.setFont(QFont("Arial", scaled_temp_font, QFont.Weight.Bold))
         layout.addWidget(self._temp_label)
 
         # Humidity
         self._humidity_label = QLabel("--%")
         self._humidity_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._humidity_label.setFont(QFont("Arial", 8))
+        self._humidity_label.setFont(QFont("Arial", scaled_font_size))
         layout.addWidget(self._humidity_label)
 
         # Enable mouse tracking for hover effects
@@ -276,24 +288,25 @@ class WeatherForecastWidget(QWidget):
     Uses QWidget for clean, direct styling control.
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, scale_factor=1.0):
         """Initialize forecast widget."""
         super().__init__(parent)
+        self._scale_factor = scale_factor
         self._weather_items: List[WeatherItemWidget] = []
         self._container_layout: QHBoxLayout
         self.setup_ui()
 
     def setup_ui(self) -> None:
         """Setup the forecast widget UI."""
-        self.setFixedHeight(
-            200
-        )  # Much larger height for dramatically bigger weather icons
+        # Scale height based on screen size - reduce significantly to prevent overlap
+        scaled_height = int(160 * self._scale_factor)
+        self.setFixedHeight(scaled_height)
 
-        # Simple horizontal layout for weather items
+        # Simple horizontal layout for weather items (scaled) - centered distribution
         self._container_layout = QHBoxLayout(self)
-        self._container_layout.setContentsMargins(8, 8, 8, 8)
-        self._container_layout.setSpacing(6)
-        self._container_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        scaled_margin_h = int(8 * self._scale_factor)
+        scaled_margin_v = 0  # Zero vertical margins to maximize space
+        self._container_layout.setContentsMargins(scaled_margin_h, scaled_margin_v, scaled_margin_h, scaled_margin_v)
 
     def update_weather_forecast(
         self,
@@ -312,9 +325,12 @@ class WeatherForecastWidget(QWidget):
         # Clear existing items
         self.clear_weather_items()
 
-        # Create new weather items
-        for weather in weather_data:
-            item = WeatherItemWidget(weather, is_daily)
+        # Add leading stretch to center the items
+        self._container_layout.addStretch(1)
+
+        # Create weather items with proper spacing and centering
+        for i, weather in enumerate(weather_data):
+            item = WeatherItemWidget(weather, is_daily, scale_factor=self._scale_factor)
             if config:
                 item.update_config(config)
 
@@ -323,10 +339,15 @@ class WeatherForecastWidget(QWidget):
             item.weather_item_hovered.connect(self._on_weather_item_hovered)
 
             self._weather_items.append(item)
-            self._container_layout.addWidget(item)
+            self._container_layout.addWidget(item, 0)  # Fixed size, no stretch
+            
+            # Add spacing between items (except after the last one)
+            if i < len(weather_data) - 1:
+                scaled_spacing = int(4 * self._scale_factor)
+                self._container_layout.addSpacing(scaled_spacing)
 
-        # Add stretch to push items to the left
-        self._container_layout.addStretch()
+        # Add trailing stretch to center the items
+        self._container_layout.addStretch(1)
 
         logger.info(f"Updated weather forecast with {len(weather_data)} items")
 
@@ -375,9 +396,9 @@ class WeatherForecastWidget(QWidget):
 class DailyForecastWidget(WeatherForecastWidget):
     """Widget for displaying daily weather forecast."""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, scale_factor=1.0):
         """Initialize daily forecast widget."""
-        super().__init__(parent)
+        super().__init__(parent, scale_factor=scale_factor)
 
     def update_daily_forecast(
         self, daily_data: List[WeatherData], config: Optional[WeatherConfig] = None
@@ -389,9 +410,9 @@ class DailyForecastWidget(WeatherForecastWidget):
 class HourlyForecastWidget(WeatherForecastWidget):
     """Widget for displaying hourly weather forecast."""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, scale_factor=1.0):
         """Initialize hourly forecast widget."""
-        super().__init__(parent)
+        super().__init__(parent, scale_factor=scale_factor)
 
     def update_hourly_forecast(
         self, hourly_data: List[WeatherData], config: Optional[WeatherConfig] = None
@@ -412,9 +433,10 @@ class WeatherWidget(QWidget):
     weather_refresh_requested = Signal()
     weather_settings_requested = Signal()
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, scale_factor=1.0):
         """Initialize weather widget."""
         super().__init__(parent)
+        self._scale_factor = scale_factor
 
         # Child widgets
         self._daily_label: Optional[QLabel] = None
@@ -438,36 +460,47 @@ class WeatherWidget(QWidget):
 
     def setup_ui(self) -> None:
         """Setup the weather widget UI."""
-        # Main layout with balanced padding and proper spacing
+        # Main layout with zero top padding to maximize content space
+        scaled_margin_h = int(4 * self._scale_factor)  # Horizontal margins
+        scaled_margin_top = 0  # Zero top margin to move content to very top
+        scaled_margin_bottom = int(4 * self._scale_factor)  # Bottom margin
+        scaled_spacing = int(4 * self._scale_factor)  # Further reduced spacing
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(6, 6, 6, 6)  # Equal padding on all sides
-        layout.setSpacing(
-            16
-        )  # Proper spacing to separate sections and prevent text overlap
+        layout.setContentsMargins(scaled_margin_h, scaled_margin_top, scaled_margin_h, scaled_margin_bottom)
+        layout.setSpacing(scaled_spacing)
 
         # Daily forecast section
         self._daily_label = QLabel("Today's Weather (3-hourly)")
-        self._daily_label.setFont(QFont("Arial", 10, QFont.Weight.Bold))
+        scaled_font_size = int(10 * self._scale_factor)
+        self._daily_label.setFont(QFont("Arial", scaled_font_size, QFont.Weight.Bold))
         layout.addWidget(self._daily_label)
 
-        self._daily_forecast_widget = HourlyForecastWidget()
+        self._daily_forecast_widget = HourlyForecastWidget(scale_factor=self._scale_factor)
         layout.addWidget(self._daily_forecast_widget)
+
+        # Add more spacing before the 7-Day Forecast label to center it between compact panes
+        scaled_extra_spacing = int(35 * self._scale_factor)
+        layout.addSpacing(scaled_extra_spacing)
 
         # Weekly forecast section
         self._weekly_label = QLabel("7-Day Forecast")
-        self._weekly_label.setFont(QFont("Arial", 10, QFont.Weight.Bold))
+        self._weekly_label.setFont(QFont("Arial", scaled_font_size, QFont.Weight.Bold))
         layout.addWidget(self._weekly_label)
 
-        self._weekly_forecast_widget = DailyForecastWidget()
+        self._weekly_forecast_widget = DailyForecastWidget(scale_factor=self._scale_factor)
         layout.addWidget(self._weekly_forecast_widget)
 
         # Status label removed - no longer needed
 
-        # Set size policy with reasonable height
+        # Set size policy with reasonable height (scaled)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        self.setFixedHeight(
-            440
-        )  # Much larger height for dramatically bigger weather icons
+        # Increased height to accommodate centered text without cutting off second pane
+        if self._scale_factor < 1.0:  # Small screens
+            base_height = 310  # Increased to prevent cut-off
+        else:  # Large screens
+            base_height = 350  # Increased to prevent cut-off
+        scaled_height = int(base_height * self._scale_factor)
+        self.setFixedHeight(scaled_height)
 
     def update_config(self, config: WeatherConfig) -> None:
         """Update weather configuration."""

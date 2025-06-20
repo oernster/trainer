@@ -49,10 +49,11 @@ class AstronomyEventIcon(QLabel):
 
     event_clicked = Signal(AstronomyEvent)
 
-    def __init__(self, event: AstronomyEvent, parent=None):
+    def __init__(self, event: AstronomyEvent, parent=None, scale_factor=1.0):
         """Initialize astronomy event icon."""
         super().__init__(parent)
         self._event = event
+        self._scale_factor = scale_factor
         self._setup_ui()
         self._setup_interactions()
 
@@ -67,11 +68,14 @@ class AstronomyEventIcon(QLabel):
         # Set alignment
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        # Set size policy - extra large container for dramatically bigger icons with borders
+        # Set size policy - reasonable container for small screens (scaled)
         self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        self.setFixedSize(
-            100, 100
-        )  # Extra large size to fully accommodate big icons and hover borders
+        if self._scale_factor < 1.0:  # Small screens - reasonable size
+            base_size = 70
+        else:  # Large screens
+            base_size = 100
+        scaled_size = int(base_size * self._scale_factor)
+        self.setFixedSize(scaled_size, scaled_size)
 
         # Set tooltip
         tooltip = f"{self._event.title}\n{self._event.get_formatted_time()}"
@@ -84,18 +88,23 @@ class AstronomyEventIcon(QLabel):
 
     def _setup_interactions(self) -> None:
         """Setup mouse interactions."""
-        # Get current font size from the existing style
-        if self._event.priority.value >= 3:  # High priority
-            font_size = "40px"
-        else:
-            font_size = "36px"
+        # Get current font size from the existing style (scaled) - reasonable size for small screens
+        if self._scale_factor < 1.0:  # Small screens - reasonable icon size
+            base_font_size = 28 if self._event.priority.value >= 3 else 24
+        else:  # Large screens
+            base_font_size = 40 if self._event.priority.value >= 3 else 36
+        scaled_font_size = int(base_font_size * self._scale_factor)
+        font_size = f"{scaled_font_size}px"
+        
+        scaled_border_radius = int(4 * self._scale_factor)
+        scaled_padding = int(2 * self._scale_factor)
 
         self.setStyleSheet(
             f"""
             AstronomyEventIcon {{
                 border: 1px solid transparent;
-                border-radius: 4px;
-                padding: 2px;
+                border-radius: {scaled_border_radius}px;
+                padding: {scaled_padding}px;
                 font-size: {font_size};
                 font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji';
             }}
@@ -130,9 +139,10 @@ class DailyAstronomyPanel(QFrame):
 
     event_icon_clicked = Signal(AstronomyEvent)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, scale_factor=1.0):
         """Initialize daily astronomy panel."""
         super().__init__(parent)
+        self._scale_factor = scale_factor
         self._astronomy_data: Optional[AstronomyData] = None
         self._event_icons: List[AstronomyEventIcon] = []
         self._setup_ui()
@@ -142,45 +152,53 @@ class DailyAstronomyPanel(QFrame):
         self.setFrameStyle(QFrame.Shape.NoFrame)  # Remove frame to eliminate dark bars
         self.setLineWidth(0)
 
-        # Main layout
+        # Main layout (scaled)
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(4, 6, 4, 6)  # Increased vertical margins
-        layout.setSpacing(4)  # Increased spacing between elements
+        scaled_margin_h = int(4 * self._scale_factor)
+        scaled_margin_v = int(6 * self._scale_factor)
+        scaled_spacing = int(4 * self._scale_factor)
+        layout.setContentsMargins(scaled_margin_h, scaled_margin_v, scaled_margin_h, scaled_margin_v)
+        layout.setSpacing(scaled_spacing)
 
-        # Date label - ensure no background styling
+        # Date label - ensure no background styling (scaled)
         self._date_label = QLabel()
         self._date_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self._date_label.setStyleSheet("background: transparent; border: none;")
         font = QFont()
-        font.setPointSize(10)
+        scaled_font_size = int(10 * self._scale_factor)
+        font.setPointSize(scaled_font_size)
         font.setBold(True)
         self._date_label.setFont(font)
         layout.addWidget(self._date_label)
 
-        # Icons container - remove any background styling
+        # Icons container - remove any background styling (scaled)
         self._icons_widget = QWidget()
         self._icons_widget.setStyleSheet("background: transparent; border: none;")
         self._icons_layout = QHBoxLayout(self._icons_widget)
-        self._icons_layout.setContentsMargins(
-            2, 4, 2, 4
-        )  # Add vertical margins for icon spacing
-        self._icons_layout.setSpacing(3)  # Slightly more spacing between icons
+        scaled_icon_margin_h = int(2 * self._scale_factor)
+        scaled_icon_margin_v = int(4 * self._scale_factor)
+        scaled_icon_spacing = int(3 * self._scale_factor)
+        self._icons_layout.setContentsMargins(scaled_icon_margin_h, scaled_icon_margin_v, scaled_icon_margin_h, scaled_icon_margin_v)
+        self._icons_layout.setSpacing(scaled_icon_spacing)
         self._icons_layout.addStretch()  # Center icons
         layout.addWidget(self._icons_widget)
 
-        # Moon phase label - ensure no background styling, dramatically larger font
+        # Moon phase label - ensure no background styling, reasonable size for small screens (scaled)
         self._moon_label = QLabel()
         self._moon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        # Use reasonable moon icon size for small screens
+        base_moon_size = 24 if self._scale_factor < 1.0 else 32
+        scaled_moon_size = int(base_moon_size * self._scale_factor)
         self._moon_label.setStyleSheet(
-            "background: transparent; border: none; font-size: 32px; font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji';"
+            f"background: transparent; border: none; font-size: {scaled_moon_size}px; font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji';"
         )
         layout.addWidget(self._moon_label)
 
-        # Set size policy - extra large height for much larger icons with borders
+        # Set size policy - reasonable height for small screens (scaled)
         self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-        self.setFixedHeight(
-            210
-        )  # Extra large height for largest icon containers and borders
+        base_height = 170 if self._scale_factor < 1.0 else 210
+        scaled_height = int(base_height * self._scale_factor)
+        self.setFixedHeight(scaled_height)
 
     def update_data(self, astronomy_data: AstronomyData) -> None:
         """Update panel with astronomy data."""
@@ -197,7 +215,7 @@ class DailyAstronomyPanel(QFrame):
         events_to_show = astronomy_data.get_sorted_events(by_priority=True)[:3]
 
         for event in events_to_show:
-            icon = AstronomyEventIcon(event)
+            icon = AstronomyEventIcon(event, scale_factor=self._scale_factor)
             icon.event_clicked.connect(self.event_icon_clicked.emit)
             self._event_icons.append(icon)
             self._icons_layout.insertWidget(self._icons_layout.count() - 1, icon)
@@ -264,28 +282,37 @@ class AstronomyForecastPanel(QWidget):
 
     event_icon_clicked = Signal(AstronomyEvent)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, scale_factor=1.0):
         """Initialize astronomy forecast panel."""
         super().__init__(parent)
+        self._scale_factor = scale_factor
         self._daily_panels: List[DailyAstronomyPanel] = []
         self._setup_ui()
 
     def _setup_ui(self) -> None:
         """Setup forecast panel layout."""
-        # Main layout - more compact spacing
+        # Main layout - evenly spaced panels with fixed sizes (scaled)
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(4, 4, 4, 4)  # Reduced margins
-        layout.setSpacing(2)  # Reduced spacing between panels
+        scaled_margin = int(4 * self._scale_factor)
+        layout.setContentsMargins(scaled_margin, scaled_margin, scaled_margin, scaled_margin)
+        
+        # Add leading stretch
+        layout.addStretch(1)
 
-        # Create 7 daily panels
+        # Create 7 daily panels with proper spacing
         for i in range(7):
-            panel = DailyAstronomyPanel()
+            panel = DailyAstronomyPanel(scale_factor=self._scale_factor)
             panel.event_icon_clicked.connect(self.event_icon_clicked.emit)
             self._daily_panels.append(panel)
-            layout.addWidget(panel)
+            layout.addWidget(panel, 0)  # Fixed size, no stretch
+            
+            # Add spacing between panels (except after the last one)
+            if i < 6:
+                scaled_spacing = int(4 * self._scale_factor)
+                layout.addSpacing(scaled_spacing)
 
-        # Add stretch to center panels if needed
-        layout.addStretch()
+        # Add trailing stretch
+        layout.addStretch(1)
 
     def update_forecast(self, forecast_data: AstronomyForecastData) -> None:
         """Update forecast display with new data."""
@@ -747,54 +774,67 @@ class AstronomyWidget(QWidget):
     astronomy_event_clicked = Signal(AstronomyEvent)
     nasa_link_clicked = Signal(str)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, scale_factor=1.0):
         """Initialize astronomy widget."""
         super().__init__(parent)
+        self._scale_factor = scale_factor
         self._config: Optional[AstronomyConfig] = None
         self._setup_ui()
         self._connect_signals()
 
     def _setup_ui(self) -> None:
         """Setup main astronomy widget layout."""
-        # Main layout
+        # Main layout (scaled)
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(8, 6, 8, 6)  # Reduced vertical margins
-        layout.setSpacing(6)  # Reduced spacing between forecast and button
+        scaled_margin_h = int(8 * self._scale_factor)
+        scaled_margin_v = int(6 * self._scale_factor)
+        scaled_spacing = int(6 * self._scale_factor)
+        layout.setContentsMargins(scaled_margin_h, scaled_margin_v, scaled_margin_h, scaled_margin_v)
+        layout.setSpacing(scaled_spacing)
 
         # Forecast panel
-        self._forecast_panel = AstronomyForecastPanel()
+        self._forecast_panel = AstronomyForecastPanel(scale_factor=self._scale_factor)
         layout.addWidget(self._forecast_panel)
 
-        # Astronomical events button
+        # Astronomical events button (scaled)
         self._sky_button = QPushButton("🌟 Current Astronomical Events")
+        scaled_font_size = int(12 * self._scale_factor)
+        scaled_padding_h = int(12 * self._scale_factor)
+        scaled_padding_v = int(6 * self._scale_factor)
+        scaled_border_radius = int(6 * self._scale_factor)
+        scaled_max_height = int(32 * self._scale_factor)
         self._sky_button.setStyleSheet(
-            """
-            QPushButton {
+            f"""
+            QPushButton {{
                 background-color: #4fc3f7;
                 color: white;
                 border: none;
-                border-radius: 6px;
-                padding: 6px 12px;
+                border-radius: {scaled_border_radius}px;
+                padding: {scaled_padding_v}px {scaled_padding_h}px;
                 font-weight: bold;
-                font-size: 12px;
-                max-height: 32px;
-            }
-            QPushButton:hover {
+                font-size: {scaled_font_size}px;
+                max-height: {scaled_max_height}px;
+            }}
+            QPushButton:hover {{
                 background-color: #29b6f6;
-            }
-            QPushButton:pressed {
+            }}
+            QPushButton:pressed {{
                 background-color: #0288d1;
-            }
+            }}
         """
         )
         self._sky_button.clicked.connect(self._open_night_sky_view)
         layout.addWidget(self._sky_button)
 
-        # Set size policy - increased height to prevent button cutoff
+        # Set size policy - reasonable height for small screens (scaled)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        self.setMaximumHeight(
-            460
-        )  # Increased to accommodate extra large daily panels (210px) plus button and spacing
+        # Reasonable height for small screens to leave space for train data
+        if self._scale_factor < 1.0:  # Small screens
+            base_height = 280
+        else:  # Large screens
+            base_height = 440
+        scaled_max_height = int(base_height * self._scale_factor)
+        self.setMaximumHeight(scaled_max_height)
 
     def _connect_signals(self) -> None:
         """Connect internal signals."""
