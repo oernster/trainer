@@ -229,46 +229,10 @@ class MainWindow(QMainWindow):
         self.setup_menu_bar()
 
     def setup_application_icon(self):
-        """Setup application icon from assets directory for window."""
-        # Try PNG files first (better Windows compatibility)
-        png_sizes = [16, 24, 32, 48, 64]
-        icon = QIcon()
-        png_found = False
-
-        for size in png_sizes:
-            png_path = Path(f"assets/train_icon_{size}.png")
-            if png_path.exists():
-                icon.addFile(str(png_path), QSize(size, size))
-                png_found = True
-
-        if png_found:
-            # Set window icon (this also affects taskbar on Windows)
-            self.setWindowIcon(icon)
-            logger.info("Window icon loaded from PNG files with multiple sizes")
-            return
-
-        # Fallback to SVG if PNG files not available
-        svg_path = Path("assets/train_icon.svg")
-        if svg_path.exists():
-            # Create QIcon with multiple sizes for better display
-            icon = QIcon(str(svg_path))
-
-            # Add multiple sizes for crisp display at different scales
-            icon.addFile(str(svg_path), QSize(16, 16))
-            icon.addFile(str(svg_path), QSize(24, 24))
-            icon.addFile(str(svg_path), QSize(32, 32))
-            icon.addFile(str(svg_path), QSize(48, 48))
-            icon.addFile(str(svg_path), QSize(64, 64))
-
-            # Set window icon (this also affects taskbar on Windows)
-            self.setWindowIcon(icon)
-            logger.info(
-                "Window icon loaded from assets/train_icon.svg with multiple sizes"
-            )
-        else:
-            # Fallback to Unicode train emoji in title
-            self.setWindowTitle(f"🚂 {__app_display_name__}")
-            logger.warning("No train icon files found, using Unicode fallback")
+        """Setup application icon using Unicode train emoji in title."""
+        # Use Unicode train emoji in window title for consistent cross-platform display
+        self.setWindowTitle(f"🚂 {__app_display_name__}")
+        logger.info("Using Unicode train emoji in window title as application icon")
 
     def setup_header(self, layout):
         """Setup header section with theme toggle."""
