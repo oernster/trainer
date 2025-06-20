@@ -194,11 +194,13 @@ class DailyAstronomyPanel(QFrame):
         )
         layout.addWidget(self._moon_label)
 
-        # Set size policy - reasonable height for small screens (scaled)
-        self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        # Set size policy - fixed width and height for consistent layout (scaled)
+        self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         base_height = 170 if self._scale_factor < 1.0 else 210
+        base_width = 120 if self._scale_factor < 1.0 else 150  # Fixed width to prevent shrinking
         scaled_height = int(base_height * self._scale_factor)
-        self.setFixedHeight(scaled_height)
+        scaled_width = int(base_width * self._scale_factor)
+        self.setFixedSize(scaled_width, scaled_height)
 
     def update_data(self, astronomy_data: AstronomyData) -> None:
         """Update panel with astronomy data."""
