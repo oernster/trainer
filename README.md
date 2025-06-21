@@ -2,6 +2,8 @@
 
 **Author: Oliver Ernster**
 
+### If you like it please buy me a coffee: [Donation link](https://www.paypal.com/ncp/payment/7XYN6DCYK24VY)
+
 A modern PySide6 desktop application that displays real-time train departure information with integrated weather forecasting and astronomical events, featuring a sleek dark theme interface with automatic refresh capabilities.
 
 ![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
