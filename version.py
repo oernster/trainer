@@ -7,8 +7,8 @@ weather integration features and build system information.
 """
 
 # Core application information
-__version__ = "3.3.2"  # Major version bump for weather integration
-__version_info__ = (3, 3, 2)
+__version__ = "3.4.2"  # Major version bump for weather integration
+__version_info__ = (3, 4, 2)
 __app_name__ = "Trainer"
 __app_display_name__ = "Trainer - Train Times with Weather Integration & Astronomical Events"
 __author__ = "Oliver Ernster"
