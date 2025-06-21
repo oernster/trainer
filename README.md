@@ -50,9 +50,9 @@ python build.py
 ## ✨ Key Features
 
 ### 🚂 Train Information
-- Real-time departures with 10-hour window
+- Real-time departures with 16-hour window
 - Platform numbers, delays, cancellations
-- Automatic refresh every 2 minutes
+- Automatic refresh every 30 minutes
 
 ### 🌤️ Weather Integration
 - Real-time weather and 7-day forecast

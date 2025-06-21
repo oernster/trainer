@@ -52,12 +52,12 @@
   },
   "refresh": {
     "auto_enabled": true,
-    "interval_minutes": 2,
+    "interval_minutes": 30,
     "manual_enabled": true
   },
   "display": {
     "max_trains": 50,
-    "time_window_hours": 10,
+    "time_window_hours": 16,
     "show_cancelled": true,
     "theme": "dark"
   },

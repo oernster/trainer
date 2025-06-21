@@ -1,8 +1,8 @@
 # ✨ Features
 
 ## 🚂 Train Information
-- **⏰ Extended Time Window** - View trains up to 10 hours ahead for better planning
-- **🔄 Real-time Updates** - Automatic refresh every 2 minutes + manual refresh
+- **⏰ Extended Time Window** - View trains up to 16 hours ahead for better planning
+- **🔄 Real-time Updates** - Automatic refresh every 30 minutes + manual refresh
 - **📊 Comprehensive Information** - Platform numbers, delays, cancellations, operators
 - **📍 Live Tracking** - Current train locations when available
 
