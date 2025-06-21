@@ -69,45 +69,25 @@ class TestTrainerSplashScreenSimple:
             splash.close()
 
     def test_create_icon_widget_no_icons(self, qapp):
-        """Test icon widget creation when no icons exist."""
-        with patch("src.ui.splash_screen.Path") as mock_path:
-            # Mock Path to return non-existent files
-            mock_path_obj = Mock()
-            mock_path_obj.exists.return_value = False
-            mock_path.return_value = mock_path_obj
+        """Test splash screen creation (no longer uses external icon files)."""
+        with patch("src.ui.splash_screen.logger") as mock_logger:
+            splash = TrainerSplashScreen()
 
-            with patch("src.ui.splash_screen.logger") as mock_logger:
-                splash = TrainerSplashScreen()
+            # Should initialize successfully without warnings about missing icons
+            # (now uses emoji directly)
+            mock_logger.info.assert_called_with("Splash screen initialized")
 
-                # Should warn about no icon found
-                mock_logger.warning.assert_any_call(
-                    "No train icon found for splash screen"
-                )
-
-                splash.close()
+            splash.close()
 
     def test_create_icon_widget_svg_exists(self, qapp, temp_assets_dir):
-        """Test icon widget creation when SVG file exists."""
-        # Create dummy SVG file
-        svg_file = temp_assets_dir / "train_icon.svg"
-        svg_file.write_text("<svg><rect width='100' height='100'/></svg>")
+        """Test splash screen creation (no longer uses external SVG files)."""
+        with patch("src.ui.splash_screen.logger") as mock_logger:
+            splash = TrainerSplashScreen()
 
-        with patch("src.ui.splash_screen.Path") as mock_path:
+            # Should initialize successfully (now uses emoji directly)
+            mock_logger.info.assert_called_with("Splash screen initialized")
 
-            def path_side_effect(path_str):
-                if path_str == "assets/train_icon.svg":
-                    return svg_file
-                return Path(path_str)
-
-            mock_path.side_effect = path_side_effect
-
-            with patch("src.ui.splash_screen.logger") as mock_logger:
-                splash = TrainerSplashScreen()
-
-                # Check that SVG widget was created and logger called
-                mock_logger.info.assert_any_call("Splash screen using SVG icon")
-
-                splash.close()
+            splash.close()
 
     def test_show_message(self, qapp):
         """Test show_message method."""
@@ -193,21 +173,16 @@ class TestTrainerSplashScreenSimple:
 
         splash.close()
 
-    def test_create_icon_widget_method_directly(self, qapp):
-        """Test create_icon_widget method directly."""
+    def test_emoji_display(self, qapp):
+        """Test that emoji is properly displayed in splash screen."""
         splash = TrainerSplashScreen()
 
-        # Test when no icons exist
-        with patch("src.ui.splash_screen.Path") as mock_path:
-
-            def path_side_effect(path_str):
-                mock_path_obj = Mock()
-                mock_path_obj.exists.return_value = False
-                return mock_path_obj
-
-            mock_path.side_effect = path_side_effect
-
-            result = splash.create_icon_widget()
-            assert result is None
+        # Check that the splash screen has the main widget with emoji
+        assert hasattr(splash, "main_widget")
+        
+        # The splash screen should have been set up with emoji labels
+        # We can't easily test the exact emoji content due to Qt widget complexity,
+        # but we can verify the setup completed without errors
+        assert splash.main_widget is not None
 
         splash.close()

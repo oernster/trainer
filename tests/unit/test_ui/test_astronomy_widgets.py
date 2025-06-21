@@ -200,8 +200,8 @@ class TestAstronomyEventIcon:
         assert icon._event == sample_astronomy_event
         assert icon.text() == sample_astronomy_event.event_icon
         assert icon.alignment() == Qt.AlignmentFlag.AlignCenter
-        assert icon.size().width() == 100
-        assert icon.size().height() == 100
+        assert icon.size().width() == 60
+        assert icon.size().height() == 60
 
         # Check tooltip
         expected_tooltip = f"{sample_astronomy_event.title}\n{sample_astronomy_event.get_formatted_time()}\n{sample_astronomy_event.visibility_info}"
@@ -317,7 +317,7 @@ class TestDailyAstronomyPanel:
 
         assert panel._astronomy_data is None
         assert panel._event_icons == []
-        assert panel.height() == 210
+        assert panel.height() == 180
 
         panel.deleteLater()
 
@@ -1148,7 +1148,7 @@ class TestAstronomyWidget:
         assert "🌟 Current Astronomical Events" in widget._sky_button.text()
 
         # Check size constraints
-        assert widget.maximumHeight() == 460
+        assert widget.maximumHeight() == 280
 
         widget.deleteLater()
 

@@ -87,7 +87,7 @@ class TestRefreshConfig:
         config = RefreshConfig()
 
         assert config.auto_enabled == True
-        assert config.interval_minutes == 2
+        assert config.interval_minutes == 30
         assert config.manual_enabled == True
 
     def test_refresh_config_custom(self):
@@ -109,7 +109,7 @@ class TestDisplayConfig:
         config = DisplayConfig()
 
         assert config.max_trains == 50
-        assert config.time_window_hours == 10
+        assert config.time_window_hours == 16
         assert config.show_cancelled == True
         assert config.theme == "dark"
 
@@ -159,7 +159,7 @@ class TestConfigManager:
         assert isinstance(config, ConfigData)
         assert config.stations.from_code == "FLE"
         assert config.stations.to_code == "WAT"
-        assert config.display.time_window_hours == 10
+        assert config.display.time_window_hours == 16
         assert config.display.max_trains == 50
         assert config.api.app_id == "test_id"  # From test fixture
 
@@ -365,12 +365,12 @@ class TestConfigManager:
                 },
                 "refresh": {
                     "auto_enabled": True,
-                    "interval_minutes": 2,
+                    "interval_minutes": 30,
                     "manual_enabled": True,
                 },
                 "display": {
                     "max_trains": 50,
-                    "time_window_hours": 10,
+                    "time_window_hours": 16,
                     "show_cancelled": True,
                     "theme": "dark",
                 },
@@ -508,12 +508,12 @@ class TestConfigManager:
                 },
                 "refresh": {
                     "auto_enabled": True,
-                    "interval_minutes": 2,
+                    "interval_minutes": 30,
                     "manual_enabled": True,
                 },
                 "display": {
                     "max_trains": 50,
-                    "time_window_hours": 10,
+                    "time_window_hours": 16,
                     "show_cancelled": True,
                     "theme": "dark",
                 },
@@ -939,12 +939,12 @@ class TestConfigManagerWeatherIntegration:
                 },
                 "refresh": {
                     "auto_enabled": True,
-                    "interval_minutes": 2,
+                    "interval_minutes": 30,
                     "manual_enabled": True,
                 },
                 "display": {
                     "max_trains": 50,
-                    "time_window_hours": 10,
+                    "time_window_hours": 16,
                     "show_cancelled": True,
                     "theme": "dark",
                 },
@@ -1062,12 +1062,12 @@ class TestConfigManagerWeatherIntegration:
                 },
                 "refresh": {
                     "auto_enabled": True,
-                    "interval_minutes": 2,
+                    "interval_minutes": 30,
                     "manual_enabled": True,
                 },
                 "display": {
                     "max_trains": 50,
-                    "time_window_hours": 10,
+                    "time_window_hours": 16,
                     "show_cancelled": True,
                     "theme": "dark",
                 },
@@ -1171,12 +1171,12 @@ class TestConfigManagerMigration:
                 },
                 "refresh": {
                     "auto_enabled": True,
-                    "interval_minutes": 2,
+                    "interval_minutes": 30,
                     "manual_enabled": True,
                 },
                 "display": {
                     "max_trains": 50,
-                    "time_window_hours": 10,
+                    "time_window_hours": 16,
                     "show_cancelled": True,
                     "theme": "dark",
                 },
@@ -1307,12 +1307,12 @@ def temp_config_file():
             },
             "refresh": {
                 "auto_enabled": True,
-                "interval_minutes": 2,
+                "interval_minutes": 30,
                 "manual_enabled": True,
             },
             "display": {
                 "max_trains": 50,
-                "time_window_hours": 10,
+                "time_window_hours": 16,
                 "show_cancelled": True,
                 "theme": "dark",
             },

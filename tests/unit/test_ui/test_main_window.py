@@ -647,8 +647,10 @@ class TestMainWindow:
 
             window = MainWindow(config_manager)
 
-            # Window title should include Unicode train emoji
-            assert "🚂" in window.windowTitle()
+            # Window title should NOT include Unicode train emoji (we removed it from title)
+            # but should still have "Trainer" in the title
+            assert "Trainer" in window.windowTitle()
+            assert "🚂" not in window.windowTitle()
 
             window.close()
 
