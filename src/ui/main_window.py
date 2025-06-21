@@ -233,8 +233,8 @@ class MainWindow(QMainWindow):
         from PySide6.QtGui import QPixmap, QPainter, QFont
         from PySide6.QtCore import Qt
         
-        # Set window title with emoji
-        self.setWindowTitle(f"🚂 {__app_display_name__}")
+        # Set window title without emoji (emoji is already in the window icon)
+        self.setWindowTitle(__app_display_name__)
         
         # Create and set window icon from emoji
         try:

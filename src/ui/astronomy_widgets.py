@@ -68,12 +68,12 @@ class AstronomyEventIcon(QLabel):
         # Set alignment
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        # Set size policy - reasonable container for small screens (scaled)
+        # Set size policy - smaller container to prevent truncation (scaled)
         self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         if self._scale_factor < 1.0:  # Small screens - reasonable size
-            base_size = 70
+            base_size = 50  # Reduced from 70
         else:  # Large screens
-            base_size = 100
+            base_size = 60  # Reduced from 100
         scaled_size = int(base_size * self._scale_factor)
         self.setFixedSize(scaled_size, scaled_size)
 
@@ -194,13 +194,14 @@ class DailyAstronomyPanel(QFrame):
         )
         layout.addWidget(self._moon_label)
 
-        # Set size policy - fixed width and height for consistent layout (scaled)
-        self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        base_height = 170 if self._scale_factor < 1.0 else 210
-        base_width = 120 if self._scale_factor < 1.0 else 150  # Fixed width to prevent shrinking
+        # Set size policy - expanding width, fixed height for better distribution
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        base_height = 160 if self._scale_factor < 1.0 else 180  # Increased to prevent internal content truncation
+        base_min_width = 100 if self._scale_factor < 1.0 else 120  # Minimum width
         scaled_height = int(base_height * self._scale_factor)
-        scaled_width = int(base_width * self._scale_factor)
-        self.setFixedSize(scaled_width, scaled_height)
+        scaled_min_width = int(base_min_width * self._scale_factor)
+        self.setFixedHeight(scaled_height)
+        self.setMinimumWidth(scaled_min_width)
 
     def update_data(self, astronomy_data: AstronomyData) -> None:
         """Update panel with astronomy data."""
@@ -293,28 +294,22 @@ class AstronomyForecastPanel(QWidget):
 
     def _setup_ui(self) -> None:
         """Setup forecast panel layout."""
-        # Main layout - evenly spaced panels with fixed sizes (scaled)
+        # Main layout - evenly distributed panels across full width
         layout = QHBoxLayout(self)
         scaled_margin = int(4 * self._scale_factor)
         layout.setContentsMargins(scaled_margin, scaled_margin, scaled_margin, scaled_margin)
         
-        # Add leading stretch
-        layout.addStretch(1)
-
-        # Create 7 daily panels with proper spacing
+        # Create 7 daily panels with equal distribution
         for i in range(7):
             panel = DailyAstronomyPanel(scale_factor=self._scale_factor)
             panel.event_icon_clicked.connect(self.event_icon_clicked.emit)
             self._daily_panels.append(panel)
-            layout.addWidget(panel, 0)  # Fixed size, no stretch
+            layout.addWidget(panel, 1)  # Equal stretch for all panels
             
-            # Add spacing between panels (except after the last one)
+            # Add minimal spacing between panels (except after the last one)
             if i < 6:
-                scaled_spacing = int(4 * self._scale_factor)
+                scaled_spacing = int(2 * self._scale_factor)  # Reduced spacing
                 layout.addSpacing(scaled_spacing)
-
-        # Add trailing stretch
-        layout.addStretch(1)
 
     def update_forecast(self, forecast_data: AstronomyForecastData) -> None:
         """Update forecast display with new data."""
@@ -828,13 +823,13 @@ class AstronomyWidget(QWidget):
         self._sky_button.clicked.connect(self._open_night_sky_view)
         layout.addWidget(self._sky_button)
 
-        # Set size policy - reasonable height for small screens (scaled)
+        # Set size policy - adjusted height to accommodate taller panels
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        # Reasonable height for small screens to leave space for train data
+        # Increased height to prevent internal content truncation while still being compact
         if self._scale_factor < 1.0:  # Small screens
-            base_height = 280
+            base_height = 220  # Increased from 200 to accommodate taller panels
         else:  # Large screens
-            base_height = 440
+            base_height = 280  # Increased from 260 to accommodate taller panels
         scaled_max_height = int(base_height * self._scale_factor)
         self.setMaximumHeight(scaled_max_height)
 

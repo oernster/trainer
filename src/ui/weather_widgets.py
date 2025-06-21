@@ -135,7 +135,7 @@ class WeatherItemWidget(WeatherDisplayComponent):
             base_height = 130
         else:  # Large screens
             base_width = 120 if self._is_daily else 100
-            base_height = 150
+            base_height = 170 if self._is_daily else 150  # Increased height for daily forecast on large screens
         scaled_width = int(base_width * self._scale_factor)
         scaled_height = int(base_height * self._scale_factor)
         self.setFixedSize(scaled_width, scaled_height)
@@ -298,8 +298,12 @@ class WeatherForecastWidget(QWidget):
 
     def setup_ui(self) -> None:
         """Setup the forecast widget UI."""
-        # Scale height based on screen size - reduce significantly to prevent overlap
-        scaled_height = int(160 * self._scale_factor)
+        # Scale height based on screen size - increase for large screens to prevent cutoff
+        if self._scale_factor < 1.0:  # Small screens
+            base_height = 160
+        else:  # Large screens
+            base_height = 180  # Increased for large screens to accommodate taller items
+        scaled_height = int(base_height * self._scale_factor)
         self.setFixedHeight(scaled_height)
 
         # Simple horizontal layout for weather items (scaled) - centered distribution

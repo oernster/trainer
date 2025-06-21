@@ -54,7 +54,7 @@ def check_nuitka():
 
 def check_dependencies():
     """Check if all required dependencies are installed."""
-    print("🔍 Checking dependencies...")
+    print("🚂 Checking dependencies...")
 
     # Map package names to their import names
     required_packages = {
@@ -87,7 +87,7 @@ def check_dependencies():
 
 def prepare_build_directory():
     """Prepare build directory and clean previous builds."""
-    print("🧹 Cleaning previous builds...")
+    print("🚂 Cleaning previous builds...")
 
     # Remove previous build artifacts including onefile build dirs
     build_dirs = ["build", "dist", "main.dist", "main.build", "main.onefile-build"]
@@ -116,7 +116,7 @@ def prepare_build_directory():
 
 def create_lgpl_license_files():
     """Create LGPL3 license files for PySide6 compliance."""
-    print("📄 Creating LGPL3 license files for PySide6 compliance...")
+    print("🚂 Creating LGPL3 license files for PySide6 compliance...")
 
     # Create licenses directory
     licenses_dir = Path("licenses")
@@ -176,28 +176,24 @@ For complete license texts, see the licenses/ directory.
 
 def build_executable(nuitka_command):
     """Build the executable using Nuitka with --onefile option."""
-    print("🔨 Building executable with Nuitka...")
+    print("🚂 Building executable with Nuitka...")
 
     # Create LGPL license files first
     create_lgpl_license_files()
 
-    # Determine the best icon file to use (prioritize ICO for Windows)
-    icon_file = None
-    icon_candidates = [
-        "assets/train_icon.ico",  # ICO preferred for Windows
-        "assets/train_icon_32.png",  # PNG fallback
-        "assets/train_icon.svg",  # SVG fallback
-    ]
-
-    for candidate in icon_candidates:
-        candidate_path = Path(candidate)
-        if candidate_path.exists() and candidate_path.stat().st_size > 0:
-            icon_file = candidate
-            print(f"  Using icon: {icon_file}")
-            break
-
-    if not icon_file:
-        print("  ⚠️ No icon file found, building without icon")
+    # Use the emoji-based train icon file
+    icon_file = "assets/train_emoji.ico"
+    if Path(icon_file).exists():
+        print(f"  🚂 Using emoji-based train icon: {icon_file}")
+    else:
+        print("  🚂 Creating emoji-based train icon...")
+        # Create the emoji icon if it doesn't exist
+        result = subprocess.run(["python", "create_emoji_icon.py"], capture_output=True, text=True)
+        if result.returncode == 0:
+            print(f"  ✅ Created emoji icon: {icon_file}")
+        else:
+            print("  ⚠️ Failed to create emoji icon, building without icon")
+            icon_file = None
 
     # Build Nuitka command based on how nuitka was found
     if nuitka_command == "python -m nuitka":
@@ -223,7 +219,7 @@ def build_executable(nuitka_command):
 
     nuitka_cmd.extend(nuitka_options)
 
-    # Add icon if available
+    # Add emoji icon if available
     if icon_file:
         nuitka_cmd.append(f"--windows-icon-from-ico={icon_file}")
 
@@ -252,7 +248,7 @@ def build_executable(nuitka_command):
 
 def create_clean_distribution():
     """Create a clean main.dist directory with only exe, licenses, and icon."""
-    print("📦 Creating clean distribution in main.dist...")
+    print("🚂 Creating clean distribution in main.dist...")
 
     # Create main.dist directory
     dist_dir = Path("main.dist")
@@ -282,32 +278,14 @@ def create_clean_distribution():
         shutil.copytree(licenses_src, licenses_dest)
         print(f"  Copied {licenses_src} → {licenses_dest}")
 
-    # Copy icon file (only if it has content and is useful for distribution)
-    # Note: ICO files are embedded in the executable by Nuitka, so we only copy
-    # them if they're valid and might be useful for shortcuts/file associations
-    icon_candidates = [
-        "assets/train_icon.ico",
-        "assets/train_icon_32.png",
-        "assets/train_icon.svg",
-    ]
-
-    icon_copied = False
-    for icon_path in icon_candidates:
-        icon_src = Path(icon_path)
-        if icon_src.exists() and icon_src.stat().st_size > 0:
-            # For ICO files, only copy if they're reasonably sized (not empty)
-            if icon_path.endswith(".ico") and icon_src.stat().st_size < 100:
-                print(f"  Skipping {icon_src} (too small, likely empty)")
-                continue
-
-            icon_dest = dist_dir / icon_src.name
-            shutil.copy2(icon_src, icon_dest)
-            print(f"  Copied {icon_src} → {icon_dest}")
-            icon_copied = True
-            break
-
-    if not icon_copied:
-        print("  ℹ️ No icon file copied (icon is embedded in executable)")
+    # Copy emoji icon file if it exists (useful for shortcuts/file associations)
+    emoji_icon = Path("assets/train_emoji.ico")
+    if emoji_icon.exists():
+        icon_dest = dist_dir / "train_emoji.ico"
+        shutil.copy2(emoji_icon, icon_dest)
+        print(f"  🚂 Copied emoji icon: {emoji_icon} → {icon_dest}")
+    else:
+        print("  🚂 Emoji icon embedded in executable")
 
     return True
 
@@ -374,17 +352,19 @@ def main():
     print("- trainer.exe (single executable with embedded icon)")
     print("- licenses/ (LGPL3 compliance files)")
 
-    # Check if icon was copied to distribution
+    # Check if emoji icon was copied to distribution
     dist_dir = Path("main.dist")
-    icon_files = list(dist_dir.glob("train_icon.*"))
-    if icon_files:
-        print(f"- {icon_files[0].name} (application icon for shortcuts)")
+    emoji_icon_files = list(dist_dir.glob("train_emoji.ico"))
+    if emoji_icon_files:
+        print(f"- {emoji_icon_files[0].name} (🚂 emoji-based train icon for shortcuts)")
+    else:
+        print("- 🚂 Emoji-based train icon (embedded in executable)")
 
     print("\nNext steps:")
     print("1. Test the executable: main.dist/trainer.exe")
     print("2. Distribute the entire main.dist/ folder")
     print(
-        "\nNote: The executable is self-contained with all dependencies and embedded icon."
+        "\nNote: The executable is self-contained with all dependencies and emoji-based train icon."
     )
 
 
