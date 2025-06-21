@@ -49,7 +49,7 @@ class RefreshConfig(BaseModel):
     """Configuration for data refresh settings."""
 
     auto_enabled: bool = True
-    interval_minutes: int = 2
+    interval_minutes: int = 30
     manual_enabled: bool = True
 
 
@@ -57,7 +57,7 @@ class DisplayConfig(BaseModel):
     """Configuration for display settings."""
 
     max_trains: int = 50
-    time_window_hours: int = 10
+    time_window_hours: int = 16
     show_cancelled: bool = True
     theme: str = "dark"  # Default to dark theme - "dark" or "light"
 

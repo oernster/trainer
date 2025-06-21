@@ -7,7 +7,7 @@ information from Fleet to London Waterloo using the Transport API.
 Features:
 - Light/Dark theme switching (defaults to dark)
 - Extended 16-hour time window
-- Real-time updates every 2 minutes
+- Real-time updates every 30 minutes
 - Custom train icon
 - Comprehensive train information display
 """

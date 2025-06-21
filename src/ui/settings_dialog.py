@@ -532,7 +532,7 @@ class SettingsDialog(QDialog):
 
         # Time window
         self.time_window_spin = HorizontalSpinWidget(
-            1, 24, 10, 1, " hours", theme_manager=self.theme_manager
+            1, 24, 16, 1, " hours", theme_manager=self.theme_manager
         )
         form.addRow("Time Window:", self.time_window_spin)
 
@@ -558,7 +558,7 @@ class SettingsDialog(QDialog):
 
         # Refresh interval
         self.refresh_interval_spin = HorizontalSpinWidget(
-            1, 60, 2, 1, " minutes", theme_manager=self.theme_manager
+            1, 60, 30, 1, " minutes", theme_manager=self.theme_manager
         )
         form.addRow("Refresh Interval:", self.refresh_interval_spin)
 
