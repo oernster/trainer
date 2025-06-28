@@ -513,13 +513,13 @@ class TestAPIManagerDataParsing:
 
         # Test all mapped categories
         assert api_manager._determine_service_type("OO") == ServiceType.STOPPING
-        assert api_manager._determine_service_type("XX") == ServiceType.EXPRESS
+        assert api_manager._determine_service_type("XX") == ServiceType.FAST
         assert api_manager._determine_service_type("XZ") == ServiceType.SLEEPER
         assert api_manager._determine_service_type("BR") == ServiceType.STOPPING
 
         # Test unknown category (default)
-        assert api_manager._determine_service_type("UNKNOWN") == ServiceType.STOPPING
-        assert api_manager._determine_service_type("") == ServiceType.STOPPING
+        assert api_manager._determine_service_type("UNKNOWN") == ServiceType.FAST
+        assert api_manager._determine_service_type("") == ServiceType.FAST
 
 
 class TestAPIManagerEdgeCases:
@@ -558,7 +558,7 @@ class TestAPIManagerEdgeCases:
         assert result is not None
         assert result.platform == "2"
         assert result.operator == "South Western Railway"
-        assert result.service_type == ServiceType.EXPRESS
+        assert result.service_type == ServiceType.FAST
         assert result.status == TrainStatus.DELAYED
         assert result.delay_minutes > 0
 
@@ -578,17 +578,25 @@ class TestAPIManagerEdgeCases:
         """Test delay calculation in train data creation."""
         api_manager = APIManager(test_config)
 
-        departure = {
-            "aimed_departure_time": "20:45",
-            "expected_departure_time": "20:50",  # 5 minutes late
-            "destination_name": "London Waterloo",
-            "status": "LATE",
-        }
+        # Mock datetime.now to ensure consistent time parsing
+        with patch("src.api.api_manager.datetime") as mock_datetime:
+            # Set a fixed current time that's before both departure times
+            fixed_now = datetime(2024, 1, 1, 15, 0, 0)  # 3:00 PM
+            mock_datetime.now.return_value = fixed_now
+            mock_datetime.strptime = datetime.strptime
+            mock_datetime.combine = datetime.combine
 
-        result = api_manager._create_train_data_from_departure(departure)
-        assert result is not None
-        assert result.delay_minutes == 5
-        assert result.status == TrainStatus.DELAYED
+            departure = {
+                "aimed_departure_time": "20:45",
+                "expected_departure_time": "20:50",  # 5 minutes late
+                "destination_name": "London Waterloo",
+                "status": "LATE",
+            }
+
+            result = api_manager._create_train_data_from_departure(departure)
+            assert result is not None
+            assert result.delay_minutes == 5
+            assert result.status == TrainStatus.DELAYED
 
     def test_create_train_data_negative_delay_handling(self, test_config):
         """Test handling of negative delays (early trains)."""
@@ -650,3 +658,451 @@ class TestExceptionClasses:
         assert isinstance(exc, APIException)
         assert isinstance(exc, Exception)
         assert str(exc) == "Auth error"
+
+
+class TestAPIManagerEnhancedServiceDetails:
+    """Test enhanced service details functionality for 100% coverage."""
+
+    @pytest.mark.asyncio
+    async def test_get_departures_with_service_enhancement_success(self, test_config):
+        """Test departure enhancement with successful service details - covers lines 160-162."""
+        # Mock successful departures response
+        mock_departures_response = AsyncMock()
+        mock_departures_response.status = 200
+        mock_departures_response.json = AsyncMock(return_value={
+            "departures": {
+                "all": [{
+                    "aimed_departure_time": "20:45",
+                    "destination_name": "London Waterloo",
+                    "operator_name": "Test Operator",
+                    "service": "test_service_id",  # Has service ID
+                    "train_uid": "W12345",
+                }]
+            }
+        })
+
+        # Mock successful service details response
+        mock_service_response = AsyncMock()
+        mock_service_response.status = 200
+        mock_service_response.json = AsyncMock(return_value={
+            "departures": {
+                "all": [{
+                    "aimed_departure_time": "20:45",
+                    "destination_name": "London Waterloo",
+                    "operator_name": "Test Operator",
+                    "service": "test_service_id",
+                    "train_uid": "W12345",
+                    "calling_at": [
+                        {
+                            "station_name": "Fleet",
+                            "station_code": "FLT",
+                            "aimed_departure_time": "20:45",
+                            "is_origin": True
+                        },
+                        {
+                            "station_name": "London Waterloo",
+                            "station_code": "WAT",
+                            "aimed_arrival_time": "21:30",
+                            "is_destination": True
+                        }
+                    ]
+                }]
+            }
+        })
+
+        mock_departures_context = AsyncMock()
+        mock_departures_context.__aenter__ = AsyncMock(return_value=mock_departures_response)
+        mock_departures_context.__aexit__ = AsyncMock(return_value=None)
+
+        mock_service_context = AsyncMock()
+        mock_service_context.__aenter__ = AsyncMock(return_value=mock_service_response)
+        mock_service_context.__aexit__ = AsyncMock(return_value=None)
+
+        async with APIManager(test_config) as api_manager:
+            # Mock session.get to return different responses for different URLs
+            def mock_get(url, **kwargs):
+                if "live.json" in url and "service" in url:
+                    return mock_service_context
+                else:
+                    return mock_departures_context
+
+            with patch.object(api_manager.session, "get", side_effect=mock_get):
+                trains = await api_manager.get_departures()
+                
+                # Should have enhanced the train with service details
+                assert len(trains) == 1
+                # Lines 160-162 coverage: enhanced_trains.append(enhanced_train)
+
+    @pytest.mark.asyncio
+    async def test_get_departures_with_service_enhancement_failure(self, test_config):
+        """Test departure enhancement when service details fail - covers lines 160-162."""
+        # Mock successful departures response
+        mock_departures_response = AsyncMock()
+        mock_departures_response.status = 200
+        mock_departures_response.json = AsyncMock(return_value={
+            "departures": {
+                "all": [{
+                    "aimed_departure_time": "20:45",
+                    "destination_name": "London Waterloo",
+                    "operator_name": "Test Operator",
+                    "service": "test_service_id",  # Has service ID
+                    "train_uid": "W12345",
+                }]
+            }
+        })
+
+        # Mock failed service details response
+        mock_service_response = AsyncMock()
+        mock_service_response.status = 404
+
+        mock_departures_context = AsyncMock()
+        mock_departures_context.__aenter__ = AsyncMock(return_value=mock_departures_response)
+        mock_departures_context.__aexit__ = AsyncMock(return_value=None)
+
+        mock_service_context = AsyncMock()
+        mock_service_context.__aenter__ = AsyncMock(return_value=mock_service_response)
+        mock_service_context.__aexit__ = AsyncMock(return_value=None)
+
+        async with APIManager(test_config) as api_manager:
+            # Mock session.get to return different responses for different URLs
+            def mock_get(url, **kwargs):
+                if "live.json" in url and "service" in url:
+                    return mock_service_context
+                else:
+                    return mock_departures_context
+
+            with patch.object(api_manager.session, "get", side_effect=mock_get):
+                trains = await api_manager.get_departures()
+                
+                # Should have used original train when enhancement failed
+                assert len(trains) == 1
+                # Lines 160-162 coverage: enhanced_trains.append(train)
+
+    @pytest.mark.asyncio
+    async def test_get_departures_without_service_id(self, test_config):
+        """Test departure without service ID - covers line 162."""
+        # Mock successful departures response without service ID
+        mock_departures_response = AsyncMock()
+        mock_departures_response.status = 200
+        mock_departures_response.json = AsyncMock(return_value={
+            "departures": {
+                "all": [{
+                    "aimed_departure_time": "20:45",
+                    "destination_name": "London Waterloo",
+                    "operator_name": "Test Operator",
+                    # No service ID
+                    "train_uid": "W12345",
+                }]
+            }
+        })
+
+        mock_departures_context = AsyncMock()
+        mock_departures_context.__aenter__ = AsyncMock(return_value=mock_departures_response)
+        mock_departures_context.__aexit__ = AsyncMock(return_value=None)
+
+        async with APIManager(test_config) as api_manager:
+            with patch.object(api_manager.session, "get", return_value=mock_departures_context):
+                trains = await api_manager.get_departures()
+                
+                # Should have used original train without enhancement
+                assert len(trains) == 1
+                # Line 162 coverage: enhanced_trains.append(train)
+
+    def test_parse_service_response_no_departures_data(self, test_config):
+        """Test service response parsing without departures data - covers line 342."""
+        api_manager = APIManager(test_config)
+        
+        # Test with missing departures key
+        data = {"some_other_key": "value"}
+        result = api_manager._parse_service_response(data)
+        assert result is None  # Line 342 coverage
+        
+        # Test with missing 'all' key
+        data = {"departures": {"some_other_key": []}}
+        result = api_manager._parse_service_response(data)
+        assert result is None  # Line 342 coverage
+
+    def test_parse_service_response_empty_departures(self, test_config):
+        """Test service response parsing with empty departures - covers line 342."""
+        api_manager = APIManager(test_config)
+        
+        data = {"departures": {"all": []}}
+        result = api_manager._parse_service_response(data)
+        assert result is None  # Line 342 coverage
+
+    def test_parse_service_response_invalid_train_data(self, test_config):
+        """Test service response parsing when train data creation fails - covers line 349."""
+        api_manager = APIManager(test_config)
+        
+        # Mock _create_train_data_from_departure to return None
+        with patch.object(api_manager, "_create_train_data_from_departure", return_value=None):
+            data = {
+                "departures": {
+                    "all": [{
+                        "aimed_departure_time": "20:45",
+                        "destination_name": "London Waterloo",
+                    }]
+                }
+            }
+            result = api_manager._parse_service_response(data)
+            assert result is None  # Line 349 coverage
+
+    def test_parse_service_response_with_enhanced_calling_points(self, test_config):
+        """Test service response parsing with enhanced calling points - covers lines 353-387."""
+        api_manager = APIManager(test_config)
+        
+        data = {
+            "departures": {
+                "all": [{
+                    "aimed_departure_time": "20:45",
+                    "destination_name": "London Waterloo",
+                    "operator_name": "Test Operator",
+                    "calling_at": [
+                        {
+                            "station_name": "Fleet",
+                            "station_code": "FLT",
+                            "aimed_arrival_time": None,
+                            "aimed_departure_time": "20:45",
+                            "expected_arrival_time": None,
+                            "expected_departure_time": "20:47",
+                            "platform": "2"
+                        },
+                        {
+                            "station_name": "Woking",
+                            "station_code": "WOK",
+                            "aimed_arrival_time": "21:05",
+                            "aimed_departure_time": "21:06",
+                            "expected_arrival_time": "21:07",
+                            "expected_departure_time": "21:08",
+                            "platform": "1"
+                        },
+                        {
+                            "station_name": "London Waterloo",
+                            "station_code": "WAT",
+                            "aimed_arrival_time": "21:30",
+                            "aimed_departure_time": None,
+                            "expected_arrival_time": "21:32",
+                            "expected_departure_time": None,
+                            "platform": "12"
+                        }
+                    ]
+                }]
+            }
+        }
+        
+        result = api_manager._parse_service_response(data)
+        assert result is not None
+        assert len(result.calling_points) == 3
+        
+        # Check origin station
+        origin = result.calling_points[0]
+        assert origin.station_name == "Fleet"
+        assert origin.is_origin is True
+        assert origin.is_destination is False
+        
+        # Check intermediate station
+        intermediate = result.calling_points[1]
+        assert intermediate.station_name == "Woking"
+        assert intermediate.is_origin is False
+        assert intermediate.is_destination is False
+        
+        # Check destination station
+        destination = result.calling_points[2]
+        assert destination.station_name == "London Waterloo"
+        assert destination.is_origin is False
+        assert destination.is_destination is True
+        
+        # Lines 353-387 coverage: enhanced calling points parsing
+
+    def test_parse_service_response_calling_points_parsing_error(self, test_config):
+        """Test service response with calling points parsing error - covers lines 381-383."""
+        api_manager = APIManager(test_config)
+        
+        data = {
+            "departures": {
+                "all": [{
+                    "aimed_departure_time": "20:45",
+                    "destination_name": "London Waterloo",
+                    "calling_at": [
+                        {
+                            "station_name": "Fleet",
+                            "station_code": "FLT",
+                            "aimed_departure_time": "20:45",
+                        },
+                        {
+                            "station_name": "Woking",
+                            "station_code": "WOK",
+                            "aimed_arrival_time": "invalid_time_format",  # This will cause parsing error
+                        }
+                    ]
+                }]
+            }
+        }
+        
+        result = api_manager._parse_service_response(data)
+        # Should still return result despite parsing error in calling points
+        assert result is not None
+        # Lines 381-383 coverage: exception handling in calling points parsing
+
+    def test_parse_service_response_exception_handling(self, test_config):
+        """Test service response parsing with general exception - covers lines 406-408."""
+        api_manager = APIManager(test_config)
+        
+        # Mock _create_train_data_from_departure to raise an exception
+        with patch.object(api_manager, "_create_train_data_from_departure", side_effect=Exception("General error")):
+            data = {
+                "departures": {
+                    "all": [{
+                        "aimed_departure_time": "20:45",
+                        "destination_name": "London Waterloo",
+                    }]
+                }
+            }
+            
+            result = api_manager._parse_service_response(data)
+            assert result is None  # Lines 406-408 coverage
+
+    def test_parse_calling_points_with_api_data(self, test_config):
+        """Test calling points parsing with API data - covers lines 496-524."""
+        api_manager = APIManager(test_config)
+        
+        departure = {
+            "aimed_departure_time": "20:45",
+            "calling_at": [
+                {
+                    "station_name": "Fleet",
+                    "station_code": "FLT",
+                    "aimed_arrival_time": None,
+                    "aimed_departure_time": "20:45",
+                    "expected_arrival_time": None,
+                    "expected_departure_time": "20:47",
+                    "platform": "2"
+                },
+                {
+                    "station_name": "Woking",
+                    "station_code": "WOK",
+                    "aimed_arrival_time": "21:05",
+                    "aimed_departure_time": "21:06",
+                    "expected_arrival_time": "21:07",
+                    "expected_departure_time": "21:08",
+                    "platform": "1"
+                },
+                {
+                    "station_name": "London Waterloo",
+                    "station_code": "WAT",
+                    "aimed_arrival_time": "21:30",
+                    "aimed_departure_time": None,
+                    "expected_arrival_time": "21:32",
+                    "expected_departure_time": None,
+                    "platform": "12"
+                }
+            ]
+        }
+        
+        calling_points = api_manager._parse_calling_points(departure)
+        assert len(calling_points) == 3
+        
+        # Check origin
+        assert calling_points[0].station_name == "Fleet"
+        assert calling_points[0].is_origin is True
+        assert calling_points[0].is_destination is False
+        
+        # Check intermediate
+        assert calling_points[1].station_name == "Woking"
+        assert calling_points[1].is_origin is False
+        assert calling_points[1].is_destination is False
+        
+        # Check destination
+        assert calling_points[2].station_name == "London Waterloo"
+        assert calling_points[2].is_origin is False
+        assert calling_points[2].is_destination is True
+        
+        # Lines 496-524 coverage
+
+    def test_parse_calling_points_with_parsing_error(self, test_config):
+        """Test calling points parsing with error - covers lines 522-524."""
+        api_manager = APIManager(test_config)
+        
+        departure = {
+            "calling_at": [
+                {
+                    "station_name": "Fleet",
+                    "station_code": "FLT",
+                    "aimed_departure_time": "invalid_time_format",  # This will cause parsing error
+                }
+            ]
+        }
+        
+        calling_points = api_manager._parse_calling_points(departure)
+        # Should continue despite error and create fallback calling points
+        assert len(calling_points) > 0
+        # Lines 522-524 coverage: exception handling
+
+    def test_parse_calling_points_express_service_estimation(self, test_config):
+        """Test calling points parsing with EXPRESS service estimation - covers line 614."""
+        api_manager = APIManager(test_config)
+        
+        departure = {
+            "aimed_departure_time": "20:45",
+            "category": "XX",  # Will be mapped to FAST, but we'll mock it to EXPRESS
+            "destination_name": "London Waterloo",
+            "origin_name": "Fleet"
+        }
+        
+        # Mock _determine_service_type to return EXPRESS
+        with patch.object(api_manager, "_determine_service_type", return_value=ServiceType.EXPRESS):
+            calling_points = api_manager._parse_calling_points(departure)
+            
+            # Should have created calling points with EXPRESS timing
+            assert len(calling_points) >= 2  # Origin and destination at minimum
+            
+            # Check that destination has estimated arrival (35 minutes for EXPRESS)
+            destination = calling_points[-1]
+            assert destination.is_destination is True
+            assert destination.scheduled_arrival is not None
+            # Line 614 coverage: estimated_arrival assignment for EXPRESS service
+
+    def test_parse_calling_points_stopping_service_with_intermediates(self, test_config):
+        """Test calling points parsing for stopping service with intermediate stations."""
+        api_manager = APIManager(test_config)
+        
+        departure = {
+            "aimed_departure_time": "20:45",
+            "category": "OO",  # STOPPING service
+            "destination_name": "London Waterloo",
+            "origin_name": "Fleet"
+        }
+        
+        calling_points = api_manager._parse_calling_points(departure)
+        
+        # Should have created multiple calling points including intermediates
+        assert len(calling_points) > 2  # Origin, intermediates, and destination
+        
+        # Check that intermediate stations are included
+        station_names = [cp.station_name for cp in calling_points]
+        assert "Fleet" in station_names
+        assert "London Waterloo" in station_names
+        # Should include some intermediate stations for stopping service
+        assert len(station_names) >= 3
+
+    def test_parse_calling_points_fast_service_fewer_stops(self, test_config):
+        """Test calling points parsing for fast service with fewer stops."""
+        api_manager = APIManager(test_config)
+        
+        departure = {
+            "aimed_departure_time": "20:45",
+            "category": "XX",  # FAST service
+            "destination_name": "London Waterloo",
+            "origin_name": "Fleet"
+        }
+        
+        calling_points = api_manager._parse_calling_points(departure)
+        
+        # Should have fewer stops than stopping service
+        assert len(calling_points) >= 2  # At least origin and destination
+        
+        # Check that it includes some key stations for fast service
+        station_names = [cp.station_name for cp in calling_points]
+        assert "Fleet" in station_names
+        assert "London Waterloo" in station_names
+

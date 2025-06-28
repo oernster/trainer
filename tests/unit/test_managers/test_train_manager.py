@@ -84,6 +84,7 @@ class TestTrainManager:
                 current_location="Fleet",
                 train_uid="W12345",
                 service_id="24673004",
+                calling_points=[],
             ),
             TrainData(
                 departure_time=base_time + timedelta(minutes=25),
@@ -99,6 +100,7 @@ class TestTrainManager:
                 current_location="Fleet",
                 train_uid="W12346",
                 service_id="24673005",
+                calling_points=[],
             ),
             TrainData(
                 departure_time=base_time + timedelta(minutes=35),
@@ -114,6 +116,7 @@ class TestTrainManager:
                 current_location=None,
                 train_uid="W12347",
                 service_id="24673006",
+                calling_points=[],
             ),
         ]
 
@@ -627,6 +630,7 @@ class TestTrainManager:
                 current_location="Test Station",
                 train_uid=f"T{i:05d}",
                 service_id=f"SVC{i:05d}",
+                calling_points=[],
             )
             large_dataset.append(train)
 

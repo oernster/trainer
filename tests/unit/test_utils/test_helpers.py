@@ -104,6 +104,7 @@ class TestTimeGrouping:
             current_location="Fleet",
             train_uid="W12345",
             service_id="24673004",
+            calling_points=[],
         )
 
         assert get_time_group(train, now) == "Next Hour"
@@ -127,6 +128,7 @@ class TestTimeGrouping:
             current_location="Fleet",
             train_uid="W12345",
             service_id="24673004",
+            calling_points=[],
         )
 
         assert get_time_group(train, now) == "Next 3 Hours"
@@ -150,6 +152,7 @@ class TestTimeGrouping:
             current_location="Fleet",
             train_uid="W12345",
             service_id="24673004",
+            calling_points=[],
         )
 
         assert get_time_group(train, now) == "Later Today"
@@ -173,6 +176,7 @@ class TestTimeGrouping:
             current_location="Fleet",
             train_uid="W12345",
             service_id="24673004",
+            calling_points=[],
         )
 
         assert get_time_group(train, now) == "Tomorrow"
@@ -195,6 +199,7 @@ class TestTimeGrouping:
             current_location="Fleet",
             train_uid="W12345",
             service_id="24673004",
+            calling_points=[],
         )
 
         # Call without now parameter to test default datetime.now()
@@ -222,6 +227,7 @@ class TestTrainGrouping:
             current_location="Fleet",
             train_uid=f"W{hash(departure_time) % 10000}",
             service_id=f"S{hash(departure_time) % 10000}",
+            calling_points=[],
         )
 
     def test_group_trains_by_time_empty(self):
@@ -314,6 +320,7 @@ class TestJourneyStats:
             current_location="Fleet",
             train_uid=f"W{hash(departure_time) % 10000}",
             service_id=f"S{hash(departure_time) % 10000}",
+            calling_points=[],
         )
 
     def test_calculate_journey_stats_empty(self):
@@ -434,6 +441,7 @@ class TestTrainFiltering:
             current_location="Fleet",
             train_uid=f"W{hash(departure_time) % 10000}",
             service_id=f"S{hash(departure_time) % 10000}",
+            calling_points=[],
         )
 
     def test_filter_trains_by_status_include_cancelled_true(self):
@@ -510,6 +518,7 @@ class TestTrainSorting:
             current_location="Fleet",
             train_uid=f"W{hash(departure_time) % 10000}",
             service_id=f"S{hash(departure_time) % 10000}",
+            calling_points=[],
         )
 
     def test_sort_trains_by_departure_empty(self):
@@ -621,6 +630,7 @@ class TestNextDeparture:
             current_location="Fleet",
             train_uid=f"W{hash(departure_time) % 10000}",
             service_id=f"S{hash(departure_time) % 10000}",
+            calling_points=[],
         )
 
     def test_get_next_departure_empty_list(self):
@@ -876,6 +886,7 @@ class TestStatusSummary:
             current_location="Fleet",
             train_uid=f"W{hash(departure_time) % 10000}",
             service_id=f"S{hash(departure_time) % 10000}",
+            calling_points=[],
         )
 
     def test_get_status_summary_empty_list(self):

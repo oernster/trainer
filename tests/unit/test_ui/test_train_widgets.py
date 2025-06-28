@@ -37,6 +37,7 @@ class TestTrainItemWidget:
             current_location="Fleet",
             train_uid="W12345",
             service_id="24673004",
+            calling_points=[],
         )
 
     @pytest.fixture
@@ -57,6 +58,7 @@ class TestTrainItemWidget:
             current_location="Fleet",
             train_uid="W12346",
             service_id="24673005",
+            calling_points=[],
         )
 
     @pytest.fixture
@@ -77,6 +79,7 @@ class TestTrainItemWidget:
             current_location=None,  # No location for cancelled train
             train_uid="W12347",
             service_id="24673006",
+            calling_points=[],
         )
 
     @pytest.fixture
@@ -97,6 +100,7 @@ class TestTrainItemWidget:
             current_location=None,
             train_uid="W12348",
             service_id="24673007",
+            calling_points=[],
         )
 
     def test_init_dark_theme(self, qapp, sample_train_on_time):
@@ -215,6 +219,7 @@ class TestTrainItemWidget:
                 current_location=None,
                 train_uid="TEST",
                 service_id="TEST",
+                calling_points=[],
             )
 
             widget = TrainItemWidget(train, "dark")
@@ -249,6 +254,7 @@ class TestTrainItemWidget:
                 current_location=None,
                 train_uid="TEST",
                 service_id="TEST",
+                calling_points=[],
             )
 
             widget = TrainItemWidget(train, "light")
@@ -348,6 +354,7 @@ class TestTrainItemWidget:
                 current_location="Test Location",
                 train_uid="TEST",
                 service_id="TEST",
+                calling_points=[],
             )
 
             widget = TrainItemWidget(train, "dark")

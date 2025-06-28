@@ -85,14 +85,33 @@ class TrainItemWidget(QFrame):
 
         left_layout.addStretch()
 
-        # Right side: Platform and status
+        # Right side: Platform, status, and details button
         right_layout = QHBoxLayout()
 
         # Platform info
-        platform_text = f"Platform {self.train_data.platform or 'TBA'} 🚉"
+        platform_text = f"Platform {self.train_data.platform or 'TBA'}"
         platform_info = QLabel(platform_text)
         platform_info.setAlignment(Qt.AlignRight)
         right_layout.addWidget(platform_info)
+
+        # Details button
+        details_button = QLabel("📋 Details")
+        details_button.setAlignment(Qt.AlignRight)
+        details_button.setStyleSheet("""
+            QLabel {
+                background-color: rgba(79, 195, 247, 0.2);
+                border: 1px solid #4fc3f7;
+                border-radius: 4px;
+                padding: 2px 6px;
+                margin-left: 8px;
+                font-weight: bold;
+            }
+            QLabel:hover {
+                background-color: rgba(79, 195, 247, 0.4);
+            }
+        """)
+        details_button.setCursor(Qt.PointingHandCursor)
+        right_layout.addWidget(details_button)
 
         main_layout.addLayout(left_layout)
         main_layout.addLayout(right_layout)
@@ -134,7 +153,22 @@ class TrainItemWidget(QFrame):
         details_layout.addWidget(status_info)
         layout.addLayout(details_layout)
 
-        # Third line: Current location and arrival time
+        # Third line: Calling points (intermediate stations)
+        calling_points_layout = QHBoxLayout()
+        
+        # Show calling points summary (show all stations)
+        calling_points_text = self.train_data.format_calling_points()
+        calling_points_info = QLabel(calling_points_text)
+        calling_points_font = QFont()
+        calling_points_font.setPointSize(9)
+        calling_points_font.setItalic(True)
+        calling_points_info.setFont(calling_points_font)
+        calling_points_layout.addWidget(calling_points_info)
+        
+        calling_points_layout.addStretch()
+        layout.addLayout(calling_points_layout)
+
+        # Fourth line: Current location and arrival time
         location_layout = QHBoxLayout()
 
         # Current location

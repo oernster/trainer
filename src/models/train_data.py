@@ -7,7 +7,7 @@ including departure times, status, delays, and service details.
 
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Optional, List
 from enum import Enum
 
 
@@ -27,6 +27,46 @@ class ServiceType(Enum):
     STOPPING = "stopping"
     EXPRESS = "express"
     SLEEPER = "sleeper"
+
+
+@dataclass(frozen=True)
+class CallingPoint:
+    """
+    Represents a station that the train calls at.
+    """
+    station_name: str
+    station_code: str
+    scheduled_arrival: Optional[datetime]
+    scheduled_departure: Optional[datetime]
+    expected_arrival: Optional[datetime]
+    expected_departure: Optional[datetime]
+    platform: Optional[str]
+    is_origin: bool = False
+    is_destination: bool = False
+
+    def format_arrival_time(self) -> str:
+        """Format arrival time for display."""
+        time_to_show = self.expected_arrival or self.scheduled_arrival
+        if time_to_show:
+            return time_to_show.strftime("%H:%M")
+        return ""
+
+    def format_departure_time(self) -> str:
+        """Format departure time for display."""
+        time_to_show = self.expected_departure or self.scheduled_departure
+        if time_to_show:
+            return time_to_show.strftime("%H:%M")
+        return ""
+
+    def get_display_time(self) -> str:
+        """Get the most appropriate time to display for this calling point."""
+        if self.is_origin:
+            return self.format_departure_time()
+        elif self.is_destination:
+            return self.format_arrival_time()
+        else:
+            # For intermediate stations, show arrival time
+            return self.format_arrival_time()
 
 
 @dataclass(frozen=True)
@@ -51,6 +91,7 @@ class TrainData:
     current_location: Optional[str]
     train_uid: str
     service_id: str
+    calling_points: List[CallingPoint]
 
     @property
     def is_delayed(self) -> bool:
@@ -148,6 +189,45 @@ class TrainData:
         }
         return status_icons.get(self.status, "❓")
 
+    def get_intermediate_stations(self) -> List[CallingPoint]:
+        """Get list of intermediate stations (excluding origin and destination)."""
+        return [cp for cp in self.calling_points if not cp.is_origin and not cp.is_destination]
+
+    def format_calling_points(self, max_stations: Optional[int] = None) -> str:
+        """
+        Format calling points for display.
+        
+        Args:
+            max_stations: Maximum number of intermediate stations to show (None for all)
+            
+        Returns:
+            Formatted string of calling points
+        """
+        intermediate = self.get_intermediate_stations()
+        if not intermediate:
+            return "Direct service"
+        
+        # If no limit specified or we're under the limit, show all stations
+        if max_stations is None or len(intermediate) <= max_stations:
+            station_names = [cp.station_name for cp in intermediate]
+            return "Calling at: " + ", ".join(station_names)
+        else:
+            # Show first few stations and indicate there are more
+            shown_stations = intermediate[:max_stations-1]
+            station_names = [cp.station_name for cp in shown_stations]
+            remaining_count = len(intermediate) - len(shown_stations)
+            return f"Calling at: {', '.join(station_names)} + {remaining_count} more"
+
+    def get_calling_points_summary(self) -> str:
+        """Get a brief summary of calling points."""
+        intermediate = self.get_intermediate_stations()
+        if not intermediate:
+            return "Direct"
+        elif len(intermediate) == 1:
+            return f"Via {intermediate[0].station_name}"
+        else:
+            return f"Stops at {len(intermediate)} stations"
+
     def to_display_dict(self, theme: str = "dark") -> dict:
         """Convert train data to dictionary for display purposes."""
         return {
@@ -168,4 +248,6 @@ class TrainData:
             "current_location": self.current_location or "Unknown",
             "is_delayed": self.is_delayed,
             "is_cancelled": self.is_cancelled,
+            "calling_points": self.format_calling_points(),
+            "calling_points_summary": self.get_calling_points_summary(),
         }

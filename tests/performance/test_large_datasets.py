@@ -36,6 +36,7 @@ class TestPerformance:
                 current_location="Fleet",
                 train_uid=f"W{12345 + i}",
                 service_id=f"2467300{i}",
+                calling_points=[],
             )
             trains.append(train)
 
@@ -328,6 +329,7 @@ class TestMemoryEfficiency:
             current_location="Fleet",
             train_uid="W12345",
             service_id="24673004",
+            calling_points=[],
         )
 
         # Get approximate size
@@ -363,6 +365,7 @@ class TestMemoryEfficiency:
                 current_location="Fleet",
                 train_uid=f"W{i}",
                 service_id=f"S{i}",
+                calling_points=[],
             )
             trains.append(train)
 

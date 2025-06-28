@@ -151,6 +151,7 @@ def sample_train_data():
             current_location="Fleet",
             train_uid="W12345",
             service_id="24673004",
+            calling_points=[],
         ),
         TrainData(
             departure_time=datetime.now() + timedelta(minutes=15),
@@ -166,6 +167,7 @@ def sample_train_data():
             current_location="Fleet",
             train_uid="W12346",
             service_id="24673005",
+            calling_points=[],
         ),
         TrainData(
             departure_time=datetime.now() + timedelta(minutes=25),
@@ -181,6 +183,7 @@ def sample_train_data():
             current_location="Fleet",
             train_uid="W12347",
             service_id="24673006",
+            calling_points=[],
         ),
     ]
 
@@ -207,6 +210,7 @@ def large_train_dataset():
                 current_location="Fleet",
                 train_uid=f"W{12345 + i}",
                 service_id=f"2467300{i % 10}",
+                calling_points=[],
             )
         )
     return trains

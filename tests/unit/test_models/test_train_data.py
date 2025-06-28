@@ -7,7 +7,7 @@ including departure times, status, delays, and service details.
 
 import pytest
 from datetime import datetime, timedelta
-from src.models.train_data import TrainData, TrainStatus, ServiceType
+from src.models.train_data import TrainData, TrainStatus, ServiceType, CallingPoint
 
 
 class TestTrainStatus:
@@ -42,13 +42,138 @@ class TestServiceType:
         assert ServiceType.EXPRESS != ServiceType.FAST
 
 
+class TestCallingPoint:
+    """Test CallingPoint model."""
+
+    def test_calling_point_creation(self):
+        """Test creating CallingPoint with valid data."""
+        arrival_time = datetime(2023, 6, 14, 20, 45)
+        departure_time = datetime(2023, 6, 14, 20, 47)
+
+        calling_point = CallingPoint(
+            station_name="Woking",
+            station_code="WOK",
+            scheduled_arrival=arrival_time,
+            scheduled_departure=departure_time,
+            expected_arrival=arrival_time,
+            expected_departure=departure_time,
+            platform="3",
+            is_origin=False,
+            is_destination=False,
+        )
+
+        assert calling_point.station_name == "Woking"
+        assert calling_point.station_code == "WOK"
+        assert calling_point.scheduled_arrival == arrival_time
+        assert calling_point.scheduled_departure == departure_time
+        assert calling_point.platform == "3"
+        assert not calling_point.is_origin
+        assert not calling_point.is_destination
+
+    def test_calling_point_time_formatting(self):
+        """Test time formatting methods."""
+        arrival_time = datetime(2023, 6, 14, 20, 45)
+        departure_time = datetime(2023, 6, 14, 20, 47)
+
+        calling_point = CallingPoint(
+            station_name="Woking",
+            station_code="WOK",
+            scheduled_arrival=arrival_time,
+            scheduled_departure=departure_time,
+            expected_arrival=None,
+            expected_departure=None,
+            platform="3",
+        )
+
+        assert calling_point.format_arrival_time() == "20:45"
+        assert calling_point.format_departure_time() == "20:47"
+
+    def test_calling_point_display_time(self):
+        """Test get_display_time method for different station types."""
+        arrival_time = datetime(2023, 6, 14, 20, 45)
+        departure_time = datetime(2023, 6, 14, 20, 47)
+
+        # Origin station
+        origin = CallingPoint(
+            station_name="Fleet",
+            station_code="FLT",
+            scheduled_arrival=None,
+            scheduled_departure=departure_time,
+            expected_arrival=None,
+            expected_departure=None,
+            platform="1",
+            is_origin=True,
+        )
+        assert origin.get_display_time() == "20:47"
+
+        # Destination station
+        destination = CallingPoint(
+            station_name="London Waterloo",
+            station_code="WAT",
+            scheduled_arrival=arrival_time,
+            scheduled_departure=None,
+            expected_arrival=None,
+            expected_departure=None,
+            platform="12",
+            is_destination=True,
+        )
+        assert destination.get_display_time() == "20:45"
+
+        # Intermediate station
+        intermediate = CallingPoint(
+            station_name="Woking",
+            station_code="WOK",
+            scheduled_arrival=arrival_time,
+            scheduled_departure=departure_time,
+            expected_arrival=None,
+            expected_departure=None,
+            platform="3",
+        )
+        assert intermediate.get_display_time() == "20:45"
+
+
 class TestTrainData:
     """Test TrainData model with real data scenarios."""
+
+    def create_sample_calling_points(self):
+        """Create sample calling points for testing."""
+        return [
+            CallingPoint(
+                station_name="Fleet",
+                station_code="FLT",
+                scheduled_arrival=None,
+                scheduled_departure=datetime(2023, 6, 14, 20, 45),
+                expected_arrival=None,
+                expected_departure=datetime(2023, 6, 14, 20, 45),
+                platform="1",
+                is_origin=True,
+            ),
+            CallingPoint(
+                station_name="Woking",
+                station_code="WOK",
+                scheduled_arrival=datetime(2023, 6, 14, 21, 0),
+                scheduled_departure=datetime(2023, 6, 14, 21, 2),
+                expected_arrival=datetime(2023, 6, 14, 21, 0),
+                expected_departure=datetime(2023, 6, 14, 21, 2),
+                platform="3",
+            ),
+            CallingPoint(
+                station_name="London Waterloo",
+                station_code="WAT",
+                scheduled_arrival=datetime(2023, 6, 14, 21, 32),
+                scheduled_departure=None,
+                expected_arrival=datetime(2023, 6, 14, 21, 32),
+                expected_departure=None,
+                platform="12",
+                is_destination=True,
+            ),
+        ]
 
     def test_train_data_creation_valid(self):
         """Test creating TrainData with valid data."""
         departure_time = datetime(2023, 6, 14, 20, 45)
         scheduled_time = datetime(2023, 6, 14, 20, 45)
+        calling_points = self.create_sample_calling_points()
 
         train = TrainData(
             departure_time=departure_time,
@@ -64,6 +189,7 @@ class TestTrainData:
             current_location="Fleet",
             train_uid="W12345",
             service_id="24673004",
+            calling_points=calling_points,
         )
 
         assert train.departure_time == departure_time
@@ -77,10 +203,12 @@ class TestTrainData:
         assert train.current_location == "Fleet"
         assert train.train_uid == "W12345"
         assert train.service_id == "24673004"
+        assert len(train.calling_points) == 3
 
     def test_train_data_immutable(self):
         """Test that TrainData is immutable (frozen dataclass)."""
         departure_time = datetime(2023, 6, 14, 20, 45)
+        calling_points = self.create_sample_calling_points()
 
         train = TrainData(
             departure_time=departure_time,
@@ -96,6 +224,7 @@ class TestTrainData:
             current_location="Fleet",
             train_uid="W12345",
             service_id="24673004",
+            calling_points=calling_points,
         )
 
         # Should not be able to modify fields
@@ -109,6 +238,7 @@ class TestTrainData:
         """Test TrainData with on-time scenario."""
         departure_time = datetime(2023, 6, 14, 20, 45)
         scheduled_time = datetime(2023, 6, 14, 20, 45)
+        calling_points = self.create_sample_calling_points()
 
         train = TrainData(
             departure_time=departure_time,
@@ -124,6 +254,7 @@ class TestTrainData:
             current_location="Fleet",
             train_uid="W12345",
             service_id="24673004",
+            calling_points=calling_points,
         )
 
         assert train.is_delayed == False
@@ -137,6 +268,7 @@ class TestTrainData:
         """Test TrainData with delay scenario."""
         departure_time = datetime(2023, 6, 14, 20, 47)
         scheduled_time = datetime(2023, 6, 14, 20, 45)
+        calling_points = self.create_sample_calling_points()
 
         train = TrainData(
             departure_time=departure_time,
@@ -152,6 +284,7 @@ class TestTrainData:
             current_location="Fleet",
             train_uid="W12345",
             service_id="24673004",
+            calling_points=calling_points,
         )
 
         assert train.is_delayed == True
@@ -164,6 +297,7 @@ class TestTrainData:
     def test_train_data_cancelled_scenario(self):
         """Test TrainData with cancellation scenario."""
         departure_time = datetime(2023, 6, 14, 20, 45)
+        calling_points = self.create_sample_calling_points()
 
         train = TrainData(
             departure_time=departure_time,
@@ -179,6 +313,7 @@ class TestTrainData:
             current_location=None,
             train_uid="W12345",
             service_id="24673004",
+            calling_points=calling_points,
         )
 
         assert train.is_cancelled == True
@@ -188,6 +323,7 @@ class TestTrainData:
 
     def test_service_type_variations(self):
         """Test different service types."""
+        calling_points = self.create_sample_calling_points()
         base_data = {
             "departure_time": datetime.now(),
             "scheduled_departure": datetime.now(),
@@ -201,6 +337,7 @@ class TestTrainData:
             "current_location": "Fleet",
             "train_uid": "W12345",
             "service_id": "24673004",
+            "calling_points": calling_points,
         }
 
         # Test all service types
@@ -212,6 +349,7 @@ class TestTrainData:
     def test_theme_color_variations(self):
         """Test status colors for different themes."""
         departure_time = datetime.now()
+        calling_points = self.create_sample_calling_points()
 
         # Test each status with both themes
         status_tests = [
@@ -236,6 +374,7 @@ class TestTrainData:
                 current_location="Fleet",
                 train_uid="W12345",
                 service_id="24673004",
+                calling_points=calling_points,
             )
 
             assert train.get_status_color("dark") == dark_color
@@ -248,6 +387,7 @@ class TestTrainData:
         departure_time = datetime(2023, 6, 14, 20, 45, 30)  # Include seconds
         scheduled_time = datetime(2023, 6, 14, 20, 43, 15)
         arrival_time = datetime(2023, 6, 14, 21, 32, 45)
+        calling_points = self.create_sample_calling_points()
 
         train = TrainData(
             departure_time=departure_time,
@@ -263,6 +403,7 @@ class TestTrainData:
             current_location="Fleet",
             train_uid="W12345",
             service_id="24673004",
+            calling_points=calling_points,
         )
 
         assert train.format_departure_time() == "20:45"
@@ -272,6 +413,7 @@ class TestTrainData:
 
     def test_journey_duration_formatting(self):
         """Test journey duration formatting with various durations."""
+        calling_points = self.create_sample_calling_points()
         base_data = {
             "departure_time": datetime.now(),
             "scheduled_departure": datetime.now(),
@@ -285,6 +427,7 @@ class TestTrainData:
             "current_location": "Fleet",
             "train_uid": "W12345",
             "service_id": "24673004",
+            "calling_points": calling_points,
         }
 
         # Test various durations
@@ -303,6 +446,7 @@ class TestTrainData:
 
     def test_delay_formatting(self):
         """Test delay formatting with various delay scenarios."""
+        calling_points = self.create_sample_calling_points()
         base_data = {
             "departure_time": datetime.now(),
             "scheduled_departure": datetime.now(),
@@ -316,6 +460,7 @@ class TestTrainData:
             "current_location": "Fleet",
             "train_uid": "W12345",
             "service_id": "24673004",
+            "calling_points": calling_points,
         }
 
         # Test various delay scenarios
@@ -331,11 +476,98 @@ class TestTrainData:
             train = TrainData(delay_minutes=delay_minutes, **base_data)
             assert train.format_delay() == expected
 
+    def test_calling_points_methods(self):
+        """Test calling points related methods."""
+        calling_points = self.create_sample_calling_points()
+        train = TrainData(
+            departure_time=datetime.now(),
+            scheduled_departure=datetime.now(),
+            destination="London Waterloo",
+            platform="1",
+            operator="South Western Railway",
+            service_type=ServiceType.FAST,
+            status=TrainStatus.ON_TIME,
+            delay_minutes=0,
+            estimated_arrival=None,
+            journey_duration=None,
+            current_location="Fleet",
+            train_uid="W12345",
+            service_id="24673004",
+            calling_points=calling_points,
+        )
+
+        # Test intermediate stations
+        intermediate = train.get_intermediate_stations()
+        assert len(intermediate) == 1
+        assert intermediate[0].station_name == "Woking"
+
+        # Test calling points formatting
+        calling_points_str = train.format_calling_points()
+        assert "Calling at: Woking" in calling_points_str
+
+        # Test calling points summary
+        summary = train.get_calling_points_summary()
+        assert summary == "Via Woking"
+
+    def test_calling_points_direct_service(self):
+        """Test calling points for direct service."""
+        # Create direct service with only origin and destination
+        direct_calling_points = [
+            CallingPoint(
+                station_name="Fleet",
+                station_code="FLT",
+                scheduled_arrival=None,
+                scheduled_departure=datetime(2023, 6, 14, 20, 45),
+                expected_arrival=None,
+                expected_departure=datetime(2023, 6, 14, 20, 45),
+                platform="1",
+                is_origin=True,
+            ),
+            CallingPoint(
+                station_name="London Waterloo",
+                station_code="WAT",
+                scheduled_arrival=datetime(2023, 6, 14, 21, 32),
+                scheduled_departure=None,
+                expected_arrival=datetime(2023, 6, 14, 21, 32),
+                expected_departure=None,
+                platform="12",
+                is_destination=True,
+            ),
+        ]
+
+        train = TrainData(
+            departure_time=datetime.now(),
+            scheduled_departure=datetime.now(),
+            destination="London Waterloo",
+            platform="1",
+            operator="South Western Railway",
+            service_type=ServiceType.EXPRESS,
+            status=TrainStatus.ON_TIME,
+            delay_minutes=0,
+            estimated_arrival=None,
+            journey_duration=None,
+            current_location="Fleet",
+            train_uid="W12345",
+            service_id="24673004",
+            calling_points=direct_calling_points,
+        )
+
+        # Test direct service
+        intermediate = train.get_intermediate_stations()
+        assert len(intermediate) == 0
+
+        calling_points_str = train.format_calling_points()
+        assert calling_points_str == "Direct service"
+
+        summary = train.get_calling_points_summary()
+        assert summary == "Direct"
+
     def test_to_display_dict(self):
         """Test conversion to display dictionary."""
         departure_time = datetime(2023, 6, 14, 20, 45)
         scheduled_time = datetime(2023, 6, 14, 20, 43)
         arrival_time = datetime(2023, 6, 14, 21, 32)
+        calling_points = self.create_sample_calling_points()
 
         train = TrainData(
             departure_time=departure_time,
@@ -351,6 +583,7 @@ class TestTrainData:
             current_location="Fleet",
             train_uid="W12345",
             service_id="24673004",
+            calling_points=calling_points,
         )
 
         display_dict = train.to_display_dict()
@@ -374,6 +607,8 @@ class TestTrainData:
             "current_location",
             "is_delayed",
             "is_cancelled",
+            "calling_points",
+            "calling_points_summary",
         }
 
         assert set(display_dict.keys()) == expected_keys
@@ -396,10 +631,13 @@ class TestTrainData:
         assert display_dict["current_location"] == "Fleet"
         assert display_dict["is_delayed"] == True
         assert display_dict["is_cancelled"] == False
+        assert "Calling at: Woking" in display_dict["calling_points"]
+        assert display_dict["calling_points_summary"] == "Via Woking"
 
     def test_to_display_dict_with_none_values(self):
         """Test display dictionary with None values."""
         departure_time = datetime(2023, 6, 14, 20, 45)
+        calling_points = self.create_sample_calling_points()
 
         train = TrainData(
             departure_time=departure_time,
@@ -415,6 +653,7 @@ class TestTrainData:
             current_location=None,  # No location info
             train_uid="W12345",
             service_id="24673004",
+            calling_points=calling_points,
         )
 
         display_dict = train.to_display_dict()
@@ -428,6 +667,7 @@ class TestTrainData:
     def test_to_display_dict_theme_variations(self):
         """Test display dictionary with different themes."""
         departure_time = datetime(2023, 6, 14, 20, 45)
+        calling_points = self.create_sample_calling_points()
 
         train = TrainData(
             departure_time=departure_time,
@@ -443,6 +683,7 @@ class TestTrainData:
             current_location="Fleet",
             train_uid="W12345",
             service_id="24673004",
+            calling_points=calling_points,
         )
 
         # Test dark theme (default)

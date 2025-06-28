@@ -116,15 +116,17 @@ class TestAPIManagerDepartures:
             ) as mock_get:
                 trains = await api_manager.get_departures()
 
-                # Verify API was called with correct parameters
-                mock_get.assert_called_once()
-                call_args = mock_get.call_args
+                # Verify API was called (now makes multiple calls for service details)
+                assert mock_get.call_count >= 1  # At least one call for departures
+                
+                # Check the first call (departures)
+                first_call_args = mock_get.call_args_list[0]
 
                 # Check URL
-                assert "train/station/FLE/live.json" in call_args[0][0]
+                assert "train/station/FLE/live.json" in first_call_args[0][0]
 
                 # Check parameters
-                params = call_args[1]["params"]
+                params = first_call_args[1]["params"]
                 assert params["app_id"] == test_config.api.app_id
                 assert params["app_key"] == test_config.api.app_key
                 assert params["destination"] == test_config.stations.to_code
@@ -432,15 +434,15 @@ class TestAPIManagerDataParsing:
 
         # Test category mappings
         assert api_manager._determine_service_type("OO") == ServiceType.STOPPING
-        assert api_manager._determine_service_type("XX") == ServiceType.EXPRESS
+        assert api_manager._determine_service_type("XX") == ServiceType.FAST  # Changed to FAST
         assert api_manager._determine_service_type("XZ") == ServiceType.SLEEPER
         assert api_manager._determine_service_type("BR") == ServiceType.STOPPING
         assert (
-            api_manager._determine_service_type("UNKNOWN") == ServiceType.STOPPING
-        )  # Default
+            api_manager._determine_service_type("UNKNOWN") == ServiceType.FAST
+        )  # Default changed to FAST
         assert (
-            api_manager._determine_service_type("") == ServiceType.STOPPING
-        )  # Default
+            api_manager._determine_service_type("") == ServiceType.FAST
+        )  # Default changed to FAST
 
 
 @pytest.mark.api

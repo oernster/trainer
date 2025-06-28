@@ -968,14 +968,11 @@ class TestSettingsDialog:
 @pytest.mark.filterwarnings(
     "ignore:coroutine 'AsyncMockMixin._execute_mock_call' was never awaited:RuntimeWarning"
 )
-@patch("src.ui.settings_dialog.APITestThread._test_api", new_callable=AsyncMock)
 @patch("src.ui.settings_dialog.APIManager")
 class TestAPITestThread:
     """Test suite for APITestThread class."""
 
-    def test_init(self, mock_api_manager_class, mock_test_api, test_config):
-        # Configure the async mock to return a resolved future
-        mock_test_api.return_value = (True, "Test successful")
+    def test_init(self, mock_api_manager_class, test_config):
         """Test APITestThread initialization."""
         thread = APITestThread(test_config)
 
@@ -983,10 +980,8 @@ class TestAPITestThread:
         assert isinstance(thread, QThread)
 
     def test_run_success_with_trains(
-        self, mock_api_manager_class, mock_test_api, test_config
+        self, mock_api_manager_class, test_config
     ):
-        # Configure the async mock to return a resolved future
-        mock_test_api.return_value = (True, "Test successful")
         """Test successful API test run with train data."""
         thread = APITestThread(test_config)
 
@@ -1026,10 +1021,8 @@ class TestAPITestThread:
             assert "1 train departures" in message
 
     def test_run_success_no_trains(
-        self, mock_api_manager_class, mock_test_api, test_config
+        self, mock_api_manager_class, test_config
     ):
-        # Configure the async mock to return a resolved future
-        mock_test_api.return_value = (True, "Test successful")
         """Test successful API test run with no train data."""
         thread = APITestThread(test_config)
 
@@ -1060,10 +1053,8 @@ class TestAPITestThread:
             )
 
     def test_run_authentication_error(
-        self, mock_api_manager_class, mock_test_api, test_config
+        self, mock_api_manager_class, test_config
     ):
-        # Configure the async mock to return a resolved future
-        mock_test_api.return_value = (True, "Test successful")
         """Test API test run with authentication error."""
         thread = APITestThread(test_config)
 
@@ -1093,10 +1084,8 @@ class TestAPITestThread:
             assert "Please check your App ID and App Key" in message
 
     def test_run_network_error(
-        self, mock_api_manager_class, mock_test_api, test_config
+        self, mock_api_manager_class, test_config
     ):
-        # Configure the async mock to return a resolved future
-        mock_test_api.return_value = (True, "Test successful")
         """Test API test run with network error."""
         thread = APITestThread(test_config)
 
@@ -1125,9 +1114,7 @@ class TestAPITestThread:
             assert "Connection timeout" in message
             assert "Please check your internet connection" in message
 
-    def test_run_api_error(self, mock_api_manager_class, mock_test_api, test_config):
-        # Configure the async mock to return a resolved future
-        mock_test_api.return_value = (True, "Test successful")
+    def test_run_api_error(self, mock_api_manager_class, test_config):
         """Test API test run with general API error."""
         thread = APITestThread(test_config)
 
@@ -1153,11 +1140,9 @@ class TestAPITestThread:
             assert "API rate limit exceeded" in message
 
     def test_run_unexpected_error(
-        self, mock_api_manager_class, mock_test_api, test_config
+        self, mock_api_manager_class, test_config
     ):
         """Test API test run with unexpected error."""
-        # Configure the async mock to return an error
-        mock_test_api.return_value = (False, "Unexpected error: ValueError occurred")
 
         thread = APITestThread(test_config)
 
@@ -1182,10 +1167,8 @@ class TestAPITestThread:
             assert "Unexpected error" in message
 
     def test_run_exception_in_run_method(
-        self, mock_api_manager_class, mock_test_api, test_config
+        self, mock_api_manager_class, test_config
     ):
-        # Configure the async mock to return a resolved future
-        mock_test_api.return_value = (True, "Test successful")
         """Test exception handling in the run method itself."""
         thread = APITestThread(test_config)
 
@@ -1210,9 +1193,7 @@ class TestAPITestThread:
             assert "Test failed with error" in message
             assert "Loop creation failed" in message
 
-    def test_run_loop_cleanup(self, mock_api_manager_class, mock_test_api, test_config):
-        # Configure the async mock to return a resolved future
-        mock_test_api.return_value = (True, "Test successful")
+    def test_run_loop_cleanup(self, mock_api_manager_class, test_config):
         """Test that event loop is properly cleaned up."""
         thread = APITestThread(test_config)
 
@@ -1241,10 +1222,8 @@ class TestAPITestThread:
                     mock_loop.close.assert_called_once()
 
     def test_run_loop_cleanup_when_none(
-        self, mock_api_manager_class, mock_test_api, test_config
+        self, mock_api_manager_class, test_config
     ):
-        # Configure the async mock to return a resolved future
-        mock_test_api.return_value = (True, "Test successful")
         """Test that no error occurs when loop is None during cleanup."""
         thread = APITestThread(test_config)
 
@@ -1261,6 +1240,159 @@ class TestAPITestThread:
 
             # Should still emit a signal (likely an error)
             assert len(signal_received) == 1
+
+    def test_test_api_method_authentication_exception(
+        self, mock_api_manager_class, test_config
+    ):
+        """Test _test_api method with AuthenticationException."""
+        thread = APITestThread(test_config)
+        
+        # Create a mock API manager that raises AuthenticationException
+        mock_api_manager = Mock()
+        mock_api_manager.__aenter__ = AsyncMock(return_value=mock_api_manager)
+        mock_api_manager.__aexit__ = AsyncMock(return_value=None)
+        mock_api_manager.get_departures = AsyncMock(
+            side_effect=AuthenticationException("Invalid credentials")
+        )
+        mock_api_manager_class.return_value = mock_api_manager
+        
+        # Test the actual _test_api method
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            success, message = loop.run_until_complete(thread._test_api())
+            assert success is False
+            assert "Authentication failed: Invalid credentials" in message
+            assert "Please check your App ID and App Key" in message
+        finally:
+            loop.close()
+
+    def test_test_api_method_network_exception(
+        self, mock_api_manager_class, test_config
+    ):
+        """Test _test_api method with NetworkException."""
+        thread = APITestThread(test_config)
+        
+        # Create a mock API manager that raises NetworkException
+        mock_api_manager = Mock()
+        mock_api_manager.__aenter__ = AsyncMock(return_value=mock_api_manager)
+        mock_api_manager.__aexit__ = AsyncMock(return_value=None)
+        mock_api_manager.get_departures = AsyncMock(
+            side_effect=NetworkException("Connection timeout")
+        )
+        mock_api_manager_class.return_value = mock_api_manager
+        
+        # Test the actual _test_api method
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            success, message = loop.run_until_complete(thread._test_api())
+            assert success is False
+            assert "Network error: Connection timeout" in message
+            assert "Please check your internet connection" in message
+        finally:
+            loop.close()
+
+    def test_test_api_method_api_exception(
+        self, mock_api_manager_class, test_config
+    ):
+        """Test _test_api method with APIException."""
+        thread = APITestThread(test_config)
+        
+        # Create a mock API manager that raises APIException
+        mock_api_manager = Mock()
+        mock_api_manager.__aenter__ = AsyncMock(return_value=mock_api_manager)
+        mock_api_manager.__aexit__ = AsyncMock(return_value=None)
+        mock_api_manager.get_departures = AsyncMock(
+            side_effect=APIException("Rate limit exceeded")
+        )
+        mock_api_manager_class.return_value = mock_api_manager
+        
+        # Test the actual _test_api method
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            success, message = loop.run_until_complete(thread._test_api())
+            assert success is False
+            assert "API error: Rate limit exceeded" in message
+        finally:
+            loop.close()
+
+    def test_test_api_method_general_exception(
+        self, mock_api_manager_class, test_config
+    ):
+        """Test _test_api method with general Exception."""
+        thread = APITestThread(test_config)
+        
+        # Create a mock API manager that raises general Exception
+        mock_api_manager = Mock()
+        mock_api_manager.__aenter__ = AsyncMock(return_value=mock_api_manager)
+        mock_api_manager.__aexit__ = AsyncMock(return_value=None)
+        mock_api_manager.get_departures = AsyncMock(
+            side_effect=Exception("Unexpected error occurred")
+        )
+        mock_api_manager_class.return_value = mock_api_manager
+        
+        # Test the actual _test_api method
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            success, message = loop.run_until_complete(thread._test_api())
+            assert success is False
+            assert "Unexpected error: Unexpected error occurred" in message
+        finally:
+            loop.close()
+
+    def test_test_api_method_no_trains_returned(
+        self, mock_api_manager_class, test_config
+    ):
+        """Test _test_api method when API returns empty train list - covers lines 1035-1039."""
+        thread = APITestThread(test_config)
+        
+        # Create a mock API manager that returns empty list
+        mock_api_manager = Mock()
+        mock_api_manager.__aenter__ = AsyncMock(return_value=mock_api_manager)
+        mock_api_manager.__aexit__ = AsyncMock(return_value=None)
+        mock_api_manager.get_departures = AsyncMock(return_value=[])  # Empty list
+        mock_api_manager_class.return_value = mock_api_manager
+        
+        # Test the actual _test_api method
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            success, message = loop.run_until_complete(thread._test_api())
+            assert success is True  # Should still be successful
+            assert "Successfully connected to API, but no train data was returned" in message
+            assert "This may be normal depending on the time and route" in message
+        finally:
+            loop.close()
+
+    def test_test_api_method_trains_returned(
+        self, mock_api_manager_class, test_config
+    ):
+        """Test _test_api method when API returns trains - covers lines 1030-1034."""
+        thread = APITestThread(test_config)
+        
+        # Create mock train data
+        mock_train = Mock()
+        mock_train.destination = "London Waterloo"
+        
+        # Create a mock API manager that returns train list
+        mock_api_manager = Mock()
+        mock_api_manager.__aenter__ = AsyncMock(return_value=mock_api_manager)
+        mock_api_manager.__aexit__ = AsyncMock(return_value=None)
+        mock_api_manager.get_departures = AsyncMock(return_value=[mock_train, mock_train])  # 2 trains
+        mock_api_manager_class.return_value = mock_api_manager
+        
+        # Test the actual _test_api method
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            success, message = loop.run_until_complete(thread._test_api())
+            assert success is True
+            assert "Successfully connected to API and retrieved 2 train departures" in message
+        finally:
+            loop.close()
 
 
 @pytest.mark.skipif(not HAS_QT, reason="PySide6 not available")
@@ -1280,12 +1412,9 @@ class TestSettingsDialogIntegration:
         self,
         mock_thread_class,
         mock_api_manager_class,
-        mock_test_api,
         qapp,
         config_manager,
     ):
-        # Configure the async mock to return a resolved future
-        mock_test_api.return_value = (True, "Test successful")
         """Test complete workflow of opening dialog, changing settings, and saving."""
         # Mock APITestThread to prevent any async coroutine creation
         mock_thread = Mock()
@@ -1347,12 +1476,9 @@ class TestSettingsDialogIntegration:
         self,
         mock_thread_class,
         mock_api_manager_class,
-        mock_test_api,
         qapp,
         config_manager,
     ):
-        # Configure the async mock to return a resolved future
-        mock_test_api.return_value = (True, "Test successful")
         """Test that HorizontalSpinWidget signals work correctly in the dialog."""
         dialog = SettingsDialog(config_manager)
 
@@ -1571,6 +1697,91 @@ class TestNASATestThread:
             success, message = signal_received[0]
             assert success is False
             assert "Test failed with error" in message
+
+    @patch("aiohttp.ClientSession")
+    def test_test_nasa_api_method_client_error(self, mock_session, qapp):
+        """Test _test_nasa_api method with aiohttp.ClientError."""
+        if not HAS_QT:
+            pytest.skip("PySide6 not available")
+
+        from src.ui.settings_dialog import NASATestThread
+        import aiohttp
+
+        thread = NASATestThread("test_key")
+
+        # Mock session to raise ClientError
+        mock_session_instance = Mock()
+        mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+        mock_session_instance.__aexit__ = AsyncMock(return_value=None)
+        mock_session_instance.get.side_effect = aiohttp.ClientError("Network connection failed")
+        mock_session.return_value = mock_session_instance
+
+        # Test the actual _test_nasa_api method
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            success, message = loop.run_until_complete(thread._test_nasa_api())
+            assert success is False
+            assert "Network error connecting to NASA API" in message
+            assert "Network connection failed" in message
+            assert "Please check your internet connection" in message
+        finally:
+            loop.close()
+
+    @patch("aiohttp.ClientSession")
+    def test_test_nasa_api_method_timeout_error(self, mock_session, qapp):
+        """Test _test_nasa_api method with asyncio.TimeoutError."""
+        if not HAS_QT:
+            pytest.skip("PySide6 not available")
+
+        from src.ui.settings_dialog import NASATestThread
+
+        thread = NASATestThread("test_key")
+
+        # Mock session to raise TimeoutError
+        mock_session_instance = Mock()
+        mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+        mock_session_instance.__aexit__ = AsyncMock(return_value=None)
+        mock_session_instance.get.side_effect = asyncio.TimeoutError()
+        mock_session.return_value = mock_session_instance
+
+        # Test the actual _test_nasa_api method
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            success, message = loop.run_until_complete(thread._test_nasa_api())
+            assert success is False
+            assert "Connection to NASA API timed out" in message
+            assert "Please check your internet connection" in message
+        finally:
+            loop.close()
+
+    @patch("aiohttp.ClientSession")
+    def test_test_nasa_api_method_general_exception(self, mock_session, qapp):
+        """Test _test_nasa_api method with general Exception."""
+        if not HAS_QT:
+            pytest.skip("PySide6 not available")
+
+        from src.ui.settings_dialog import NASATestThread
+
+        thread = NASATestThread("test_key")
+
+        # Mock session to raise general Exception
+        mock_session_instance = Mock()
+        mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+        mock_session_instance.__aexit__ = AsyncMock(return_value=None)
+        mock_session_instance.get.side_effect = Exception("Unexpected error occurred")
+        mock_session.return_value = mock_session_instance
+
+        # Test the actual _test_nasa_api method
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            success, message = loop.run_until_complete(thread._test_nasa_api())
+            assert success is False
+            assert "Unexpected error testing NASA API: Unexpected error occurred" in message
+        finally:
+            loop.close()
 
 
 @pytest.mark.skipif(not HAS_QT, reason="PySide6 not available")

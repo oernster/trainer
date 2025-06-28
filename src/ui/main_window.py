@@ -33,6 +33,7 @@ from .train_widgets import TrainListWidget
 from .weather_widgets import WeatherWidget
 from .astronomy_widgets import AstronomyWidget
 from .settings_dialog import SettingsDialog
+from .train_detail_dialog import TrainDetailDialog
 from version import __version__, __app_display_name__, get_about_text
 
 logger = logging.getLogger(__name__)
@@ -730,6 +731,10 @@ class MainWindow(QMainWindow):
         """
         if self.train_list_widget:
             self.train_list_widget.update_trains(trains)
+            # Connect train selection signal if not already connected
+            if not hasattr(self, '_train_selection_connected'):
+                self.train_list_widget.train_selected.connect(self.show_train_details)
+                self._train_selection_connected = True
 
         # Update train count
         if self.train_count_label:
@@ -1324,3 +1329,22 @@ class MainWindow(QMainWindow):
         # Move window to center
         self.move(center_x, center_y)
         logger.info("Window centered on screen")
+
+    def show_train_details(self, train_data: TrainData):
+        """
+        Show detailed train information dialog.
+        
+        Args:
+            train_data: Train data to display in detail
+        """
+        try:
+            dialog = TrainDetailDialog(
+                train_data,
+                self.theme_manager.current_theme,
+                self
+            )
+            dialog.exec()
+            logger.info(f"Showed train details for {train_data.destination}")
+        except Exception as e:
+            logger.error(f"Failed to show train details: {e}")
+            self.show_error_message("Train Details Error", f"Failed to show train details: {e}")
