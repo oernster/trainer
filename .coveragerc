@@ -3,7 +3,6 @@ source = src
 omit =
     src/__init__.py
     src/*/test_*.py
-    tests/*
     */venv/*
     */virtualenv/*
     */.tox/*
