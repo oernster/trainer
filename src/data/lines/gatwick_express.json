@@ -1,0 +1,167 @@
+{
+  "metadata": {
+    "line_name": "Gatwick Express",
+    "description": "Non-stop express service between London Victoria and Gatwick Airport",
+    "operator": "Gatwick Express",
+    "total_stations": 4,
+    "typical_frequency": "Every 15 minutes",
+    "peak_hours": "06:00-10:00, 16:00-19:00",
+    "frequency": {
+      "weekday_peak": "Every 15 minutes",
+      "weekday_off_peak": "Every 15 minutes",
+      "weekend": "Every 15 minutes",
+      "night": "Limited service"
+    }
+  },
+  "typical_journey_times": {
+    "VIC-CLJ": 8,
+    "CLJ-ECR": 12,
+    "ECR-LGW": 15,
+    "VIC-LGW": 30
+  },
+  "typical_services": {
+    "peak_frequency": "Every 15 minutes",
+    "off_peak_frequency": "Every 15 minutes",
+    "evening_frequency": "Every 15 minutes",
+    "weekend_frequency": "Every 15 minutes",
+    "first_train": "04:35",
+    "last_train": "01:35"
+  },
+  "stations": [
+    {
+      "name": "London Victoria",
+      "code": "VIC",
+      "coordinates": {
+        "lat": 51.4952,
+        "lng": -0.1441
+      },
+      "zone": 1,
+      "interchange": [
+        "Circle Line",
+        "District Line",
+        "Victoria Line",
+        "Southern",
+        "Southeastern"
+      ],
+      "times": {
+        "morning": [
+          "05:00",
+          "07:00",
+          "09:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": [
+          "00:00"
+        ]
+      }
+    },
+    {
+      "name": "Clapham Junction",
+      "code": "CLJ",
+      "coordinates": {
+        "lat": 51.4642,
+        "lng": -0.1705
+      },
+      "interchange": [
+        "Southern",
+        "South Western Railway",
+        "London Overground"
+      ],
+      "times": {
+        "morning": [
+          "05:08",
+          "07:08",
+          "09:08"
+        ],
+        "afternoon": [
+          "12:08",
+          "14:08",
+          "16:08"
+        ],
+        "evening": [
+          "18:08",
+          "20:08",
+          "22:08"
+        ],
+        "night": [
+          "00:08"
+        ]
+      }
+    },
+    {
+      "name": "East Croydon",
+      "code": "ECR",
+      "coordinates": {
+        "lat": 51.3756,
+        "lng": -0.0928
+      },
+      "interchange": [
+        "Southern",
+        "Thameslink",
+        "Tramlink"
+      ],
+      "times": {
+        "morning": [
+          "05:20",
+          "07:20",
+          "09:20"
+        ],
+        "afternoon": [
+          "12:20",
+          "14:20",
+          "16:20"
+        ],
+        "evening": [
+          "18:20",
+          "20:20",
+          "22:20"
+        ],
+        "night": [
+          "00:20"
+        ]
+      }
+    },
+    {
+      "name": "Gatwick Airport",
+      "code": "LGW",
+      "coordinates": {
+        "lat": 51.1564,
+        "lng": -0.1614
+      },
+      "interchange": [
+        "Southern",
+        "Thameslink",
+        "Airport Terminal"
+      ],
+      "times": {
+        "morning": [
+          "05:35",
+          "07:35",
+          "09:35"
+        ],
+        "afternoon": [
+          "12:35",
+          "14:35",
+          "16:35"
+        ],
+        "evening": [
+          "18:35",
+          "20:35",
+          "22:35"
+        ],
+        "night": [
+          "00:35"
+        ]
+      }
+    }
+  ]
+}

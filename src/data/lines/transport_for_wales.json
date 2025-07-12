@@ -1,0 +1,926 @@
+{
+  "metadata": {
+    "line_name": "Transport for Wales Network",
+    "description": "Welsh railway services including Valley Lines and North Wales Coast",
+    "operator": "Transport for Wales",
+    "total_stations": 35,
+    "frequency": {
+      "weekday_peak": "Every hour",
+      "weekday_off_peak": "Every 2 hours",
+      "weekend": "Every 2 hours",
+      "night": "No service"
+    }
+  },
+  "stations": [
+    {
+      "name": "Cardiff Central",
+      "code": "CDF",
+      "coordinates": {
+        "lat": 51.4756,
+        "lng": -3.1781
+      },
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Cardiff Queen Street",
+      "code": "CDQ",
+      "coordinates": {
+        "lat": 51.4819,
+        "lng": -3.1681
+      },
+      "times": {
+        "morning": [
+          "06:13",
+          "08:13",
+          "10:13"
+        ],
+        "afternoon": [
+          "12:13",
+          "14:13",
+          "16:13"
+        ],
+        "evening": [
+          "18:13",
+          "20:13",
+          "22:13"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Newport (South Wales)",
+      "code": "NWP",
+      "coordinates": {
+        "lat": 51.5881,
+        "lng": -2.9981
+      },
+      "times": {
+        "morning": [
+          "06:17",
+          "08:17",
+          "10:17"
+        ],
+        "afternoon": [
+          "12:17",
+          "14:17",
+          "16:17"
+        ],
+        "evening": [
+          "18:17",
+          "20:17",
+          "22:17"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Swansea",
+      "code": "SWA",
+      "coordinates": {
+        "lat": 51.6219,
+        "lng": -3.9381
+      },
+      "times": {
+        "morning": [
+          "06:32",
+          "08:32",
+          "10:32"
+        ],
+        "afternoon": [
+          "12:32",
+          "14:32",
+          "16:32"
+        ],
+        "evening": [
+          "18:32",
+          "20:32",
+          "22:32"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Llanelli",
+      "code": "LLE",
+      "coordinates": {
+        "lat": 51.6781,
+        "lng": -4.1581
+      },
+      "times": {
+        "morning": [
+          "06:45",
+          "08:45",
+          "10:45"
+        ],
+        "afternoon": [
+          "12:45",
+          "14:45",
+          "16:45"
+        ],
+        "evening": [
+          "18:45",
+          "20:45",
+          "22:45"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Carmarthen",
+      "code": "CMN",
+      "coordinates": {
+        "lat": 51.8581,
+        "lng": -4.3081
+      },
+      "times": {
+        "morning": [
+          "06:41",
+          "08:41",
+          "10:41"
+        ],
+        "afternoon": [
+          "12:41",
+          "14:41",
+          "16:41"
+        ],
+        "evening": [
+          "18:41",
+          "20:41",
+          "22:41"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Haverfordwest",
+      "code": "HVF",
+      "coordinates": {
+        "lat": 51.8031,
+        "lng": -4.9681
+      },
+      "times": {
+        "morning": [
+          "07:06",
+          "09:06",
+          "11:06"
+        ],
+        "afternoon": [
+          "13:06",
+          "15:06",
+          "17:06"
+        ],
+        "evening": [
+          "19:06",
+          "21:06",
+          "23:06"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Milford Haven",
+      "code": "MFH",
+      "coordinates": {
+        "lat": 51.7131,
+        "lng": -5.0381
+      },
+      "times": {
+        "morning": [
+          "06:48",
+          "08:48",
+          "10:48"
+        ],
+        "afternoon": [
+          "12:48",
+          "14:48",
+          "16:48"
+        ],
+        "evening": [
+          "18:48",
+          "20:48",
+          "22:48"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Tenby",
+      "code": "TEN",
+      "coordinates": {
+        "lat": 51.6731,
+        "lng": -4.7031
+      },
+      "times": {
+        "morning": [
+          "07:09",
+          "09:09",
+          "11:09"
+        ],
+        "afternoon": [
+          "13:09",
+          "15:09",
+          "17:09"
+        ],
+        "evening": [
+          "19:09",
+          "21:09",
+          "23:09"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Pembroke",
+      "code": "PMB",
+      "coordinates": {
+        "lat": 51.6731,
+        "lng": -4.9181
+      },
+      "times": {
+        "morning": [
+          "07:52",
+          "09:52",
+          "11:52"
+        ],
+        "afternoon": [
+          "13:52",
+          "15:52",
+          "17:52"
+        ],
+        "evening": [
+          "19:52",
+          "21:52",
+          "23:52"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Pembroke Dock",
+      "code": "PMD",
+      "coordinates": {
+        "lat": 51.6931,
+        "lng": -4.9381
+      },
+      "times": {
+        "morning": [
+          "07:12",
+          "09:12",
+          "11:12"
+        ],
+        "afternoon": [
+          "13:12",
+          "15:12",
+          "17:12"
+        ],
+        "evening": [
+          "19:12",
+          "21:12",
+          "23:12"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Fishguard Harbour",
+      "code": "FGH",
+      "coordinates": {
+        "lat": 52.0131,
+        "lng": -4.9881
+      },
+      "times": {
+        "morning": [
+          "07:59",
+          "09:59",
+          "11:59"
+        ],
+        "afternoon": [
+          "13:59",
+          "15:59",
+          "17:59"
+        ],
+        "evening": [
+          "19:59",
+          "21:59",
+          "23:59"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Aberystwyth",
+      "code": "AYW",
+      "coordinates": {
+        "lat": 52.4181,
+        "lng": -4.0881
+      },
+      "times": {
+        "morning": [
+          "07:36",
+          "09:36",
+          "11:36"
+        ],
+        "afternoon": [
+          "13:36",
+          "15:36",
+          "17:36"
+        ],
+        "evening": [
+          "19:36",
+          "21:36",
+          "23:36"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Machynlleth",
+      "code": "MCH",
+      "coordinates": {
+        "lat": 52.5931,
+        "lng": -3.8531
+      },
+      "times": {
+        "morning": [
+          "07:44",
+          "09:44",
+          "11:44"
+        ],
+        "afternoon": [
+          "13:44",
+          "15:44",
+          "17:44"
+        ],
+        "evening": [
+          "19:44",
+          "21:44",
+          "23:44"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Pwllheli",
+      "code": "PWL",
+      "coordinates": {
+        "lat": 52.8831,
+        "lng": -4.4131
+      },
+      "times": {
+        "morning": [
+          "09:22",
+          "11:22",
+          "13:22"
+        ],
+        "afternoon": [
+          "15:22",
+          "17:22",
+          "19:22"
+        ],
+        "evening": [
+          "21:22",
+          "23:22",
+          "01:22"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Porthmadog",
+      "code": "PTM",
+      "coordinates": {
+        "lat": 52.9231,
+        "lng": -4.1331
+      },
+      "times": {
+        "morning": [
+          "07:16",
+          "09:16",
+          "11:16"
+        ],
+        "afternoon": [
+          "13:16",
+          "15:16",
+          "17:16"
+        ],
+        "evening": [
+          "19:16",
+          "21:16",
+          "23:16"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Harlech",
+      "code": "HRL",
+      "coordinates": {
+        "lat": 52.8631,
+        "lng": -4.1081
+      },
+      "times": {
+        "morning": [
+          "09:57",
+          "11:57",
+          "13:57"
+        ],
+        "afternoon": [
+          "15:57",
+          "17:57",
+          "19:57"
+        ],
+        "evening": [
+          "21:57",
+          "23:57",
+          "01:57"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Barmouth",
+      "code": "BMT",
+      "coordinates": {
+        "lat": 52.7231,
+        "lng": -4.0481
+      },
+      "times": {
+        "morning": [
+          "07:35",
+          "09:35",
+          "11:35"
+        ],
+        "afternoon": [
+          "13:35",
+          "15:35",
+          "17:35"
+        ],
+        "evening": [
+          "19:35",
+          "21:35",
+          "23:35"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Dolgellau",
+      "code": "DLG",
+      "coordinates": {
+        "lat": 52.7431,
+        "lng": -3.8881
+      },
+      "times": {
+        "morning": [
+          "09:30",
+          "11:30",
+          "13:30"
+        ],
+        "afternoon": [
+          "15:30",
+          "17:30",
+          "19:30"
+        ],
+        "evening": [
+          "21:30",
+          "23:30",
+          "01:30"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Bangor (Gwynedd)",
+      "code": "BNG",
+      "coordinates": {
+        "lat": 53.2281,
+        "lng": -4.1281
+      },
+      "times": {
+        "morning": [
+          "10:05",
+          "12:05",
+          "14:05"
+        ],
+        "afternoon": [
+          "16:05",
+          "18:05",
+          "20:05"
+        ],
+        "evening": [
+          "22:05",
+          "00:05",
+          "02:05"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Llandudno",
+      "code": "LLD",
+      "coordinates": {
+        "lat": 53.3231,
+        "lng": -3.8281
+      },
+      "times": {
+        "morning": [
+          "09:00",
+          "11:00",
+          "13:00"
+        ],
+        "afternoon": [
+          "15:00",
+          "17:00",
+          "19:00"
+        ],
+        "evening": [
+          "21:00",
+          "23:00",
+          "01:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Conwy",
+      "code": "CNW",
+      "coordinates": {
+        "lat": 53.2831,
+        "lng": -3.8281
+      },
+      "times": {
+        "morning": [
+          "08:16",
+          "10:16",
+          "12:16"
+        ],
+        "afternoon": [
+          "14:16",
+          "16:16",
+          "18:16"
+        ],
+        "evening": [
+          "20:16",
+          "22:16",
+          "00:16"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Colwyn Bay",
+      "code": "CWB",
+      "coordinates": {
+        "lat": 53.2931,
+        "lng": -3.7281
+      },
+      "times": {
+        "morning": [
+          "08:12",
+          "10:12",
+          "12:12"
+        ],
+        "afternoon": [
+          "14:12",
+          "16:12",
+          "18:12"
+        ],
+        "evening": [
+          "20:12",
+          "22:12",
+          "00:12"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Rhyl",
+      "code": "RHL",
+      "coordinates": {
+        "lat": 53.3181,
+        "lng": -3.4881
+      },
+      "times": {
+        "morning": [
+          "08:57",
+          "10:57",
+          "12:57"
+        ],
+        "afternoon": [
+          "14:57",
+          "16:57",
+          "18:57"
+        ],
+        "evening": [
+          "20:57",
+          "22:57",
+          "00:57"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Prestatyn",
+      "code": "PRT",
+      "coordinates": {
+        "lat": 53.3381,
+        "lng": -3.4081
+      },
+      "times": {
+        "morning": [
+          "09:43",
+          "11:43",
+          "13:43"
+        ],
+        "afternoon": [
+          "15:43",
+          "17:43",
+          "19:43"
+        ],
+        "evening": [
+          "21:43",
+          "23:43",
+          "01:43"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Flint",
+      "code": "FLN",
+      "coordinates": {
+        "lat": 53.2481,
+        "lng": -3.1381
+      },
+      "times": {
+        "morning": [
+          "10:03",
+          "12:03",
+          "14:03"
+        ],
+        "afternoon": [
+          "16:03",
+          "18:03",
+          "20:03"
+        ],
+        "evening": [
+          "22:03",
+          "00:03",
+          "02:03"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Chester",
+      "code": "CTR",
+      "coordinates": {
+        "lat": 53.1931,
+        "lng": -2.8731
+      },
+      "times": {
+        "morning": [
+          "08:55",
+          "10:55",
+          "12:55"
+        ],
+        "afternoon": [
+          "14:55",
+          "16:55",
+          "18:55"
+        ],
+        "evening": [
+          "20:55",
+          "22:55",
+          "00:55"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Wrexham General",
+      "code": "WRX",
+      "coordinates": {
+        "lat": 53.0431,
+        "lng": -2.9981
+      },
+      "times": {
+        "morning": [
+          "08:34",
+          "10:34",
+          "12:34"
+        ],
+        "afternoon": [
+          "14:34",
+          "16:34",
+          "18:34"
+        ],
+        "evening": [
+          "20:34",
+          "22:34",
+          "00:34"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Shrewsbury",
+      "code": "SHR",
+      "coordinates": {
+        "lat": 52.7131,
+        "lng": -2.7481
+      },
+      "times": {
+        "morning": [
+          "11:59",
+          "13:59",
+          "15:59"
+        ],
+        "afternoon": [
+          "17:59",
+          "19:59",
+          "21:59"
+        ],
+        "evening": [
+          "23:59",
+          "01:59",
+          "03:59"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Welshpool",
+      "code": "WLP",
+      "coordinates": {
+        "lat": 52.6581,
+        "lng": -3.1481
+      },
+      "times": {
+        "morning": [
+          "08:25",
+          "10:25",
+          "12:25"
+        ],
+        "afternoon": [
+          "14:25",
+          "16:25",
+          "18:25"
+        ],
+        "evening": [
+          "20:25",
+          "22:25",
+          "00:25"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Newtown (Powys)",
+      "code": "NTN",
+      "coordinates": {
+        "lat": 52.5131,
+        "lng": -3.3181
+      },
+      "times": {
+        "morning": [
+          "10:21",
+          "12:21",
+          "14:21"
+        ],
+        "afternoon": [
+          "16:21",
+          "18:21",
+          "20:21"
+        ],
+        "evening": [
+          "22:21",
+          "00:21",
+          "02:21"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Caersws",
+      "code": "CSW",
+      "coordinates": {
+        "lat": 52.5231,
+        "lng": -3.4481
+      },
+      "times": {
+        "morning": [
+          "12:08",
+          "14:08",
+          "16:08"
+        ],
+        "afternoon": [
+          "18:08",
+          "20:08",
+          "22:08"
+        ],
+        "evening": [
+          "00:08",
+          "02:08",
+          "04:08"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Merthyr Tydfil",
+      "code": "MER",
+      "coordinates": {
+        "lat": 51.7481,
+        "lng": -3.3781
+      },
+      "times": {
+        "morning": [
+          "08:48",
+          "10:48",
+          "12:48"
+        ],
+        "afternoon": [
+          "14:48",
+          "16:48",
+          "18:48"
+        ],
+        "evening": [
+          "20:48",
+          "22:48",
+          "00:48"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Aberdare",
+      "code": "ABD",
+      "coordinates": {
+        "lat": 51.7153,
+        "lng": -3.4436
+      },
+      "times": {
+        "morning": [
+          "11:18",
+          "13:18",
+          "15:18"
+        ],
+        "afternoon": [
+          "17:18",
+          "19:18",
+          "21:18"
+        ],
+        "evening": [
+          "23:18",
+          "01:18",
+          "03:18"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Treherbert",
+      "code": "TRE",
+      "coordinates": {
+        "lat": 51.6981,
+        "lng": -3.5681
+      },
+      "times": {
+        "morning": [
+          "09:41",
+          "11:41",
+          "13:41"
+        ],
+        "afternoon": [
+          "15:41",
+          "17:41",
+          "19:41"
+        ],
+        "evening": [
+          "21:41",
+          "23:41",
+          "01:41"
+        ],
+        "night": []
+      }
+    }
+  ]
+}

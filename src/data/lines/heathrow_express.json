@@ -1,0 +1,159 @@
+{
+  "metadata": {
+    "line_name": "Heathrow Express",
+    "description": "High-speed rail service between London Paddington and Heathrow Airport",
+    "operator": "Heathrow Express",
+    "total_stations": 4,
+    "typical_frequency": "Every 15 minutes",
+    "peak_hours": "06:00-10:00, 16:00-19:00",
+    "frequency": {
+      "weekday_peak": "Every hour",
+      "weekday_off_peak": "Every 2 hours",
+      "weekend": "Every 2 hours",
+      "night": "No service"
+    }
+  },
+  "typical_journey_times": {
+    "PAD-HXX": 15,
+    "HXX-HXT5": 6,
+    "PAD-HXT5": 21
+  },
+  "typical_services": {
+    "peak_frequency": "Every 15 minutes",
+    "off_peak_frequency": "Every 15 minutes",
+    "evening_frequency": "Every 15 minutes",
+    "weekend_frequency": "Every 15 minutes",
+    "first_train": "05:10",
+    "last_train": "23:25"
+  },
+  "stations": [
+    {
+      "name": "London Paddington",
+      "code": "PAD",
+      "coordinates": {
+        "lat": 51.5173,
+        "lng": -0.1769
+      },
+      "zone": 1,
+      "interchange": [
+        "Bakerloo Line",
+        "Circle Line",
+        "District Line",
+        "Hammersmith & City Line",
+        "Great Western Railway",
+        "Elizabeth Line"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Heathrow Terminals 2 & 3",
+      "code": "HXX",
+      "coordinates": {
+        "lat": 51.4708,
+        "lng": -0.4527
+      },
+      "interchange": [
+        "Piccadilly Line",
+        "Elizabeth Line",
+        "Airport Terminal"
+      ],
+      "times": {
+        "morning": [
+          "06:08",
+          "08:08",
+          "10:08"
+        ],
+        "afternoon": [
+          "12:08",
+          "14:08",
+          "16:08"
+        ],
+        "evening": [
+          "18:08",
+          "20:08",
+          "22:08"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Heathrow Terminal 5",
+      "code": "HXT5",
+      "coordinates": {
+        "lat": 51.4722,
+        "lng": -0.4889
+      },
+      "interchange": [
+        "Piccadilly Line",
+        "Elizabeth Line",
+        "Airport Terminal"
+      ],
+      "times": {
+        "morning": [
+          "06:30",
+          "08:30",
+          "10:30"
+        ],
+        "afternoon": [
+          "12:30",
+          "14:30",
+          "16:30"
+        ],
+        "evening": [
+          "18:30",
+          "20:30",
+          "22:30"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Heathrow Terminal 4",
+      "code": "HXT4",
+      "coordinates": {
+        "lat": 51.4597,
+        "lng": -0.4472
+      },
+      "interchange": [
+        "Piccadilly Line",
+        "Elizabeth Line",
+        "Airport Terminal"
+      ],
+      "times": {
+        "morning": [
+          "06:28",
+          "08:28",
+          "10:28"
+        ],
+        "afternoon": [
+          "12:28",
+          "14:28",
+          "16:28"
+        ],
+        "evening": [
+          "18:28",
+          "20:28",
+          "22:28"
+        ],
+        "night": []
+      }
+    }
+  ]
+}

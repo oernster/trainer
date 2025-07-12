@@ -1,0 +1,509 @@
+{
+  "metadata": {
+    "line_name": "Esk Valley Line",
+    "description": "Middlesbrough to Whitby",
+    "operator": "Northern",
+    "total_stations": 17,
+    "frequency": {
+      "weekday_peak": "Every 2 hours",
+      "weekday_off_peak": "Every 3 hours",
+      "weekend": "Every 3 hours",
+      "night": "No service"
+    }
+  },
+  "stations": [
+    {
+      "name": "Middlesbrough",
+      "code": "MBR",
+      "coordinates": {
+        "lat": 54.5781,
+        "lng": -1.2381
+      },
+      "interchange": [
+        "Durham Coast Line",
+        "Tees Valley Line"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "James Cook",
+      "code": "JCH",
+      "coordinates": {
+        "lat": 54.5581,
+        "lng": -1.2181
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:12",
+          "08:12",
+          "10:12"
+        ],
+        "afternoon": [
+          "12:12",
+          "14:12",
+          "16:12"
+        ],
+        "evening": [
+          "18:12",
+          "20:12",
+          "22:12"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Marton",
+      "code": "MTO",
+      "coordinates": {
+        "lat": 54.5431,
+        "lng": -1.2081
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:24",
+          "08:24",
+          "10:24"
+        ],
+        "afternoon": [
+          "12:24",
+          "14:24",
+          "16:24"
+        ],
+        "evening": [
+          "18:24",
+          "20:24",
+          "22:24"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Gypsy Lane",
+      "code": "GYP",
+      "coordinates": {
+        "lat": 54.5331,
+        "lng": -1.2031
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:42",
+          "08:42",
+          "10:42"
+        ],
+        "afternoon": [
+          "12:42",
+          "14:42",
+          "16:42"
+        ],
+        "evening": [
+          "18:42",
+          "20:42",
+          "22:42"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Nunthorpe",
+      "code": "NNT",
+      "coordinates": {
+        "lat": 54.5231,
+        "lng": -1.1931
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:34",
+          "08:34",
+          "10:34"
+        ],
+        "afternoon": [
+          "12:34",
+          "14:34",
+          "16:34"
+        ],
+        "evening": [
+          "18:34",
+          "20:34",
+          "22:34"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Great Ayton",
+      "code": "GTA",
+      "coordinates": {
+        "lat": 54.4931,
+        "lng": -1.1331
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:10",
+          "09:10",
+          "11:10"
+        ],
+        "afternoon": [
+          "13:10",
+          "15:10",
+          "17:10"
+        ],
+        "evening": [
+          "19:10",
+          "21:10",
+          "23:10"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Battersby",
+      "code": "BTT",
+      "coordinates": {
+        "lat": 54.4731,
+        "lng": -1.0631
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:56",
+          "08:56",
+          "10:56"
+        ],
+        "afternoon": [
+          "12:56",
+          "14:56",
+          "16:56"
+        ],
+        "evening": [
+          "18:56",
+          "20:56",
+          "22:56"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Kildale",
+      "code": "KLD",
+      "coordinates": {
+        "lat": 54.4631,
+        "lng": -1.0331
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:15",
+          "09:15",
+          "11:15"
+        ],
+        "afternoon": [
+          "13:15",
+          "15:15",
+          "17:15"
+        ],
+        "evening": [
+          "19:15",
+          "21:15",
+          "23:15"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Commondale",
+      "code": "COM",
+      "coordinates": {
+        "lat": 54.4531,
+        "lng": -0.9631
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:34",
+          "09:34",
+          "11:34"
+        ],
+        "afternoon": [
+          "13:34",
+          "15:34",
+          "17:34"
+        ],
+        "evening": [
+          "19:34",
+          "21:34",
+          "23:34"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Castleton Moor",
+      "code": "CSM",
+      "coordinates": {
+        "lat": 54.4631,
+        "lng": -0.9031
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:36",
+          "09:36",
+          "11:36"
+        ],
+        "afternoon": [
+          "13:36",
+          "15:36",
+          "17:36"
+        ],
+        "evening": [
+          "19:36",
+          "21:36",
+          "23:36"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Danby",
+      "code": "DNY",
+      "coordinates": {
+        "lat": 54.4681,
+        "lng": -0.8931
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:00",
+          "10:00",
+          "12:00"
+        ],
+        "afternoon": [
+          "14:00",
+          "16:00",
+          "18:00"
+        ],
+        "evening": [
+          "20:00",
+          "22:00",
+          "00:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Lealholm",
+      "code": "LHM",
+      "coordinates": {
+        "lat": 54.4531,
+        "lng": -0.8131
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:06",
+          "10:06",
+          "12:06"
+        ],
+        "afternoon": [
+          "14:06",
+          "16:06",
+          "18:06"
+        ],
+        "evening": [
+          "20:06",
+          "22:06",
+          "00:06"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Glaisdale",
+      "code": "GLS",
+      "coordinates": {
+        "lat": 54.4331,
+        "lng": -0.7831
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:53",
+          "10:53",
+          "12:53"
+        ],
+        "afternoon": [
+          "14:53",
+          "16:53",
+          "18:53"
+        ],
+        "evening": [
+          "20:53",
+          "22:53",
+          "00:53"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Egton",
+      "code": "EGT",
+      "coordinates": {
+        "lat": 54.4331,
+        "lng": -0.7531
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:07",
+          "10:07",
+          "12:07"
+        ],
+        "afternoon": [
+          "14:07",
+          "16:07",
+          "18:07"
+        ],
+        "evening": [
+          "20:07",
+          "22:07",
+          "00:07"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Grosmont",
+      "code": "GMT",
+      "coordinates": {
+        "lat": 54.4331,
+        "lng": -0.7231
+      },
+      "interchange": [
+        "North Yorkshire Moors Railway"
+      ],
+      "times": {
+        "morning": [
+          "09:03",
+          "11:03",
+          "13:03"
+        ],
+        "afternoon": [
+          "15:03",
+          "17:03",
+          "19:03"
+        ],
+        "evening": [
+          "21:03",
+          "23:03",
+          "01:03"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Sleights",
+      "code": "SLH",
+      "coordinates": {
+        "lat": 54.4531,
+        "lng": -0.6631
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "09:33",
+          "11:33",
+          "13:33"
+        ],
+        "afternoon": [
+          "15:33",
+          "17:33",
+          "19:33"
+        ],
+        "evening": [
+          "21:33",
+          "23:33",
+          "01:33"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Ruswarp",
+      "code": "RUS",
+      "coordinates": {
+        "lat": 54.4731,
+        "lng": -0.6331
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:52",
+          "09:52",
+          "11:52"
+        ],
+        "afternoon": [
+          "13:52",
+          "15:52",
+          "17:52"
+        ],
+        "evening": [
+          "19:52",
+          "21:52",
+          "23:52"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Whitby",
+      "code": "WTB",
+      "coordinates": {
+        "lat": 54.4881,
+        "lng": -0.6131
+      },
+      "interchange": [
+        "North Yorkshire Moors Railway"
+      ],
+      "times": {
+        "morning": [
+          "08:47",
+          "10:47",
+          "12:47"
+        ],
+        "afternoon": [
+          "14:47",
+          "16:47",
+          "18:47"
+        ],
+        "evening": [
+          "20:47",
+          "22:47",
+          "00:47"
+        ],
+        "night": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,789 @@
+{
+  "metadata": {
+    "line_name": "South Western Main Line",
+    "description": "London Waterloo to Southampton Central and Portsmouth",
+    "operator": "South Western Railway",
+    "total_stations": 26,
+    "typical_frequency": "Every 15-30 minutes",
+    "peak_hours": "07:00-09:30, 17:00-19:30",
+    "frequency": {
+      "weekday_peak": "Every hour",
+      "weekday_off_peak": "Every 2 hours",
+      "weekend": "Every 2 hours",
+      "night": "No service"
+    }
+  },
+  "typical_journey_times": {
+    "WAT-CLJ": 4,
+    "WAT-WIM": 11,
+    "WAT-SUR": 17,
+    "WAT-WOK": 24,
+    "WAT-BSK": 47,
+    "WAT-WIN": 63,
+    "WAT-SOU": 79,
+    "CLJ-WIM": 7,
+    "CLJ-SUR": 13,
+    "CLJ-WOK": 20,
+    "WIM-SUR": 6,
+    "WOK-BSK": 23,
+    "BSK-WIN": 16,
+    "WIN-SOU": 16
+  },
+  "typical_services": {
+    "peak_frequency": "Every 15 minutes",
+    "off_peak_frequency": "Every 30 minutes",
+    "evening_frequency": "Every 60 minutes",
+    "weekend_frequency": "Every 30 minutes",
+    "first_train": "05:30",
+    "last_train": "23:45"
+  },
+  "stations": [
+    {
+      "name": "London Waterloo",
+      "code": "WAT",
+      "coordinates": {
+        "lat": 51.5036,
+        "lng": -0.1144
+      },
+      "zone": 1,
+      "interchange": [
+        "Jubilee Line",
+        "Northern Line",
+        "Bakerloo Line",
+        "Waterloo & City Line"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Clapham Junction",
+      "code": "CLJ",
+      "coordinates": {
+        "lat": 51.4642,
+        "lng": -0.1705
+      },
+      "zone": 2,
+      "interchange": [
+        "Brighton Main Line",
+        "West London Line"
+      ],
+      "times": {
+        "morning": [
+          "06:11",
+          "08:11",
+          "10:11"
+        ],
+        "afternoon": [
+          "12:11",
+          "14:11",
+          "16:11"
+        ],
+        "evening": [
+          "18:11",
+          "20:11",
+          "22:11"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Wimbledon",
+      "code": "WIM",
+      "coordinates": {
+        "lat": 51.4214,
+        "lng": -0.2064
+      },
+      "zone": 3,
+      "interchange": [
+        "District Line",
+        "Tramlink"
+      ],
+      "times": {
+        "morning": [
+          "06:16",
+          "08:16",
+          "10:16"
+        ],
+        "afternoon": [
+          "12:16",
+          "14:16",
+          "16:16"
+        ],
+        "evening": [
+          "18:16",
+          "20:16",
+          "22:16"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Raynes Park",
+      "code": "RAY",
+      "coordinates": {
+        "lat": 51.4089,
+        "lng": -0.2297
+      },
+      "zone": 4,
+      "times": {
+        "morning": [
+          "06:33",
+          "08:33",
+          "10:33"
+        ],
+        "afternoon": [
+          "12:33",
+          "14:33",
+          "16:33"
+        ],
+        "evening": [
+          "18:33",
+          "20:33",
+          "22:33"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "New Malden",
+      "code": "NEM",
+      "coordinates": {
+        "lat": 51.4011,
+        "lng": -0.2547
+      },
+      "zone": 4,
+      "times": {
+        "morning": [
+          "06:35",
+          "08:35",
+          "10:35"
+        ],
+        "afternoon": [
+          "12:35",
+          "14:35",
+          "16:35"
+        ],
+        "evening": [
+          "18:35",
+          "20:35",
+          "22:35"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Berrylands",
+      "code": "BER",
+      "coordinates": {
+        "lat": 51.3958,
+        "lng": -0.2714
+      },
+      "zone": 5,
+      "times": {
+        "morning": [
+          "06:44",
+          "08:44",
+          "10:44"
+        ],
+        "afternoon": [
+          "12:44",
+          "14:44",
+          "16:44"
+        ],
+        "evening": [
+          "18:44",
+          "20:44",
+          "22:44"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Surbiton",
+      "code": "SUR",
+      "coordinates": {
+        "lat": 51.3925,
+        "lng": -0.2997
+      },
+      "zone": 6,
+      "times": {
+        "morning": [
+          "06:43",
+          "08:43",
+          "10:43"
+        ],
+        "afternoon": [
+          "12:43",
+          "14:43",
+          "16:43"
+        ],
+        "evening": [
+          "18:43",
+          "20:43",
+          "22:43"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Thames Ditton",
+      "code": "THD",
+      "coordinates": {
+        "lat": 51.3889,
+        "lng": -0.3333
+      },
+      "zone": 6,
+      "times": {
+        "morning": [
+          "07:09",
+          "09:09",
+          "11:09"
+        ],
+        "afternoon": [
+          "13:09",
+          "15:09",
+          "17:09"
+        ],
+        "evening": [
+          "19:09",
+          "21:09",
+          "23:09"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Esher",
+      "code": "ESH",
+      "coordinates": {
+        "lat": 51.3681,
+        "lng": -0.3667
+      },
+      "zone": 6,
+      "times": {
+        "morning": [
+          "07:20",
+          "09:20",
+          "11:20"
+        ],
+        "afternoon": [
+          "13:20",
+          "15:20",
+          "17:20"
+        ],
+        "evening": [
+          "19:20",
+          "21:20",
+          "23:20"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Hersham",
+      "code": "HER",
+      "coordinates": {
+        "lat": 51.3647,
+        "lng": -0.3833
+      },
+      "zone": 6,
+      "times": {
+        "morning": [
+          "07:34",
+          "09:34",
+          "11:34"
+        ],
+        "afternoon": [
+          "13:34",
+          "15:34",
+          "17:34"
+        ],
+        "evening": [
+          "19:34",
+          "21:34",
+          "23:34"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Walton-on-Thames",
+      "code": "WAL",
+      "coordinates": {
+        "lat": 51.3833,
+        "lng": -0.4167
+      },
+      "zone": 6,
+      "times": {
+        "morning": [
+          "07:44",
+          "09:44",
+          "11:44"
+        ],
+        "afternoon": [
+          "13:44",
+          "15:44",
+          "17:44"
+        ],
+        "evening": [
+          "19:44",
+          "21:44",
+          "23:44"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Weybridge",
+      "code": "WYB",
+      "coordinates": {
+        "lat": 51.3719,
+        "lng": -0.4597
+      },
+      "zone": 6,
+      "times": {
+        "morning": [
+          "07:29",
+          "09:29",
+          "11:29"
+        ],
+        "afternoon": [
+          "13:29",
+          "15:29",
+          "17:29"
+        ],
+        "evening": [
+          "19:29",
+          "21:29",
+          "23:29"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Byfleet & New Haw",
+      "code": "BFN",
+      "coordinates": {
+        "lat": 51.35,
+        "lng": -0.4833
+      },
+      "zone": 6,
+      "times": {
+        "morning": [
+          "08:25",
+          "10:25",
+          "12:25"
+        ],
+        "afternoon": [
+          "14:25",
+          "16:25",
+          "18:25"
+        ],
+        "evening": [
+          "20:25",
+          "22:25",
+          "00:25"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "West Byfleet",
+      "code": "WBY",
+      "coordinates": {
+        "lat": 51.3389,
+        "lng": -0.5
+      },
+      "zone": 6,
+      "times": {
+        "morning": [
+          "08:25",
+          "10:25",
+          "12:25"
+        ],
+        "afternoon": [
+          "14:25",
+          "16:25",
+          "18:25"
+        ],
+        "evening": [
+          "20:25",
+          "22:25",
+          "00:25"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Woking",
+      "code": "WOK",
+      "coordinates": {
+        "lat": 51.3189,
+        "lng": -0.5583
+      },
+      "zone": 6,
+      "interchange": [
+        "Portsmouth Direct Line"
+      ],
+      "times": {
+        "morning": [
+          "09:28",
+          "11:28",
+          "13:28"
+        ],
+        "afternoon": [
+          "15:28",
+          "17:28",
+          "19:28"
+        ],
+        "evening": [
+          "21:28",
+          "23:28",
+          "01:28"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Brookwood",
+      "code": "BKW",
+      "coordinates": {
+        "lat": 51.3,
+        "lng": -0.6333
+      },
+      "times": {
+        "morning": [
+          "08:33",
+          "10:33",
+          "12:33"
+        ],
+        "afternoon": [
+          "14:33",
+          "16:33",
+          "18:33"
+        ],
+        "evening": [
+          "20:33",
+          "22:33",
+          "00:33"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Farnborough (Main)",
+      "code": "FNB",
+      "coordinates": {
+        "lat": 51.2833,
+        "lng": -0.75
+      },
+      "times": {
+        "morning": [
+          "07:54",
+          "09:54",
+          "11:54"
+        ],
+        "afternoon": [
+          "13:54",
+          "15:54",
+          "17:54"
+        ],
+        "evening": [
+          "19:54",
+          "21:54",
+          "23:54"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Fleet",
+      "code": "FLE",
+      "coordinates": {
+        "lat": 51.2833,
+        "lng": -0.8333
+      },
+      "interchange": [
+        "South Western Railway"
+      ],
+      "times": {
+        "morning": [
+          "10:06",
+          "12:06",
+          "14:06"
+        ],
+        "afternoon": [
+          "16:06",
+          "18:06",
+          "20:06"
+        ],
+        "evening": [
+          "22:06",
+          "00:06",
+          "02:06"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Winchfield",
+      "code": "WNF",
+      "coordinates": {
+        "lat": 51.2667,
+        "lng": -0.9
+      },
+      "times": {
+        "morning": [
+          "08:42",
+          "10:42",
+          "12:42"
+        ],
+        "afternoon": [
+          "14:42",
+          "16:42",
+          "18:42"
+        ],
+        "evening": [
+          "20:42",
+          "22:42",
+          "00:42"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Hook",
+      "code": "HOK",
+      "coordinates": {
+        "lat": 51.25,
+        "lng": -0.9167
+      },
+      "times": {
+        "morning": [
+          "10:42",
+          "12:42",
+          "14:42"
+        ],
+        "afternoon": [
+          "16:42",
+          "18:42",
+          "20:42"
+        ],
+        "evening": [
+          "22:42",
+          "00:42",
+          "02:42"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Basingstoke",
+      "code": "BSK",
+      "coordinates": {
+        "lat": 51.2667,
+        "lng": -1.0833
+      },
+      "interchange": [
+        "Reading to Basingstoke Line"
+      ],
+      "times": {
+        "morning": [
+          "10:26",
+          "12:26",
+          "14:26"
+        ],
+        "afternoon": [
+          "16:26",
+          "18:26",
+          "20:26"
+        ],
+        "evening": [
+          "22:26",
+          "00:26",
+          "02:26"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Micheldever",
+      "code": "MIC",
+      "coordinates": {
+        "lat": 51.2167,
+        "lng": -1.2333
+      },
+      "times": {
+        "morning": [
+          "07:50",
+          "09:50",
+          "11:50"
+        ],
+        "afternoon": [
+          "13:50",
+          "15:50",
+          "17:50"
+        ],
+        "evening": [
+          "19:50",
+          "21:50",
+          "23:50"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Winchester",
+      "code": "WIN",
+      "coordinates": {
+        "lat": 51.0667,
+        "lng": -1.3167
+      },
+      "times": {
+        "morning": [
+          "08:21",
+          "10:21",
+          "12:21"
+        ],
+        "afternoon": [
+          "14:21",
+          "16:21",
+          "18:21"
+        ],
+        "evening": [
+          "20:21",
+          "22:21",
+          "00:21"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Shawford",
+      "code": "SHW",
+      "coordinates": {
+        "lat": 51.0333,
+        "lng": -1.35
+      },
+      "times": {
+        "morning": [
+          "09:12",
+          "11:12",
+          "13:12"
+        ],
+        "afternoon": [
+          "15:12",
+          "17:12",
+          "19:12"
+        ],
+        "evening": [
+          "21:12",
+          "23:12",
+          "01:12"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Eastleigh",
+      "code": "ESL",
+      "coordinates": {
+        "lat": 50.9667,
+        "lng": -1.35
+      },
+      "interchange": [
+        "Eastleigh to Fareham Line"
+      ],
+      "times": {
+        "morning": [
+          "09:12",
+          "11:12",
+          "13:12"
+        ],
+        "afternoon": [
+          "15:12",
+          "17:12",
+          "19:12"
+        ],
+        "evening": [
+          "21:12",
+          "23:12",
+          "01:12"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Southampton Central",
+      "code": "SOU",
+      "coordinates": {
+        "lat": 50.9083,
+        "lng": -1.4167
+      },
+      "interchange": [
+        "West Coastway Line",
+        "Wessex Main Line"
+      ],
+      "times": {
+        "morning": [
+          "11:48",
+          "13:48",
+          "15:48"
+        ],
+        "afternoon": [
+          "17:48",
+          "19:48",
+          "21:48"
+        ],
+        "evening": [
+          "23:48",
+          "01:48",
+          "03:48"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Southampton Airport Parkway",
+      "code": "SOA",
+      "coordinates": {
+        "lat": 50.95,
+        "lng": -1.3667
+      },
+      "times": {
+        "morning": [
+          "09:04",
+          "11:04",
+          "13:04"
+        ],
+        "afternoon": [
+          "15:04",
+          "17:04",
+          "19:04"
+        ],
+        "evening": [
+          "21:04",
+          "23:04",
+          "01:04"
+        ],
+        "night": []
+      }
+    }
+  ]
+}

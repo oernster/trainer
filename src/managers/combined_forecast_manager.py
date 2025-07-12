@@ -425,7 +425,7 @@ class CombinedForecastManager(QObject):
     def stop_auto_refresh(self) -> None:
         """Stop automatic refresh timer."""
         self._refresh_timer.stop()
-        logger.info("Combined forecast auto-refresh stopped")
+        logger.debug("Combined forecast auto-refresh stopped")
 
     def is_auto_refresh_active(self) -> bool:
         """Check if auto-refresh is currently active."""

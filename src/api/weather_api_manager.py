@@ -183,7 +183,7 @@ class AioHttpClient(HTTPClient):
                     asyncio.run(self._session.close())
 
                 self._session = None
-                logger.info("HTTP client session closed properly")
+                logger.debug("HTTP client session closed properly")
             except Exception as e:
                 logger.warning(f"Error closing session: {e}")
                 # Fallback: just detach the session
@@ -205,7 +205,7 @@ class OpenMeteoWeatherSource(WeatherDataSource):
         self._http_client = http_client
         self._config = config
         self._validator = WeatherDataValidator()
-        logger.info(f"OpenMeteoWeatherSource initialized for {config.location_name}")
+        logger.debug(f"OpenMeteoWeatherSource initialized for {config.location_name}")
 
     def get_source_name(self) -> str:
         """Get source name."""
@@ -427,7 +427,7 @@ class OpenMeteoWeatherSource(WeatherDataSource):
         """Shutdown the weather data source synchronously."""
         if hasattr(self._http_client, "close_sync"):
             self._http_client.close_sync()
-        logger.info("OpenMeteoWeatherSource synchronous shutdown complete")
+        logger.debug("OpenMeteoWeatherSource synchronous shutdown complete")
 
 
 class WeatherAPIManager:
@@ -486,7 +486,7 @@ class WeatherAPIManager:
             self._cached_data = forecast_data
             self._last_fetch_time = datetime.now()
 
-            logger.info(f"Fetched fresh weather data for {location.name}")
+            logger.debug(f"Fetched fresh weather data for {location.name}")
             return forecast_data
 
         except Exception as e:
@@ -514,7 +514,7 @@ class WeatherAPIManager:
         """Clear cached weather data."""
         self._cached_data = None
         self._last_fetch_time = None
-        logger.info("Weather cache cleared")
+        logger.debug("Weather cache cleared")
 
     def get_cache_info(self) -> Dict:
         """Get information about current cache state."""
@@ -542,7 +542,7 @@ class WeatherAPIManager:
 
         # Clear cache
         self.clear_cache()
-        logger.info("WeatherAPIManager synchronous shutdown complete")
+        logger.debug("WeatherAPIManager synchronous shutdown complete")
 
 
 class WeatherAPIFactory:

@@ -1,0 +1,391 @@
+{
+  "metadata": {
+    "line_name": "Great Eastern Main Line",
+    "description": "London Liverpool Street to Norwich via Ipswich",
+    "operator": "Greater Anglia",
+    "total_stations": 12,
+    "frequency": {
+      "weekday_peak": "Every hour",
+      "weekday_off_peak": "Every 2 hours",
+      "weekend": "Every 2 hours",
+      "night": "No service"
+    }
+  },
+  "stations": [
+    {
+      "name": "London Liverpool Street",
+      "code": "LST",
+      "coordinates": {
+        "lat": 51.5178,
+        "lng": -0.0823
+      },
+      "zone": 1,
+      "interchange": [
+        "Circle Line",
+        "Hammersmith & City Line",
+        "Metropolitan Line"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Stratford",
+      "code": "SRA",
+      "coordinates": {
+        "lat": 51.5419,
+        "lng": -0.0031
+      },
+      "zone": 3,
+      "interchange": [
+        "Central Line",
+        "Jubilee Line",
+        "DLR",
+        "Elizabeth Line"
+      ],
+      "times": {
+        "morning": [
+          "06:10",
+          "08:10",
+          "10:10"
+        ],
+        "afternoon": [
+          "12:10",
+          "14:10",
+          "16:10"
+        ],
+        "evening": [
+          "18:10",
+          "20:10",
+          "22:10"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Romford",
+      "code": "RMF",
+      "coordinates": {
+        "lat": 51.5744,
+        "lng": 0.1831
+      },
+      "zone": 6,
+      "interchange": [
+        "Elizabeth Line"
+      ],
+      "times": {
+        "morning": [
+          "06:15",
+          "08:15",
+          "10:15"
+        ],
+        "afternoon": [
+          "12:15",
+          "14:15",
+          "16:15"
+        ],
+        "evening": [
+          "18:15",
+          "20:15",
+          "22:15"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Brentwood",
+      "code": "BRE",
+      "coordinates": {
+        "lat": 51.6119,
+        "lng": 0.3031
+      },
+      "times": {
+        "morning": [
+          "06:16",
+          "08:16",
+          "10:16"
+        ],
+        "afternoon": [
+          "12:16",
+          "14:16",
+          "16:16"
+        ],
+        "evening": [
+          "18:16",
+          "20:16",
+          "22:16"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Shenfield",
+      "code": "SNF",
+      "coordinates": {
+        "lat": 51.6319,
+        "lng": 0.3331
+      },
+      "interchange": [
+        "Elizabeth Line"
+      ],
+      "times": {
+        "morning": [
+          "06:43",
+          "08:43",
+          "10:43"
+        ],
+        "afternoon": [
+          "12:43",
+          "14:43",
+          "16:43"
+        ],
+        "evening": [
+          "18:43",
+          "20:43",
+          "22:43"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Chelmsford",
+      "code": "CHM",
+      "coordinates": {
+        "lat": 51.7356,
+        "lng": 0.4681
+      },
+      "times": {
+        "morning": [
+          "07:00",
+          "09:00",
+          "11:00"
+        ],
+        "afternoon": [
+          "13:00",
+          "15:00",
+          "17:00"
+        ],
+        "evening": [
+          "19:00",
+          "21:00",
+          "23:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Witham",
+      "code": "WTM",
+      "coordinates": {
+        "lat": 51.8019,
+        "lng": 0.6431
+      },
+      "interchange": [
+        "Braintree Line"
+      ],
+      "times": {
+        "morning": [
+          "07:20",
+          "09:20",
+          "11:20"
+        ],
+        "afternoon": [
+          "13:20",
+          "15:20",
+          "17:20"
+        ],
+        "evening": [
+          "19:20",
+          "21:20",
+          "23:20"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Colchester",
+      "code": "COL",
+      "coordinates": {
+        "lat": 51.9019,
+        "lng": 0.8981
+      },
+      "interchange": [
+        "Sunshine Coast Line"
+      ],
+      "times": {
+        "morning": [
+          "06:45",
+          "08:45",
+          "10:45"
+        ],
+        "afternoon": [
+          "12:45",
+          "14:45",
+          "16:45"
+        ],
+        "evening": [
+          "18:45",
+          "20:45",
+          "22:45"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Manningtree",
+      "code": "MNG",
+      "coordinates": {
+        "lat": 51.9419,
+        "lng": 1.0681
+      },
+      "interchange": [
+        "Harwich Line"
+      ],
+      "times": {
+        "morning": [
+          "07:20",
+          "09:20",
+          "11:20"
+        ],
+        "afternoon": [
+          "13:20",
+          "15:20",
+          "17:20"
+        ],
+        "evening": [
+          "19:20",
+          "21:20",
+          "23:20"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Ipswich",
+      "code": "IPS",
+      "coordinates": {
+        "lat": 52.0544,
+        "lng": 1.1481
+      },
+      "interchange": [
+        "East Suffolk Line",
+        "Felixstowe Branch Line"
+      ],
+      "times": {
+        "morning": [
+          "06:59",
+          "08:59",
+          "10:59"
+        ],
+        "afternoon": [
+          "12:59",
+          "14:59",
+          "16:59"
+        ],
+        "evening": [
+          "18:59",
+          "20:59",
+          "22:59"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Stowmarket",
+      "code": "SMK",
+      "coordinates": {
+        "lat": 52.1881,
+        "lng": 0.9981
+      },
+      "times": {
+        "morning": [
+          "07:56",
+          "09:56",
+          "11:56"
+        ],
+        "afternoon": [
+          "13:56",
+          "15:56",
+          "17:56"
+        ],
+        "evening": [
+          "19:56",
+          "21:56",
+          "23:56"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Diss",
+      "code": "DIS",
+      "coordinates": {
+        "lat": 52.3781,
+        "lng": 1.1181
+      },
+      "times": {
+        "morning": [
+          "07:44",
+          "09:44",
+          "11:44"
+        ],
+        "afternoon": [
+          "13:44",
+          "15:44",
+          "17:44"
+        ],
+        "evening": [
+          "19:44",
+          "21:44",
+          "23:44"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Norwich",
+      "code": "NRW",
+      "coordinates": {
+        "lat": 52.6281,
+        "lng": 1.3081
+      },
+      "interchange": [
+        "Bittern Line",
+        "Wherry Lines"
+      ],
+      "times": {
+        "morning": [
+          "08:04",
+          "10:04",
+          "12:04"
+        ],
+        "afternoon": [
+          "14:04",
+          "16:04",
+          "18:04"
+        ],
+        "evening": [
+          "20:04",
+          "22:04",
+          "00:04"
+        ],
+        "night": []
+      }
+    }
+  ]
+}

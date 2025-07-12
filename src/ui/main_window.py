@@ -25,14 +25,17 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import QTimer, Signal, Qt, QSize
 from PySide6.QtGui import QAction, QIcon, QKeySequence
 from ..models.train_data import TrainData
+from ..managers.train_manager import TrainManager
 from ..managers.config_manager import ConfigManager, ConfigurationError
 from ..managers.theme_manager import ThemeManager
 from ..managers.weather_manager import WeatherManager
 from ..managers.astronomy_manager import AstronomyManager
-from .train_widgets import TrainListWidget
+from ..managers.initialization_manager import InitializationManager
+from .train_widgets import TrainListWidget, RouteDisplayDialog
 from .weather_widgets import WeatherWidget
 from .astronomy_widgets import AstronomyWidget
-from .settings_dialog import SettingsDialog
+from .stations_settings_dialog import StationsSettingsDialog
+from .nasa_settings_dialog import NASASettingsDialog
 from .train_detail_dialog import TrainDetailDialog
 from version import __version__, __app_display_name__, get_about_text
 
@@ -54,8 +57,10 @@ class MainWindow(QMainWindow):
     # Signals
     refresh_requested = Signal()
     theme_changed = Signal(str)
-    auto_refresh_toggle_requested = Signal()
+    # Auto-refresh removed
     astronomy_manager_ready = Signal()  # New signal for when astronomy manager is ready
+    route_changed = Signal(str, str)  # Signal for when route changes (from_code, to_code)
+    config_updated = Signal(object)  # Signal for when configuration is updated
 
     def __init__(self, config_manager: Optional[ConfigManager] = None):
         """Initialize the main window."""
@@ -92,16 +97,12 @@ class MainWindow(QMainWindow):
         self.time_window_label: Optional[QLabel] = None
         self.theme_button: Optional[QPushButton] = None
         self.refresh_button: Optional[QPushButton] = None
-        self.connection_status: Optional[QLabel] = None
-        self.train_count_label: Optional[QLabel] = None
-        self.theme_status: Optional[QLabel] = None
-        self.auto_refresh_status: Optional[QLabel] = None
-        self.weather_status: Optional[QLabel] = None
-        self.astronomy_status: Optional[QLabel] = None
 
         # Managers
         self.weather_manager: Optional[WeatherManager] = None
         self.astronomy_manager: Optional[AstronomyManager] = None
+        self.initialization_manager: Optional[InitializationManager] = None
+        self.train_manager: Optional[TrainManager] = None  # Will be set by main.py
 
         # Setup theme system first to ensure proper styling from the start
         self.setup_theme_system()
@@ -110,14 +111,22 @@ class MainWindow(QMainWindow):
         # Setup UI with theme already applied
         self.setup_ui()
         self.setup_application_icon()
-        self.setup_weather_system()
-        self.setup_astronomy_system()
-
+        
+        # Initialize the optimized initialization manager
+        self.initialization_manager = InitializationManager(self.config_manager, self)
+        
+        # Connect initialization signals
+        self.initialization_manager.initialization_completed.connect(self._on_initialization_completed)
+        self.initialization_manager.nasa_data_ready.connect(self._on_nasa_data_ready)
+        
         # Apply theme to all widgets after creation
         self.apply_theme_to_all_widgets()
         self.connect_signals()
+        
+        # Start optimized widget initialization
+        QTimer.singleShot(50, self._start_optimized_initialization)
 
-        logger.info("Main window initialized")
+        logger.debug("Main window initialized")
 
         # Remove the invisible attributes but don't show yet - let main.py control when to show
         self.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen, False)
@@ -141,21 +150,21 @@ class MainWindow(QMainWindow):
         self.ui_scale_factor = 0.8 if self.is_small_screen else 1.0
         
         if self.is_small_screen:
-            # Further reduced height for 13" MacBook compatibility
-            min_width = int(800 * 0.8)  # 640
+            # Further reduced height for 13" MacBook compatibility but increased width for astronomy widget
+            min_width = int(900 * 0.8)  # 720
             min_height = int(950 * 0.8)  # 760
-            default_width = int(1000 * 0.8)  # 800
+            default_width = int(1100 * 0.8)  # 880
             default_height = int(1050 * 0.8)  # 840
             
             logger.info(f"Small screen detected ({screen_width}x{screen_height}), using scaled window size: {default_width}x{default_height}")
         else:
-            # Keep original size for larger screens
-            min_width = 800
+            # Increased width for larger screens to accommodate astronomy widget
+            min_width = 900
             min_height = 1100
-            default_width = 1000
+            default_width = 1100
             default_height = 1200
             
-            logger.info(f"Large screen detected ({screen_width}x{screen_height}), using full window size: {default_width}x{default_height}")
+            logger.debug(f"Large screen detected ({screen_width}x{screen_height}), using full window size: {default_width}x{default_height}")
         
         self.setMinimumSize(min_width, min_height)
         self.resize(default_width, default_height)
@@ -207,7 +216,7 @@ class MainWindow(QMainWindow):
         
         if should_show_astronomy:
             self.astronomy_widget.show()
-            logger.info("Astronomy widget shown (will show placeholder if no API key)")
+            logger.debug("Astronomy widget shown (will show placeholder if no API key)")
         else:
             self.astronomy_widget.hide()
             logger.info("Astronomy widget hidden (disabled in config)")
@@ -222,9 +231,6 @@ class MainWindow(QMainWindow):
             self.train_list_widget.setMaximumHeight(max_train_height)
         
         layout.addWidget(self.train_list_widget)
-
-        # Status bar
-        self.setup_status_bar()
 
         # Menu bar
         self.setup_menu_bar()
@@ -261,7 +267,7 @@ class MainWindow(QMainWindow):
             icon = QIcon(pixmap)
             self.setWindowIcon(icon)
             
-            logger.info("Window icon set using Unicode train emoji")
+            logger.debug("Window icon set using Unicode train emoji")
             
         except Exception as e:
             logger.warning(f"Failed to create emoji window icon: {e}")
@@ -277,8 +283,18 @@ class MainWindow(QMainWindow):
 
         # Status labels
         self.last_update_label = QLabel("Last Updated: --:--:--")
-        self.next_update_label = QLabel("Next Update: --")
         self.time_window_label = QLabel("Showing trains for next 16 hours")
+        self.route_display_label = QLabel("Route: Not set")
+        
+        # Initialize route display with current config
+        if self.config and hasattr(self.config, 'stations'):
+            via_stations = getattr(self.config.stations, 'via_stations', [])
+            if self.config.stations.from_name and self.config.stations.to_name:
+                self.update_route_display(
+                    self.config.stations.from_name,
+                    self.config.stations.to_name,
+                    via_stations
+                )
 
         # Control buttons
         self.theme_button = QPushButton(self.theme_manager.get_theme_icon())
@@ -290,17 +306,13 @@ class MainWindow(QMainWindow):
         self.refresh_button.clicked.connect(self.manual_refresh)
         self.refresh_button.setToolTip("Refresh train data (F5)")
 
-        self.auto_refresh_button = QPushButton("⏸️ Auto-refresh")
-        self.auto_refresh_button.clicked.connect(self.toggle_auto_refresh)
-        self.auto_refresh_button.setToolTip("Toggle auto-refresh")
-        self.auto_refresh_button.setFixedSize(120, 32)
+        # Auto-refresh removed as obsolete
 
         # Layout
         header_layout.addWidget(self.last_update_label)
+        header_layout.addWidget(self.route_display_label)
         header_layout.addWidget(self.time_window_label)
         header_layout.addStretch()
-        header_layout.addWidget(self.next_update_label)
-        header_layout.addWidget(self.auto_refresh_button)
         header_layout.addWidget(self.theme_button)
         header_layout.addWidget(self.refresh_button)
 
@@ -309,30 +321,6 @@ class MainWindow(QMainWindow):
 
         layout.addWidget(header_widget)
 
-    def setup_status_bar(self):
-        """Setup status bar with connection and theme info."""
-        self.status_bar = QStatusBar()
-        self.setStatusBar(self.status_bar)
-
-        # Reduce status bar height for small screens
-        if self.is_small_screen:
-            scaled_height = int(18 * self.ui_scale_factor)  # Reduced from default ~22px
-            self.status_bar.setMaximumHeight(scaled_height)
-            self.status_bar.setStyleSheet(f"QStatusBar {{ max-height: {scaled_height}px; font-size: 10px; }}")
-
-        self.connection_status = QLabel("Disconnected")
-        self.train_count_label = QLabel("0 trains")
-        self.theme_status = QLabel(f"Theme: {self.theme_manager.current_theme.title()}")
-        self.auto_refresh_status = QLabel("Auto-refresh: OFF")
-        self.weather_status = QLabel("Weather: OFF")
-        self.astronomy_status = QLabel("Astronomy: OFF")
-
-        self.status_bar.addWidget(self.connection_status)
-        self.status_bar.addPermanentWidget(self.train_count_label)
-        self.status_bar.addPermanentWidget(self.weather_status)
-        self.status_bar.addPermanentWidget(self.astronomy_status)
-        self.status_bar.addPermanentWidget(self.theme_status)
-        self.status_bar.addPermanentWidget(self.auto_refresh_status)
 
     def setup_menu_bar(self):
         """Setup application menu bar."""
@@ -365,11 +353,16 @@ class MainWindow(QMainWindow):
         # Settings menu
         settings_menu = menubar.addMenu("&Settings")
 
-        options_action = QAction("&Options...", self)
-        options_action.setShortcut(QKeySequence("Ctrl+,"))
-        options_action.setStatusTip("Open application settings")
-        options_action.triggered.connect(self.show_settings_dialog)
-        settings_menu.addAction(options_action)
+        stations_action = QAction("&Stations...", self)
+        stations_action.setShortcut(QKeySequence("Ctrl+,"))
+        stations_action.setStatusTip("Configure station settings, display, and refresh options")
+        stations_action.triggered.connect(self.show_stations_settings_dialog)
+        settings_menu.addAction(stations_action)
+
+        nasa_action = QAction("&NASA API...", self)
+        nasa_action.setStatusTip("Configure NASA API settings and astronomy options")
+        nasa_action.triggered.connect(self.show_nasa_settings_dialog)
+        settings_menu.addAction(nasa_action)
 
         # View menu
         view_menu = menubar.addMenu("&View")
@@ -436,7 +429,7 @@ class MainWindow(QMainWindow):
                     self.refresh_weather
                 )
                 self.weather_widget.weather_settings_requested.connect(
-                    self.show_settings_dialog
+                    self.show_stations_settings_dialog
                 )
 
                 # Update weather widget config
@@ -469,7 +462,7 @@ class MainWindow(QMainWindow):
                 self.weather_widget.setVisible(enabled)
 
             if enabled:
-                logger.info("Weather system initialized and enabled")
+                logger.debug("Weather system initialized and enabled")
                 # Start initial weather fetch
                 self.refresh_weather()
             else:
@@ -544,7 +537,7 @@ class MainWindow(QMainWindow):
                         self.astronomy_widget.on_astronomy_loading
                     )
 
-                logger.info("Astronomy system initialized with API key")
+                logger.debug("Astronomy system initialized with API key")
                 # Emit signal to indicate astronomy manager is ready for data fetch
                 self.astronomy_manager_ready.emit()
             else:
@@ -589,9 +582,7 @@ class MainWindow(QMainWindow):
             self.theme_button.setText(self.theme_manager.get_theme_icon())
             self.theme_button.setToolTip(self.theme_manager.get_theme_tooltip())
 
-        # Update status bar
-        if self.theme_status:
-            self.theme_status.setText(f"Theme: {theme_name.title()}")
+        # Status bar removed - no longer updating theme status
 
         # Update menu bar styling
         menubar = self.menuBar()
@@ -609,16 +600,14 @@ class MainWindow(QMainWindow):
 
         # Update weather widget
         if self.weather_widget:
-            # Create theme colors dictionary for weather widget
+            # Create theme colors dictionary for weather widget with transparent items
             theme_colors = {
                 "background_primary": "#1a1a1a" if theme_name == "dark" else "#ffffff",
-                "background_secondary": (
-                    "#2d2d2d" if theme_name == "dark" else "#f5f5f5"
-                ),
-                "background_hover": "#404040" if theme_name == "dark" else "#e0e0e0",
+                "background_secondary": "transparent",  # Make weather items transparent
+                "background_hover": "rgba(79, 195, 247, 0.2)",  # Light blue hover
                 "text_primary": "#ffffff" if theme_name == "dark" else "#000000",
                 "primary_accent": "#4fc3f7",
-                "border_primary": "#404040" if theme_name == "dark" else "#cccccc",
+                "border_primary": "transparent",  # Remove borders from weather items
             }
             self.weather_widget.apply_theme(theme_colors)
 
@@ -685,13 +674,11 @@ class MainWindow(QMainWindow):
                 "background_primary": (
                     "#1a1a1a" if current_theme == "dark" else "#ffffff"
                 ),
-                "background_secondary": (
-                    "#2d2d2d" if current_theme == "dark" else "#f5f5f5"
-                ),
-                "background_hover": "#404040" if current_theme == "dark" else "#e0e0e0",
+                "background_secondary": "transparent",  # Make weather items transparent
+                "background_hover": "rgba(79, 195, 247, 0.2)",  # Light blue hover
                 "text_primary": "#ffffff" if current_theme == "dark" else "#000000",
                 "primary_accent": "#4fc3f7",
-                "border_primary": "#404040" if current_theme == "dark" else "#cccccc",
+                "border_primary": "transparent",  # Remove borders from weather items
             }
             self.weather_widget.apply_theme(theme_colors)
 
@@ -716,11 +703,57 @@ class MainWindow(QMainWindow):
         self.refresh_requested.emit()
         logger.info("Manual refresh requested")
 
-    def toggle_auto_refresh(self):
-        """Toggle auto-refresh on/off."""
-        # This will be connected to the train manager's auto-refresh control
-        self.auto_refresh_toggle_requested.emit()
-        logger.info("Auto-refresh toggle requested")
+    # Auto-refresh functionality removed as obsolete
+
+    def update_route_display(self, from_station: str, to_station: str, via_stations: Optional[List[str]] = None):
+        """
+        Update route display in header.
+        
+        Args:
+            from_station: Origin station name
+            to_station: Destination station name
+            via_stations: Optional list of via stations
+        """
+        if self.route_display_label:
+            # Clean up station names by removing railway line context for display
+            def clean_station_name(station_name: str) -> str:
+                """Remove railway line context from station name for cleaner display."""
+                if not station_name:
+                    return station_name
+                # Remove text in parentheses (railway line context)
+                if '(' in station_name:
+                    return station_name.split('(')[0].strip()
+                return station_name
+            
+            clean_from = clean_station_name(from_station)
+            clean_to = clean_station_name(to_station)
+            
+            if via_stations:
+                # Clean via station names
+                clean_via_stations = [clean_station_name(station) for station in via_stations]
+                
+                # Try to show all stops first
+                all_stops_text = " → ".join([clean_from] + clean_via_stations + [clean_to])
+                full_route_text = f"Route: {all_stops_text}"
+                
+                # Check if the full route fits (approximate character limit for UI)
+                if len(full_route_text) <= 120:  # Reasonable limit for header display
+                    route_text = full_route_text
+                else:
+                    # If too long, limit via stations and add ellipsis
+                    if len(clean_via_stations) > 2:
+                        via_text = " → ".join(clean_via_stations[:2]) + " → ..."
+                        route_text = f"Route: {clean_from} → {via_text} → {clean_to}"
+                    else:
+                        via_text = " → ".join(clean_via_stations)
+                        route_text = f"Route: {clean_from} → {via_text} → {clean_to}"
+            else:
+                route_text = f"Route: {clean_from} → {clean_to}"
+            
+            self.route_display_label.setText(route_text)
+            # Use ASCII arrow for logging to avoid Unicode encoding errors
+            log_text = route_text.replace("→", "->")
+            logger.debug(f"Route display updated: {log_text}")
 
     def update_train_display(self, trains: List[TrainData]):
         """
@@ -735,12 +768,14 @@ class MainWindow(QMainWindow):
             if not hasattr(self, '_train_selection_connected'):
                 self.train_list_widget.train_selected.connect(self.show_train_details)
                 self._train_selection_connected = True
+            # Connect route selection signal if not already connected
+            if not hasattr(self, '_route_selection_connected'):
+                self.train_list_widget.route_selected.connect(self.show_route_details)
+                self._route_selection_connected = True
 
-        # Update train count
-        if self.train_count_label:
-            self.train_count_label.setText(f"{len(trains)} trains")
+        # Status bar removed - no longer updating train count
 
-        logger.info(f"Updated display with {len(trains)} trains")
+        logger.debug(f"Updated display with {len(trains)} trains")
 
     def update_last_update_time(self, timestamp: str):
         """
@@ -752,20 +787,7 @@ class MainWindow(QMainWindow):
         if self.last_update_label:
             self.last_update_label.setText(f"Last Updated: {timestamp}")
 
-    def update_next_update_countdown(self, seconds: int):
-        """
-        Update next update countdown.
-
-        Args:
-            seconds: Seconds until next update
-        """
-        if self.next_update_label:
-            minutes = seconds // 60
-            secs = seconds % 60
-            if minutes > 0:
-                self.next_update_label.setText(f"Next Update: {minutes}m {secs}s")
-            else:
-                self.next_update_label.setText(f"Next Update: {secs}s")
+    # Auto-refresh countdown removed
 
     def update_connection_status(self, connected: bool, message: str = ""):
         """
@@ -775,40 +797,10 @@ class MainWindow(QMainWindow):
             connected: Whether connected to API
             message: Optional status message
         """
-        if self.connection_status:
-            if connected:
-                self.connection_status.setText("Connected")
-                self.connection_status.setStyleSheet("color: #4caf50;")  # Green
-            else:
-                status_text = "Disconnected"
-                if message:
-                    status_text += f" ({message})"
-                self.connection_status.setText(status_text)
-                self.connection_status.setStyleSheet("color: #f44336;")  # Red
+        # Status bar removed - this method is kept for compatibility but does nothing
+        pass
 
-    def update_auto_refresh_status(self, enabled: bool):
-        """
-        Update auto-refresh status.
-
-        Args:
-            enabled: Whether auto-refresh is enabled
-        """
-        if self.auto_refresh_status:
-            status = "ON" if enabled else "OFF"
-            self.auto_refresh_status.setText(f"Auto-refresh: {status}")
-
-        # Update auto-refresh button
-        if hasattr(self, "auto_refresh_button"):
-            if enabled:
-                self.auto_refresh_button.setText("⏸️ Auto-refresh")
-                self.auto_refresh_button.setToolTip(
-                    "Auto-refresh is ON - Click to disable"
-                )
-            else:
-                self.auto_refresh_button.setText("▶️ Auto-refresh")
-                self.auto_refresh_button.setToolTip(
-                    "Auto-refresh is OFF - Click to enable"
-                )
+    # Auto-refresh status update removed
 
     def update_weather_status(self, enabled: bool):
         """
@@ -817,15 +809,8 @@ class MainWindow(QMainWindow):
         Args:
             enabled: Whether weather integration is enabled
         """
-        if self.weather_status:
-            status = "ON" if enabled else "OFF"
-            self.weather_status.setText(f"Weather: {status}")
-
-            # Color coding
-            if enabled:
-                self.weather_status.setStyleSheet("color: #4caf50;")  # Green
-            else:
-                self.weather_status.setStyleSheet("color: #666666;")  # Gray
+        # Status bar removed - this method is kept for compatibility but does nothing
+        pass
 
     def refresh_weather(self):
         """Trigger manual weather refresh."""
@@ -842,7 +827,7 @@ class MainWindow(QMainWindow):
 
     def on_weather_updated(self, weather_data):
         """Handle weather data update."""
-        logger.info("Weather data updated in main window")
+        logger.debug("Weather data updated in main window")
         # Weather widget will be updated automatically via observer pattern
 
     def on_weather_error(self, error_message: str):
@@ -853,9 +838,9 @@ class MainWindow(QMainWindow):
     def on_weather_loading_changed(self, is_loading: bool):
         """Handle weather loading state change."""
         if is_loading:
-            logger.info("Weather data loading...")
+            logger.debug("Weather data loading...")
         else:
-            logger.info("Weather data loading complete")
+            logger.debug("Weather data loading complete")
 
     def update_astronomy_status(self, enabled: bool):
         """
@@ -864,15 +849,8 @@ class MainWindow(QMainWindow):
         Args:
             enabled: Whether astronomy integration is enabled
         """
-        if self.astronomy_status:
-            status = "ON" if enabled else "OFF"
-            self.astronomy_status.setText(f"Astronomy: {status}")
-
-            # Color coding
-            if enabled:
-                self.astronomy_status.setStyleSheet("color: #4caf50;")  # Green
-            else:
-                self.astronomy_status.setStyleSheet("color: #666666;")  # Gray
+        # Status bar removed - this method is kept for compatibility but does nothing
+        pass
 
     def refresh_astronomy(self):
         """Trigger manual astronomy refresh."""
@@ -908,7 +886,7 @@ class MainWindow(QMainWindow):
 
     def on_astronomy_updated(self, astronomy_data):
         """Handle astronomy data update."""
-        logger.info("Astronomy data updated in main window")
+        logger.debug("Astronomy data updated in main window")
         # Astronomy widget will be updated automatically via observer pattern
 
     def on_astronomy_error(self, error_message: str):
@@ -919,9 +897,9 @@ class MainWindow(QMainWindow):
     def on_astronomy_loading_changed(self, is_loading: bool):
         """Handle astronomy loading state change."""
         if is_loading:
-            logger.info("Astronomy data loading...")
+            logger.debug("Astronomy data loading...")
         else:
-            logger.info("Astronomy data loading complete")
+            logger.debug("Astronomy data loading complete")
 
     def on_nasa_link_clicked(self, url: str):
         """Handle NASA link clicks."""
@@ -956,25 +934,72 @@ class MainWindow(QMainWindow):
         msg_box.setText(message)
         msg_box.exec()
 
-    def show_settings_dialog(self):
-        """Show settings dialog."""
+    def show_stations_settings_dialog(self):
+        """Show stations settings dialog."""
         try:
-            dialog = SettingsDialog(self.config_manager, self)
+            dialog = StationsSettingsDialog(self.config_manager, self)
             dialog.settings_saved.connect(self.on_settings_saved)
             dialog.exec()
         except Exception as e:
-            logger.error(f"Failed to show settings dialog: {e}")
-            self.show_error_message("Settings Error", f"Failed to open settings: {e}")
+            logger.error(f"Failed to show stations settings dialog: {e}")
+            self.show_error_message("Settings Error", f"Failed to open stations settings: {e}")
+
+    def show_nasa_settings_dialog(self):
+        """Show NASA settings dialog."""
+        try:
+            dialog = NASASettingsDialog(self.config_manager, self)
+            dialog.settings_saved.connect(self.on_settings_saved)
+            dialog.exec()
+        except Exception as e:
+            logger.error(f"Failed to show NASA settings dialog: {e}")
+            self.show_error_message("Settings Error", f"Failed to open NASA settings: {e}")
+
 
     def on_settings_saved(self):
         """Handle settings saved event."""
         try:
+            # Store old time window for comparison
+            old_time_window = None
+            if self.config and hasattr(self.config, 'display'):
+                old_time_window = self.config.display.time_window_hours
+            
             # Reload configuration
             self.config = self.config_manager.load_config()
 
             # Update theme if changed
             if self.config:
                 self.theme_manager.set_theme(self.config.display.theme)
+                
+                # Emit config updated signal to update train manager
+                self.config_updated.emit(self.config)
+                
+                # Update time window display if changed
+                if hasattr(self.config, 'display') and self.config.display:
+                    new_time_window = self.config.display.time_window_hours
+                    if old_time_window != new_time_window:
+                        # Update time window label
+                        if self.time_window_label:
+                            self.time_window_label.setText(f"Showing trains for next {new_time_window} hours")
+                        
+                        # Trigger refresh to reload trains with new time window
+                        self.refresh_requested.emit()
+                        logger.info(f"Time window changed from {old_time_window} to {new_time_window} hours - refreshing train data")
+                
+                # Update train manager route if stations changed
+                # This signal will be connected from main.py
+                self.route_changed.emit(self.config.stations.from_code, self.config.stations.to_code)
+                
+                # Update route display with via stations
+                via_stations = getattr(self.config.stations, 'via_stations', [])
+                self.update_route_display(
+                    self.config.stations.from_name,
+                    self.config.stations.to_name,
+                    via_stations
+                )
+                
+                # Trigger refresh to load trains with new route data
+                self.refresh_requested.emit()
+                logger.info("Route changed - refreshing train data for new route")
 
                 # Update weather system if configuration changed
                 if hasattr(self.config, "weather") and self.config.weather:
@@ -1270,7 +1295,7 @@ class MainWindow(QMainWindow):
     def _on_astronomy_manager_ready(self):
         """Handle astronomy manager ready signal - trigger immediate data fetch."""
         if self.astronomy_manager:
-            logger.info("Astronomy manager ready signal received - triggering data fetch")
+            logger.debug("Astronomy manager ready signal received - triggering data fetch")
             self.refresh_astronomy()
             
             # Start auto-refresh if enabled
@@ -1279,7 +1304,7 @@ class MainWindow(QMainWindow):
                 self.config.astronomy and
                 self.config.astronomy.enabled):
                 self.astronomy_manager.start_auto_refresh()
-                logger.info("Auto-refresh started for newly configured astronomy")
+                logger.debug("Auto-refresh started for newly configured astronomy")
         else:
             logger.warning("Astronomy manager ready signal received but no manager available")
 
@@ -1291,26 +1316,34 @@ class MainWindow(QMainWindow):
         if not hasattr(self, "_astronomy_data_fetched"):
             self._astronomy_data_fetched = True
             if self.astronomy_manager:
-                logger.info("UI displayed - emitting astronomy manager ready signal")
+                logger.debug("UI displayed - emitting astronomy manager ready signal")
                 self.astronomy_manager_ready.emit()
 
     def closeEvent(self, event):
         """Handle window close event."""
-        logger.info("Application closing")
+        logger.debug("Application closing")
 
         # Shutdown weather manager if it exists
         if self.weather_manager:
             try:
                 self.weather_manager.shutdown()
-                logger.info("Weather manager shutdown complete")
+                logger.debug("Weather manager shutdown complete")
             except Exception as e:
                 logger.warning(f"Error shutting down weather manager: {e}")
+
+        # Shutdown initialization manager if it exists
+        if self.initialization_manager:
+            try:
+                self.initialization_manager.shutdown()
+                logger.debug("Initialization manager shutdown complete")
+            except Exception as e:
+                logger.warning(f"Error shutting down initialization manager: {e}")
 
         # Shutdown astronomy manager if it exists
         if self.astronomy_manager:
             try:
                 self.astronomy_manager.shutdown()
-                logger.info("Astronomy manager shutdown complete")
+                logger.debug("Astronomy manager shutdown complete")
             except Exception as e:
                 logger.warning(f"Error shutting down astronomy manager: {e}")
 
@@ -1328,7 +1361,7 @@ class MainWindow(QMainWindow):
         
         # Move window to center
         self.move(center_x, center_y)
-        logger.info("Window centered on screen")
+        logger.debug("Window centered on screen")
 
     def show_train_details(self, train_data: TrainData):
         """
@@ -1348,3 +1381,48 @@ class MainWindow(QMainWindow):
         except Exception as e:
             logger.error(f"Failed to show train details: {e}")
             self.show_error_message("Train Details Error", f"Failed to show train details: {e}")
+
+    def show_route_details(self, train_data: TrainData):
+        """
+        Show route display dialog with all calling points.
+        
+        Args:
+            train_data: Train data to display route for
+        """
+        try:
+            # Get train manager from main.py if available
+            train_manager = getattr(self, 'train_manager', None)
+            
+            dialog = RouteDisplayDialog(
+                train_data,
+                self.theme_manager.current_theme,
+                self,
+                train_manager
+            )
+            dialog.exec()
+            logger.info(f"Showed route details for {train_data.destination}")
+        except Exception as e:
+            logger.error(f"Failed to show route details: {e}")
+            self.show_error_message("Route Details Error", f"Failed to show route details: {e}")
+
+    def _start_optimized_initialization(self) -> None:
+        """Start the optimized widget initialization process."""
+        if self.initialization_manager:
+            self.initialization_manager.initialize_widgets(self)
+            logger.info("Optimized widget initialization started")
+        else:
+            logger.warning("Cannot start optimized initialization: no initialization manager")
+
+    def _on_initialization_completed(self) -> None:
+        """Handle completion of optimized widget initialization."""
+        logger.info("Optimized widget initialization completed")
+        
+        # Update managers from initialization manager
+        if self.initialization_manager:
+            self.weather_manager = self.initialization_manager.weather_manager
+            self.astronomy_manager = self.initialization_manager.astronomy_manager
+
+    def _on_nasa_data_ready(self) -> None:
+        """Handle NASA data ready signal from parallel fetch."""
+        logger.info("NASA data ready from parallel fetch")
+        # The astronomy widget will be automatically updated via signals

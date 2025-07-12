@@ -1,0 +1,1190 @@
+{
+  "metadata": {
+    "line_name": "Elizabeth Line",
+    "description": "East-West London rail service connecting Reading, Heathrow to Abbey Wood and Shenfield",
+    "operator": "Transport for London",
+    "total_stations": 41,
+    "typical_frequency": "Every 5-15 minutes",
+    "peak_hours": "07:00-09:30, 16:30-19:00",
+    "frequency": {
+      "weekday_peak": "Every hour",
+      "weekday_off_peak": "Every 2 hours",
+      "weekend": "Every 2 hours",
+      "night": "No service"
+    }
+  },
+  "typical_journey_times": {
+    "RDG-PAD": 25,
+    "PAD-LVS": 10,
+    "LVS-ABW": 25,
+    "PAD-SNF": 45,
+    "HXX-PAD": 15,
+    "HXT5-PAD": 20,
+    "LVS-FGS": 5,
+    "FGS-TCR": 5,
+    "TCR-CWX": 5,
+    "CWX-LST": 5,
+    "LST-STD": 10,
+    "STD-SNF": 20
+  },
+  "typical_services": {
+    "peak_frequency": "Every 5 minutes",
+    "off_peak_frequency": "Every 10 minutes",
+    "evening_frequency": "Every 15 minutes",
+    "weekend_frequency": "Every 10 minutes",
+    "first_train": "05:00",
+    "last_train": "00:30"
+  },
+  "stations": [
+    {
+      "name": "Reading",
+      "code": "RDG",
+      "coordinates": {
+        "lat": 51.4587,
+        "lng": -0.9711
+      },
+      "interchange": [
+        "Great Western Railway",
+        "CrossCountry",
+        "South Western Railway"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Twyford",
+      "code": "TWY",
+      "coordinates": {
+        "lat": 51.4762,
+        "lng": -0.8636
+      },
+      "times": {
+        "morning": [
+          "06:07",
+          "08:07",
+          "10:07"
+        ],
+        "afternoon": [
+          "12:07",
+          "14:07",
+          "16:07"
+        ],
+        "evening": [
+          "18:07",
+          "20:07",
+          "22:07"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Maidenhead",
+      "code": "MAI",
+      "coordinates": {
+        "lat": 51.5225,
+        "lng": -0.7236
+      },
+      "times": {
+        "morning": [
+          "06:13",
+          "08:13",
+          "10:13"
+        ],
+        "afternoon": [
+          "12:13",
+          "14:13",
+          "16:13"
+        ],
+        "evening": [
+          "18:13",
+          "20:13",
+          "22:13"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Taplow",
+      "code": "TAP",
+      "coordinates": {
+        "lat": 51.5225,
+        "lng": -0.6825
+      },
+      "times": {
+        "morning": [
+          "06:38",
+          "08:38",
+          "10:38"
+        ],
+        "afternoon": [
+          "12:38",
+          "14:38",
+          "16:38"
+        ],
+        "evening": [
+          "18:38",
+          "20:38",
+          "22:38"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Burnham",
+      "code": "BNM",
+      "coordinates": {
+        "lat": 51.5225,
+        "lng": -0.65
+      },
+      "times": {
+        "morning": [
+          "06:35",
+          "08:35",
+          "10:35"
+        ],
+        "afternoon": [
+          "12:35",
+          "14:35",
+          "16:35"
+        ],
+        "evening": [
+          "18:35",
+          "20:35",
+          "22:35"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Slough",
+      "code": "SLO",
+      "coordinates": {
+        "lat": 51.5125,
+        "lng": -0.5911
+      },
+      "times": {
+        "morning": [
+          "06:25",
+          "08:25",
+          "10:25"
+        ],
+        "afternoon": [
+          "12:25",
+          "14:25",
+          "16:25"
+        ],
+        "evening": [
+          "18:25",
+          "20:25",
+          "22:25"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Langley",
+      "code": "LNY",
+      "coordinates": {
+        "lat": 51.5081,
+        "lng": -0.55
+      },
+      "times": {
+        "morning": [
+          "07:23",
+          "09:23",
+          "11:23"
+        ],
+        "afternoon": [
+          "13:23",
+          "15:23",
+          "17:23"
+        ],
+        "evening": [
+          "19:23",
+          "21:23",
+          "23:23"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Iver",
+      "code": "IVR",
+      "coordinates": {
+        "lat": 51.5081,
+        "lng": -0.5081
+      },
+      "times": {
+        "morning": [
+          "07:05",
+          "09:05",
+          "11:05"
+        ],
+        "afternoon": [
+          "13:05",
+          "15:05",
+          "17:05"
+        ],
+        "evening": [
+          "19:05",
+          "21:05",
+          "23:05"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "West Drayton",
+      "code": "WDT",
+      "coordinates": {
+        "lat": 51.5081,
+        "lng": -0.4711
+      },
+      "times": {
+        "morning": [
+          "06:44",
+          "08:44",
+          "10:44"
+        ],
+        "afternoon": [
+          "12:44",
+          "14:44",
+          "16:44"
+        ],
+        "evening": [
+          "18:44",
+          "20:44",
+          "22:44"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Hayes & Harlington",
+      "code": "HAY",
+      "coordinates": {
+        "lat": 51.5,
+        "lng": -0.42
+      },
+      "interchange": [
+        "Heathrow Connect"
+      ],
+      "times": {
+        "morning": [
+          "06:55",
+          "08:55",
+          "10:55"
+        ],
+        "afternoon": [
+          "12:55",
+          "14:55",
+          "16:55"
+        ],
+        "evening": [
+          "18:55",
+          "20:55",
+          "22:55"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Southall",
+      "code": "STL",
+      "coordinates": {
+        "lat": 51.5056,
+        "lng": -0.38
+      },
+      "times": {
+        "morning": [
+          "07:09",
+          "09:09",
+          "11:09"
+        ],
+        "afternoon": [
+          "13:09",
+          "15:09",
+          "17:09"
+        ],
+        "evening": [
+          "19:09",
+          "21:09",
+          "23:09"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Hanwell",
+      "code": "HAN",
+      "coordinates": {
+        "lat": 51.5111,
+        "lng": -0.34
+      },
+      "times": {
+        "morning": [
+          "07:21",
+          "09:21",
+          "11:21"
+        ],
+        "afternoon": [
+          "13:21",
+          "15:21",
+          "17:21"
+        ],
+        "evening": [
+          "19:21",
+          "21:21",
+          "23:21"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "West Ealing",
+      "code": "WEA",
+      "coordinates": {
+        "lat": 51.5139,
+        "lng": -0.32
+      },
+      "times": {
+        "morning": [
+          "08:17",
+          "10:17",
+          "12:17"
+        ],
+        "afternoon": [
+          "14:17",
+          "16:17",
+          "18:17"
+        ],
+        "evening": [
+          "20:17",
+          "22:17",
+          "00:17"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Ealing Broadway",
+      "code": "EAL",
+      "coordinates": {
+        "lat": 51.515,
+        "lng": -0.3017
+      },
+      "interchange": [
+        "Central Line",
+        "District Line"
+      ],
+      "times": {
+        "morning": [
+          "07:43",
+          "09:43",
+          "11:43"
+        ],
+        "afternoon": [
+          "13:43",
+          "15:43",
+          "17:43"
+        ],
+        "evening": [
+          "19:43",
+          "21:43",
+          "23:43"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Acton Main Line",
+      "code": "AML",
+      "coordinates": {
+        "lat": 51.5172,
+        "lng": -0.2667
+      },
+      "times": {
+        "morning": [
+          "08:28",
+          "10:28",
+          "12:28"
+        ],
+        "afternoon": [
+          "14:28",
+          "16:28",
+          "18:28"
+        ],
+        "evening": [
+          "20:28",
+          "22:28",
+          "00:28"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Paddington",
+      "code": "PAD",
+      "coordinates": {
+        "lat": 51.5173,
+        "lng": -0.1769
+      },
+      "interchange": [
+        "Bakerloo Line",
+        "Circle Line",
+        "District Line",
+        "Hammersmith & City Line",
+        "Great Western Railway",
+        "Heathrow Express"
+      ],
+      "times": {
+        "morning": [
+          "07:33",
+          "09:33",
+          "11:33"
+        ],
+        "afternoon": [
+          "13:33",
+          "15:33",
+          "17:33"
+        ],
+        "evening": [
+          "19:33",
+          "21:33",
+          "23:33"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Bond Street",
+      "code": "BDS",
+      "coordinates": {
+        "lat": 51.5142,
+        "lng": -0.1494
+      },
+      "interchange": [
+        "Central Line",
+        "Jubilee Line"
+      ],
+      "times": {
+        "morning": [
+          "07:30",
+          "09:30",
+          "11:30"
+        ],
+        "afternoon": [
+          "13:30",
+          "15:30",
+          "17:30"
+        ],
+        "evening": [
+          "19:30",
+          "21:30",
+          "23:30"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Tottenham Court Road",
+      "code": "TCR",
+      "coordinates": {
+        "lat": 51.5164,
+        "lng": -0.1307
+      },
+      "interchange": [
+        "Central Line",
+        "Northern Line"
+      ],
+      "times": {
+        "morning": [
+          "07:40",
+          "09:40",
+          "11:40"
+        ],
+        "afternoon": [
+          "13:40",
+          "15:40",
+          "17:40"
+        ],
+        "evening": [
+          "19:40",
+          "21:40",
+          "23:40"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Farringdon",
+      "code": "ZFD",
+      "coordinates": {
+        "lat": 51.5203,
+        "lng": -0.1053
+      },
+      "interchange": [
+        "Circle Line",
+        "Hammersmith & City Line",
+        "Metropolitan Line",
+        "Thameslink"
+      ],
+      "times": {
+        "morning": [
+          "10:20",
+          "12:20",
+          "14:20"
+        ],
+        "afternoon": [
+          "16:20",
+          "18:20",
+          "20:20"
+        ],
+        "evening": [
+          "22:20",
+          "00:20",
+          "02:20"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Liverpool Street",
+      "code": "LST",
+      "coordinates": {
+        "lat": 51.5181,
+        "lng": -0.0814
+      },
+      "interchange": [
+        "Central Line",
+        "Circle Line",
+        "Hammersmith & City Line",
+        "Metropolitan Line",
+        "Greater Anglia",
+        "Stansted Express"
+      ],
+      "times": {
+        "morning": [
+          "08:00",
+          "10:00",
+          "12:00"
+        ],
+        "afternoon": [
+          "14:00",
+          "16:00",
+          "18:00"
+        ],
+        "evening": [
+          "20:00",
+          "22:00",
+          "00:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Whitechapel",
+      "code": "ZWL",
+      "coordinates": {
+        "lat": 51.5195,
+        "lng": -0.0592
+      },
+      "interchange": [
+        "District Line",
+        "Hammersmith & City Line",
+        "London Overground"
+      ],
+      "times": {
+        "morning": [
+          "08:08",
+          "10:08",
+          "12:08"
+        ],
+        "afternoon": [
+          "14:08",
+          "16:08",
+          "18:08"
+        ],
+        "evening": [
+          "20:08",
+          "22:08",
+          "00:08"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Canary Wharf",
+      "code": "CWX",
+      "coordinates": {
+        "lat": 51.5053,
+        "lng": -0.0186
+      },
+      "interchange": [
+        "Jubilee Line",
+        "DLR"
+      ],
+      "times": {
+        "morning": [
+          "10:52",
+          "12:52",
+          "14:52"
+        ],
+        "afternoon": [
+          "16:52",
+          "18:52",
+          "20:52"
+        ],
+        "evening": [
+          "22:52",
+          "00:52",
+          "02:52"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Custom House",
+      "code": "CUH",
+      "coordinates": {
+        "lat": 51.5097,
+        "lng": 0.0264
+      },
+      "interchange": [
+        "DLR"
+      ],
+      "times": {
+        "morning": [
+          "08:34",
+          "10:34",
+          "12:34"
+        ],
+        "afternoon": [
+          "14:34",
+          "16:34",
+          "18:34"
+        ],
+        "evening": [
+          "20:34",
+          "22:34",
+          "00:34"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Woolwich",
+      "code": "WWC",
+      "coordinates": {
+        "lat": 51.4906,
+        "lng": 0.0694
+      },
+      "times": {
+        "morning": [
+          "08:40",
+          "10:40",
+          "12:40"
+        ],
+        "afternoon": [
+          "14:40",
+          "16:40",
+          "18:40"
+        ],
+        "evening": [
+          "20:40",
+          "22:40",
+          "00:40"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Abbey Wood",
+      "code": "ABW",
+      "coordinates": {
+        "lat": 51.4917,
+        "lng": 0.1203
+      },
+      "interchange": [
+        "Southeastern"
+      ],
+      "times": {
+        "morning": [
+          "08:31",
+          "10:31",
+          "12:31"
+        ],
+        "afternoon": [
+          "14:31",
+          "16:31",
+          "18:31"
+        ],
+        "evening": [
+          "20:31",
+          "22:31",
+          "00:31"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Stratford",
+      "code": "SRA",
+      "coordinates": {
+        "lat": 51.5419,
+        "lng": -0.0036
+      },
+      "interchange": [
+        "Central Line",
+        "Jubilee Line",
+        "DLR",
+        "London Overground",
+        "Greater Anglia"
+      ],
+      "times": {
+        "morning": [
+          "10:06",
+          "12:06",
+          "14:06"
+        ],
+        "afternoon": [
+          "16:06",
+          "18:06",
+          "20:06"
+        ],
+        "evening": [
+          "22:06",
+          "00:06",
+          "02:06"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Maryland",
+      "code": "MYL",
+      "coordinates": {
+        "lat": 51.5458,
+        "lng": 0.0053
+      },
+      "times": {
+        "morning": [
+          "08:16",
+          "10:16",
+          "12:16"
+        ],
+        "afternoon": [
+          "14:16",
+          "16:16",
+          "18:16"
+        ],
+        "evening": [
+          "20:16",
+          "22:16",
+          "00:16"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Forest Gate",
+      "code": "FOG",
+      "coordinates": {
+        "lat": 51.5489,
+        "lng": 0.025
+      },
+      "times": {
+        "morning": [
+          "10:44",
+          "12:44",
+          "14:44"
+        ],
+        "afternoon": [
+          "16:44",
+          "18:44",
+          "20:44"
+        ],
+        "evening": [
+          "22:44",
+          "00:44",
+          "02:44"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Manor Park",
+      "code": "MNP",
+      "coordinates": {
+        "lat": 51.5531,
+        "lng": 0.0456
+      },
+      "times": {
+        "morning": [
+          "11:03",
+          "13:03",
+          "15:03"
+        ],
+        "afternoon": [
+          "17:03",
+          "19:03",
+          "21:03"
+        ],
+        "evening": [
+          "23:03",
+          "01:03",
+          "03:03"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Ilford",
+      "code": "IFD",
+      "coordinates": {
+        "lat": 51.5586,
+        "lng": 0.0686
+      },
+      "times": {
+        "morning": [
+          "13:03",
+          "15:03",
+          "17:03"
+        ],
+        "afternoon": [
+          "19:03",
+          "21:03",
+          "23:03"
+        ],
+        "evening": [
+          "01:03",
+          "03:03",
+          "05:03"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Seven Kings",
+      "code": "SVK",
+      "coordinates": {
+        "lat": 51.5639,
+        "lng": 0.0969
+      },
+      "times": {
+        "morning": [
+          "12:38",
+          "14:38",
+          "16:38"
+        ],
+        "afternoon": [
+          "18:38",
+          "20:38",
+          "22:38"
+        ],
+        "evening": [
+          "00:38",
+          "02:38",
+          "04:38"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Goodmayes",
+      "code": "GMY",
+      "coordinates": {
+        "lat": 51.5672,
+        "lng": 0.1119
+      },
+      "times": {
+        "morning": [
+          "12:53",
+          "14:53",
+          "16:53"
+        ],
+        "afternoon": [
+          "18:53",
+          "20:53",
+          "22:53"
+        ],
+        "evening": [
+          "00:53",
+          "02:53",
+          "04:53"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Chadwell Heath",
+      "code": "CTH",
+      "coordinates": {
+        "lat": 51.5703,
+        "lng": 0.1319
+      },
+      "times": {
+        "morning": [
+          "13:16",
+          "15:16",
+          "17:16"
+        ],
+        "afternoon": [
+          "19:16",
+          "21:16",
+          "23:16"
+        ],
+        "evening": [
+          "01:16",
+          "03:16",
+          "05:16"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Romford",
+      "code": "RMF",
+      "coordinates": {
+        "lat": 51.575,
+        "lng": 0.1836
+      },
+      "interchange": [
+        "Greater Anglia"
+      ],
+      "times": {
+        "morning": [
+          "10:14",
+          "12:14",
+          "14:14"
+        ],
+        "afternoon": [
+          "16:14",
+          "18:14",
+          "20:14"
+        ],
+        "evening": [
+          "22:14",
+          "00:14",
+          "02:14"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Gidea Park",
+      "code": "GDP",
+      "coordinates": {
+        "lat": 51.5819,
+        "lng": 0.2036
+      },
+      "times": {
+        "morning": [
+          "12:03",
+          "14:03",
+          "16:03"
+        ],
+        "afternoon": [
+          "18:03",
+          "20:03",
+          "22:03"
+        ],
+        "evening": [
+          "00:03",
+          "02:03",
+          "04:03"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Harold Wood",
+      "code": "HRO",
+      "coordinates": {
+        "lat": 51.5931,
+        "lng": 0.2336
+      },
+      "times": {
+        "morning": [
+          "14:14",
+          "16:14",
+          "18:14"
+        ],
+        "afternoon": [
+          "20:14",
+          "22:14",
+          "00:14"
+        ],
+        "evening": [
+          "02:14",
+          "04:14",
+          "06:14"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Brentwood",
+      "code": "BRE",
+      "coordinates": {
+        "lat": 51.6131,
+        "lng": 0.3036
+      },
+      "times": {
+        "morning": [
+          "09:10",
+          "11:10",
+          "13:10"
+        ],
+        "afternoon": [
+          "15:10",
+          "17:10",
+          "19:10"
+        ],
+        "evening": [
+          "21:10",
+          "23:10",
+          "01:10"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Shenfield",
+      "code": "SNF",
+      "coordinates": {
+        "lat": 51.6306,
+        "lng": 0.3297
+      },
+      "interchange": [
+        "Greater Anglia"
+      ],
+      "times": {
+        "morning": [
+          "13:00",
+          "15:00",
+          "17:00"
+        ],
+        "afternoon": [
+          "19:00",
+          "21:00",
+          "23:00"
+        ],
+        "evening": [
+          "01:00",
+          "03:00",
+          "05:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Heathrow Terminal 4",
+      "code": "HAF",
+      "coordinates": {
+        "lat": 51.4597,
+        "lng": -0.4472
+      },
+      "interchange": [
+        "Piccadilly Line",
+        "Airport Terminal"
+      ],
+      "times": {
+        "morning": [
+          "09:26",
+          "11:26",
+          "13:26"
+        ],
+        "afternoon": [
+          "15:26",
+          "17:26",
+          "19:26"
+        ],
+        "evening": [
+          "21:26",
+          "23:26",
+          "01:26"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Heathrow Terminals 2 & 3",
+      "code": "HXX",
+      "coordinates": {
+        "lat": 51.4708,
+        "lng": -0.4527
+      },
+      "interchange": [
+        "Piccadilly Line",
+        "Heathrow Express",
+        "Airport Terminal"
+      ],
+      "times": {
+        "morning": [
+          "13:38",
+          "15:38",
+          "17:38"
+        ],
+        "afternoon": [
+          "19:38",
+          "21:38",
+          "23:38"
+        ],
+        "evening": [
+          "01:38",
+          "03:38",
+          "05:38"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Heathrow Terminal 5",
+      "code": "HWV",
+      "coordinates": {
+        "lat": 51.4722,
+        "lng": -0.4889
+      },
+      "interchange": [
+        "Piccadilly Line",
+        "Heathrow Express",
+        "Airport Terminal"
+      ],
+      "times": {
+        "morning": [
+          "10:49",
+          "12:49",
+          "14:49"
+        ],
+        "afternoon": [
+          "16:49",
+          "18:49",
+          "20:49"
+        ],
+        "evening": [
+          "22:49",
+          "00:49",
+          "02:49"
+        ],
+        "night": []
+      }
+    }
+  ]
+}

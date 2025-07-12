@@ -1,0 +1,665 @@
+{
+  "metadata": {
+    "line_name": "West Coast Main Line",
+    "description": "London Euston to Glasgow Central via Birmingham and Manchester",
+    "operator": "Avanti West Coast",
+    "total_stations": 21,
+    "frequency": {
+      "weekday_peak": "Every hour",
+      "weekday_off_peak": "Every 2 hours",
+      "weekend": "Every 2 hours",
+      "night": "No service"
+    }
+  },
+  "stations": [
+    {
+      "name": "London Euston",
+      "code": "EUS",
+      "coordinates": {
+        "lat": 51.5282,
+        "lng": -0.1337
+      },
+      "zone": 1,
+      "interchange": [
+        "Northern Line",
+        "Victoria Line"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Watford Junction",
+      "code": "WFJ",
+      "coordinates": {
+        "lat": 51.6628,
+        "lng": -0.3856
+      },
+      "interchange": [
+        "Metropolitan Line",
+        "Overground"
+      ],
+      "times": {
+        "morning": [
+          "06:12",
+          "08:12",
+          "10:12"
+        ],
+        "afternoon": [
+          "12:12",
+          "14:12",
+          "16:12"
+        ],
+        "evening": [
+          "18:12",
+          "20:12",
+          "22:12"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Milton Keynes Central",
+      "code": "MKC",
+      "coordinates": {
+        "lat": 52.0406,
+        "lng": -0.7594
+      },
+      "times": {
+        "morning": [
+          "06:15",
+          "08:15",
+          "10:15"
+        ],
+        "afternoon": [
+          "12:15",
+          "14:15",
+          "16:15"
+        ],
+        "evening": [
+          "18:15",
+          "20:15",
+          "22:15"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Rugby",
+      "code": "RUG",
+      "coordinates": {
+        "lat": 52.3781,
+        "lng": -1.2542
+      },
+      "times": {
+        "morning": [
+          "06:20",
+          "08:20",
+          "10:20"
+        ],
+        "afternoon": [
+          "12:20",
+          "14:20",
+          "16:20"
+        ],
+        "evening": [
+          "18:20",
+          "20:20",
+          "22:20"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Coventry",
+      "code": "COV",
+      "coordinates": {
+        "lat": 52.4006,
+        "lng": -1.5181
+      },
+      "times": {
+        "morning": [
+          "06:39",
+          "08:39",
+          "10:39"
+        ],
+        "afternoon": [
+          "12:39",
+          "14:39",
+          "16:39"
+        ],
+        "evening": [
+          "18:39",
+          "20:39",
+          "22:39"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Birmingham International",
+      "code": "BHI",
+      "coordinates": {
+        "lat": 52.45,
+        "lng": -1.7333
+      },
+      "interchange": [
+        "Birmingham Airport"
+      ],
+      "times": {
+        "morning": [
+          "07:15",
+          "09:15",
+          "11:15"
+        ],
+        "afternoon": [
+          "13:15",
+          "15:15",
+          "17:15"
+        ],
+        "evening": [
+          "19:15",
+          "21:15",
+          "23:15"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Birmingham New Street",
+      "code": "BHM",
+      "coordinates": {
+        "lat": 52.4775,
+        "lng": -1.8994
+      },
+      "interchange": [
+        "Cross City Line",
+        "Snow Hill Lines"
+      ],
+      "times": {
+        "morning": [
+          "07:19",
+          "09:19",
+          "11:19"
+        ],
+        "afternoon": [
+          "13:19",
+          "15:19",
+          "17:19"
+        ],
+        "evening": [
+          "19:19",
+          "21:19",
+          "23:19"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Wolverhampton",
+      "code": "WVH",
+      "coordinates": {
+        "lat": 52.5881,
+        "lng": -2.1194
+      },
+      "times": {
+        "morning": [
+          "07:30",
+          "09:30",
+          "11:30"
+        ],
+        "afternoon": [
+          "13:30",
+          "15:30",
+          "17:30"
+        ],
+        "evening": [
+          "19:30",
+          "21:30",
+          "23:30"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Stafford",
+      "code": "STA",
+      "coordinates": {
+        "lat": 52.8044,
+        "lng": -2.1194
+      },
+      "times": {
+        "morning": [
+          "07:48",
+          "09:48",
+          "11:48"
+        ],
+        "afternoon": [
+          "13:48",
+          "15:48",
+          "17:48"
+        ],
+        "evening": [
+          "19:48",
+          "21:48",
+          "23:48"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Crewe",
+      "code": "CRE",
+      "coordinates": {
+        "lat": 53.0881,
+        "lng": -2.4331
+      },
+      "interchange": [
+        "Chester Line",
+        "Manchester Line"
+      ],
+      "times": {
+        "morning": [
+          "07:25",
+          "09:25",
+          "11:25"
+        ],
+        "afternoon": [
+          "13:25",
+          "15:25",
+          "17:25"
+        ],
+        "evening": [
+          "19:25",
+          "21:25",
+          "23:25"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Manchester Piccadilly",
+      "code": "MAN",
+      "coordinates": {
+        "lat": 53.4775,
+        "lng": -2.2306
+      },
+      "interchange": [
+        "Northern",
+        "TransPennine Express",
+        "East Midlands Railway",
+        "CrossCountry"
+      ],
+      "times": {
+        "morning": [
+          "06:53",
+          "08:53",
+          "10:53"
+        ],
+        "afternoon": [
+          "12:53",
+          "14:53",
+          "16:53"
+        ],
+        "evening": [
+          "18:53",
+          "20:53",
+          "22:53"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Manchester Oxford Road",
+      "code": "MCO",
+      "coordinates": {
+        "lat": 53.4742,
+        "lng": -2.2426
+      },
+      "interchange": [
+        "Northern",
+        "TransPennine Express"
+      ],
+      "times": {
+        "morning": [
+          "08:45",
+          "10:45",
+          "12:45"
+        ],
+        "afternoon": [
+          "14:45",
+          "16:45",
+          "18:45"
+        ],
+        "evening": [
+          "20:45",
+          "22:45",
+          "00:45"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Warrington Bank Quay",
+      "code": "WBQ",
+      "coordinates": {
+        "lat": 53.3881,
+        "lng": -2.5831
+      },
+      "times": {
+        "morning": [
+          "08:58",
+          "10:58",
+          "12:58"
+        ],
+        "afternoon": [
+          "14:58",
+          "16:58",
+          "18:58"
+        ],
+        "evening": [
+          "20:58",
+          "22:58",
+          "00:58"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Wigan North Western",
+      "code": "WGN",
+      "coordinates": {
+        "lat": 53.55,
+        "lng": -2.6333
+      },
+      "times": {
+        "morning": [
+          "07:45",
+          "09:45",
+          "11:45"
+        ],
+        "afternoon": [
+          "13:45",
+          "15:45",
+          "17:45"
+        ],
+        "evening": [
+          "19:45",
+          "21:45",
+          "23:45"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Preston",
+      "code": "PRE",
+      "coordinates": {
+        "lat": 53.7581,
+        "lng": -2.7081
+      },
+      "interchange": [
+        "East Lancashire Line",
+        "West Coast Line"
+      ],
+      "times": {
+        "morning": [
+          "09:20",
+          "11:20",
+          "13:20"
+        ],
+        "afternoon": [
+          "15:20",
+          "17:20",
+          "19:20"
+        ],
+        "evening": [
+          "21:20",
+          "23:20",
+          "01:20"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Lancaster",
+      "code": "LAN",
+      "coordinates": {
+        "lat": 54.0481,
+        "lng": -2.8081
+      },
+      "times": {
+        "morning": [
+          "09:02",
+          "11:02",
+          "13:02"
+        ],
+        "afternoon": [
+          "15:02",
+          "17:02",
+          "19:02"
+        ],
+        "evening": [
+          "21:02",
+          "23:02",
+          "01:02"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Oxenholme Lake District",
+      "code": "OXN",
+      "coordinates": {
+        "lat": 54.3181,
+        "lng": -2.7581
+      },
+      "interchange": [
+        "Windermere Line"
+      ],
+      "times": {
+        "morning": [
+          "07:47",
+          "09:47",
+          "11:47"
+        ],
+        "afternoon": [
+          "13:47",
+          "15:47",
+          "17:47"
+        ],
+        "evening": [
+          "19:47",
+          "21:47",
+          "23:47"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Penrith",
+      "code": "PNR",
+      "coordinates": {
+        "lat": 54.6681,
+        "lng": -2.7581
+      },
+      "times": {
+        "morning": [
+          "09:15",
+          "11:15",
+          "13:15"
+        ],
+        "afternoon": [
+          "15:15",
+          "17:15",
+          "19:15"
+        ],
+        "evening": [
+          "21:15",
+          "23:15",
+          "01:15"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Carlisle",
+      "code": "CAR",
+      "coordinates": {
+        "lat": 54.8881,
+        "lng": -2.9331
+      },
+      "interchange": [
+        "Tyne Valley Line",
+        "Cumbrian Coast Line"
+      ],
+      "times": {
+        "morning": [
+          "07:30",
+          "09:30",
+          "11:30"
+        ],
+        "afternoon": [
+          "13:30",
+          "15:30",
+          "17:30"
+        ],
+        "evening": [
+          "19:30",
+          "21:30",
+          "23:30"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Lockerbie",
+      "code": "LOC",
+      "coordinates": {
+        "lat": 55.1181,
+        "lng": -3.3581
+      },
+      "times": {
+        "morning": [
+          "10:41",
+          "12:41",
+          "14:41"
+        ],
+        "afternoon": [
+          "16:41",
+          "18:41",
+          "20:41"
+        ],
+        "evening": [
+          "22:41",
+          "00:41",
+          "02:41"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Carstairs",
+      "code": "CRS",
+      "coordinates": {
+        "lat": 55.6881,
+        "lng": -3.6081
+      },
+      "interchange": [
+        "Caledonian Sleeper"
+      ],
+      "times": {
+        "morning": [
+          "10:58",
+          "12:58",
+          "14:58"
+        ],
+        "afternoon": [
+          "16:58",
+          "18:58",
+          "20:58"
+        ],
+        "evening": [
+          "22:58",
+          "00:58",
+          "02:58"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Motherwell",
+      "code": "MTH",
+      "coordinates": {
+        "lat": 55.7881,
+        "lng": -3.9831
+      },
+      "interchange": [
+        "North Clyde Line"
+      ],
+      "times": {
+        "morning": [
+          "09:28",
+          "11:28",
+          "13:28"
+        ],
+        "afternoon": [
+          "15:28",
+          "17:28",
+          "19:28"
+        ],
+        "evening": [
+          "21:28",
+          "23:28",
+          "01:28"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Glasgow Central",
+      "code": "GLC",
+      "coordinates": {
+        "lat": 55.8581,
+        "lng": -4.2581
+      },
+      "interchange": [
+        "Argyle Line",
+        "Cathcart Circle"
+      ],
+      "times": {
+        "morning": [
+          "09:46",
+          "11:46",
+          "13:46"
+        ],
+        "afternoon": [
+          "15:46",
+          "17:46",
+          "19:46"
+        ],
+        "evening": [
+          "21:46",
+          "23:46",
+          "01:46"
+        ],
+        "night": []
+      }
+    }
+  ]
+}

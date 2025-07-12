@@ -1,0 +1,926 @@
+{
+  "metadata": {
+    "line_name": "Cross Country Line",
+    "description": "Aberdeen to Penzance via Birmingham and Bristol",
+    "operator": "CrossCountry",
+    "total_stations": 35,
+    "frequency": {
+      "weekday_peak": "Every hour",
+      "weekday_off_peak": "Every 2 hours",
+      "weekend": "Every 2 hours",
+      "night": "No service"
+    }
+  },
+  "stations": [
+    {
+      "name": "Aberdeen",
+      "code": "ABD",
+      "coordinates": {
+        "lat": 57.1437,
+        "lng": -2.0968
+      },
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Edinburgh",
+      "code": "EDB",
+      "coordinates": {
+        "lat": 55.9519,
+        "lng": -3.1881
+      },
+      "times": {
+        "morning": [
+          "06:11",
+          "08:11",
+          "10:11"
+        ],
+        "afternoon": [
+          "12:11",
+          "14:11",
+          "16:11"
+        ],
+        "evening": [
+          "18:11",
+          "20:11",
+          "22:11"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Glasgow Central",
+      "code": "GLC",
+      "coordinates": {
+        "lat": 55.8581,
+        "lng": -4.2581
+      },
+      "times": {
+        "morning": [
+          "06:17",
+          "08:17",
+          "10:17"
+        ],
+        "afternoon": [
+          "12:17",
+          "14:17",
+          "16:17"
+        ],
+        "evening": [
+          "18:17",
+          "20:17",
+          "22:17"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Motherwell",
+      "code": "MTH",
+      "coordinates": {
+        "lat": 55.7881,
+        "lng": -3.9831
+      },
+      "times": {
+        "morning": [
+          "06:15",
+          "08:15",
+          "10:15"
+        ],
+        "afternoon": [
+          "12:15",
+          "14:15",
+          "16:15"
+        ],
+        "evening": [
+          "18:15",
+          "20:15",
+          "22:15"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Carstairs",
+      "code": "CRS",
+      "coordinates": {
+        "lat": 55.6881,
+        "lng": -3.6081
+      },
+      "times": {
+        "morning": [
+          "07:00",
+          "09:00",
+          "11:00"
+        ],
+        "afternoon": [
+          "13:00",
+          "15:00",
+          "17:00"
+        ],
+        "evening": [
+          "19:00",
+          "21:00",
+          "23:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Lockerbie",
+      "code": "LOC",
+      "coordinates": {
+        "lat": 55.1181,
+        "lng": -3.3581
+      },
+      "times": {
+        "morning": [
+          "07:09",
+          "09:09",
+          "11:09"
+        ],
+        "afternoon": [
+          "13:09",
+          "15:09",
+          "17:09"
+        ],
+        "evening": [
+          "19:09",
+          "21:09",
+          "23:09"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Carlisle",
+      "code": "CAR",
+      "coordinates": {
+        "lat": 54.8881,
+        "lng": -2.9331
+      },
+      "times": {
+        "morning": [
+          "07:11",
+          "09:11",
+          "11:11"
+        ],
+        "afternoon": [
+          "13:11",
+          "15:11",
+          "17:11"
+        ],
+        "evening": [
+          "19:11",
+          "21:11",
+          "23:11"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Penrith",
+      "code": "PNR",
+      "coordinates": {
+        "lat": 54.6681,
+        "lng": -2.7581
+      },
+      "times": {
+        "morning": [
+          "06:54",
+          "08:54",
+          "10:54"
+        ],
+        "afternoon": [
+          "12:54",
+          "14:54",
+          "16:54"
+        ],
+        "evening": [
+          "18:54",
+          "20:54",
+          "22:54"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Oxenholme Lake District",
+      "code": "OXN",
+      "coordinates": {
+        "lat": 54.3181,
+        "lng": -2.7581
+      },
+      "times": {
+        "morning": [
+          "07:33",
+          "09:33",
+          "11:33"
+        ],
+        "afternoon": [
+          "13:33",
+          "15:33",
+          "17:33"
+        ],
+        "evening": [
+          "19:33",
+          "21:33",
+          "23:33"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Lancaster",
+      "code": "LAN",
+      "coordinates": {
+        "lat": 54.0481,
+        "lng": -2.8081
+      },
+      "times": {
+        "morning": [
+          "08:11",
+          "10:11",
+          "12:11"
+        ],
+        "afternoon": [
+          "14:11",
+          "16:11",
+          "18:11"
+        ],
+        "evening": [
+          "20:11",
+          "22:11",
+          "00:11"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Preston",
+      "code": "PRE",
+      "coordinates": {
+        "lat": 53.7581,
+        "lng": -2.7081
+      },
+      "times": {
+        "morning": [
+          "07:21",
+          "09:21",
+          "11:21"
+        ],
+        "afternoon": [
+          "13:21",
+          "15:21",
+          "17:21"
+        ],
+        "evening": [
+          "19:21",
+          "21:21",
+          "23:21"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Wigan North Western",
+      "code": "WGN",
+      "coordinates": {
+        "lat": 53.55,
+        "lng": -2.6333
+      },
+      "times": {
+        "morning": [
+          "07:14",
+          "09:14",
+          "11:14"
+        ],
+        "afternoon": [
+          "13:14",
+          "15:14",
+          "17:14"
+        ],
+        "evening": [
+          "19:14",
+          "21:14",
+          "23:14"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Warrington Bank Quay",
+      "code": "WBQ",
+      "coordinates": {
+        "lat": 53.3881,
+        "lng": -2.5831
+      },
+      "times": {
+        "morning": [
+          "07:35",
+          "09:35",
+          "11:35"
+        ],
+        "afternoon": [
+          "13:35",
+          "15:35",
+          "17:35"
+        ],
+        "evening": [
+          "19:35",
+          "21:35",
+          "23:35"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Crewe",
+      "code": "CRE",
+      "coordinates": {
+        "lat": 53.0881,
+        "lng": -2.4331
+      },
+      "times": {
+        "morning": [
+          "07:53",
+          "09:53",
+          "11:53"
+        ],
+        "afternoon": [
+          "13:53",
+          "15:53",
+          "17:53"
+        ],
+        "evening": [
+          "19:53",
+          "21:53",
+          "23:53"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Stafford",
+      "code": "STA",
+      "coordinates": {
+        "lat": 52.8044,
+        "lng": -2.1194
+      },
+      "times": {
+        "morning": [
+          "08:03",
+          "10:03",
+          "12:03"
+        ],
+        "afternoon": [
+          "14:03",
+          "16:03",
+          "18:03"
+        ],
+        "evening": [
+          "20:03",
+          "22:03",
+          "00:03"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Wolverhampton",
+      "code": "WVH",
+      "coordinates": {
+        "lat": 52.5881,
+        "lng": -2.1194
+      },
+      "times": {
+        "morning": [
+          "09:01",
+          "11:01",
+          "13:01"
+        ],
+        "afternoon": [
+          "15:01",
+          "17:01",
+          "19:01"
+        ],
+        "evening": [
+          "21:01",
+          "23:01",
+          "01:01"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Birmingham New Street",
+      "code": "BHM",
+      "coordinates": {
+        "lat": 52.4775,
+        "lng": -1.8994
+      },
+      "times": {
+        "morning": [
+          "09:11",
+          "11:11",
+          "13:11"
+        ],
+        "afternoon": [
+          "15:11",
+          "17:11",
+          "19:11"
+        ],
+        "evening": [
+          "21:11",
+          "23:11",
+          "01:11"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Birmingham International",
+      "code": "BHI",
+      "coordinates": {
+        "lat": 52.45,
+        "lng": -1.7333
+      },
+      "times": {
+        "morning": [
+          "08:57",
+          "10:57",
+          "12:57"
+        ],
+        "afternoon": [
+          "14:57",
+          "16:57",
+          "18:57"
+        ],
+        "evening": [
+          "20:57",
+          "22:57",
+          "00:57"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Coventry",
+      "code": "COV",
+      "coordinates": {
+        "lat": 52.4006,
+        "lng": -1.5181
+      },
+      "times": {
+        "morning": [
+          "08:38",
+          "10:38",
+          "12:38"
+        ],
+        "afternoon": [
+          "14:38",
+          "16:38",
+          "18:38"
+        ],
+        "evening": [
+          "20:38",
+          "22:38",
+          "00:38"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Rugby",
+      "code": "RUG",
+      "coordinates": {
+        "lat": 52.3781,
+        "lng": -1.2542
+      },
+      "times": {
+        "morning": [
+          "08:53",
+          "10:53",
+          "12:53"
+        ],
+        "afternoon": [
+          "14:53",
+          "16:53",
+          "18:53"
+        ],
+        "evening": [
+          "20:53",
+          "22:53",
+          "00:53"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Banbury",
+      "code": "BAN",
+      "coordinates": {
+        "lat": 52.0631,
+        "lng": -1.33
+      },
+      "times": {
+        "morning": [
+          "10:31",
+          "12:31",
+          "14:31"
+        ],
+        "afternoon": [
+          "16:31",
+          "18:31",
+          "20:31"
+        ],
+        "evening": [
+          "22:31",
+          "00:31",
+          "02:31"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Oxford",
+      "code": "OXF",
+      "coordinates": {
+        "lat": 51.7531,
+        "lng": -1.27
+      },
+      "times": {
+        "morning": [
+          "10:55",
+          "12:55",
+          "14:55"
+        ],
+        "afternoon": [
+          "16:55",
+          "18:55",
+          "20:55"
+        ],
+        "evening": [
+          "22:55",
+          "00:55",
+          "02:55"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Reading",
+      "code": "RDG",
+      "coordinates": {
+        "lat": 51.4581,
+        "lng": -0.9719
+      },
+      "times": {
+        "morning": [
+          "08:09",
+          "10:09",
+          "12:09"
+        ],
+        "afternoon": [
+          "14:09",
+          "16:09",
+          "18:09"
+        ],
+        "evening": [
+          "20:09",
+          "22:09",
+          "00:09"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Basingstoke",
+      "code": "BSK",
+      "coordinates": {
+        "lat": 51.2667,
+        "lng": -1.0833
+      },
+      "times": {
+        "morning": [
+          "10:18",
+          "12:18",
+          "14:18"
+        ],
+        "afternoon": [
+          "16:18",
+          "18:18",
+          "20:18"
+        ],
+        "evening": [
+          "22:18",
+          "00:18",
+          "02:18"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Winchester",
+      "code": "WIN",
+      "coordinates": {
+        "lat": 51.0667,
+        "lng": -1.3167
+      },
+      "times": {
+        "morning": [
+          "10:57",
+          "12:57",
+          "14:57"
+        ],
+        "afternoon": [
+          "16:57",
+          "18:57",
+          "20:57"
+        ],
+        "evening": [
+          "22:57",
+          "00:57",
+          "02:57"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Southampton Central",
+      "code": "SOU",
+      "coordinates": {
+        "lat": 50.9083,
+        "lng": -1.4167
+      },
+      "times": {
+        "morning": [
+          "11:45",
+          "13:45",
+          "15:45"
+        ],
+        "afternoon": [
+          "17:45",
+          "19:45",
+          "21:45"
+        ],
+        "evening": [
+          "23:45",
+          "01:45",
+          "03:45"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Bournemouth",
+      "code": "BMH",
+      "coordinates": {
+        "lat": 50.7281,
+        "lng": -1.8781
+      },
+      "times": {
+        "morning": [
+          "10:01",
+          "12:01",
+          "14:01"
+        ],
+        "afternoon": [
+          "16:01",
+          "18:01",
+          "20:01"
+        ],
+        "evening": [
+          "22:01",
+          "00:01",
+          "02:01"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Bristol Temple Meads",
+      "code": "BRI",
+      "coordinates": {
+        "lat": 51.4494,
+        "lng": -2.5819
+      },
+      "times": {
+        "morning": [
+          "08:28",
+          "10:28",
+          "12:28"
+        ],
+        "afternoon": [
+          "14:28",
+          "16:28",
+          "18:28"
+        ],
+        "evening": [
+          "20:28",
+          "22:28",
+          "00:28"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Weston-super-Mare",
+      "code": "WSM",
+      "coordinates": {
+        "lat": 51.3481,
+        "lng": -2.9781
+      },
+      "times": {
+        "morning": [
+          "08:25",
+          "10:25",
+          "12:25"
+        ],
+        "afternoon": [
+          "14:25",
+          "16:25",
+          "18:25"
+        ],
+        "evening": [
+          "20:25",
+          "22:25",
+          "00:25"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Bridgwater",
+      "code": "BWT",
+      "coordinates": {
+        "lat": 51.1281,
+        "lng": -2.9981
+      },
+      "times": {
+        "morning": [
+          "11:32",
+          "13:32",
+          "15:32"
+        ],
+        "afternoon": [
+          "17:32",
+          "19:32",
+          "21:32"
+        ],
+        "evening": [
+          "23:32",
+          "01:32",
+          "03:32"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Taunton",
+      "code": "TAU",
+      "coordinates": {
+        "lat": 51.0181,
+        "lng": -3.1081
+      },
+      "times": {
+        "morning": [
+          "10:06",
+          "12:06",
+          "14:06"
+        ],
+        "afternoon": [
+          "16:06",
+          "18:06",
+          "20:06"
+        ],
+        "evening": [
+          "22:06",
+          "00:06",
+          "02:06"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Exeter St Davids",
+      "code": "EXD",
+      "coordinates": {
+        "lat": 50.7281,
+        "lng": -3.5381
+      },
+      "times": {
+        "morning": [
+          "11:00",
+          "13:00",
+          "15:00"
+        ],
+        "afternoon": [
+          "17:00",
+          "19:00",
+          "21:00"
+        ],
+        "evening": [
+          "23:00",
+          "01:00",
+          "03:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Plymouth",
+      "code": "PLY",
+      "coordinates": {
+        "lat": 50.3781,
+        "lng": -4.1381
+      },
+      "times": {
+        "morning": [
+          "12:46",
+          "14:46",
+          "16:46"
+        ],
+        "afternoon": [
+          "18:46",
+          "20:46",
+          "22:46"
+        ],
+        "evening": [
+          "00:46",
+          "02:46",
+          "04:46"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Truro",
+      "code": "TRU",
+      "coordinates": {
+        "lat": 50.2681,
+        "lng": -5.0481
+      },
+      "times": {
+        "morning": [
+          "09:57",
+          "11:57",
+          "13:57"
+        ],
+        "afternoon": [
+          "15:57",
+          "17:57",
+          "19:57"
+        ],
+        "evening": [
+          "21:57",
+          "23:57",
+          "01:57"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Penzance",
+      "code": "PNZ",
+      "coordinates": {
+        "lat": 50.1181,
+        "lng": -5.5381
+      },
+      "times": {
+        "morning": [
+          "11:57",
+          "13:57",
+          "15:57"
+        ],
+        "afternoon": [
+          "17:57",
+          "19:57",
+          "21:57"
+        ],
+        "evening": [
+          "23:57",
+          "01:57",
+          "03:57"
+        ],
+        "night": []
+      }
+    }
+  ]
+}

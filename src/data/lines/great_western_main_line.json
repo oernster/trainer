@@ -1,0 +1,606 @@
+{
+  "metadata": {
+    "line_name": "Great Western Main Line",
+    "description": "London Paddington to Cardiff Central and Swansea",
+    "operator": "Great Western Railway",
+    "total_stations": 21,
+    "frequency": {
+      "weekday_peak": "Every hour",
+      "weekday_off_peak": "Every 2 hours",
+      "weekend": "Every 2 hours",
+      "night": "No service"
+    }
+  },
+  "stations": [
+    {
+      "name": "London Paddington",
+      "code": "PAD",
+      "coordinates": {
+        "lat": 51.5154,
+        "lng": -0.1755
+      },
+      "zone": 1,
+      "interchange": [
+        "Circle Line",
+        "District Line",
+        "Hammersmith & City Line",
+        "Bakerloo Line"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Slough",
+      "code": "SLO",
+      "coordinates": {
+        "lat": 51.5119,
+        "lng": -0.5919
+      },
+      "interchange": [
+        "Windsor & Eton Central Line"
+      ],
+      "times": {
+        "morning": [
+          "06:05",
+          "08:05",
+          "10:05"
+        ],
+        "afternoon": [
+          "12:05",
+          "14:05",
+          "16:05"
+        ],
+        "evening": [
+          "18:05",
+          "20:05",
+          "22:05"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Maidenhead",
+      "code": "MAI",
+      "coordinates": {
+        "lat": 51.5219,
+        "lng": -0.7219
+      },
+      "interchange": [
+        "Marlow Line"
+      ],
+      "times": {
+        "morning": [
+          "06:11",
+          "08:11",
+          "10:11"
+        ],
+        "afternoon": [
+          "12:11",
+          "14:11",
+          "16:11"
+        ],
+        "evening": [
+          "18:11",
+          "20:11",
+          "22:11"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Twyford",
+      "code": "TWY",
+      "coordinates": {
+        "lat": 51.4719,
+        "lng": -0.8619
+      },
+      "interchange": [
+        "Henley Branch Line"
+      ],
+      "times": {
+        "morning": [
+          "06:18",
+          "08:18",
+          "10:18"
+        ],
+        "afternoon": [
+          "12:18",
+          "14:18",
+          "16:18"
+        ],
+        "evening": [
+          "18:18",
+          "20:18",
+          "22:18"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Reading",
+      "code": "RDG",
+      "coordinates": {
+        "lat": 51.4581,
+        "lng": -0.9719
+      },
+      "interchange": [
+        "North Downs Line",
+        "Basingstoke Line"
+      ],
+      "times": {
+        "morning": [
+          "06:41",
+          "08:41",
+          "10:41"
+        ],
+        "afternoon": [
+          "12:41",
+          "14:41",
+          "16:41"
+        ],
+        "evening": [
+          "18:41",
+          "20:41",
+          "22:41"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Didcot Parkway",
+      "code": "DID",
+      "coordinates": {
+        "lat": 51.6119,
+        "lng": -1.2419
+      },
+      "interchange": [
+        "Cherwell Valley Line"
+      ],
+      "times": {
+        "morning": [
+          "06:50",
+          "08:50",
+          "10:50"
+        ],
+        "afternoon": [
+          "12:50",
+          "14:50",
+          "16:50"
+        ],
+        "evening": [
+          "18:50",
+          "20:50",
+          "22:50"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Swindon",
+      "code": "SWI",
+      "coordinates": {
+        "lat": 51.5681,
+        "lng": -1.7881
+      },
+      "interchange": [
+        "Golden Valley Line"
+      ],
+      "times": {
+        "morning": [
+          "07:20",
+          "09:20",
+          "11:20"
+        ],
+        "afternoon": [
+          "13:20",
+          "15:20",
+          "17:20"
+        ],
+        "evening": [
+          "19:20",
+          "21:20",
+          "23:20"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Chippenham",
+      "code": "CPM",
+      "coordinates": {
+        "lat": 51.4581,
+        "lng": -2.1181
+      },
+      "times": {
+        "morning": [
+          "07:03",
+          "09:03",
+          "11:03"
+        ],
+        "afternoon": [
+          "13:03",
+          "15:03",
+          "17:03"
+        ],
+        "evening": [
+          "19:03",
+          "21:03",
+          "23:03"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Bath Spa",
+      "code": "BTH",
+      "coordinates": {
+        "lat": 51.3781,
+        "lng": -2.3581
+      },
+      "interchange": [
+        "Wessex Main Line"
+      ],
+      "times": {
+        "morning": [
+          "06:40",
+          "08:40",
+          "10:40"
+        ],
+        "afternoon": [
+          "12:40",
+          "14:40",
+          "16:40"
+        ],
+        "evening": [
+          "18:40",
+          "20:40",
+          "22:40"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Bristol Temple Meads",
+      "code": "BRI",
+      "coordinates": {
+        "lat": 51.4494,
+        "lng": -2.5819
+      },
+      "interchange": [
+        "Severn Beach Line",
+        "South Wales Main Line"
+      ],
+      "times": {
+        "morning": [
+          "07:06",
+          "09:06",
+          "11:06"
+        ],
+        "afternoon": [
+          "13:06",
+          "15:06",
+          "17:06"
+        ],
+        "evening": [
+          "19:06",
+          "21:06",
+          "23:06"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Newport (South Wales)",
+      "code": "NWP",
+      "coordinates": {
+        "lat": 51.5881,
+        "lng": -2.9981
+      },
+      "times": {
+        "morning": [
+          "07:51",
+          "09:51",
+          "11:51"
+        ],
+        "afternoon": [
+          "13:51",
+          "15:51",
+          "17:51"
+        ],
+        "evening": [
+          "19:51",
+          "21:51",
+          "23:51"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Cardiff Central",
+      "code": "CDF",
+      "coordinates": {
+        "lat": 51.4756,
+        "lng": -3.1781
+      },
+      "interchange": [
+        "Vale of Glamorgan Line",
+        "Rhymney Line"
+      ],
+      "times": {
+        "morning": [
+          "06:56",
+          "08:56",
+          "10:56"
+        ],
+        "afternoon": [
+          "12:56",
+          "14:56",
+          "16:56"
+        ],
+        "evening": [
+          "18:56",
+          "20:56",
+          "22:56"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Bridgend",
+      "code": "BGN",
+      "coordinates": {
+        "lat": 51.5044,
+        "lng": -3.5781
+      },
+      "times": {
+        "morning": [
+          "07:49",
+          "09:49",
+          "11:49"
+        ],
+        "afternoon": [
+          "13:49",
+          "15:49",
+          "17:49"
+        ],
+        "evening": [
+          "19:49",
+          "21:49",
+          "23:49"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Port Talbot Parkway",
+      "code": "PTA",
+      "coordinates": {
+        "lat": 51.5881,
+        "lng": -3.7781
+      },
+      "times": {
+        "morning": [
+          "08:51",
+          "10:51",
+          "12:51"
+        ],
+        "afternoon": [
+          "14:51",
+          "16:51",
+          "18:51"
+        ],
+        "evening": [
+          "20:51",
+          "22:51",
+          "00:51"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Neath",
+      "code": "NTH",
+      "coordinates": {
+        "lat": 51.6619,
+        "lng": -3.8081
+      },
+      "times": {
+        "morning": [
+          "08:25",
+          "10:25",
+          "12:25"
+        ],
+        "afternoon": [
+          "14:25",
+          "16:25",
+          "18:25"
+        ],
+        "evening": [
+          "20:25",
+          "22:25",
+          "00:25"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Swansea",
+      "code": "SWA",
+      "coordinates": {
+        "lat": 51.6219,
+        "lng": -3.9381
+      },
+      "interchange": [
+        "West Wales Line"
+      ],
+      "times": {
+        "morning": [
+          "07:53",
+          "09:53",
+          "11:53"
+        ],
+        "afternoon": [
+          "13:53",
+          "15:53",
+          "17:53"
+        ],
+        "evening": [
+          "19:53",
+          "21:53",
+          "23:53"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Oxford",
+      "code": "OXF",
+      "coordinates": {
+        "lat": 51.7531,
+        "lng": -1.27
+      },
+      "interchange": [
+        "Cotswold Line",
+        "Cherwell Valley Line"
+      ],
+      "times": {
+        "morning": [
+          "09:38",
+          "11:38",
+          "13:38"
+        ],
+        "afternoon": [
+          "15:38",
+          "17:38",
+          "19:38"
+        ],
+        "evening": [
+          "21:38",
+          "23:38",
+          "01:38"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Banbury",
+      "code": "BAN",
+      "coordinates": {
+        "lat": 52.0631,
+        "lng": -1.33
+      },
+      "times": {
+        "morning": [
+          "08:51",
+          "10:51",
+          "12:51"
+        ],
+        "afternoon": [
+          "14:51",
+          "16:51",
+          "18:51"
+        ],
+        "evening": [
+          "20:51",
+          "22:51",
+          "00:51"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Leamington Spa",
+      "code": "LMS",
+      "coordinates": {
+        "lat": 52.2881,
+        "lng": -1.5381
+      },
+      "times": {
+        "morning": [
+          "07:36",
+          "09:36",
+          "11:36"
+        ],
+        "afternoon": [
+          "13:36",
+          "15:36",
+          "17:36"
+        ],
+        "evening": [
+          "19:36",
+          "21:36",
+          "23:36"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Warwick",
+      "code": "WRW",
+      "coordinates": {
+        "lat": 52.2881,
+        "lng": -1.5881
+      },
+      "times": {
+        "morning": [
+          "10:33",
+          "12:33",
+          "14:33"
+        ],
+        "afternoon": [
+          "16:33",
+          "18:33",
+          "20:33"
+        ],
+        "evening": [
+          "22:33",
+          "00:33",
+          "02:33"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Warwick Parkway",
+      "code": "WRP",
+      "coordinates": {
+        "lat": 52.3181,
+        "lng": -1.5681
+      },
+      "times": {
+        "morning": [
+          "10:38",
+          "12:38",
+          "14:38"
+        ],
+        "afternoon": [
+          "16:38",
+          "18:38",
+          "20:38"
+        ],
+        "evening": [
+          "22:38",
+          "00:38",
+          "02:38"
+        ],
+        "night": []
+      }
+    }
+  ]
+}

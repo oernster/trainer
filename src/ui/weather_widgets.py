@@ -245,11 +245,19 @@ class WeatherItemWidget(WeatherDisplayComponent):
         hover_color = self._theme_colors.get("background_hover", "#404040")
         accent_color = self._theme_colors.get("primary_accent", "#4fc3f7")
 
+        # Handle transparent background properly
+        if bg_color == "transparent":
+            bg_style = "background: transparent;"
+            border_style = "border: none;" if border_color == "transparent" else f"border: 1px solid {border_color};"
+        else:
+            bg_style = f"background-color: {bg_color};"
+            border_style = f"border: 1px solid {border_color};"
+
         # Apply styling with no padding - spacing controlled by layout margins
         style = f"""
         WeatherItemWidget {{
-            background-color: {bg_color};
-            border: 1px solid {border_color};
+            {bg_style}
+            {border_style}
             border-radius: 12px;
             color: {text_color};
             padding: 0px;
@@ -353,7 +361,7 @@ class WeatherForecastWidget(QWidget):
         # Add trailing stretch to center the items
         self._container_layout.addStretch(1)
 
-        logger.info(f"Updated weather forecast with {len(weather_data)} items")
+        logger.debug(f"Updated weather forecast with {len(weather_data)} items")
 
     def clear_weather_items(self) -> None:
         """Clear all weather items."""
@@ -376,11 +384,17 @@ class WeatherForecastWidget(QWidget):
         bg_color = theme_colors.get("background_primary", "#1a1a1a")
         border_color = theme_colors.get("border_primary", "#404040")
 
+        # Handle transparent border properly
+        if border_color == "transparent":
+            border_style = "border: none !important;"
+        else:
+            border_style = f"border: 1px solid {border_color} !important;"
+
         # Force rounded corners with !important
         self.setStyleSheet(
             f"""
             background-color: {bg_color} !important;
-            border: 1px solid {border_color} !important;
+            {border_style}
             border-radius: 12px !important;
             margin: 0px !important;
             padding: 0px !important;
@@ -460,7 +474,7 @@ class WeatherWidget(QWidget):
         self._status_timer.timeout.connect(self._clear_status)
 
         self.setup_ui()
-        logger.info("WeatherWidget initialized")
+        logger.debug("WeatherWidget initialized")
 
     def setup_ui(self) -> None:
         """Setup the weather widget UI."""
@@ -591,7 +605,7 @@ class WeatherWidget(QWidget):
 
         # Status updates removed - no longer showing status messages
 
-        logger.info("Weather widget updated with new forecast data")
+        logger.debug("Weather widget updated with new forecast data")
 
     def on_weather_error(self, error: Exception) -> None:
         """Handle weather error."""

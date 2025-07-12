@@ -69,7 +69,7 @@ class AstronomyManager(QObject):
         if config.enabled and config.has_valid_api_key():
             self._initialize_api_manager()
 
-        logger.info(f"AstronomyManager initialized (enabled: {config.enabled})")
+        logger.debug(f"AstronomyManager initialized (enabled: {config.enabled})")
 
     def _initialize_api_manager(self) -> None:
         """Initialize the astronomy API manager."""
@@ -77,7 +77,7 @@ class AstronomyManager(QObject):
             self._api_manager = AstronomyAPIFactory.create_manager_from_config(
                 self._config
             )
-            logger.info("Astronomy API manager initialized successfully")
+            logger.debug("Astronomy API manager initialized successfully")
         except Exception as e:
             logger.error(f"Failed to initialize astronomy API manager: {e}")
             self.astronomy_error.emit(f"Failed to initialize astronomy system: {e}")
@@ -230,7 +230,7 @@ class AstronomyManager(QObject):
     def stop_auto_refresh(self) -> None:
         """Stop automatic refresh timer."""
         self._refresh_timer.stop()
-        logger.info("Astronomy auto-refresh stopped")
+        logger.debug("Astronomy auto-refresh stopped")
 
     def is_auto_refresh_active(self) -> bool:
         """Check if auto-refresh is currently active."""
@@ -281,7 +281,7 @@ class AstronomyManager(QObject):
         self._last_update_time = None
 
         self._emit_cache_status()
-        logger.info("Astronomy cache cleared")
+        logger.debug("Astronomy cache cleared")
 
     def update_config(self, new_config: AstronomyConfig) -> None:
         """
@@ -354,7 +354,7 @@ class AstronomyManager(QObject):
 
     def shutdown(self) -> None:
         """Shutdown astronomy manager and cleanup resources."""
-        logger.info("Shutting down astronomy manager...")
+        logger.debug("Shutting down astronomy manager...")
 
         # Stop auto-refresh
         self.stop_auto_refresh()
@@ -381,7 +381,7 @@ class AstronomyManager(QObject):
         self._last_update_time = None
         self._api_manager = None
 
-        logger.info("Astronomy manager shutdown complete")
+        logger.debug("Astronomy manager shutdown complete")
 
 
 class AstronomyManagerFactory:

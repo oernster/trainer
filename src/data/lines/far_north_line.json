@@ -1,0 +1,697 @@
+{
+  "metadata": {
+    "line_name": "Far North Line",
+    "description": "Inverness to Thurso and Wick",
+    "operator": "ScotRail",
+    "total_stations": 14,
+    "frequency": {
+      "weekday_peak": "Every 3 hours",
+      "weekday_off_peak": "Every 4 hours",
+      "weekend": "Every 4 hours",
+      "night": "No service"
+    }
+  },
+  "stations": [
+    {
+      "name": "Inverness",
+      "code": "INV",
+      "coordinates": {
+        "lat": 57.4781,
+        "lng": -4.2231
+      },
+      "interchange": [
+        "Highland Main Line",
+        "Kyle Line",
+        "Aberdeen to Inverness Line"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Beauly",
+      "code": "BEL",
+      "coordinates": {
+        "lat": 57.4781,
+        "lng": -4.4681
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:14",
+          "08:14",
+          "10:14"
+        ],
+        "afternoon": [
+          "12:14",
+          "14:14",
+          "16:14"
+        ],
+        "evening": [
+          "18:14",
+          "20:14",
+          "22:14"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Muir of Ord",
+      "code": "MOO",
+      "coordinates": {
+        "lat": 57.5131,
+        "lng": -4.4581
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:22",
+          "08:22",
+          "10:22"
+        ],
+        "afternoon": [
+          "12:22",
+          "14:22",
+          "16:22"
+        ],
+        "evening": [
+          "18:22",
+          "20:22",
+          "22:22"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Dingwall",
+      "code": "DIN",
+      "coordinates": {
+        "lat": 57.5981,
+        "lng": -4.4281
+      },
+      "interchange": [
+        "Kyle Line"
+      ],
+      "times": {
+        "morning": [
+          "06:32",
+          "08:32",
+          "10:32"
+        ],
+        "afternoon": [
+          "12:32",
+          "14:32",
+          "16:32"
+        ],
+        "evening": [
+          "18:32",
+          "20:32",
+          "22:32"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Alness",
+      "code": "ASS",
+      "coordinates": {
+        "lat": 57.6981,
+        "lng": -4.2581
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:46",
+          "08:46",
+          "10:46"
+        ],
+        "afternoon": [
+          "12:46",
+          "14:46",
+          "16:46"
+        ],
+        "evening": [
+          "18:46",
+          "20:46",
+          "22:46"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Invergordon",
+      "code": "IGD",
+      "coordinates": {
+        "lat": 57.6881,
+        "lng": -4.1681
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:42",
+          "08:42",
+          "10:42"
+        ],
+        "afternoon": [
+          "12:42",
+          "14:42",
+          "16:42"
+        ],
+        "evening": [
+          "18:42",
+          "20:42",
+          "22:42"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Fearn",
+      "code": "FRN",
+      "coordinates": {
+        "lat": 57.7781,
+        "lng": -3.9981
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:22",
+          "09:22",
+          "11:22"
+        ],
+        "afternoon": [
+          "13:22",
+          "15:22",
+          "17:22"
+        ],
+        "evening": [
+          "19:22",
+          "21:22",
+          "23:22"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Tain",
+      "code": "TAI",
+      "coordinates": {
+        "lat": 57.8131,
+        "lng": -4.0581
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:43",
+          "08:43",
+          "10:43"
+        ],
+        "afternoon": [
+          "12:43",
+          "14:43",
+          "16:43"
+        ],
+        "evening": [
+          "18:43",
+          "20:43",
+          "22:43"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Ardgay",
+      "code": "ARD",
+      "coordinates": {
+        "lat": 57.8881,
+        "lng": -4.3581
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:07",
+          "09:07",
+          "11:07"
+        ],
+        "afternoon": [
+          "13:07",
+          "15:07",
+          "17:07"
+        ],
+        "evening": [
+          "19:07",
+          "21:07",
+          "23:07"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Culrain",
+      "code": "CUA",
+      "coordinates": {
+        "lat": 57.9581,
+        "lng": -4.4081
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:18",
+          "09:18",
+          "11:18"
+        ],
+        "afternoon": [
+          "13:18",
+          "15:18",
+          "17:18"
+        ],
+        "evening": [
+          "19:18",
+          "21:18",
+          "23:18"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Invershin",
+      "code": "INH",
+      "coordinates": {
+        "lat": 57.9681,
+        "lng": -4.4181
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:10",
+          "09:10",
+          "11:10"
+        ],
+        "afternoon": [
+          "13:10",
+          "15:10",
+          "17:10"
+        ],
+        "evening": [
+          "19:10",
+          "21:10",
+          "23:10"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Lairg",
+      "code": "LRG",
+      "coordinates": {
+        "lat": 58.0231,
+        "lng": -4.4031
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:38",
+          "10:38",
+          "12:38"
+        ],
+        "afternoon": [
+          "14:38",
+          "16:38",
+          "18:38"
+        ],
+        "evening": [
+          "20:38",
+          "22:38",
+          "00:38"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Rogart",
+      "code": "ROG",
+      "coordinates": {
+        "lat": 58.0081,
+        "lng": -4.1681
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:52",
+          "10:52",
+          "12:52"
+        ],
+        "afternoon": [
+          "14:52",
+          "16:52",
+          "18:52"
+        ],
+        "evening": [
+          "20:52",
+          "22:52",
+          "00:52"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Golspie",
+      "code": "GOL",
+      "coordinates": {
+        "lat": 57.9781,
+        "lng": -3.9781
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "09:15",
+          "11:15",
+          "13:15"
+        ],
+        "afternoon": [
+          "15:15",
+          "17:15",
+          "19:15"
+        ],
+        "evening": [
+          "21:15",
+          "23:15",
+          "01:15"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Dunrobin Castle",
+      "code": "DNO",
+      "coordinates": {
+        "lat": 57.9831,
+        "lng": -3.9481
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:20",
+          "09:20",
+          "11:20"
+        ],
+        "afternoon": [
+          "13:20",
+          "15:20",
+          "17:20"
+        ],
+        "evening": [
+          "19:20",
+          "21:20",
+          "23:20"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Brora",
+      "code": "BRA",
+      "coordinates": {
+        "lat": 58.0131,
+        "lng": -3.8531
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:22",
+          "09:22",
+          "11:22"
+        ],
+        "afternoon": [
+          "13:22",
+          "15:22",
+          "17:22"
+        ],
+        "evening": [
+          "19:22",
+          "21:22",
+          "23:22"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Helmsdale",
+      "code": "HMS",
+      "coordinates": {
+        "lat": 58.1181,
+        "lng": -3.6481
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:48",
+          "10:48",
+          "12:48"
+        ],
+        "afternoon": [
+          "14:48",
+          "16:48",
+          "18:48"
+        ],
+        "evening": [
+          "20:48",
+          "22:48",
+          "00:48"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Kildonan",
+      "code": "KIL",
+      "coordinates": {
+        "lat": 58.1881,
+        "lng": -3.8681
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:49",
+          "09:49",
+          "11:49"
+        ],
+        "afternoon": [
+          "13:49",
+          "15:49",
+          "17:49"
+        ],
+        "evening": [
+          "19:49",
+          "21:49",
+          "23:49"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Kinbrace",
+      "code": "KBC",
+      "coordinates": {
+        "lat": 58.2981,
+        "lng": -3.9381
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "09:14",
+          "11:14",
+          "13:14"
+        ],
+        "afternoon": [
+          "15:14",
+          "17:14",
+          "19:14"
+        ],
+        "evening": [
+          "21:14",
+          "23:14",
+          "01:14"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Forsinard",
+      "code": "FRS",
+      "coordinates": {
+        "lat": 58.3581,
+        "lng": -3.8981
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:31",
+          "10:31",
+          "12:31"
+        ],
+        "afternoon": [
+          "14:31",
+          "16:31",
+          "18:31"
+        ],
+        "evening": [
+          "20:31",
+          "22:31",
+          "00:31"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Altnabreac",
+      "code": "ABC",
+      "coordinates": {
+        "lat": 58.4081,
+        "lng": -3.7581
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "10:06",
+          "12:06",
+          "14:06"
+        ],
+        "afternoon": [
+          "16:06",
+          "18:06",
+          "20:06"
+        ],
+        "evening": [
+          "22:06",
+          "00:06",
+          "02:06"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Scotscalder",
+      "code": "SCT",
+      "coordinates": {
+        "lat": 58.4881,
+        "lng": -3.6081
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "09:08",
+          "11:08",
+          "13:08"
+        ],
+        "afternoon": [
+          "15:08",
+          "17:08",
+          "19:08"
+        ],
+        "evening": [
+          "21:08",
+          "23:08",
+          "01:08"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Georgemas Junction",
+      "code": "GMS",
+      "coordinates": {
+        "lat": 58.5181,
+        "lng": -3.4381
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "10:31",
+          "12:31",
+          "14:31"
+        ],
+        "afternoon": [
+          "16:31",
+          "18:31",
+          "20:31"
+        ],
+        "evening": [
+          "22:31",
+          "00:31",
+          "02:31"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Thurso",
+      "code": "THS",
+      "coordinates": {
+        "lat": 58.5931,
+        "lng": -3.5231
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "10:31",
+          "12:31",
+          "14:31"
+        ],
+        "afternoon": [
+          "16:31",
+          "18:31",
+          "20:31"
+        ],
+        "evening": [
+          "22:31",
+          "00:31",
+          "02:31"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Wick",
+      "code": "WCK",
+      "coordinates": {
+        "lat": 58.4431,
+        "lng": -3.0931
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "09:30",
+          "11:30",
+          "13:30"
+        ],
+        "afternoon": [
+          "15:30",
+          "17:30",
+          "19:30"
+        ],
+        "evening": [
+          "21:30",
+          "23:30",
+          "01:30"
+        ],
+        "night": []
+      }
+    }
+  ]
+}

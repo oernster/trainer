@@ -11,7 +11,7 @@ import logging
 import os
 import shutil
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel, Field
 
 import sys
@@ -43,6 +43,8 @@ class StationConfig(BaseModel):
     from_name: str = "Fleet"
     to_code: str = "WAT"
     to_name: str = "London Waterloo"
+    via_stations: List[str] = []
+    route_auto_fixed: bool = False
 
 
 class RefreshConfig(BaseModel):
@@ -58,7 +60,6 @@ class DisplayConfig(BaseModel):
 
     max_trains: int = 50
     time_window_hours: int = 16
-    show_cancelled: bool = True
     theme: str = "dark"  # Default to dark theme - "dark" or "light"
 
 
@@ -116,7 +117,7 @@ class ConfigManager:
         import logging
 
         logger = logging.getLogger(__name__)
-        logger.info(f"ConfigManager initialized with path: {self.config_path}")
+        logger.debug(f"ConfigManager initialized with path: {self.config_path}")
 
     @staticmethod
     def get_default_config_path() -> Path:
@@ -215,7 +216,7 @@ class ConfigManager:
         import logging
 
         logger = logging.getLogger(__name__)
-        logger.info(f"Loading config from: {self.config_path}")
+        logger.debug(f"Loading config from: {self.config_path}")
 
         if not self.config_path.exists():
             logger.info(
@@ -227,7 +228,7 @@ class ConfigManager:
             with open(self.config_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
             self.config = ConfigData(**data)
-            logger.info(f"Successfully loaded config from: {self.config_path}")
+            logger.debug(f"Successfully loaded config from: {self.config_path}")
             return self.config
         except json.JSONDecodeError as e:
             raise ConfigurationError(f"Invalid JSON in config file: {e}")

@@ -1,0 +1,455 @@
+{
+  "metadata": {
+    "line_name": "Caledonian Sleeper Lowland",
+    "description": "Overnight sleeper service from London to Glasgow via the West Coast Main Line",
+    "operator": "Caledonian Sleeper",
+    "total_stations": 20,
+    "typical_frequency": "1 service per night",
+    "peak_hours": "21:00-23:00",
+    "frequency": {
+      "weekday_peak": "1 service",
+      "weekday_off_peak": "1 service",
+      "weekend": "1 service",
+      "night": "1 service"
+    }
+  },
+  "typical_journey_times": {
+    "EUS-WFJ": 20,
+    "WFJ-MKC": 25,
+    "MKC-RUG": 30,
+    "RUG-NUN": 15,
+    "NUN-TAM": 10,
+    "TAM-LTV": 8,
+    "LTV-STA": 12,
+    "STA-CRE": 20,
+    "CRE-WBQ": 15,
+    "WBQ-WGN": 10,
+    "WGN-PRE": 15,
+    "PRE-LAN": 20,
+    "LAN-OXN": 25,
+    "OXN-PNR": 30,
+    "PNR-CAR": 20,
+    "CAR-LOC": 25,
+    "LOC-DUM": 30,
+    "DUM-KMK": 45,
+    "KMK-GLC": 30,
+    "EUS-GLC": 480
+  },
+  "typical_services": {
+    "peak_frequency": "1 service per night",
+    "off_peak_frequency": "1 service per night",
+    "evening_frequency": "1 service per night",
+    "weekend_frequency": "1 service per night",
+    "first_train": "21:15",
+    "last_train": "21:15"
+  },
+  "stations": [
+    {
+      "name": "London Euston",
+      "code": "EUS",
+      "coordinates": {
+        "lat": 51.5282,
+        "lng": -0.1337
+      },
+      "zone": 1,
+      "interchange": [
+        "Northern Line",
+        "Victoria Line",
+        "Avanti West Coast",
+        "London Northwestern Railway",
+        "London Overground"
+      ],
+      "times": {
+        "morning": [],
+        "afternoon": [],
+        "evening": [
+          "21:15"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Watford Junction",
+      "code": "WFJ",
+      "coordinates": {
+        "lat": 51.6625,
+        "lng": -0.3958
+      },
+      "interchange": [
+        "Avanti West Coast",
+        "London Northwestern Railway",
+        "London Overground"
+      ],
+      "times": {
+        "morning": [],
+        "afternoon": [],
+        "evening": [
+          "21:35"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Milton Keynes Central",
+      "code": "MKC",
+      "coordinates": {
+        "lat": 52.0406,
+        "lng": -0.7594
+      },
+      "interchange": [
+        "Avanti West Coast",
+        "London Northwestern Railway"
+      ],
+      "times": {
+        "morning": [],
+        "afternoon": [],
+        "evening": [
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Rugby",
+      "code": "RUG",
+      "coordinates": {
+        "lat": 52.3781,
+        "lng": -1.2542
+      },
+      "interchange": [
+        "Avanti West Coast",
+        "London Northwestern Railway",
+        "CrossCountry"
+      ],
+      "times": {
+        "morning": [],
+        "afternoon": [],
+        "evening": [
+          "22:30"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Nuneaton",
+      "code": "NUN",
+      "coordinates": {
+        "lat": 52.5281,
+        "lng": -1.4681
+      },
+      "interchange": [
+        "Avanti West Coast",
+        "CrossCountry"
+      ],
+      "times": {
+        "morning": [],
+        "afternoon": [],
+        "evening": [
+          "22:45"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Tamworth",
+      "code": "TAM",
+      "coordinates": {
+        "lat": 52.6339,
+        "lng": -1.6958
+      },
+      "interchange": [
+        "Avanti West Coast",
+        "CrossCountry"
+      ],
+      "times": {
+        "morning": [],
+        "afternoon": [],
+        "evening": [
+          "22:55"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Lichfield Trent Valley",
+      "code": "LTV",
+      "coordinates": {
+        "lat": 52.6897,
+        "lng": -1.8264
+      },
+      "interchange": [
+        "Avanti West Coast",
+        "CrossCountry"
+      ],
+      "times": {
+        "morning": [],
+        "afternoon": [],
+        "evening": [
+          "23:03"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Stafford",
+      "code": "STA",
+      "coordinates": {
+        "lat": 52.8042,
+        "lng": -2.1219
+      },
+      "interchange": [
+        "Avanti West Coast",
+        "CrossCountry",
+        "Transport for Wales"
+      ],
+      "times": {
+        "morning": [],
+        "afternoon": [],
+        "evening": [
+          "23:15"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Crewe",
+      "code": "CRE",
+      "coordinates": {
+        "lat": 53.0897,
+        "lng": -2.4372
+      },
+      "interchange": [
+        "Avanti West Coast",
+        "CrossCountry",
+        "Transport for Wales",
+        "Northern Rail"
+      ],
+      "times": {
+        "morning": [],
+        "afternoon": [],
+        "evening": [
+          "23:35"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Warrington Bank Quay",
+      "code": "WBQ",
+      "coordinates": {
+        "lat": 53.3906,
+        "lng": -2.5972
+      },
+      "interchange": [
+        "Avanti West Coast",
+        "Northern Rail"
+      ],
+      "times": {
+        "morning": [],
+        "afternoon": [],
+        "evening": [
+          "23:50"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Wigan North Western",
+      "code": "WGN",
+      "coordinates": {
+        "lat": 53.5522,
+        "lng": -2.6331
+      },
+      "interchange": [
+        "Avanti West Coast",
+        "Northern Rail"
+      ],
+      "times": {
+        "morning": [],
+        "afternoon": [],
+        "evening": [],
+        "night": [
+          "00:00"
+        ]
+      }
+    },
+    {
+      "name": "Preston",
+      "code": "PRE",
+      "coordinates": {
+        "lat": 53.7575,
+        "lng": -2.7089
+      },
+      "interchange": [
+        "Avanti West Coast",
+        "Northern Rail",
+        "TransPennine Express"
+      ],
+      "times": {
+        "morning": [],
+        "afternoon": [],
+        "evening": [],
+        "night": [
+          "00:15"
+        ]
+      }
+    },
+    {
+      "name": "Lancaster",
+      "code": "LAN",
+      "coordinates": {
+        "lat": 54.0486,
+        "lng": -2.8081
+      },
+      "interchange": [
+        "Avanti West Coast",
+        "Northern Rail"
+      ],
+      "times": {
+        "morning": [],
+        "afternoon": [],
+        "evening": [],
+        "night": [
+          "00:35"
+        ]
+      }
+    },
+    {
+      "name": "Oxenholme Lake District",
+      "code": "OXN",
+      "coordinates": {
+        "lat": 54.3181,
+        "lng": -2.7306
+      },
+      "interchange": [
+        "Avanti West Coast",
+        "Northern Rail"
+      ],
+      "times": {
+        "morning": [],
+        "afternoon": [],
+        "evening": [],
+        "night": [
+          "01:00"
+        ]
+      }
+    },
+    {
+      "name": "Penrith",
+      "code": "PNR",
+      "coordinates": {
+        "lat": 54.6642,
+        "lng": -2.7575
+      },
+      "interchange": [
+        "Avanti West Coast"
+      ],
+      "times": {
+        "morning": [],
+        "afternoon": [],
+        "evening": [],
+        "night": [
+          "01:30"
+        ]
+      }
+    },
+    {
+      "name": "Carlisle",
+      "code": "CAR",
+      "coordinates": {
+        "lat": 54.8906,
+        "lng": -2.9331
+      },
+      "interchange": [
+        "Avanti West Coast",
+        "Northern Rail",
+        "ScotRail"
+      ],
+      "times": {
+        "morning": [],
+        "afternoon": [],
+        "evening": [],
+        "night": [
+          "01:50"
+        ]
+      }
+    },
+    {
+      "name": "Lockerbie",
+      "code": "LOC",
+      "coordinates": {
+        "lat": 55.1206,
+        "lng": -3.3539
+      },
+      "interchange": [
+        "ScotRail"
+      ],
+      "times": {
+        "morning": [],
+        "afternoon": [],
+        "evening": [],
+        "night": [
+          "02:15"
+        ]
+      }
+    },
+    {
+      "name": "Dumfries",
+      "code": "DUM",
+      "coordinates": {
+        "lat": 55.0706,
+        "lng": -3.6089
+      },
+      "interchange": [
+        "ScotRail"
+      ],
+      "times": {
+        "morning": [],
+        "afternoon": [],
+        "evening": [],
+        "night": [
+          "02:45"
+        ]
+      }
+    },
+    {
+      "name": "Kilmarnock",
+      "code": "KMK",
+      "coordinates": {
+        "lat": 55.6114,
+        "lng": -4.4989
+      },
+      "interchange": [
+        "ScotRail"
+      ],
+      "times": {
+        "morning": [
+          "03:30"
+        ],
+        "afternoon": [],
+        "evening": [],
+        "night": []
+      }
+    },
+    {
+      "name": "Glasgow Central",
+      "code": "GLC",
+      "coordinates": {
+        "lat": 55.8583,
+        "lng": -4.2572
+      },
+      "interchange": [
+        "ScotRail",
+        "Caledonian Sleeper"
+      ],
+      "times": {
+        "morning": [
+          "04:00"
+        ],
+        "afternoon": [],
+        "evening": [],
+        "night": []
+      }
+    }
+  ]
+}

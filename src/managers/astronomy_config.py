@@ -392,7 +392,7 @@ class AstronomyConfigManager:
         """Initialize astronomy config manager."""
         self.config_path = config_path or Path("config.json")
         self._config: Optional[AstronomyConfig] = None
-        logger.info(f"AstronomyConfigManager initialized with path: {self.config_path}")
+        logger.debug(f"AstronomyConfigManager initialized with path: {self.config_path}")
 
     def load_config(self) -> AstronomyConfig:
         """Load astronomy configuration from file."""

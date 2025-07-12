@@ -1,0 +1,473 @@
+{
+  "metadata": {
+    "line_name": "Midland Main Line",
+    "description": "London St Pancras to Sheffield via Leicester and Derby",
+    "operator": "East Midlands Railway",
+    "total_stations": 17,
+    "frequency": {
+      "weekday_peak": "Every hour",
+      "weekday_off_peak": "Every 2 hours",
+      "weekend": "Every 2 hours",
+      "night": "No service"
+    }
+  },
+  "stations": [
+    {
+      "name": "London St Pancras",
+      "code": "STP",
+      "coordinates": {
+        "lat": 51.5308,
+        "lng": -0.1267
+      },
+      "zone": 1,
+      "interchange": [
+        "Circle Line",
+        "Hammersmith & City Line",
+        "Metropolitan Line",
+        "Northern Line",
+        "Piccadilly Line",
+        "Victoria Line"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Luton",
+      "code": "LTN",
+      "coordinates": {
+        "lat": 51.8833,
+        "lng": -0.4167
+      },
+      "interchange": [
+        "Luton Airport Parkway"
+      ],
+      "times": {
+        "morning": [
+          "06:09",
+          "08:09",
+          "10:09"
+        ],
+        "afternoon": [
+          "12:09",
+          "14:09",
+          "16:09"
+        ],
+        "evening": [
+          "18:09",
+          "20:09",
+          "22:09"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Bedford",
+      "code": "BDF",
+      "coordinates": {
+        "lat": 52.1333,
+        "lng": -0.4833
+      },
+      "times": {
+        "morning": [
+          "06:10",
+          "08:10",
+          "10:10"
+        ],
+        "afternoon": [
+          "12:10",
+          "14:10",
+          "16:10"
+        ],
+        "evening": [
+          "18:10",
+          "20:10",
+          "22:10"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Wellingborough",
+      "code": "WEL",
+      "coordinates": {
+        "lat": 52.3,
+        "lng": -0.6833
+      },
+      "times": {
+        "morning": [
+          "06:31",
+          "08:31",
+          "10:31"
+        ],
+        "afternoon": [
+          "12:31",
+          "14:31",
+          "16:31"
+        ],
+        "evening": [
+          "18:31",
+          "20:31",
+          "22:31"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Kettering",
+      "code": "KET",
+      "coordinates": {
+        "lat": 52.4,
+        "lng": -0.7167
+      },
+      "times": {
+        "morning": [
+          "06:32",
+          "08:32",
+          "10:32"
+        ],
+        "afternoon": [
+          "12:32",
+          "14:32",
+          "16:32"
+        ],
+        "evening": [
+          "18:32",
+          "20:32",
+          "22:32"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Market Harborough",
+      "code": "MHR",
+      "coordinates": {
+        "lat": 52.4833,
+        "lng": -0.9167
+      },
+      "times": {
+        "morning": [
+          "06:53",
+          "08:53",
+          "10:53"
+        ],
+        "afternoon": [
+          "12:53",
+          "14:53",
+          "16:53"
+        ],
+        "evening": [
+          "18:53",
+          "20:53",
+          "22:53"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Leicester",
+      "code": "LEI",
+      "coordinates": {
+        "lat": 52.6333,
+        "lng": -1.1167
+      },
+      "times": {
+        "morning": [
+          "06:32",
+          "08:32",
+          "10:32"
+        ],
+        "afternoon": [
+          "12:32",
+          "14:32",
+          "16:32"
+        ],
+        "evening": [
+          "18:32",
+          "20:32",
+          "22:32"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Loughborough",
+      "code": "LBO",
+      "coordinates": {
+        "lat": 52.7667,
+        "lng": -1.2
+      },
+      "times": {
+        "morning": [
+          "07:12",
+          "09:12",
+          "11:12"
+        ],
+        "afternoon": [
+          "13:12",
+          "15:12",
+          "17:12"
+        ],
+        "evening": [
+          "19:12",
+          "21:12",
+          "23:12"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "East Midlands Parkway",
+      "code": "EMD",
+      "coordinates": {
+        "lat": 52.8833,
+        "lng": -1.2833
+      },
+      "times": {
+        "morning": [
+          "07:12",
+          "09:12",
+          "11:12"
+        ],
+        "afternoon": [
+          "13:12",
+          "15:12",
+          "17:12"
+        ],
+        "evening": [
+          "19:12",
+          "21:12",
+          "23:12"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Nottingham",
+      "code": "NOT",
+      "coordinates": {
+        "lat": 52.95,
+        "lng": -1.15
+      },
+      "times": {
+        "morning": [
+          "07:27",
+          "09:27",
+          "11:27"
+        ],
+        "afternoon": [
+          "13:27",
+          "15:27",
+          "17:27"
+        ],
+        "evening": [
+          "19:27",
+          "21:27",
+          "23:27"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Alfreton",
+      "code": "ALF",
+      "coordinates": {
+        "lat": 53.0967,
+        "lng": -1.3833
+      },
+      "times": {
+        "morning": [
+          "08:11",
+          "10:11",
+          "12:11"
+        ],
+        "afternoon": [
+          "14:11",
+          "16:11",
+          "18:11"
+        ],
+        "evening": [
+          "20:11",
+          "22:11",
+          "00:11"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Chesterfield",
+      "code": "CHD",
+      "coordinates": {
+        "lat": 53.2333,
+        "lng": -1.4333
+      },
+      "times": {
+        "morning": [
+          "07:59",
+          "09:59",
+          "11:59"
+        ],
+        "afternoon": [
+          "13:59",
+          "15:59",
+          "17:59"
+        ],
+        "evening": [
+          "19:59",
+          "21:59",
+          "23:59"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Sheffield",
+      "code": "SHF",
+      "coordinates": {
+        "lat": 53.3781,
+        "lng": -1.4619
+      },
+      "times": {
+        "morning": [
+          "08:15",
+          "10:15",
+          "12:15"
+        ],
+        "afternoon": [
+          "14:15",
+          "16:15",
+          "18:15"
+        ],
+        "evening": [
+          "20:15",
+          "22:15",
+          "00:15"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Derby",
+      "code": "DBY",
+      "coordinates": {
+        "lat": 52.9167,
+        "lng": -1.4667
+      },
+      "interchange": [
+        "Cross Country Line"
+      ],
+      "times": {
+        "morning": [
+          "08:51",
+          "10:51",
+          "12:51"
+        ],
+        "afternoon": [
+          "14:51",
+          "16:51",
+          "18:51"
+        ],
+        "evening": [
+          "20:51",
+          "22:51",
+          "00:51"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Long Eaton",
+      "code": "LGE",
+      "coordinates": {
+        "lat": 52.8833,
+        "lng": -1.2833
+      },
+      "times": {
+        "morning": [
+          "07:11",
+          "09:11",
+          "11:11"
+        ],
+        "afternoon": [
+          "13:11",
+          "15:11",
+          "17:11"
+        ],
+        "evening": [
+          "19:11",
+          "21:11",
+          "23:11"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Beeston",
+      "code": "BEE",
+      "coordinates": {
+        "lat": 52.9167,
+        "lng": -1.2167
+      },
+      "times": {
+        "morning": [
+          "08:17",
+          "10:17",
+          "12:17"
+        ],
+        "afternoon": [
+          "14:17",
+          "16:17",
+          "18:17"
+        ],
+        "evening": [
+          "20:17",
+          "22:17",
+          "00:17"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Attenborough",
+      "code": "ATB",
+      "coordinates": {
+        "lat": 52.9,
+        "lng": -1.2333
+      },
+      "times": {
+        "morning": [
+          "07:26",
+          "09:26",
+          "11:26"
+        ],
+        "afternoon": [
+          "13:26",
+          "15:26",
+          "17:26"
+        ],
+        "evening": [
+          "19:26",
+          "21:26",
+          "23:26"
+        ],
+        "night": []
+      }
+    }
+  ]
+}

@@ -103,9 +103,14 @@ def connect_signals(window: MainWindow, train_manager: TrainManager):
         window: Main window instance
         train_manager: Train manager instance
     """
-    # Connect refresh signals
+    # Connect refresh signals (manual refresh only)
     window.refresh_requested.connect(train_manager.fetch_trains)
-    window.auto_refresh_toggle_requested.connect(train_manager.toggle_auto_refresh)
+    
+    # Connect route change signal
+    window.route_changed.connect(train_manager.set_route)
+    
+    # Connect config update signal
+    window.config_updated.connect(train_manager.update_config)
 
     # Connect train manager signals to window updates
     train_manager.trains_updated.connect(window.update_train_display)
@@ -115,16 +120,7 @@ def connect_signals(window: MainWindow, train_manager: TrainManager):
         lambda msg: window.show_error_message("Data Error", msg)
     )
 
-    # Connect auto-refresh status updates
-    def update_auto_refresh_ui():
-        window.update_auto_refresh_status(train_manager.is_auto_refresh_active())
-
-    window.auto_refresh_toggle_requested.connect(
-        lambda: QTimer.singleShot(100, update_auto_refresh_ui)
-    )
-
-    # Update initial auto-refresh status (will be updated again after start_auto_refresh)
-    window.update_auto_refresh_status(train_manager.is_auto_refresh_active())
+    # Auto-refresh functionality removed
 
     logging.info("Signals connected between main window and train manager")
 
@@ -178,84 +174,47 @@ def main():
 
         window = MainWindow(config_manager)
 
-        # Check if API credentials are configured
-        splash.show_message("Checking API configuration...")
+        # Initialize train manager (now works offline without API)
+        splash.show_message("Initializing train manager...")
         app.processEvents()
-
-        if not config_manager.validate_api_credentials():
-            logger.info("API credentials not configured - showing settings dialog")
-
-            # Import here to avoid circular imports
-            from src.ui.settings_dialog import SettingsDialog
-
-            # Close splash before showing settings dialog
-            splash.show_message("Opening settings dialog...")
-            app.processEvents()
-            splash.close()
-
-            # Create settings dialog for first launch (will show itself when ready)
-            settings_dialog = SettingsDialog(config_manager, window)
-            settings_dialog.setWindowTitle("Initial Setup - API Configuration Required")
-            
-            # CRITICAL FIX: Connect settings saved signal to main window
-            settings_dialog.settings_saved.connect(window.on_settings_saved)
-
-            # Add a message to the dialog
-            info_text = (
-                "Welcome to Trainer!\n\n"
-                "To get started, please configure your Transport API credentials.\n"
-                "You can get free API credentials from https://transportapi.com/"
-            )
-
-            # Execute the dialog (it will show itself when ready)
-            result = settings_dialog.exec()
-
-            if result == settings_dialog.DialogCode.Accepted:
-                # Reload config after settings saved
-                config = config_manager.load_config()
-                logger.info("Configuration updated after initial setup")
-            else:
-                # User cancelled - show warning but continue
-                window.show_info_message(
-                    "Configuration Required",
-                    "API credentials are required for the application to function properly.\n"
-                    "You can configure them later via Settings → Options.",
-                )
-        else:
-            # API is configured, continue with splash screen
-            splash.show_message("Initializing train manager...")
-            app.processEvents()
+        
+        logger.info("Starting in offline mode - API credentials not required")
 
         # Create train manager with updated config
         train_manager = TrainManager(config)
+
+        # Set the route from configuration for offline timetable generation
+        if config and config.stations:
+            train_manager.set_route(config.stations.from_code, config.stations.to_code)
+            logger.info(f"Route configured: {config.stations.from_name} ({config.stations.from_code}) -> {config.stations.to_name} ({config.stations.to_code})")
 
         # Connect signals between components
         splash.show_message("Connecting components...")
         app.processEvents()
 
+        # Attach train manager to window for access by dialogs
+        window.train_manager = train_manager
+
         connect_signals(window, train_manager)
 
-        # Start auto-refresh only if enabled in config and API is configured
-        if config_manager.validate_api_credentials():
-            splash.show_message("Starting auto-refresh...")
+        # The optimized widget initialization will handle weather and NASA widgets
+        # Train data will be fetched after widget initialization completes
+        splash.show_message("Optimizing widget initialization...")
+        app.processEvents()
+        
+        # Connect to initialization completion to start train data fetch
+        def on_widgets_ready():
+            splash.show_message("Loading train data...")
             app.processEvents()
-
-            train_manager.start_auto_refresh()
-
-            # Do initial data fetch
-            QTimer.singleShot(
-                1000, train_manager.fetch_trains
-            )  # Delay 1 second for UI to load
+            # Delay train data fetch to allow widgets to fully initialize
+            QTimer.singleShot(500, train_manager.fetch_trains)
+            logger.info("Train data fetch scheduled after widget initialization")
+        
+        if window.initialization_manager:
+            window.initialization_manager.initialization_completed.connect(on_widgets_ready)
         else:
-            logger.info("Skipping auto-refresh and initial fetch - API not configured")
-
-        # Update auto-refresh status after starting
-        QTimer.singleShot(
-            100,
-            lambda: window.update_auto_refresh_status(
-                train_manager.is_auto_refresh_active()
-            ),
-        )
+            # Fallback if initialization manager not available
+            QTimer.singleShot(1000, train_manager.fetch_trains)
 
         # Show main window and close splash screen
         splash.show_message("Ready!")
@@ -270,7 +229,6 @@ def main():
         exit_code = app.exec()
 
         # Cleanup
-        train_manager.stop_auto_refresh()
         logger.info(f"Application exiting with code {exit_code}")
         sys.exit(exit_code)
 

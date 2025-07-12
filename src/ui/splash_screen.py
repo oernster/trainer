@@ -42,7 +42,7 @@ class TrainerSplashScreen(QSplashScreen):
         # Apply dark theme styling
         self.apply_styling()
 
-        logger.info("Splash screen initialized")
+        logger.debug("Splash screen initialized")
 
     def setup_ui(self):
         """Setup the splash screen UI."""

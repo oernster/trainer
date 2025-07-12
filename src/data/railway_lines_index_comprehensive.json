@@ -1,0 +1,235 @@
+{
+  "metadata": {
+    "version": "3.1",
+    "description": "Comprehensive index of all UK railway line data files",
+    "last_updated": "2025-07-12",
+    "total_lines": 47,
+    "total_stations": 2571
+  },
+  "lines": [
+    {
+      "name": "South Western Main Line",
+      "file": "south_western_main_line.json",
+      "operator": "South Western Railway",
+      "terminus_stations": ["London Waterloo", "Southampton Central"],
+      "major_stations": ["WAT", "CLJ", "WOK", "BSK", "WIN", "SOU"]
+    },
+    {
+      "name": "Brighton Main Line",
+      "file": "brighton_main_line.json",
+      "operator": "Southern",
+      "terminus_stations": ["London Victoria", "Brighton"],
+      "major_stations": ["VIC", "CLJ", "ECR", "GTW", "BTN"]
+    },
+    {
+      "name": "West Coast Main Line",
+      "file": "west_coast_main_line.json",
+      "operator": "Avanti West Coast",
+      "terminus_stations": ["London Euston", "Glasgow Central"],
+      "major_stations": ["EUS", "MKC", "BHM", "CRE", "PRE", "CAR", "GLC"]
+    },
+    {
+      "name": "East Coast Main Line",
+      "file": "east_coast_main_line.json",
+      "operator": "LNER",
+      "terminus_stations": ["London Kings Cross", "Edinburgh"],
+      "major_stations": ["KGX", "PBO", "DON", "LDS", "YRK", "NCL", "EDB"]
+    },
+    {
+      "name": "Great Western Main Line",
+      "file": "great_western_main_line.json",
+      "operator": "Great Western Railway",
+      "terminus_stations": ["London Paddington", "Cardiff Central", "Swansea"],
+      "major_stations": ["PAD", "RDG", "SWI", "BRI", "CDF", "SWA"]
+    },
+    {
+      "name": "Great Eastern Main Line",
+      "file": "great_eastern_main_line.json",
+      "operator": "Greater Anglia",
+      "terminus_stations": ["London Liverpool Street", "Norwich"],
+      "major_stations": ["LST", "SRA", "CHM", "COL", "IPS", "NRW"]
+    },
+    {
+      "name": "Midland Main Line",
+      "file": "midland_main_line.json",
+      "operator": "East Midlands Railway",
+      "terminus_stations": ["London St Pancras", "Sheffield"],
+      "major_stations": ["STP", "LTN", "BDF", "LEI", "NOT", "SHF"]
+    },
+    {
+      "name": "Chiltern Main Line",
+      "file": "chiltern_main_line.json",
+      "operator": "Chiltern Railways",
+      "terminus_stations": ["London Marylebone", "Birmingham"],
+      "major_stations": ["MYB", "AMR", "HWY", "BAN", "LMS", "WRP"]
+    },
+    {
+      "name": "Cross Country Line",
+      "file": "cross_country_line.json",
+      "operator": "CrossCountry",
+      "terminus_stations": ["Aberdeen", "Penzance"],
+      "major_stations": ["ABD", "EDB", "BHM", "BRI", "PLY", "PNZ"]
+    },
+    {
+      "name": "TransPennine Express",
+      "file": "transpennine_express.json",
+      "operator": "TransPennine Express",
+      "terminus_stations": ["Liverpool Lime Street", "Edinburgh", "Glasgow Central"],
+      "major_stations": ["LIV", "MAN", "LDS", "YRK", "NCL", "EDB", "GLC"]
+    },
+    {
+      "name": "Northern Rail Network",
+      "file": "northern_rail.json",
+      "operator": "Northern",
+      "terminus_stations": ["Multiple regional terminals"],
+      "major_stations": ["MAN", "LDS", "SHF", "LIV", "PRE", "NCL"]
+    },
+    {
+      "name": "ScotRail Network",
+      "file": "scotrail_network.json",
+      "operator": "ScotRail",
+      "terminus_stations": ["Glasgow Central", "Edinburgh", "Aberdeen", "Inverness"],
+      "major_stations": ["GLC", "GLQ", "EDB", "STG", "ABD", "INV"]
+    },
+    {
+      "name": "Transport for Wales Network",
+      "file": "transport_for_wales.json",
+      "operator": "Transport for Wales",
+      "terminus_stations": ["Cardiff Central", "Swansea", "Holyhead"],
+      "major_stations": ["CDF", "SWA", "BNG", "SHR", "ABD", "MER"]
+    },
+    {
+      "name": "Southern Network",
+      "file": "southern_network.json",
+      "operator": "Southern/Southeastern",
+      "terminus_stations": ["London Bridge", "Brighton", "Dover", "Portsmouth"],
+      "major_stations": ["LBG", "VIC", "BTN", "DVP", "PMS", "AFK"]
+    },
+    {
+      "name": "London Underground",
+      "file": "london_underground.json",
+      "operator": "Transport for London",
+      "terminus_stations": ["Multiple London terminals and zones"],
+      "major_stations": ["WAT", "VIC", "LBG", "PAD", "KGX", "STP", "EUS", "LST", "CLJ"]
+    },
+    {
+      "name": "Manchester Airport Line",
+      "file": "manchester_airport_line.json",
+      "operator": "Northern",
+      "terminus_stations": ["Manchester Piccadilly", "Manchester Airport"],
+      "major_stations": ["MAN", "MIA", "MCV", "MCO"]
+    },
+    {
+      "name": "Thameslink Core",
+      "file": "thameslink_core.json",
+      "operator": "Thameslink",
+      "terminus_stations": ["Bedford", "Brighton", "Cambridge", "Peterborough"],
+      "major_stations": ["BDM", "STP", "BTN", "CBG", "PBO"]
+    },
+    {
+      "name": "Elizabeth Line",
+      "file": "elizabeth_line.json",
+      "operator": "Transport for London",
+      "terminus_stations": ["Reading", "Heathrow", "Abbey Wood", "Shenfield"],
+      "major_stations": ["RDG", "PAD", "LVS", "ABW", "SNF"]
+    },
+    {
+      "name": "c2c Line",
+      "file": "c2c_line.json",
+      "operator": "c2c",
+      "terminus_stations": ["London Fenchurch Street", "Shoeburyness"],
+      "major_stations": ["FST", "BLD", "TLB", "SRY", "SOE"]
+    },
+    {
+      "name": "Merseyrail Northern Line",
+      "file": "merseyrail_northern_line.json",
+      "operator": "Merseyrail",
+      "terminus_stations": ["Liverpool Central", "Southport", "Ormskirk", "Kirkby"],
+      "major_stations": ["LVC", "SOP", "OMS", "KIR"]
+    },
+    {
+      "name": "Merseyrail Wirral Line",
+      "file": "merseyrail_wirral_line.json",
+      "operator": "Merseyrail",
+      "terminus_stations": ["Liverpool Central", "West Kirby", "New Brighton", "Chester"],
+      "major_stations": ["LVC", "WKI", "NBN", "CTR"]
+    },
+    {
+      "name": "West Midlands Railway",
+      "file": "west_midlands_railway.json",
+      "operator": "West Midlands Railway",
+      "terminus_stations": ["Birmingham New Street", "Wolverhampton", "Shrewsbury"],
+      "major_stations": ["BHM", "WVH", "SHR"]
+    },
+    {
+      "name": "Caledonian Sleeper Highland Route",
+      "file": "caledonian_sleeper_highland.json",
+      "operator": "Caledonian Sleeper",
+      "terminus_stations": ["London Euston", "Inverness", "Aberdeen", "Fort William"],
+      "major_stations": ["EUS", "EDB", "INV", "ABD", "FTW"]
+    },
+    {
+      "name": "Caledonian Sleeper Lowland Route",
+      "file": "caledonian_sleeper_lowland.json",
+      "operator": "Caledonian Sleeper",
+      "terminus_stations": ["London Euston", "Glasgow Central", "Edinburgh"],
+      "major_stations": ["EUS", "GLC", "EDB"]
+    },
+    {
+      "name": "Heathrow Express",
+      "file": "heathrow_express.json",
+      "operator": "Heathrow Express",
+      "terminus_stations": ["London Paddington", "Heathrow Terminal 5"],
+      "major_stations": ["PAD", "HXX", "HXT5"]
+    },
+    {
+      "name": "Gatwick Express",
+      "file": "gatwick_express.json",
+      "operator": "Gatwick Express",
+      "terminus_stations": ["London Victoria", "Gatwick Airport"],
+      "major_stations": ["VIC", "GTW"]
+    },
+    {
+      "name": "Stansted Express",
+      "file": "stansted_express.json",
+      "operator": "Greater Anglia",
+      "terminus_stations": ["London Liverpool Street", "Stansted Airport"],
+      "major_stations": ["LST", "SSD"]
+    },
+    {
+      "name": "Hull Trains",
+      "file": "hull_trains.json",
+      "operator": "Hull Trains",
+      "terminus_stations": ["London Kings Cross", "Hull"],
+      "major_stations": ["KGX", "DON", "HUL"]
+    },
+    {
+      "name": "Grand Central",
+      "file": "grand_central.json",
+      "operator": "Grand Central",
+      "terminus_stations": ["London Kings Cross", "Bradford Interchange", "Sunderland"],
+      "major_stations": ["KGX", "YRK", "BDI", "SUN"]
+    },
+    {
+      "name": "Lumo",
+      "file": "lumo.json",
+      "operator": "Lumo",
+      "terminus_stations": ["London Kings Cross", "Edinburgh"],
+      "major_stations": ["KGX", "NCL", "EDB"]
+    },
+    {
+      "name": "Reading to Basingstoke Line",
+      "file": "reading_to_basingstoke_line.json",
+      "operator": "Great Western Railway",
+      "terminus_stations": ["Reading", "Basingstoke"],
+      "major_stations": ["RDG", "FLE", "BSK"]
+    },
+    {
+      "name": "Manchester Victoria to Oxford Road Line",
+      "file": "manchester_victoria_to_oxford_road_line.json",
+      "operator": "Northern",
+      "terminus_stations": ["Manchester Victoria", "Manchester Oxford Road"],
+      "major_stations": ["MCV", "MSD", "MCO"]
+    }
+  ]
+}

@@ -1,0 +1,485 @@
+{
+  "metadata": {
+    "line_name": "Kyle Line",
+    "description": "Inverness to Kyle of Lochalsh",
+    "operator": "ScotRail",
+    "total_stations": 17,
+    "frequency": {
+      "weekday_peak": "Every 3 hours",
+      "weekday_off_peak": "Every 4 hours",
+      "weekend": "Every 4 hours",
+      "night": "No service"
+    }
+  },
+  "stations": [
+    {
+      "name": "Inverness",
+      "code": "INV",
+      "coordinates": {
+        "lat": 57.4781,
+        "lng": -4.2231
+      },
+      "interchange": [
+        "Highland Main Line",
+        "Far North Line",
+        "Aberdeen to Inverness Line"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Beauly",
+      "code": "BEL",
+      "coordinates": {
+        "lat": 57.4781,
+        "lng": -4.4681
+      },
+      "interchange": [
+        "Far North Line"
+      ],
+      "times": {
+        "morning": [
+          "06:10",
+          "08:10",
+          "10:10"
+        ],
+        "afternoon": [
+          "12:10",
+          "14:10",
+          "16:10"
+        ],
+        "evening": [
+          "18:10",
+          "20:10",
+          "22:10"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Muir of Ord",
+      "code": "MOO",
+      "coordinates": {
+        "lat": 57.5131,
+        "lng": -4.4581
+      },
+      "interchange": [
+        "Far North Line"
+      ],
+      "times": {
+        "morning": [
+          "06:21",
+          "08:21",
+          "10:21"
+        ],
+        "afternoon": [
+          "12:21",
+          "14:21",
+          "16:21"
+        ],
+        "evening": [
+          "18:21",
+          "20:21",
+          "22:21"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Dingwall",
+      "code": "DIN",
+      "coordinates": {
+        "lat": 57.5981,
+        "lng": -4.4281
+      },
+      "interchange": [
+        "Far North Line"
+      ],
+      "times": {
+        "morning": [
+          "06:17",
+          "08:17",
+          "10:17"
+        ],
+        "afternoon": [
+          "12:17",
+          "14:17",
+          "16:17"
+        ],
+        "evening": [
+          "18:17",
+          "20:17",
+          "22:17"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Conon Bridge",
+      "code": "CBD",
+      "coordinates": {
+        "lat": 57.5781,
+        "lng": -4.4481
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:38",
+          "08:38",
+          "10:38"
+        ],
+        "afternoon": [
+          "12:38",
+          "14:38",
+          "16:38"
+        ],
+        "evening": [
+          "18:38",
+          "20:38",
+          "22:38"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Garve",
+      "code": "GVE",
+      "coordinates": {
+        "lat": 57.6131,
+        "lng": -4.6981
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:11",
+          "09:11",
+          "11:11"
+        ],
+        "afternoon": [
+          "13:11",
+          "15:11",
+          "17:11"
+        ],
+        "evening": [
+          "19:11",
+          "21:11",
+          "23:11"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Lochluichart",
+      "code": "LCC",
+      "coordinates": {
+        "lat": 57.6381,
+        "lng": -4.8581
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:51",
+          "08:51",
+          "10:51"
+        ],
+        "afternoon": [
+          "12:51",
+          "14:51",
+          "16:51"
+        ],
+        "evening": [
+          "18:51",
+          "20:51",
+          "22:51"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Achanalt",
+      "code": "AAT",
+      "coordinates": {
+        "lat": 57.6131,
+        "lng": -4.9981
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:39",
+          "08:39",
+          "10:39"
+        ],
+        "afternoon": [
+          "12:39",
+          "14:39",
+          "16:39"
+        ],
+        "evening": [
+          "18:39",
+          "20:39",
+          "22:39"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Achnasheen",
+      "code": "ACN",
+      "coordinates": {
+        "lat": 57.5881,
+        "lng": -5.0681
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:50",
+          "09:50",
+          "11:50"
+        ],
+        "afternoon": [
+          "13:50",
+          "15:50",
+          "17:50"
+        ],
+        "evening": [
+          "19:50",
+          "21:50",
+          "23:50"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Achnashellach",
+      "code": "ACH",
+      "coordinates": {
+        "lat": 57.5131,
+        "lng": -5.2981
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:49",
+          "08:49",
+          "10:49"
+        ],
+        "afternoon": [
+          "12:49",
+          "14:49",
+          "16:49"
+        ],
+        "evening": [
+          "18:49",
+          "20:49",
+          "22:49"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Strathcarron",
+      "code": "STC",
+      "coordinates": {
+        "lat": 57.4231,
+        "lng": -5.4281
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:13",
+          "10:13",
+          "12:13"
+        ],
+        "afternoon": [
+          "14:13",
+          "16:13",
+          "18:13"
+        ],
+        "evening": [
+          "20:13",
+          "22:13",
+          "00:13"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Attadale",
+      "code": "ATT",
+      "coordinates": {
+        "lat": 57.3981,
+        "lng": -5.4981
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:52",
+          "09:52",
+          "11:52"
+        ],
+        "afternoon": [
+          "13:52",
+          "15:52",
+          "17:52"
+        ],
+        "evening": [
+          "19:52",
+          "21:52",
+          "23:52"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Stromeferry",
+      "code": "STF",
+      "coordinates": {
+        "lat": 57.3581,
+        "lng": -5.5581
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:30",
+          "10:30",
+          "12:30"
+        ],
+        "afternoon": [
+          "14:30",
+          "16:30",
+          "18:30"
+        ],
+        "evening": [
+          "20:30",
+          "22:30",
+          "00:30"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Duncraig",
+      "code": "DCG",
+      "coordinates": {
+        "lat": 57.3381,
+        "lng": -5.6381
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:07",
+          "10:07",
+          "12:07"
+        ],
+        "afternoon": [
+          "14:07",
+          "16:07",
+          "18:07"
+        ],
+        "evening": [
+          "20:07",
+          "22:07",
+          "00:07"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Plockton",
+      "code": "PLK",
+      "coordinates": {
+        "lat": 57.3381,
+        "lng": -5.6581
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:26",
+          "09:26",
+          "11:26"
+        ],
+        "afternoon": [
+          "13:26",
+          "15:26",
+          "17:26"
+        ],
+        "evening": [
+          "19:26",
+          "21:26",
+          "23:26"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Duirinish",
+      "code": "DRN",
+      "coordinates": {
+        "lat": 57.3281,
+        "lng": -5.6981
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "09:39",
+          "11:39",
+          "13:39"
+        ],
+        "afternoon": [
+          "15:39",
+          "17:39",
+          "19:39"
+        ],
+        "evening": [
+          "21:39",
+          "23:39",
+          "01:39"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Kyle of Lochalsh",
+      "code": "KYL",
+      "coordinates": {
+        "lat": 57.2781,
+        "lng": -5.7131
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "09:34",
+          "11:34",
+          "13:34"
+        ],
+        "afternoon": [
+          "15:34",
+          "17:34",
+          "19:34"
+        ],
+        "evening": [
+          "21:34",
+          "23:34",
+          "01:34"
+        ],
+        "night": []
+      }
+    }
+  ]
+}

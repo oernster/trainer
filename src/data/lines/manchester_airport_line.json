@@ -1,0 +1,368 @@
+{
+  "metadata": {
+    "line_name": "Manchester Airport Line",
+    "description": "Manchester Piccadilly to Manchester Airport via Oxford Road",
+    "operator": "Northern",
+    "total_stations": 12,
+    "typical_frequency": "Every 20 minutes",
+    "peak_hours": "07:00-09:30, 16:30-19:00",
+    "frequency": {
+      "weekday_peak": "Every hour",
+      "weekday_off_peak": "Every 2 hours",
+      "weekend": "Every 2 hours",
+      "night": "No service"
+    }
+  },
+  "typical_journey_times": {
+    "MAN-MCO": 6,
+    "MCO-MIA": 20,
+    "MAN-MIA": 26,
+    "MCO-MSO": 3,
+    "MSO-MRF": 4,
+    "MRF-EWR": 3,
+    "EWR-GTV": 3,
+    "GTV-HLD": 2,
+    "HLD-NAV": 3,
+    "NAV-HTC": 2,
+    "HTC-MIA": 4
+  },
+  "typical_services": {
+    "peak_frequency": "Every 10 minutes",
+    "off_peak_frequency": "Every 20 minutes",
+    "evening_frequency": "Every 30 minutes",
+    "weekend_frequency": "Every 20 minutes",
+    "first_train": "05:15",
+    "last_train": "00:15"
+  },
+  "stations": [
+    {
+      "name": "Manchester Piccadilly",
+      "code": "MAN",
+      "coordinates": {
+        "lat": 53.4775,
+        "lng": -2.2306
+      },
+      "interchange": [
+        "Metrolink",
+        "TransPennine Express",
+        "Avanti West Coast",
+        "East Midlands Railway"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Manchester Oxford Road",
+      "code": "MCO",
+      "coordinates": {
+        "lat": 53.4742,
+        "lng": -2.2426
+      },
+      "interchange": [
+        "TransPennine Express",
+        "Northern"
+      ],
+      "times": {
+        "morning": [
+          "06:12",
+          "08:12",
+          "10:12"
+        ],
+        "afternoon": [
+          "12:12",
+          "14:12",
+          "16:12"
+        ],
+        "evening": [
+          "18:12",
+          "20:12",
+          "22:12"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Manchester Deansgate",
+      "code": "MSD",
+      "coordinates": {
+        "lat": 53.4747,
+        "lng": -2.2511
+      },
+      "interchange": [
+        "Metrolink"
+      ],
+      "times": {
+        "morning": [
+          "06:23",
+          "08:23",
+          "10:23"
+        ],
+        "afternoon": [
+          "12:23",
+          "14:23",
+          "16:23"
+        ],
+        "evening": [
+          "18:23",
+          "20:23",
+          "22:23"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Manchester United Football Ground",
+      "code": "MUF",
+      "coordinates": {
+        "lat": 53.4631,
+        "lng": -2.2913
+      },
+      "times": {
+        "morning": [
+          "06:42",
+          "08:42",
+          "10:42"
+        ],
+        "afternoon": [
+          "12:42",
+          "14:42",
+          "16:42"
+        ],
+        "evening": [
+          "18:42",
+          "20:42",
+          "22:42"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Trafford Park",
+      "code": "TRA",
+      "coordinates": {
+        "lat": 53.4589,
+        "lng": -2.3131
+      },
+      "times": {
+        "morning": [
+          "06:47",
+          "08:47",
+          "10:47"
+        ],
+        "afternoon": [
+          "12:47",
+          "14:47",
+          "16:47"
+        ],
+        "evening": [
+          "18:47",
+          "20:47",
+          "22:47"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Urmston",
+      "code": "URM",
+      "coordinates": {
+        "lat": 53.4489,
+        "lng": -2.3481
+      },
+      "times": {
+        "morning": [
+          "06:55",
+          "08:55",
+          "10:55"
+        ],
+        "afternoon": [
+          "12:55",
+          "14:55",
+          "16:55"
+        ],
+        "evening": [
+          "18:55",
+          "20:55",
+          "22:55"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Chassen Road",
+      "code": "CSR",
+      "coordinates": {
+        "lat": 53.4431,
+        "lng": -2.3731
+      },
+      "times": {
+        "morning": [
+          "07:02",
+          "09:02",
+          "11:02"
+        ],
+        "afternoon": [
+          "13:02",
+          "15:02",
+          "17:02"
+        ],
+        "evening": [
+          "19:02",
+          "21:02",
+          "23:02"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Flixton",
+      "code": "FLI",
+      "coordinates": {
+        "lat": 53.4389,
+        "lng": -2.3981
+      },
+      "times": {
+        "morning": [
+          "06:42",
+          "08:42",
+          "10:42"
+        ],
+        "afternoon": [
+          "12:42",
+          "14:42",
+          "16:42"
+        ],
+        "evening": [
+          "18:42",
+          "20:42",
+          "22:42"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Irlam",
+      "code": "IRL",
+      "coordinates": {
+        "lat": 53.4331,
+        "lng": -2.4231
+      },
+      "times": {
+        "morning": [
+          "07:39",
+          "09:39",
+          "11:39"
+        ],
+        "afternoon": [
+          "13:39",
+          "15:39",
+          "17:39"
+        ],
+        "evening": [
+          "19:39",
+          "21:39",
+          "23:39"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Birchwood",
+      "code": "BWD",
+      "coordinates": {
+        "lat": 53.4131,
+        "lng": -2.5131
+      },
+      "times": {
+        "morning": [
+          "07:48",
+          "09:48",
+          "11:48"
+        ],
+        "afternoon": [
+          "13:48",
+          "15:48",
+          "17:48"
+        ],
+        "evening": [
+          "19:48",
+          "21:48",
+          "23:48"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Warrington Central",
+      "code": "WAC",
+      "coordinates": {
+        "lat": 53.3881,
+        "lng": -2.5831
+      },
+      "times": {
+        "morning": [
+          "08:23",
+          "10:23",
+          "12:23"
+        ],
+        "afternoon": [
+          "14:23",
+          "16:23",
+          "18:23"
+        ],
+        "evening": [
+          "20:23",
+          "22:23",
+          "00:23"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Manchester Airport",
+      "code": "MIA",
+      "coordinates": {
+        "lat": 53.3631,
+        "lng": -2.2731
+      },
+      "interchange": [
+        "TransPennine Express",
+        "Avanti West Coast"
+      ],
+      "times": {
+        "morning": [
+          "07:50",
+          "09:50",
+          "11:50"
+        ],
+        "afternoon": [
+          "13:50",
+          "15:50",
+          "17:50"
+        ],
+        "evening": [
+          "19:50",
+          "21:50",
+          "23:50"
+        ],
+        "night": []
+      }
+    }
+  ]
+}

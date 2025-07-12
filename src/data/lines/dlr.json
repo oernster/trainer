@@ -1,0 +1,1314 @@
+{
+  "metadata": {
+    "line_name": "Docklands Light Railway",
+    "description": "Light metro system serving the Docklands area of East London",
+    "operator": "Transport for London",
+    "total_stations": 45,
+    "line_color": "#00A4A7",
+    "frequency": {
+      "weekday_peak": "Every hour",
+      "weekday_off_peak": "Every 2 hours",
+      "weekend": "Every 2 hours",
+      "night": "No service"
+    }
+  },
+  "stations": [
+    {
+      "name": "Bank",
+      "code": "BNK",
+      "coordinates": {
+        "lat": 51.5133,
+        "lng": -0.0886
+      },
+      "zone": 1,
+      "interchange": [
+        "Central Line",
+        "Northern Line",
+        "Waterloo & City Line"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Tower Gateway",
+      "code": "TWG",
+      "coordinates": {
+        "lat": 51.5106,
+        "lng": -0.0743
+      },
+      "zone": 1,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:11",
+          "08:11",
+          "10:11"
+        ],
+        "afternoon": [
+          "12:11",
+          "14:11",
+          "16:11"
+        ],
+        "evening": [
+          "18:11",
+          "20:11",
+          "22:11"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Shadwell",
+      "code": "SDE",
+      "coordinates": {
+        "lat": 51.5117,
+        "lng": -0.057
+      },
+      "zone": 2,
+      "interchange": [
+        "London Overground"
+      ],
+      "times": {
+        "morning": [
+          "06:26",
+          "08:26",
+          "10:26"
+        ],
+        "afternoon": [
+          "12:26",
+          "14:26",
+          "16:26"
+        ],
+        "evening": [
+          "18:26",
+          "20:26",
+          "22:26"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Limehouse",
+      "code": "LHS",
+      "coordinates": {
+        "lat": 51.5125,
+        "lng": -0.0394
+      },
+      "zone": 2,
+      "interchange": [
+        "National Rail"
+      ],
+      "times": {
+        "morning": [
+          "06:39",
+          "08:39",
+          "10:39"
+        ],
+        "afternoon": [
+          "12:39",
+          "14:39",
+          "16:39"
+        ],
+        "evening": [
+          "18:39",
+          "20:39",
+          "22:39"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Westferry",
+      "code": "WFE",
+      "coordinates": {
+        "lat": 51.5097,
+        "lng": -0.0265
+      },
+      "zone": 2,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:20",
+          "08:20",
+          "10:20"
+        ],
+        "afternoon": [
+          "12:20",
+          "14:20",
+          "16:20"
+        ],
+        "evening": [
+          "18:20",
+          "20:20",
+          "22:20"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Poplar",
+      "code": "POP",
+      "coordinates": {
+        "lat": 51.5077,
+        "lng": -0.0173
+      },
+      "zone": 2,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:44",
+          "08:44",
+          "10:44"
+        ],
+        "afternoon": [
+          "12:44",
+          "14:44",
+          "16:44"
+        ],
+        "evening": [
+          "18:44",
+          "20:44",
+          "22:44"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Blackwall",
+      "code": "BLA",
+      "coordinates": {
+        "lat": 51.5079,
+        "lng": -0.0066
+      },
+      "zone": 2,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:52",
+          "08:52",
+          "10:52"
+        ],
+        "afternoon": [
+          "12:52",
+          "14:52",
+          "16:52"
+        ],
+        "evening": [
+          "18:52",
+          "20:52",
+          "22:52"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "East India",
+      "code": "EAI",
+      "coordinates": {
+        "lat": 51.5093,
+        "lng": 0.0021
+      },
+      "zone": 2,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:34",
+          "09:34",
+          "11:34"
+        ],
+        "afternoon": [
+          "13:34",
+          "15:34",
+          "17:34"
+        ],
+        "evening": [
+          "19:34",
+          "21:34",
+          "23:34"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Canning Town",
+      "code": "CAT",
+      "coordinates": {
+        "lat": 51.5147,
+        "lng": 0.0082
+      },
+      "zone": 3,
+      "interchange": [
+        "Jubilee Line"
+      ],
+      "times": {
+        "morning": [
+          "08:00",
+          "10:00",
+          "12:00"
+        ],
+        "afternoon": [
+          "14:00",
+          "16:00",
+          "18:00"
+        ],
+        "evening": [
+          "20:00",
+          "22:00",
+          "00:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Royal Victoria",
+      "code": "RVC",
+      "coordinates": {
+        "lat": 51.5091,
+        "lng": 0.0177
+      },
+      "zone": 3,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:56",
+          "08:56",
+          "10:56"
+        ],
+        "afternoon": [
+          "12:56",
+          "14:56",
+          "16:56"
+        ],
+        "evening": [
+          "18:56",
+          "20:56",
+          "22:56"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Custom House",
+      "code": "CUS",
+      "coordinates": {
+        "lat": 51.5095,
+        "lng": 0.0276
+      },
+      "zone": 3,
+      "interchange": [
+        "Elizabeth Line"
+      ],
+      "times": {
+        "morning": [
+          "07:47",
+          "09:47",
+          "11:47"
+        ],
+        "afternoon": [
+          "13:47",
+          "15:47",
+          "17:47"
+        ],
+        "evening": [
+          "19:47",
+          "21:47",
+          "23:47"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Prince Regent",
+      "code": "PRR",
+      "coordinates": {
+        "lat": 51.5107,
+        "lng": 0.0333
+      },
+      "zone": 3,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:04",
+          "09:04",
+          "11:04"
+        ],
+        "afternoon": [
+          "13:04",
+          "15:04",
+          "17:04"
+        ],
+        "evening": [
+          "19:04",
+          "21:04",
+          "23:04"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Royal Albert",
+      "code": "RAL",
+      "coordinates": {
+        "lat": 51.5084,
+        "lng": 0.0465
+      },
+      "zone": 3,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:30",
+          "09:30",
+          "11:30"
+        ],
+        "afternoon": [
+          "13:30",
+          "15:30",
+          "17:30"
+        ],
+        "evening": [
+          "19:30",
+          "21:30",
+          "23:30"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Beckton Park",
+      "code": "BEP",
+      "coordinates": {
+        "lat": 51.5087,
+        "lng": 0.0554
+      },
+      "zone": 3,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:19",
+          "09:19",
+          "11:19"
+        ],
+        "afternoon": [
+          "13:19",
+          "15:19",
+          "17:19"
+        ],
+        "evening": [
+          "19:19",
+          "21:19",
+          "23:19"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Cyprus",
+      "code": "CYP",
+      "coordinates": {
+        "lat": 51.5097,
+        "lng": 0.0638
+      },
+      "zone": 3,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "09:28",
+          "11:28",
+          "13:28"
+        ],
+        "afternoon": [
+          "15:28",
+          "17:28",
+          "19:28"
+        ],
+        "evening": [
+          "21:28",
+          "23:28",
+          "01:28"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Gallions Reach",
+      "code": "GAR",
+      "coordinates": {
+        "lat": 51.5096,
+        "lng": 0.0723
+      },
+      "zone": 3,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:45",
+          "09:45",
+          "11:45"
+        ],
+        "afternoon": [
+          "13:45",
+          "15:45",
+          "17:45"
+        ],
+        "evening": [
+          "19:45",
+          "21:45",
+          "23:45"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Beckton",
+      "code": "BEC",
+      "coordinates": {
+        "lat": 51.5148,
+        "lng": 0.0613
+      },
+      "zone": 3,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "09:40",
+          "11:40",
+          "13:40"
+        ],
+        "afternoon": [
+          "15:40",
+          "17:40",
+          "19:40"
+        ],
+        "evening": [
+          "21:40",
+          "23:40",
+          "01:40"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "West India Quay",
+      "code": "WIQ",
+      "coordinates": {
+        "lat": 51.5067,
+        "lng": -0.0203
+      },
+      "zone": 2,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:40",
+          "10:40",
+          "12:40"
+        ],
+        "afternoon": [
+          "14:40",
+          "16:40",
+          "18:40"
+        ],
+        "evening": [
+          "20:40",
+          "22:40",
+          "00:40"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Canary Wharf DLR",
+      "code": "CWF",
+      "coordinates": {
+        "lat": 51.5051,
+        "lng": -0.0209
+      },
+      "zone": 2,
+      "interchange": [
+        "Jubilee Line",
+        "Elizabeth Line"
+      ],
+      "times": {
+        "morning": [
+          "09:01",
+          "11:01",
+          "13:01"
+        ],
+        "afternoon": [
+          "15:01",
+          "17:01",
+          "19:01"
+        ],
+        "evening": [
+          "21:01",
+          "23:01",
+          "01:01"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Heron Quays",
+      "code": "HRQ",
+      "coordinates": {
+        "lat": 51.5033,
+        "lng": -0.0215
+      },
+      "zone": 2,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "10:23",
+          "12:23",
+          "14:23"
+        ],
+        "afternoon": [
+          "16:23",
+          "18:23",
+          "20:23"
+        ],
+        "evening": [
+          "22:23",
+          "00:23",
+          "02:23"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "South Quay",
+      "code": "SQE",
+      "coordinates": {
+        "lat": 51.5006,
+        "lng": -0.0195
+      },
+      "zone": 2,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "10:09",
+          "12:09",
+          "14:09"
+        ],
+        "afternoon": [
+          "16:09",
+          "18:09",
+          "20:09"
+        ],
+        "evening": [
+          "22:09",
+          "00:09",
+          "02:09"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Crossharbour",
+      "code": "CRO",
+      "coordinates": {
+        "lat": 51.4957,
+        "lng": -0.0144
+      },
+      "zone": 2,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "10:08",
+          "12:08",
+          "14:08"
+        ],
+        "afternoon": [
+          "16:08",
+          "18:08",
+          "20:08"
+        ],
+        "evening": [
+          "22:08",
+          "00:08",
+          "02:08"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Mudchute",
+      "code": "MUD",
+      "coordinates": {
+        "lat": 51.4902,
+        "lng": -0.0145
+      },
+      "zone": 2,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "09:14",
+          "11:14",
+          "13:14"
+        ],
+        "afternoon": [
+          "15:14",
+          "17:14",
+          "19:14"
+        ],
+        "evening": [
+          "21:14",
+          "23:14",
+          "01:14"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Island Gardens",
+      "code": "ISG",
+      "coordinates": {
+        "lat": 51.4871,
+        "lng": -0.0103
+      },
+      "zone": 2,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "10:19",
+          "12:19",
+          "14:19"
+        ],
+        "afternoon": [
+          "16:19",
+          "18:19",
+          "20:19"
+        ],
+        "evening": [
+          "22:19",
+          "00:19",
+          "02:19"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Cutty Sark",
+      "code": "CUS",
+      "coordinates": {
+        "lat": 51.4819,
+        "lng": -0.0094
+      },
+      "zone": 2,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "10:29",
+          "12:29",
+          "14:29"
+        ],
+        "afternoon": [
+          "16:29",
+          "18:29",
+          "20:29"
+        ],
+        "evening": [
+          "22:29",
+          "00:29",
+          "02:29"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Greenwich",
+      "code": "GRE",
+      "coordinates": {
+        "lat": 51.4781,
+        "lng": -0.0149
+      },
+      "zone": 2,
+      "interchange": [
+        "National Rail"
+      ],
+      "times": {
+        "morning": [
+          "09:36",
+          "11:36",
+          "13:36"
+        ],
+        "afternoon": [
+          "15:36",
+          "17:36",
+          "19:36"
+        ],
+        "evening": [
+          "21:36",
+          "23:36",
+          "01:36"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Deptford Bridge",
+      "code": "DEB",
+      "coordinates": {
+        "lat": 51.4741,
+        "lng": -0.0216
+      },
+      "zone": 2,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "09:26",
+          "11:26",
+          "13:26"
+        ],
+        "afternoon": [
+          "15:26",
+          "17:26",
+          "19:26"
+        ],
+        "evening": [
+          "21:26",
+          "23:26",
+          "01:26"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Elverson Road",
+      "code": "ELR",
+      "coordinates": {
+        "lat": 51.4693,
+        "lng": -0.0174
+      },
+      "zone": 2,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "11:50",
+          "13:50",
+          "15:50"
+        ],
+        "afternoon": [
+          "17:50",
+          "19:50",
+          "21:50"
+        ],
+        "evening": [
+          "23:50",
+          "01:50",
+          "03:50"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Lewisham",
+      "code": "LEW",
+      "coordinates": {
+        "lat": 51.4657,
+        "lng": -0.0142
+      },
+      "zone": 2,
+      "interchange": [
+        "National Rail"
+      ],
+      "times": {
+        "morning": [
+          "08:54",
+          "10:54",
+          "12:54"
+        ],
+        "afternoon": [
+          "14:54",
+          "16:54",
+          "18:54"
+        ],
+        "evening": [
+          "20:54",
+          "22:54",
+          "00:54"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "All Saints",
+      "code": "ALS",
+      "coordinates": {
+        "lat": 51.5107,
+        "lng": -0.013
+      },
+      "zone": 2,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "12:22",
+          "14:22",
+          "16:22"
+        ],
+        "afternoon": [
+          "18:22",
+          "20:22",
+          "22:22"
+        ],
+        "evening": [
+          "00:22",
+          "02:22",
+          "04:22"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Langdon Park",
+      "code": "LGP",
+      "coordinates": {
+        "lat": 51.5152,
+        "lng": -0.0083
+      },
+      "zone": 2,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "10:57",
+          "12:57",
+          "14:57"
+        ],
+        "afternoon": [
+          "16:57",
+          "18:57",
+          "20:57"
+        ],
+        "evening": [
+          "22:57",
+          "00:57",
+          "02:57"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Devons Road",
+      "code": "DVR",
+      "coordinates": {
+        "lat": 51.5223,
+        "lng": -0.0173
+      },
+      "zone": 2,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "09:04",
+          "11:04",
+          "13:04"
+        ],
+        "afternoon": [
+          "15:04",
+          "17:04",
+          "19:04"
+        ],
+        "evening": [
+          "21:04",
+          "23:04",
+          "01:04"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Bow Church",
+      "code": "BOC",
+      "coordinates": {
+        "lat": 51.5269,
+        "lng": -0.0208
+      },
+      "zone": 2,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "12:04",
+          "14:04",
+          "16:04"
+        ],
+        "afternoon": [
+          "18:04",
+          "20:04",
+          "22:04"
+        ],
+        "evening": [
+          "00:04",
+          "02:04",
+          "04:04"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Pudding Mill Lane",
+      "code": "PML",
+      "coordinates": {
+        "lat": 51.5343,
+        "lng": -0.0139
+      },
+      "zone": 2,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "12:55",
+          "14:55",
+          "16:55"
+        ],
+        "afternoon": [
+          "18:55",
+          "20:55",
+          "22:55"
+        ],
+        "evening": [
+          "00:55",
+          "02:55",
+          "04:55"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Stratford",
+      "code": "SRA",
+      "coordinates": {
+        "lat": 51.5416,
+        "lng": -0.0042
+      },
+      "zone": 2,
+      "interchange": [
+        "Central Line",
+        "Jubilee Line",
+        "London Overground",
+        "Elizabeth Line",
+        "National Rail"
+      ],
+      "times": {
+        "morning": [
+          "09:13",
+          "11:13",
+          "13:13"
+        ],
+        "afternoon": [
+          "15:13",
+          "17:13",
+          "19:13"
+        ],
+        "evening": [
+          "21:13",
+          "23:13",
+          "01:13"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Stratford International",
+      "code": "SFI",
+      "coordinates": {
+        "lat": 51.5456,
+        "lng": -0.0089
+      },
+      "zone": 2,
+      "interchange": [
+        "National Rail"
+      ],
+      "times": {
+        "morning": [
+          "14:42",
+          "16:42",
+          "18:42"
+        ],
+        "afternoon": [
+          "20:42",
+          "22:42",
+          "00:42"
+        ],
+        "evening": [
+          "02:42",
+          "04:42",
+          "06:42"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Abbey Road",
+      "code": "ABR",
+      "coordinates": {
+        "lat": 51.5322,
+        "lng": 0.0051
+      },
+      "zone": 3,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "12:43",
+          "14:43",
+          "16:43"
+        ],
+        "afternoon": [
+          "18:43",
+          "20:43",
+          "22:43"
+        ],
+        "evening": [
+          "00:43",
+          "02:43",
+          "04:43"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "West Ham",
+      "code": "WEH",
+      "coordinates": {
+        "lat": 51.5282,
+        "lng": 0.0055
+      },
+      "zone": 3,
+      "interchange": [
+        "District Line",
+        "Hammersmith & City Line",
+        "Jubilee Line",
+        "National Rail"
+      ],
+      "times": {
+        "morning": [
+          "09:49",
+          "11:49",
+          "13:49"
+        ],
+        "afternoon": [
+          "15:49",
+          "17:49",
+          "19:49"
+        ],
+        "evening": [
+          "21:49",
+          "23:49",
+          "01:49"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Star Lane",
+      "code": "SLN",
+      "coordinates": {
+        "lat": 51.5208,
+        "lng": 0.0082
+      },
+      "zone": 3,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "12:31",
+          "14:31",
+          "16:31"
+        ],
+        "afternoon": [
+          "18:31",
+          "20:31",
+          "22:31"
+        ],
+        "evening": [
+          "00:31",
+          "02:31",
+          "04:31"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Canning Town",
+      "code": "CAT",
+      "coordinates": {
+        "lat": 51.5147,
+        "lng": 0.0082
+      },
+      "zone": 3,
+      "interchange": [
+        "Jubilee Line"
+      ],
+      "times": {
+        "morning": [
+          "14:13",
+          "16:13",
+          "18:13"
+        ],
+        "afternoon": [
+          "20:13",
+          "22:13",
+          "00:13"
+        ],
+        "evening": [
+          "02:13",
+          "04:13",
+          "06:13"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "West Silvertown",
+      "code": "WST",
+      "coordinates": {
+        "lat": 51.5027,
+        "lng": 0.0226
+      },
+      "zone": 3,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "12:48",
+          "14:48",
+          "16:48"
+        ],
+        "afternoon": [
+          "18:48",
+          "20:48",
+          "22:48"
+        ],
+        "evening": [
+          "00:48",
+          "02:48",
+          "04:48"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Pontoon Dock",
+      "code": "POD",
+      "coordinates": {
+        "lat": 51.5025,
+        "lng": 0.0308
+      },
+      "zone": 3,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "09:25",
+          "11:25",
+          "13:25"
+        ],
+        "afternoon": [
+          "15:25",
+          "17:25",
+          "19:25"
+        ],
+        "evening": [
+          "21:25",
+          "23:25",
+          "01:25"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "London City Airport",
+      "code": "LCA",
+      "coordinates": {
+        "lat": 51.5048,
+        "lng": 0.0423
+      },
+      "zone": 3,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "15:02",
+          "17:02",
+          "19:02"
+        ],
+        "afternoon": [
+          "21:02",
+          "23:02",
+          "01:02"
+        ],
+        "evening": [
+          "03:02",
+          "05:02",
+          "07:02"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "King George V",
+      "code": "KGV",
+      "coordinates": {
+        "lat": 51.5016,
+        "lng": 0.0628
+      },
+      "zone": 3,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "15:14",
+          "17:14",
+          "19:14"
+        ],
+        "afternoon": [
+          "21:14",
+          "23:14",
+          "01:14"
+        ],
+        "evening": [
+          "03:14",
+          "05:14",
+          "07:14"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Woolwich Arsenal",
+      "code": "WWA",
+      "coordinates": {
+        "lat": 51.4905,
+        "lng": 0.0695
+      },
+      "zone": 4,
+      "interchange": [
+        "National Rail",
+        "Elizabeth Line"
+      ],
+      "times": {
+        "morning": [
+          "13:44",
+          "15:44",
+          "17:44"
+        ],
+        "afternoon": [
+          "19:44",
+          "21:44",
+          "23:44"
+        ],
+        "evening": [
+          "01:44",
+          "03:44",
+          "05:44"
+        ],
+        "night": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,1056 @@
+{
+  "metadata": {
+    "line_name": "Northern Rail Network",
+    "description": "Regional services across Northern England",
+    "operator": "Northern",
+    "total_stations": 40,
+    "frequency": {
+      "weekday_peak": "Every hour",
+      "weekday_off_peak": "Every 2 hours",
+      "weekend": "Every 2 hours",
+      "night": "No service"
+    }
+  },
+  "stations": [
+    {
+      "name": "Manchester Piccadilly",
+      "code": "MAN",
+      "coordinates": {
+        "lat": 53.4775,
+        "lng": -2.2306
+      },
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Manchester Victoria",
+      "code": "MCV",
+      "coordinates": {
+        "lat": 53.4881,
+        "lng": -2.2431
+      },
+      "times": {
+        "morning": [
+          "06:11",
+          "08:11",
+          "10:11"
+        ],
+        "afternoon": [
+          "12:11",
+          "14:11",
+          "16:11"
+        ],
+        "evening": [
+          "18:11",
+          "20:11",
+          "22:11"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Bolton",
+      "code": "BON",
+      "coordinates": {
+        "lat": 53.5781,
+        "lng": -2.4281
+      },
+      "times": {
+        "morning": [
+          "06:23",
+          "08:23",
+          "10:23"
+        ],
+        "afternoon": [
+          "12:23",
+          "14:23",
+          "16:23"
+        ],
+        "evening": [
+          "18:23",
+          "20:23",
+          "22:23"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Preston",
+      "code": "PRE",
+      "coordinates": {
+        "lat": 53.7581,
+        "lng": -2.7081
+      },
+      "times": {
+        "morning": [
+          "06:23",
+          "08:23",
+          "10:23"
+        ],
+        "afternoon": [
+          "12:23",
+          "14:23",
+          "16:23"
+        ],
+        "evening": [
+          "18:23",
+          "20:23",
+          "22:23"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Blackpool North",
+      "code": "BPN",
+      "coordinates": {
+        "lat": 53.8181,
+        "lng": -3.0481
+      },
+      "times": {
+        "morning": [
+          "06:57",
+          "08:57",
+          "10:57"
+        ],
+        "afternoon": [
+          "12:57",
+          "14:57",
+          "16:57"
+        ],
+        "evening": [
+          "18:57",
+          "20:57",
+          "22:57"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Lancaster",
+      "code": "LAN",
+      "coordinates": {
+        "lat": 54.0481,
+        "lng": -2.8081
+      },
+      "times": {
+        "morning": [
+          "06:29",
+          "08:29",
+          "10:29"
+        ],
+        "afternoon": [
+          "12:29",
+          "14:29",
+          "16:29"
+        ],
+        "evening": [
+          "18:29",
+          "20:29",
+          "22:29"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Morecambe",
+      "code": "MCM",
+      "coordinates": {
+        "lat": 54.0681,
+        "lng": -2.8681
+      },
+      "times": {
+        "morning": [
+          "06:35",
+          "08:35",
+          "10:35"
+        ],
+        "afternoon": [
+          "12:35",
+          "14:35",
+          "16:35"
+        ],
+        "evening": [
+          "18:35",
+          "20:35",
+          "22:35"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Barrow-in-Furness",
+      "code": "BIF",
+      "coordinates": {
+        "lat": 54.1181,
+        "lng": -3.2281
+      },
+      "times": {
+        "morning": [
+          "07:45",
+          "09:45",
+          "11:45"
+        ],
+        "afternoon": [
+          "13:45",
+          "15:45",
+          "17:45"
+        ],
+        "evening": [
+          "19:45",
+          "21:45",
+          "23:45"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Carlisle",
+      "code": "CAR",
+      "coordinates": {
+        "lat": 54.8881,
+        "lng": -2.9331
+      },
+      "times": {
+        "morning": [
+          "07:49",
+          "09:49",
+          "11:49"
+        ],
+        "afternoon": [
+          "13:49",
+          "15:49",
+          "17:49"
+        ],
+        "evening": [
+          "19:49",
+          "21:49",
+          "23:49"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Workington",
+      "code": "WKG",
+      "coordinates": {
+        "lat": 54.6481,
+        "lng": -3.5481
+      },
+      "times": {
+        "morning": [
+          "06:53",
+          "08:53",
+          "10:53"
+        ],
+        "afternoon": [
+          "12:53",
+          "14:53",
+          "16:53"
+        ],
+        "evening": [
+          "18:53",
+          "20:53",
+          "22:53"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Whitehaven",
+      "code": "WTH",
+      "coordinates": {
+        "lat": 54.5481,
+        "lng": -3.5881
+      },
+      "times": {
+        "morning": [
+          "08:27",
+          "10:27",
+          "12:27"
+        ],
+        "afternoon": [
+          "14:27",
+          "16:27",
+          "18:27"
+        ],
+        "evening": [
+          "20:27",
+          "22:27",
+          "00:27"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Leeds",
+      "code": "LDS",
+      "coordinates": {
+        "lat": 53.7944,
+        "lng": -1.5481
+      },
+      "times": {
+        "morning": [
+          "08:38",
+          "10:38",
+          "12:38"
+        ],
+        "afternoon": [
+          "14:38",
+          "16:38",
+          "18:38"
+        ],
+        "evening": [
+          "20:38",
+          "22:38",
+          "00:38"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Bradford Interchange",
+      "code": "BDI",
+      "coordinates": {
+        "lat": 53.7931,
+        "lng": -1.7531
+      },
+      "times": {
+        "morning": [
+          "08:20",
+          "10:20",
+          "12:20"
+        ],
+        "afternoon": [
+          "14:20",
+          "16:20",
+          "18:20"
+        ],
+        "evening": [
+          "20:20",
+          "22:20",
+          "00:20"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Halifax",
+      "code": "HFX",
+      "coordinates": {
+        "lat": 53.7231,
+        "lng": -1.8631
+      },
+      "times": {
+        "morning": [
+          "07:42",
+          "09:42",
+          "11:42"
+        ],
+        "afternoon": [
+          "13:42",
+          "15:42",
+          "17:42"
+        ],
+        "evening": [
+          "19:42",
+          "21:42",
+          "23:42"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Huddersfield",
+      "code": "HUD",
+      "coordinates": {
+        "lat": 53.6481,
+        "lng": -1.7881
+      },
+      "times": {
+        "morning": [
+          "08:35",
+          "10:35",
+          "12:35"
+        ],
+        "afternoon": [
+          "14:35",
+          "16:35",
+          "18:35"
+        ],
+        "evening": [
+          "20:35",
+          "22:35",
+          "00:35"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Sheffield",
+      "code": "SHF",
+      "coordinates": {
+        "lat": 53.3781,
+        "lng": -1.4619
+      },
+      "times": {
+        "morning": [
+          "08:56",
+          "10:56",
+          "12:56"
+        ],
+        "afternoon": [
+          "14:56",
+          "16:56",
+          "18:56"
+        ],
+        "evening": [
+          "20:56",
+          "22:56",
+          "00:56"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Barnsley",
+      "code": "BNY",
+      "coordinates": {
+        "lat": 53.5531,
+        "lng": -1.4731
+      },
+      "times": {
+        "morning": [
+          "07:45",
+          "09:45",
+          "11:45"
+        ],
+        "afternoon": [
+          "13:45",
+          "15:45",
+          "17:45"
+        ],
+        "evening": [
+          "19:45",
+          "21:45",
+          "23:45"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Doncaster",
+      "code": "DON",
+      "coordinates": {
+        "lat": 53.5219,
+        "lng": -1.1419
+      },
+      "times": {
+        "morning": [
+          "08:49",
+          "10:49",
+          "12:49"
+        ],
+        "afternoon": [
+          "14:49",
+          "16:49",
+          "18:49"
+        ],
+        "evening": [
+          "20:49",
+          "22:49",
+          "00:49"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Hull",
+      "code": "HUL",
+      "coordinates": {
+        "lat": 53.7431,
+        "lng": -0.3481
+      },
+      "times": {
+        "morning": [
+          "09:36",
+          "11:36",
+          "13:36"
+        ],
+        "afternoon": [
+          "15:36",
+          "17:36",
+          "19:36"
+        ],
+        "evening": [
+          "21:36",
+          "23:36",
+          "01:36"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Grimsby Town",
+      "code": "GMB",
+      "coordinates": {
+        "lat": 53.5631,
+        "lng": -0.0731
+      },
+      "times": {
+        "morning": [
+          "10:38",
+          "12:38",
+          "14:38"
+        ],
+        "afternoon": [
+          "16:38",
+          "18:38",
+          "20:38"
+        ],
+        "evening": [
+          "22:38",
+          "00:38",
+          "02:38"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Cleethorpes",
+      "code": "CLE",
+      "coordinates": {
+        "lat": 53.5531,
+        "lng": -0.0331
+      },
+      "times": {
+        "morning": [
+          "10:23",
+          "12:23",
+          "14:23"
+        ],
+        "afternoon": [
+          "16:23",
+          "18:23",
+          "20:23"
+        ],
+        "evening": [
+          "22:23",
+          "00:23",
+          "02:23"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "York",
+      "code": "YRK",
+      "coordinates": {
+        "lat": 53.9581,
+        "lng": -1.0931
+      },
+      "times": {
+        "morning": [
+          "10:25",
+          "12:25",
+          "14:25"
+        ],
+        "afternoon": [
+          "16:25",
+          "18:25",
+          "20:25"
+        ],
+        "evening": [
+          "22:25",
+          "00:25",
+          "02:25"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Harrogate",
+      "code": "HGT",
+      "coordinates": {
+        "lat": 53.9931,
+        "lng": -1.5431
+      },
+      "times": {
+        "morning": [
+          "09:27",
+          "11:27",
+          "13:27"
+        ],
+        "afternoon": [
+          "15:27",
+          "17:27",
+          "19:27"
+        ],
+        "evening": [
+          "21:27",
+          "23:27",
+          "01:27"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Knaresborough",
+      "code": "KNA",
+      "coordinates": {
+        "lat": 54.0131,
+        "lng": -1.4631
+      },
+      "times": {
+        "morning": [
+          "10:59",
+          "12:59",
+          "14:59"
+        ],
+        "afternoon": [
+          "16:59",
+          "18:59",
+          "20:59"
+        ],
+        "evening": [
+          "22:59",
+          "00:59",
+          "02:59"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Skipton",
+      "code": "SKI",
+      "coordinates": {
+        "lat": 53.9631,
+        "lng": -2.0131
+      },
+      "times": {
+        "morning": [
+          "10:22",
+          "12:22",
+          "14:22"
+        ],
+        "afternoon": [
+          "16:22",
+          "18:22",
+          "20:22"
+        ],
+        "evening": [
+          "22:22",
+          "00:22",
+          "02:22"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Settle",
+      "code": "SET",
+      "coordinates": {
+        "lat": 54.0631,
+        "lng": -2.2831
+      },
+      "times": {
+        "morning": [
+          "10:39",
+          "12:39",
+          "14:39"
+        ],
+        "afternoon": [
+          "16:39",
+          "18:39",
+          "20:39"
+        ],
+        "evening": [
+          "22:39",
+          "00:39",
+          "02:39"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Newcastle",
+      "code": "NCL",
+      "coordinates": {
+        "lat": 54.9681,
+        "lng": -1.6181
+      },
+      "times": {
+        "morning": [
+          "08:33",
+          "10:33",
+          "12:33"
+        ],
+        "afternoon": [
+          "14:33",
+          "16:33",
+          "18:33"
+        ],
+        "evening": [
+          "20:33",
+          "22:33",
+          "00:33"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Sunderland",
+      "code": "SUN",
+      "coordinates": {
+        "lat": 54.9031,
+        "lng": -1.3831
+      },
+      "times": {
+        "morning": [
+          "10:45",
+          "12:45",
+          "14:45"
+        ],
+        "afternoon": [
+          "16:45",
+          "18:45",
+          "20:45"
+        ],
+        "evening": [
+          "22:45",
+          "00:45",
+          "02:45"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Middlesbrough",
+      "code": "MBR",
+      "coordinates": {
+        "lat": 54.5781,
+        "lng": -1.2331
+      },
+      "times": {
+        "morning": [
+          "12:59",
+          "14:59",
+          "16:59"
+        ],
+        "afternoon": [
+          "18:59",
+          "20:59",
+          "22:59"
+        ],
+        "evening": [
+          "00:59",
+          "02:59",
+          "04:59"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Darlington",
+      "code": "DAR",
+      "coordinates": {
+        "lat": 54.5219,
+        "lng": -1.5519
+      },
+      "times": {
+        "morning": [
+          "11:00",
+          "13:00",
+          "15:00"
+        ],
+        "afternoon": [
+          "17:00",
+          "19:00",
+          "21:00"
+        ],
+        "evening": [
+          "23:00",
+          "01:00",
+          "03:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Bishop Auckland",
+      "code": "BIA",
+      "coordinates": {
+        "lat": 54.6631,
+        "lng": -1.6731
+      },
+      "times": {
+        "morning": [
+          "11:46",
+          "13:46",
+          "15:46"
+        ],
+        "afternoon": [
+          "17:46",
+          "19:46",
+          "21:46"
+        ],
+        "evening": [
+          "23:46",
+          "01:46",
+          "03:46"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Hexham",
+      "code": "HEX",
+      "coordinates": {
+        "lat": 54.9731,
+        "lng": -2.1031
+      },
+      "times": {
+        "morning": [
+          "13:18",
+          "15:18",
+          "17:18"
+        ],
+        "afternoon": [
+          "19:18",
+          "21:18",
+          "23:18"
+        ],
+        "evening": [
+          "01:18",
+          "03:18",
+          "05:18"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Liverpool Lime Street",
+      "code": "LIV",
+      "coordinates": {
+        "lat": 53.4075,
+        "lng": -2.9769
+      },
+      "times": {
+        "morning": [
+          "12:22",
+          "14:22",
+          "16:22"
+        ],
+        "afternoon": [
+          "18:22",
+          "20:22",
+          "22:22"
+        ],
+        "evening": [
+          "00:22",
+          "02:22",
+          "04:22"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Liverpool Central",
+      "code": "LVC",
+      "coordinates": {
+        "lat": 53.4031,
+        "lng": -2.9831
+      },
+      "times": {
+        "morning": [
+          "09:17",
+          "11:17",
+          "13:17"
+        ],
+        "afternoon": [
+          "15:17",
+          "17:17",
+          "19:17"
+        ],
+        "evening": [
+          "21:17",
+          "23:17",
+          "01:17"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Southport",
+      "code": "SOP",
+      "coordinates": {
+        "lat": 53.6431,
+        "lng": -3.0131
+      },
+      "times": {
+        "morning": [
+          "12:54",
+          "14:54",
+          "16:54"
+        ],
+        "afternoon": [
+          "18:54",
+          "20:54",
+          "22:54"
+        ],
+        "evening": [
+          "00:54",
+          "02:54",
+          "04:54"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Ormskirk",
+      "code": "OMS",
+      "coordinates": {
+        "lat": 53.5631,
+        "lng": -2.8831
+      },
+      "times": {
+        "morning": [
+          "11:02",
+          "13:02",
+          "15:02"
+        ],
+        "afternoon": [
+          "17:02",
+          "19:02",
+          "21:02"
+        ],
+        "evening": [
+          "23:02",
+          "01:02",
+          "03:02"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Wigan North Western",
+      "code": "WGN",
+      "coordinates": {
+        "lat": 53.55,
+        "lng": -2.6333
+      },
+      "times": {
+        "morning": [
+          "14:38",
+          "16:38",
+          "18:38"
+        ],
+        "afternoon": [
+          "20:38",
+          "22:38",
+          "00:38"
+        ],
+        "evening": [
+          "02:38",
+          "04:38",
+          "06:38"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Warrington Central",
+      "code": "WAC",
+      "coordinates": {
+        "lat": 53.3881,
+        "lng": -2.5831
+      },
+      "times": {
+        "morning": [
+          "09:12",
+          "11:12",
+          "13:12"
+        ],
+        "afternoon": [
+          "15:12",
+          "17:12",
+          "19:12"
+        ],
+        "evening": [
+          "21:12",
+          "23:12",
+          "01:12"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Chester",
+      "code": "CTR",
+      "coordinates": {
+        "lat": 53.1931,
+        "lng": -2.8731
+      },
+      "times": {
+        "morning": [
+          "13:32",
+          "15:32",
+          "17:32"
+        ],
+        "afternoon": [
+          "19:32",
+          "21:32",
+          "23:32"
+        ],
+        "evening": [
+          "01:32",
+          "03:32",
+          "05:32"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Crewe",
+      "code": "CRE",
+      "coordinates": {
+        "lat": 53.0881,
+        "lng": -2.4331
+      },
+      "times": {
+        "morning": [
+          "13:11",
+          "15:11",
+          "17:11"
+        ],
+        "afternoon": [
+          "19:11",
+          "21:11",
+          "23:11"
+        ],
+        "evening": [
+          "01:11",
+          "03:11",
+          "05:11"
+        ],
+        "night": []
+      }
+    }
+  ]
+}

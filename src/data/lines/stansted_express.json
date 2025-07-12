@@ -1,0 +1,133 @@
+{
+  "metadata": {
+    "line_name": "Stansted Express",
+    "description": "Express service between London Liverpool Street and Stansted Airport",
+    "operator": "Stansted Express",
+    "total_stations": 3,
+    "typical_frequency": "Every 15 minutes",
+    "peak_hours": "06:00-10:00, 16:00-19:00",
+    "frequency": {
+      "weekday_peak": "Every 15 minutes",
+      "weekday_off_peak": "Every 15 minutes",
+      "weekend": "Every 15 minutes",
+      "night": "Limited service"
+    }
+  },
+  "typical_journey_times": {
+    "LST-TTH": 35,
+    "TTH-SSD": 15,
+    "LST-SSD": 47
+  },
+  "typical_services": {
+    "peak_frequency": "Every 15 minutes",
+    "off_peak_frequency": "Every 15 minutes",
+    "evening_frequency": "Every 15 minutes",
+    "weekend_frequency": "Every 15 minutes",
+    "first_train": "05:30",
+    "last_train": "00:30"
+  },
+  "stations": [
+    {
+      "name": "London Liverpool Street",
+      "code": "LST",
+      "coordinates": {
+        "lat": 51.5178,
+        "lng": -0.0823
+      },
+      "zone": 1,
+      "interchange": [
+        "Central Line",
+        "Circle Line",
+        "Hammersmith & City Line",
+        "Metropolitan Line",
+        "Elizabeth Line",
+        "Greater Anglia"
+      ],
+      "times": {
+        "morning": [
+          "05:30",
+          "07:30",
+          "09:30"
+        ],
+        "afternoon": [
+          "12:30",
+          "14:30",
+          "16:30"
+        ],
+        "evening": [
+          "18:30",
+          "20:30",
+          "22:30"
+        ],
+        "night": [
+          "00:30"
+        ]
+      }
+    },
+    {
+      "name": "Tottenham Hale",
+      "code": "TTH",
+      "coordinates": {
+        "lat": 51.5883,
+        "lng": -0.0598
+      },
+      "zone": 3,
+      "interchange": [
+        "Victoria Line",
+        "London Overground",
+        "Greater Anglia"
+      ],
+      "times": {
+        "morning": [
+          "06:05",
+          "08:05",
+          "10:05"
+        ],
+        "afternoon": [
+          "13:05",
+          "15:05",
+          "17:05"
+        ],
+        "evening": [
+          "19:05",
+          "21:05",
+          "23:05"
+        ],
+        "night": [
+          "01:05"
+        ]
+      }
+    },
+    {
+      "name": "Stansted Airport",
+      "code": "SSD",
+      "coordinates": {
+        "lat": 51.8860,
+        "lng": 0.2389
+      },
+      "interchange": [
+        "Airport Terminal"
+      ],
+      "times": {
+        "morning": [
+          "06:20",
+          "08:20",
+          "10:20"
+        ],
+        "afternoon": [
+          "13:20",
+          "15:20",
+          "17:20"
+        ],
+        "evening": [
+          "19:20",
+          "21:20",
+          "23:20"
+        ],
+        "night": [
+          "01:20"
+        ]
+      }
+    }
+  ]
+}

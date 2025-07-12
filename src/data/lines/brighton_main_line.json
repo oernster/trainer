@@ -1,0 +1,387 @@
+{
+  "metadata": {
+    "line_name": "Brighton Main Line",
+    "description": "London Victoria to Brighton via Gatwick Airport",
+    "operator": "Southern",
+    "total_stations": 13,
+    "frequency": {
+      "weekday_peak": "Every hour",
+      "weekday_off_peak": "Every 2 hours",
+      "weekend": "Every 2 hours",
+      "night": "No service"
+    }
+  },
+  "stations": [
+    {
+      "name": "London Victoria",
+      "code": "VIC",
+      "coordinates": {
+        "lat": 51.4952,
+        "lng": -0.1441
+      },
+      "zone": 1,
+      "interchange": [
+        "Circle Line",
+        "District Line",
+        "Victoria Line"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Clapham Junction",
+      "code": "CLJ",
+      "coordinates": {
+        "lat": 51.4642,
+        "lng": -0.1705
+      },
+      "zone": 2,
+      "interchange": [
+        "South Western Main Line",
+        "West London Line"
+      ],
+      "times": {
+        "morning": [
+          "06:12",
+          "08:12",
+          "10:12"
+        ],
+        "afternoon": [
+          "12:12",
+          "14:12",
+          "16:12"
+        ],
+        "evening": [
+          "18:12",
+          "20:12",
+          "22:12"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "East Croydon",
+      "code": "ECR",
+      "coordinates": {
+        "lat": 51.3756,
+        "lng": -0.0928
+      },
+      "zone": 5,
+      "interchange": [
+        "West Croydon Line",
+        "Oxted Line"
+      ],
+      "times": {
+        "morning": [
+          "06:25",
+          "08:25",
+          "10:25"
+        ],
+        "afternoon": [
+          "12:25",
+          "14:25",
+          "16:25"
+        ],
+        "evening": [
+          "18:25",
+          "20:25",
+          "22:25"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Redhill",
+      "code": "RDH",
+      "coordinates": {
+        "lat": 51.2406,
+        "lng": -0.1711
+      },
+      "interchange": [
+        "North Downs Line",
+        "Reading to Gatwick Line"
+      ],
+      "times": {
+        "morning": [
+          "06:28",
+          "08:28",
+          "10:28"
+        ],
+        "afternoon": [
+          "12:28",
+          "14:28",
+          "16:28"
+        ],
+        "evening": [
+          "18:28",
+          "20:28",
+          "22:28"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Gatwick Airport",
+      "code": "GTW",
+      "coordinates": {
+        "lat": 51.1564,
+        "lng": -0.1611
+      },
+      "interchange": [
+        "Gatwick Express"
+      ],
+      "times": {
+        "morning": [
+          "06:49",
+          "08:49",
+          "10:49"
+        ],
+        "afternoon": [
+          "12:49",
+          "14:49",
+          "16:49"
+        ],
+        "evening": [
+          "18:49",
+          "20:49",
+          "22:49"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Three Bridges",
+      "code": "TBD",
+      "coordinates": {
+        "lat": 51.1167,
+        "lng": -0.15
+      },
+      "interchange": [
+        "Arun Valley Line"
+      ],
+      "times": {
+        "morning": [
+          "06:53",
+          "08:53",
+          "10:53"
+        ],
+        "afternoon": [
+          "12:53",
+          "14:53",
+          "16:53"
+        ],
+        "evening": [
+          "18:53",
+          "20:53",
+          "22:53"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Balcombe",
+      "code": "BAL",
+      "coordinates": {
+        "lat": 51.05,
+        "lng": -0.1333
+      },
+      "times": {
+        "morning": [
+          "07:14",
+          "09:14",
+          "11:14"
+        ],
+        "afternoon": [
+          "13:14",
+          "15:14",
+          "17:14"
+        ],
+        "evening": [
+          "19:14",
+          "21:14",
+          "23:14"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Haywards Heath",
+      "code": "HHE",
+      "coordinates": {
+        "lat": 51.0,
+        "lng": -0.1
+      },
+      "interchange": [
+        "East Coastway Line"
+      ],
+      "times": {
+        "morning": [
+          "07:28",
+          "09:28",
+          "11:28"
+        ],
+        "afternoon": [
+          "13:28",
+          "15:28",
+          "17:28"
+        ],
+        "evening": [
+          "19:28",
+          "21:28",
+          "23:28"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Wivelsfield",
+      "code": "WVF",
+      "coordinates": {
+        "lat": 50.9667,
+        "lng": -0.0833
+      },
+      "times": {
+        "morning": [
+          "07:51",
+          "09:51",
+          "11:51"
+        ],
+        "afternoon": [
+          "13:51",
+          "15:51",
+          "17:51"
+        ],
+        "evening": [
+          "19:51",
+          "21:51",
+          "23:51"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Burgess Hill",
+      "code": "BUG",
+      "coordinates": {
+        "lat": 50.9583,
+        "lng": -0.1333
+      },
+      "times": {
+        "morning": [
+          "07:53",
+          "09:53",
+          "11:53"
+        ],
+        "afternoon": [
+          "13:53",
+          "15:53",
+          "17:53"
+        ],
+        "evening": [
+          "19:53",
+          "21:53",
+          "23:53"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Hassocks",
+      "code": "HSK",
+      "coordinates": {
+        "lat": 50.9167,
+        "lng": -0.15
+      },
+      "times": {
+        "morning": [
+          "08:16",
+          "10:16",
+          "12:16"
+        ],
+        "afternoon": [
+          "14:16",
+          "16:16",
+          "18:16"
+        ],
+        "evening": [
+          "20:16",
+          "22:16",
+          "00:16"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Preston Park",
+      "code": "PRP",
+      "coordinates": {
+        "lat": 50.85,
+        "lng": -0.15
+      },
+      "times": {
+        "morning": [
+          "08:14",
+          "10:14",
+          "12:14"
+        ],
+        "afternoon": [
+          "14:14",
+          "16:14",
+          "18:14"
+        ],
+        "evening": [
+          "20:14",
+          "22:14",
+          "00:14"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Brighton",
+      "code": "BTN",
+      "coordinates": {
+        "lat": 50.8292,
+        "lng": -0.1419
+      },
+      "interchange": [
+        "West Coastway Line",
+        "East Coastway Line"
+      ],
+      "times": {
+        "morning": [
+          "07:35",
+          "09:35",
+          "11:35"
+        ],
+        "afternoon": [
+          "13:35",
+          "15:35",
+          "17:35"
+        ],
+        "evening": [
+          "19:35",
+          "21:35",
+          "23:35"
+        ],
+        "night": []
+      }
+    }
+  ]
+}

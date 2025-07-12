@@ -78,7 +78,7 @@ class WeatherSubject:
 
     def notify_weather_updated(self, weather_data: WeatherForecastData) -> None:
         """Notify all observers of weather update."""
-        logger.info(f"Notifying {len(self._observers)} observers of weather update")
+        logger.debug(f"Notifying {len(self._observers)} observers of weather update")
         for observer in self._observers:
             try:
                 observer.on_weather_updated(weather_data)
@@ -256,7 +256,7 @@ class WeatherManager(QObject, WeatherSubject):
         self._error_count = 0
         self._last_successful_fetch: Optional[datetime] = None
 
-        logger.info(f"WeatherManager initialized with {config.api_provider}")
+        logger.debug(f"WeatherManager initialized with {config.api_provider}")
 
         # Start auto-refresh if enabled
         if config.enabled:
@@ -277,7 +277,7 @@ class WeatherManager(QObject, WeatherSubject):
     def stop_auto_refresh(self) -> None:
         """Stop automatic weather refresh."""
         self._refresh_timer.stop()
-        logger.info("Auto-refresh stopped")
+        logger.debug("Auto-refresh stopped")
 
     def is_auto_refresh_active(self) -> bool:
         """Check if auto-refresh is active."""
@@ -458,7 +458,7 @@ class WeatherManager(QObject, WeatherSubject):
         self._current_forecast = None
         self._api_manager.clear_cache()
         self._command_history.clear()
-        logger.info("Weather data cleared")
+        logger.debug("Weather data cleared")
 
     def shutdown(self) -> None:
         """Shutdown weather manager and cleanup resources."""
@@ -477,4 +477,4 @@ class WeatherManager(QObject, WeatherSubject):
         except Exception as e:
             logger.warning(f"Failed to shutdown API manager: {e}")
 
-        logger.info("WeatherManager shutdown complete")
+        logger.debug("WeatherManager shutdown complete")

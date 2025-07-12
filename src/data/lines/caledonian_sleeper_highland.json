@@ -1,0 +1,490 @@
+{
+  "metadata": {
+    "line_name": "Caledonian Sleeper Highland Route",
+    "description": "Overnight sleeper service from London Euston to Inverness, Aberdeen and Fort William",
+    "operator": "Caledonian Sleeper",
+    "total_stations": 15,
+    "typical_frequency": "Daily",
+    "peak_hours": "21:00-23:30, 06:00-08:00",
+    "frequency": {
+      "weekday_peak": "Every hour",
+      "weekday_off_peak": "Every 2 hours",
+      "weekend": "Every 2 hours",
+      "night": "No service"
+    }
+  },
+  "typical_journey_times": {
+    "EUS-EDB": 390,
+    "EDB-INV": 210,
+    "EDB-ABD": 150,
+    "EDB-FTW": 240,
+    "EUS-INV": 600,
+    "EUS-ABD": 540,
+    "EUS-FTW": 630
+  },
+  "typical_services": {
+    "peak_frequency": "Once daily",
+    "off_peak_frequency": "Once daily",
+    "evening_frequency": "Once daily",
+    "weekend_frequency": "Once daily",
+    "first_train": "21:15",
+    "last_train": "21:15"
+  },
+  "stations": [
+    {
+      "name": "London Euston",
+      "code": "EUS",
+      "coordinates": {
+        "lat": 51.5282,
+        "lng": -0.1337
+      },
+      "zone": 1,
+      "interchange": [
+        "Avanti West Coast",
+        "London Northwestern Railway",
+        "London Underground"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Watford Junction",
+      "code": "WFJ",
+      "coordinates": {
+        "lat": 51.6628,
+        "lng": -0.3856
+      },
+      "interchange": [
+        "Avanti West Coast",
+        "London Northwestern Railway",
+        "London Overground"
+      ],
+      "times": {
+        "morning": [
+          "06:06",
+          "08:06",
+          "10:06"
+        ],
+        "afternoon": [
+          "12:06",
+          "14:06",
+          "16:06"
+        ],
+        "evening": [
+          "18:06",
+          "20:06",
+          "22:06"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Crewe",
+      "code": "CRE",
+      "coordinates": {
+        "lat": 53.0881,
+        "lng": -2.4331
+      },
+      "interchange": [
+        "Avanti West Coast",
+        "CrossCountry",
+        "Transport for Wales",
+        "East Midlands Railway"
+      ],
+      "times": {
+        "morning": [
+          "06:11",
+          "08:11",
+          "10:11"
+        ],
+        "afternoon": [
+          "12:11",
+          "14:11",
+          "16:11"
+        ],
+        "evening": [
+          "18:11",
+          "20:11",
+          "22:11"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Preston",
+      "code": "PRE",
+      "coordinates": {
+        "lat": 53.7581,
+        "lng": -2.7081
+      },
+      "interchange": [
+        "Avanti West Coast",
+        "Northern",
+        "TransPennine Express"
+      ],
+      "times": {
+        "morning": [
+          "06:28",
+          "08:28",
+          "10:28"
+        ],
+        "afternoon": [
+          "12:28",
+          "14:28",
+          "16:28"
+        ],
+        "evening": [
+          "18:28",
+          "20:28",
+          "22:28"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Edinburgh",
+      "code": "EDB",
+      "coordinates": {
+        "lat": 55.9519,
+        "lng": -3.1875
+      },
+      "interchange": [
+        "LNER",
+        "CrossCountry",
+        "ScotRail",
+        "TransPennine Express"
+      ],
+      "times": {
+        "morning": [
+          "06:59",
+          "08:59",
+          "10:59"
+        ],
+        "afternoon": [
+          "12:59",
+          "14:59",
+          "16:59"
+        ],
+        "evening": [
+          "18:59",
+          "20:59",
+          "22:59"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Stirling",
+      "code": "STG",
+      "coordinates": {
+        "lat": 56.1194,
+        "lng": -3.9369
+      },
+      "interchange": [
+        "ScotRail"
+      ],
+      "times": {
+        "morning": [
+          "07:04",
+          "09:04",
+          "11:04"
+        ],
+        "afternoon": [
+          "13:04",
+          "15:04",
+          "17:04"
+        ],
+        "evening": [
+          "19:04",
+          "21:04",
+          "23:04"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Perth",
+      "code": "PTH",
+      "coordinates": {
+        "lat": 56.395,
+        "lng": -3.4364
+      },
+      "interchange": [
+        "ScotRail"
+      ],
+      "times": {
+        "morning": [
+          "07:29",
+          "09:29",
+          "11:29"
+        ],
+        "afternoon": [
+          "13:29",
+          "15:29",
+          "17:29"
+        ],
+        "evening": [
+          "19:29",
+          "21:29",
+          "23:29"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Aviemore",
+      "code": "AVM",
+      "coordinates": {
+        "lat": 57.1953,
+        "lng": -3.8281
+      },
+      "interchange": [
+        "ScotRail"
+      ],
+      "times": {
+        "morning": [
+          "07:38",
+          "09:38",
+          "11:38"
+        ],
+        "afternoon": [
+          "13:38",
+          "15:38",
+          "17:38"
+        ],
+        "evening": [
+          "19:38",
+          "21:38",
+          "23:38"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Inverness",
+      "code": "INV",
+      "coordinates": {
+        "lat": 57.48,
+        "lng": -4.2242
+      },
+      "interchange": [
+        "ScotRail"
+      ],
+      "times": {
+        "morning": [
+          "07:17",
+          "09:17",
+          "11:17"
+        ],
+        "afternoon": [
+          "13:17",
+          "15:17",
+          "17:17"
+        ],
+        "evening": [
+          "19:17",
+          "21:17",
+          "23:17"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Dundee",
+      "code": "DEE",
+      "coordinates": {
+        "lat": 56.4564,
+        "lng": -2.9706
+      },
+      "interchange": [
+        "ScotRail",
+        "LNER",
+        "CrossCountry"
+      ],
+      "times": {
+        "morning": [
+          "07:04",
+          "09:04",
+          "11:04"
+        ],
+        "afternoon": [
+          "13:04",
+          "15:04",
+          "17:04"
+        ],
+        "evening": [
+          "19:04",
+          "21:04",
+          "23:04"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Aberdeen",
+      "code": "ABD",
+      "coordinates": {
+        "lat": 57.1436,
+        "lng": -2.0981
+      },
+      "interchange": [
+        "ScotRail",
+        "LNER",
+        "CrossCountry"
+      ],
+      "times": {
+        "morning": [
+          "07:39",
+          "09:39",
+          "11:39"
+        ],
+        "afternoon": [
+          "13:39",
+          "15:39",
+          "17:39"
+        ],
+        "evening": [
+          "19:39",
+          "21:39",
+          "23:39"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Glasgow Queen Street",
+      "code": "GLQ",
+      "coordinates": {
+        "lat": 55.8625,
+        "lng": -4.2511
+      },
+      "interchange": [
+        "ScotRail"
+      ],
+      "times": {
+        "morning": [
+          "08:18",
+          "10:18",
+          "12:18"
+        ],
+        "afternoon": [
+          "14:18",
+          "16:18",
+          "18:18"
+        ],
+        "evening": [
+          "20:18",
+          "22:18",
+          "00:18"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Fort William",
+      "code": "FTW",
+      "coordinates": {
+        "lat": 56.8169,
+        "lng": -5.1047
+      },
+      "interchange": [
+        "ScotRail",
+        "West Highland Line"
+      ],
+      "times": {
+        "morning": [
+          "08:04",
+          "10:04",
+          "12:04"
+        ],
+        "afternoon": [
+          "14:04",
+          "16:04",
+          "18:04"
+        ],
+        "evening": [
+          "20:04",
+          "22:04",
+          "00:04"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Crianlarich",
+      "code": "CNR",
+      "coordinates": {
+        "lat": 56.3906,
+        "lng": -4.6169
+      },
+      "interchange": [
+        "ScotRail",
+        "West Highland Line"
+      ],
+      "times": {
+        "morning": [
+          "08:07",
+          "10:07",
+          "12:07"
+        ],
+        "afternoon": [
+          "14:07",
+          "16:07",
+          "18:07"
+        ],
+        "evening": [
+          "20:07",
+          "22:07",
+          "00:07"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Arrochar & Tarbet",
+      "code": "ART",
+      "coordinates": {
+        "lat": 56.2,
+        "lng": -4.7167
+      },
+      "interchange": [
+        "ScotRail",
+        "West Highland Line"
+      ],
+      "times": {
+        "morning": [
+          "09:04",
+          "11:04",
+          "13:04"
+        ],
+        "afternoon": [
+          "15:04",
+          "17:04",
+          "19:04"
+        ],
+        "evening": [
+          "21:04",
+          "23:04",
+          "01:04"
+        ],
+        "night": []
+      }
+    }
+  ]
+}

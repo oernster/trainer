@@ -160,7 +160,7 @@ class AioHttpClient(HTTPClient):
                     asyncio.run(self._session.close())
 
                 self._session = None
-                logger.info("HTTP client session closed properly")
+                logger.debug("HTTP client session closed properly")
             except Exception as e:
                 logger.warning(f"Error closing session: {e}")
                 # Fallback: just detach the session
@@ -311,7 +311,7 @@ class APODService(AstronomyService):
 
             if response.status_code == 200:
                 if isinstance(response.data, list):
-                    logger.info(f"APOD batch API returned {len(response.data)} items")
+                    logger.debug(f"APOD batch API returned {len(response.data)} items")
                     return response.data
                 elif isinstance(response.data, dict):
                     # Single item response
@@ -665,7 +665,7 @@ class EPICService(AstronomyService):
             check_end = min(end_date, today - timedelta(days=1))  # Yesterday at most
 
             if check_start > check_end:
-                logger.info("No recent EPIC data available for requested date range")
+                logger.debug("No recent EPIC data available for requested date range")
                 return []
 
             # Limit to 2 attempts to avoid excessive API calls
@@ -958,7 +958,7 @@ class NASAAstronomySource(AstronomyDataSource):
         """Shutdown the astronomy data source synchronously."""
         if hasattr(self._http_client, "close_sync"):
             self._http_client.close_sync()
-        logger.info("NASAAstronomySource synchronous shutdown complete")
+        logger.debug("NASAAstronomySource synchronous shutdown complete")
 
 
 class AstronomyAPIManager:
@@ -1021,7 +1021,7 @@ class AstronomyAPIManager:
             self._cached_data = forecast_data
             self._last_fetch_time = datetime.now()
 
-            logger.info(f"Fetched fresh astronomy data for {location.name}")
+            logger.debug(f"Fetched fresh astronomy data for {location.name}")
             return forecast_data
 
         except Exception as e:
@@ -1049,7 +1049,7 @@ class AstronomyAPIManager:
         """Clear cached astronomy data."""
         self._cached_data = None
         self._last_fetch_time = None
-        logger.info("Astronomy cache cleared")
+        logger.debug("Astronomy cache cleared")
 
     def get_cache_info(self) -> Dict[str, Any]:
         """Get information about current cache state."""
@@ -1077,7 +1077,7 @@ class AstronomyAPIManager:
 
         # Clear cache
         self.clear_cache()
-        logger.info("AstronomyAPIManager synchronous shutdown complete")
+        logger.debug("AstronomyAPIManager synchronous shutdown complete")
 
 
 class AstronomyAPIFactory:

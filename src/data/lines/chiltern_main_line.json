@@ -1,0 +1,497 @@
+{
+  "metadata": {
+    "line_name": "Chiltern Main Line",
+    "description": "London Marylebone to Birmingham via High Wycombe and Banbury",
+    "operator": "Chiltern Railways",
+    "total_stations": 18,
+    "frequency": {
+      "weekday_peak": "Every hour",
+      "weekday_off_peak": "Every 2 hours",
+      "weekend": "Every 2 hours",
+      "night": "No service"
+    }
+  },
+  "stations": [
+    {
+      "name": "London Marylebone",
+      "code": "MYB",
+      "coordinates": {
+        "lat": 51.5225,
+        "lng": -0.1631
+      },
+      "zone": 1,
+      "interchange": [
+        "Bakerloo Line"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Wembley Stadium",
+      "code": "WCX",
+      "coordinates": {
+        "lat": 51.5556,
+        "lng": -0.2794
+      },
+      "zone": 4,
+      "times": {
+        "morning": [
+          "06:12",
+          "08:12",
+          "10:12"
+        ],
+        "afternoon": [
+          "12:12",
+          "14:12",
+          "16:12"
+        ],
+        "evening": [
+          "18:12",
+          "20:12",
+          "22:12"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Harrow-on-the-Hill",
+      "code": "HOH",
+      "coordinates": {
+        "lat": 51.5731,
+        "lng": -0.3375
+      },
+      "zone": 5,
+      "interchange": [
+        "Metropolitan Line"
+      ],
+      "times": {
+        "morning": [
+          "06:11",
+          "08:11",
+          "10:11"
+        ],
+        "afternoon": [
+          "12:11",
+          "14:11",
+          "16:11"
+        ],
+        "evening": [
+          "18:11",
+          "20:11",
+          "22:11"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Amersham",
+      "code": "AMR",
+      "coordinates": {
+        "lat": 51.6744,
+        "lng": -0.6075
+      },
+      "zone": 9,
+      "interchange": [
+        "Metropolitan Line"
+      ],
+      "times": {
+        "morning": [
+          "06:31",
+          "08:31",
+          "10:31"
+        ],
+        "afternoon": [
+          "12:31",
+          "14:31",
+          "16:31"
+        ],
+        "evening": [
+          "18:31",
+          "20:31",
+          "22:31"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Great Missenden",
+      "code": "GMI",
+      "coordinates": {
+        "lat": 51.7019,
+        "lng": -0.7081
+      },
+      "times": {
+        "morning": [
+          "06:26",
+          "08:26",
+          "10:26"
+        ],
+        "afternoon": [
+          "12:26",
+          "14:26",
+          "16:26"
+        ],
+        "evening": [
+          "18:26",
+          "20:26",
+          "22:26"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Wendover",
+      "code": "WND",
+      "coordinates": {
+        "lat": 51.7594,
+        "lng": -0.7394
+      },
+      "times": {
+        "morning": [
+          "06:35",
+          "08:35",
+          "10:35"
+        ],
+        "afternoon": [
+          "12:35",
+          "14:35",
+          "16:35"
+        ],
+        "evening": [
+          "18:35",
+          "20:35",
+          "22:35"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Stoke Mandeville",
+      "code": "SMV",
+      "coordinates": {
+        "lat": 51.7881,
+        "lng": -0.7881
+      },
+      "times": {
+        "morning": [
+          "07:18",
+          "09:18",
+          "11:18"
+        ],
+        "afternoon": [
+          "13:18",
+          "15:18",
+          "17:18"
+        ],
+        "evening": [
+          "19:18",
+          "21:18",
+          "23:18"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Aylesbury",
+      "code": "AYS",
+      "coordinates": {
+        "lat": 51.8131,
+        "lng": -0.8131
+      },
+      "times": {
+        "morning": [
+          "07:16",
+          "09:16",
+          "11:16"
+        ],
+        "afternoon": [
+          "13:16",
+          "15:16",
+          "17:16"
+        ],
+        "evening": [
+          "19:16",
+          "21:16",
+          "23:16"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Haddenham & Thame Parkway",
+      "code": "HDM",
+      "coordinates": {
+        "lat": 51.7719,
+        "lng": -0.9319
+      },
+      "times": {
+        "morning": [
+          "07:36",
+          "09:36",
+          "11:36"
+        ],
+        "afternoon": [
+          "13:36",
+          "15:36",
+          "17:36"
+        ],
+        "evening": [
+          "19:36",
+          "21:36",
+          "23:36"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Princes Risborough",
+      "code": "PRR",
+      "coordinates": {
+        "lat": 51.7181,
+        "lng": -0.8181
+      },
+      "times": {
+        "morning": [
+          "07:01",
+          "09:01",
+          "11:01"
+        ],
+        "afternoon": [
+          "13:01",
+          "15:01",
+          "17:01"
+        ],
+        "evening": [
+          "19:01",
+          "21:01",
+          "23:01"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "High Wycombe",
+      "code": "HWY",
+      "coordinates": {
+        "lat": 51.6281,
+        "lng": -0.7481
+      },
+      "times": {
+        "morning": [
+          "07:40",
+          "09:40",
+          "11:40"
+        ],
+        "afternoon": [
+          "13:40",
+          "15:40",
+          "17:40"
+        ],
+        "evening": [
+          "19:40",
+          "21:40",
+          "23:40"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Beaconsfield",
+      "code": "BCF",
+      "coordinates": {
+        "lat": 51.6094,
+        "lng": -0.6394
+      },
+      "times": {
+        "morning": [
+          "08:36",
+          "10:36",
+          "12:36"
+        ],
+        "afternoon": [
+          "14:36",
+          "16:36",
+          "18:36"
+        ],
+        "evening": [
+          "20:36",
+          "22:36",
+          "00:36"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Gerrards Cross",
+      "code": "GER",
+      "coordinates": {
+        "lat": 51.5881,
+        "lng": -0.5581
+      },
+      "times": {
+        "morning": [
+          "07:40",
+          "09:40",
+          "11:40"
+        ],
+        "afternoon": [
+          "13:40",
+          "15:40",
+          "17:40"
+        ],
+        "evening": [
+          "19:40",
+          "21:40",
+          "23:40"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Denham",
+      "code": "DNM",
+      "coordinates": {
+        "lat": 51.5681,
+        "lng": -0.4881
+      },
+      "times": {
+        "morning": [
+          "07:06",
+          "09:06",
+          "11:06"
+        ],
+        "afternoon": [
+          "13:06",
+          "15:06",
+          "17:06"
+        ],
+        "evening": [
+          "19:06",
+          "21:06",
+          "23:06"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Banbury",
+      "code": "BAN",
+      "coordinates": {
+        "lat": 52.0631,
+        "lng": -1.33
+      },
+      "times": {
+        "morning": [
+          "07:42",
+          "09:42",
+          "11:42"
+        ],
+        "afternoon": [
+          "13:42",
+          "15:42",
+          "17:42"
+        ],
+        "evening": [
+          "19:42",
+          "21:42",
+          "23:42"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Leamington Spa",
+      "code": "LMS",
+      "coordinates": {
+        "lat": 52.2881,
+        "lng": -1.5381
+      },
+      "times": {
+        "morning": [
+          "07:32",
+          "09:32",
+          "11:32"
+        ],
+        "afternoon": [
+          "13:32",
+          "15:32",
+          "17:32"
+        ],
+        "evening": [
+          "19:32",
+          "21:32",
+          "23:32"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Warwick",
+      "code": "WRW",
+      "coordinates": {
+        "lat": 52.2881,
+        "lng": -1.5881
+      },
+      "times": {
+        "morning": [
+          "07:34",
+          "09:34",
+          "11:34"
+        ],
+        "afternoon": [
+          "13:34",
+          "15:34",
+          "17:34"
+        ],
+        "evening": [
+          "19:34",
+          "21:34",
+          "23:34"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Warwick Parkway",
+      "code": "WRP",
+      "coordinates": {
+        "lat": 52.3181,
+        "lng": -1.5681
+      },
+      "times": {
+        "morning": [
+          "07:40",
+          "09:40",
+          "11:40"
+        ],
+        "afternoon": [
+          "13:40",
+          "15:40",
+          "17:40"
+        ],
+        "evening": [
+          "19:40",
+          "21:40",
+          "23:40"
+        ],
+        "night": []
+      }
+    }
+  ]
+}

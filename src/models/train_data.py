@@ -143,7 +143,7 @@ class TrainData:
     def format_delay(self) -> str:
         """Format delay information for display."""
         if self.delay_minutes == 0:
-            return "On Time"
+            return "Scheduled"
         elif self.delay_minutes > 0:
             return f"{self.delay_minutes}m Late"
         else:

@@ -1,0 +1,1532 @@
+{
+  "metadata": {
+    "line_name": "Piccadilly Line",
+    "description": "Cockfosters to Heathrow/Uxbridge",
+    "operator": "Transport for London",
+    "total_stations": 53,
+    "line_color": "#003688",
+    "frequency": {
+      "weekday_peak": "Every hour",
+      "weekday_off_peak": "Every 2 hours",
+      "weekend": "Every 2 hours",
+      "night": "No service"
+    }
+  },
+  "stations": [
+    {
+      "name": "Cockfosters",
+      "code": "CFS",
+      "coordinates": {
+        "lat": 51.6517,
+        "lng": -0.1496
+      },
+      "zone": 5,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Oakwood",
+      "code": "OAK",
+      "coordinates": {
+        "lat": 51.6476,
+        "lng": -0.1318
+      },
+      "zone": 5,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:05",
+          "08:05",
+          "10:05"
+        ],
+        "afternoon": [
+          "12:05",
+          "14:05",
+          "16:05"
+        ],
+        "evening": [
+          "18:05",
+          "20:05",
+          "22:05"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Southgate",
+      "code": "SGT",
+      "coordinates": {
+        "lat": 51.6322,
+        "lng": -0.128
+      },
+      "zone": 4,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:17",
+          "08:17",
+          "10:17"
+        ],
+        "afternoon": [
+          "12:17",
+          "14:17",
+          "16:17"
+        ],
+        "evening": [
+          "18:17",
+          "20:17",
+          "22:17"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Arnos Grove",
+      "code": "AGR",
+      "coordinates": {
+        "lat": 51.6164,
+        "lng": -0.1331
+      },
+      "zone": 4,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:41",
+          "08:41",
+          "10:41"
+        ],
+        "afternoon": [
+          "12:41",
+          "14:41",
+          "16:41"
+        ],
+        "evening": [
+          "18:41",
+          "20:41",
+          "22:41"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Bounds Green",
+      "code": "BDS",
+      "coordinates": {
+        "lat": 51.6071,
+        "lng": -0.1243
+      },
+      "zone": 3,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:42",
+          "08:42",
+          "10:42"
+        ],
+        "afternoon": [
+          "12:42",
+          "14:42",
+          "16:42"
+        ],
+        "evening": [
+          "18:42",
+          "20:42",
+          "22:42"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Wood Green",
+      "code": "WGN",
+      "coordinates": {
+        "lat": 51.5975,
+        "lng": -0.1097
+      },
+      "zone": 3,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:39",
+          "08:39",
+          "10:39"
+        ],
+        "afternoon": [
+          "12:39",
+          "14:39",
+          "16:39"
+        ],
+        "evening": [
+          "18:39",
+          "20:39",
+          "22:39"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Turnpike Lane",
+      "code": "TPL",
+      "coordinates": {
+        "lat": 51.5904,
+        "lng": -0.1028
+      },
+      "zone": 3,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:08",
+          "09:08",
+          "11:08"
+        ],
+        "afternoon": [
+          "13:08",
+          "15:08",
+          "17:08"
+        ],
+        "evening": [
+          "19:08",
+          "21:08",
+          "23:08"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Manor House",
+      "code": "MNR",
+      "coordinates": {
+        "lat": 51.5712,
+        "lng": -0.0958
+      },
+      "zone": 2,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:16",
+          "09:16",
+          "11:16"
+        ],
+        "afternoon": [
+          "13:16",
+          "15:16",
+          "17:16"
+        ],
+        "evening": [
+          "19:16",
+          "21:16",
+          "23:16"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Finsbury Park",
+      "code": "FPK",
+      "coordinates": {
+        "lat": 51.5642,
+        "lng": -0.1065
+      },
+      "zone": 2,
+      "interchange": [
+        "Victoria Line",
+        "National Rail"
+      ],
+      "times": {
+        "morning": [
+          "07:46",
+          "09:46",
+          "11:46"
+        ],
+        "afternoon": [
+          "13:46",
+          "15:46",
+          "17:46"
+        ],
+        "evening": [
+          "19:46",
+          "21:46",
+          "23:46"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Arsenal",
+      "code": "ARL",
+      "coordinates": {
+        "lat": 51.5586,
+        "lng": -0.1059
+      },
+      "zone": 2,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:39",
+          "09:39",
+          "11:39"
+        ],
+        "afternoon": [
+          "13:39",
+          "15:39",
+          "17:39"
+        ],
+        "evening": [
+          "19:39",
+          "21:39",
+          "23:39"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Holloway Road",
+      "code": "HRD",
+      "coordinates": {
+        "lat": 51.5526,
+        "lng": -0.1132
+      },
+      "zone": 2,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:11",
+          "10:11",
+          "12:11"
+        ],
+        "afternoon": [
+          "14:11",
+          "16:11",
+          "18:11"
+        ],
+        "evening": [
+          "20:11",
+          "22:11",
+          "00:11"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Caledonian Road",
+      "code": "CRD",
+      "coordinates": {
+        "lat": 51.5481,
+        "lng": -0.1188
+      },
+      "zone": 2,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:11",
+          "10:11",
+          "12:11"
+        ],
+        "afternoon": [
+          "14:11",
+          "16:11",
+          "18:11"
+        ],
+        "evening": [
+          "20:11",
+          "22:11",
+          "00:11"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "King's Cross St. Pancras",
+      "code": "KXX",
+      "coordinates": {
+        "lat": 51.5308,
+        "lng": -0.1238
+      },
+      "zone": 1,
+      "interchange": [
+        "Circle Line",
+        "Hammersmith & City Line",
+        "Metropolitan Line",
+        "Northern Line",
+        "Victoria Line",
+        "National Rail"
+      ],
+      "times": {
+        "morning": [
+          "07:58",
+          "09:58",
+          "11:58"
+        ],
+        "afternoon": [
+          "13:58",
+          "15:58",
+          "17:58"
+        ],
+        "evening": [
+          "19:58",
+          "21:58",
+          "23:58"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Russell Square",
+      "code": "RSQ",
+      "coordinates": {
+        "lat": 51.523,
+        "lng": -0.1244
+      },
+      "zone": 1,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:40",
+          "09:40",
+          "11:40"
+        ],
+        "afternoon": [
+          "13:40",
+          "15:40",
+          "17:40"
+        ],
+        "evening": [
+          "19:40",
+          "21:40",
+          "23:40"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Holborn",
+      "code": "HOL",
+      "coordinates": {
+        "lat": 51.5174,
+        "lng": -0.1203
+      },
+      "zone": 1,
+      "interchange": [
+        "Central Line"
+      ],
+      "times": {
+        "morning": [
+          "07:24",
+          "09:24",
+          "11:24"
+        ],
+        "afternoon": [
+          "13:24",
+          "15:24",
+          "17:24"
+        ],
+        "evening": [
+          "19:24",
+          "21:24",
+          "23:24"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Covent Garden",
+      "code": "COV",
+      "coordinates": {
+        "lat": 51.5129,
+        "lng": -0.1243
+      },
+      "zone": 1,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:43",
+          "10:43",
+          "12:43"
+        ],
+        "afternoon": [
+          "14:43",
+          "16:43",
+          "18:43"
+        ],
+        "evening": [
+          "20:43",
+          "22:43",
+          "00:43"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Leicester Square",
+      "code": "LSQ",
+      "coordinates": {
+        "lat": 51.5112,
+        "lng": -0.1281
+      },
+      "zone": 1,
+      "interchange": [
+        "Northern Line"
+      ],
+      "times": {
+        "morning": [
+          "08:53",
+          "10:53",
+          "12:53"
+        ],
+        "afternoon": [
+          "14:53",
+          "16:53",
+          "18:53"
+        ],
+        "evening": [
+          "20:53",
+          "22:53",
+          "00:53"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Piccadilly Circus",
+      "code": "PIC",
+      "coordinates": {
+        "lat": 51.5098,
+        "lng": -0.1342
+      },
+      "zone": 1,
+      "interchange": [
+        "Bakerloo Line"
+      ],
+      "times": {
+        "morning": [
+          "07:52",
+          "09:52",
+          "11:52"
+        ],
+        "afternoon": [
+          "13:52",
+          "15:52",
+          "17:52"
+        ],
+        "evening": [
+          "19:52",
+          "21:52",
+          "23:52"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Green Park",
+      "code": "GPK",
+      "coordinates": {
+        "lat": 51.5067,
+        "lng": -0.1428
+      },
+      "zone": 1,
+      "interchange": [
+        "Jubilee Line",
+        "Victoria Line"
+      ],
+      "times": {
+        "morning": [
+          "09:00",
+          "11:00",
+          "13:00"
+        ],
+        "afternoon": [
+          "15:00",
+          "17:00",
+          "19:00"
+        ],
+        "evening": [
+          "21:00",
+          "23:00",
+          "01:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Hyde Park Corner",
+      "code": "HPC",
+      "coordinates": {
+        "lat": 51.5027,
+        "lng": -0.1527
+      },
+      "zone": 1,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "09:54",
+          "11:54",
+          "13:54"
+        ],
+        "afternoon": [
+          "15:54",
+          "17:54",
+          "19:54"
+        ],
+        "evening": [
+          "21:54",
+          "23:54",
+          "01:54"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Knightsbridge",
+      "code": "KNB",
+      "coordinates": {
+        "lat": 51.5015,
+        "lng": -0.1607
+      },
+      "zone": 1,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:39",
+          "10:39",
+          "12:39"
+        ],
+        "afternoon": [
+          "14:39",
+          "16:39",
+          "18:39"
+        ],
+        "evening": [
+          "20:39",
+          "22:39",
+          "00:39"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "South Kensington",
+      "code": "SKN",
+      "coordinates": {
+        "lat": 51.4941,
+        "lng": -0.1738
+      },
+      "zone": 1,
+      "interchange": [
+        "Circle Line",
+        "District Line"
+      ],
+      "times": {
+        "morning": [
+          "07:59",
+          "09:59",
+          "11:59"
+        ],
+        "afternoon": [
+          "13:59",
+          "15:59",
+          "17:59"
+        ],
+        "evening": [
+          "19:59",
+          "21:59",
+          "23:59"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Gloucester Road",
+      "code": "GRD",
+      "coordinates": {
+        "lat": 51.4945,
+        "lng": -0.1829
+      },
+      "zone": 1,
+      "interchange": [
+        "Circle Line",
+        "District Line"
+      ],
+      "times": {
+        "morning": [
+          "09:34",
+          "11:34",
+          "13:34"
+        ],
+        "afternoon": [
+          "15:34",
+          "17:34",
+          "19:34"
+        ],
+        "evening": [
+          "21:34",
+          "23:34",
+          "01:34"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Earl's Court",
+      "code": "ECT",
+      "coordinates": {
+        "lat": 51.4915,
+        "lng": -0.1932
+      },
+      "zone": 1,
+      "interchange": [
+        "District Line"
+      ],
+      "times": {
+        "morning": [
+          "08:20",
+          "10:20",
+          "12:20"
+        ],
+        "afternoon": [
+          "14:20",
+          "16:20",
+          "18:20"
+        ],
+        "evening": [
+          "20:20",
+          "22:20",
+          "00:20"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Barons Court",
+      "code": "BCT",
+      "coordinates": {
+        "lat": 51.4905,
+        "lng": -0.2139
+      },
+      "zone": 2,
+      "interchange": [
+        "District Line"
+      ],
+      "times": {
+        "morning": [
+          "08:42",
+          "10:42",
+          "12:42"
+        ],
+        "afternoon": [
+          "14:42",
+          "16:42",
+          "18:42"
+        ],
+        "evening": [
+          "20:42",
+          "22:42",
+          "00:42"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Hammersmith",
+      "code": "HMM",
+      "coordinates": {
+        "lat": 51.4936,
+        "lng": -0.2251
+      },
+      "zone": 2,
+      "interchange": [
+        "District Line",
+        "Circle Line",
+        "Hammersmith & City Line"
+      ],
+      "times": {
+        "morning": [
+          "10:04",
+          "12:04",
+          "14:04"
+        ],
+        "afternoon": [
+          "16:04",
+          "18:04",
+          "20:04"
+        ],
+        "evening": [
+          "22:04",
+          "00:04",
+          "02:04"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Acton Town",
+      "code": "ACT",
+      "coordinates": {
+        "lat": 51.5031,
+        "lng": -0.28
+      },
+      "zone": 3,
+      "interchange": [
+        "District Line"
+      ],
+      "times": {
+        "morning": [
+          "11:16",
+          "13:16",
+          "15:16"
+        ],
+        "afternoon": [
+          "17:16",
+          "19:16",
+          "21:16"
+        ],
+        "evening": [
+          "23:16",
+          "01:16",
+          "03:16"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "South Ealing",
+      "code": "SEL",
+      "coordinates": {
+        "lat": 51.5011,
+        "lng": -0.3072
+      },
+      "zone": 3,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "09:16",
+          "11:16",
+          "13:16"
+        ],
+        "afternoon": [
+          "15:16",
+          "17:16",
+          "19:16"
+        ],
+        "evening": [
+          "21:16",
+          "23:16",
+          "01:16"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Northfields",
+      "code": "NFD",
+      "coordinates": {
+        "lat": 51.4994,
+        "lng": -0.3144
+      },
+      "zone": 3,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:39",
+          "10:39",
+          "12:39"
+        ],
+        "afternoon": [
+          "14:39",
+          "16:39",
+          "18:39"
+        ],
+        "evening": [
+          "20:39",
+          "22:39",
+          "00:39"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Boston Manor",
+      "code": "BOS",
+      "coordinates": {
+        "lat": 51.4956,
+        "lng": -0.3248
+      },
+      "zone": 4,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:50",
+          "10:50",
+          "12:50"
+        ],
+        "afternoon": [
+          "14:50",
+          "16:50",
+          "18:50"
+        ],
+        "evening": [
+          "20:50",
+          "22:50",
+          "00:50"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Osterley",
+      "code": "OST",
+      "coordinates": {
+        "lat": 51.4813,
+        "lng": -0.3522
+      },
+      "zone": 4,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "10:53",
+          "12:53",
+          "14:53"
+        ],
+        "afternoon": [
+          "16:53",
+          "18:53",
+          "20:53"
+        ],
+        "evening": [
+          "22:53",
+          "00:53",
+          "02:53"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Hounslow East",
+      "code": "HNE",
+      "coordinates": {
+        "lat": 51.4733,
+        "lng": -0.3564
+      },
+      "zone": 4,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "12:41",
+          "14:41",
+          "16:41"
+        ],
+        "afternoon": [
+          "18:41",
+          "20:41",
+          "22:41"
+        ],
+        "evening": [
+          "00:41",
+          "02:41",
+          "04:41"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Hounslow Central",
+      "code": "HNC",
+      "coordinates": {
+        "lat": 51.4713,
+        "lng": -0.3665
+      },
+      "zone": 4,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "11:09",
+          "13:09",
+          "15:09"
+        ],
+        "afternoon": [
+          "17:09",
+          "19:09",
+          "21:09"
+        ],
+        "evening": [
+          "23:09",
+          "01:09",
+          "03:09"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Hounslow West",
+      "code": "HNW",
+      "coordinates": {
+        "lat": 51.4734,
+        "lng": -0.3855
+      },
+      "zone": 5,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "11:21",
+          "13:21",
+          "15:21"
+        ],
+        "afternoon": [
+          "17:21",
+          "19:21",
+          "21:21"
+        ],
+        "evening": [
+          "23:21",
+          "01:21",
+          "03:21"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Hatton Cross",
+      "code": "HTC",
+      "coordinates": {
+        "lat": 51.4669,
+        "lng": -0.4227
+      },
+      "zone": 5,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "10:20",
+          "12:20",
+          "14:20"
+        ],
+        "afternoon": [
+          "16:20",
+          "18:20",
+          "20:20"
+        ],
+        "evening": [
+          "22:20",
+          "00:20",
+          "02:20"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Heathrow Terminals 2 & 3",
+      "code": "HXX",
+      "coordinates": {
+        "lat": 51.4713,
+        "lng": -0.4524
+      },
+      "zone": 6,
+      "interchange": [
+        "Elizabeth Line",
+        "Heathrow Express"
+      ],
+      "times": {
+        "morning": [
+          "12:38",
+          "14:38",
+          "16:38"
+        ],
+        "afternoon": [
+          "18:38",
+          "20:38",
+          "22:38"
+        ],
+        "evening": [
+          "00:38",
+          "02:38",
+          "04:38"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Heathrow Terminal 4",
+      "code": "HT4",
+      "coordinates": {
+        "lat": 51.4598,
+        "lng": -0.4476
+      },
+      "zone": 6,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "14:49",
+          "16:49",
+          "18:49"
+        ],
+        "afternoon": [
+          "20:49",
+          "22:49",
+          "00:49"
+        ],
+        "evening": [
+          "02:49",
+          "04:49",
+          "06:49"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Heathrow Terminal 5",
+      "code": "HT5",
+      "coordinates": {
+        "lat": 51.4712,
+        "lng": -0.4887
+      },
+      "zone": 6,
+      "interchange": [
+        "Elizabeth Line",
+        "Heathrow Express"
+      ],
+      "times": {
+        "morning": [
+          "12:45",
+          "14:45",
+          "16:45"
+        ],
+        "afternoon": [
+          "18:45",
+          "20:45",
+          "22:45"
+        ],
+        "evening": [
+          "00:45",
+          "02:45",
+          "04:45"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Ealing Common",
+      "code": "ECM",
+      "coordinates": {
+        "lat": 51.5101,
+        "lng": -0.2882
+      },
+      "zone": 3,
+      "interchange": [
+        "District Line"
+      ],
+      "times": {
+        "morning": [
+          "13:29",
+          "15:29",
+          "17:29"
+        ],
+        "afternoon": [
+          "19:29",
+          "21:29",
+          "23:29"
+        ],
+        "evening": [
+          "01:29",
+          "03:29",
+          "05:29"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "North Ealing",
+      "code": "NEL",
+      "coordinates": {
+        "lat": 51.5175,
+        "lng": -0.2887
+      },
+      "zone": 3,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "10:30",
+          "12:30",
+          "14:30"
+        ],
+        "afternoon": [
+          "16:30",
+          "18:30",
+          "20:30"
+        ],
+        "evening": [
+          "22:30",
+          "00:30",
+          "02:30"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Park Royal",
+      "code": "PRY",
+      "coordinates": {
+        "lat": 51.5274,
+        "lng": -0.2841
+      },
+      "zone": 3,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "10:31",
+          "12:31",
+          "14:31"
+        ],
+        "afternoon": [
+          "16:31",
+          "18:31",
+          "20:31"
+        ],
+        "evening": [
+          "22:31",
+          "00:31",
+          "02:31"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Alperton",
+      "code": "ALP",
+      "coordinates": {
+        "lat": 51.5407,
+        "lng": -0.2997
+      },
+      "zone": 4,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "12:09",
+          "14:09",
+          "16:09"
+        ],
+        "afternoon": [
+          "18:09",
+          "20:09",
+          "22:09"
+        ],
+        "evening": [
+          "00:09",
+          "02:09",
+          "04:09"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Sudbury Town",
+      "code": "SUT",
+      "coordinates": {
+        "lat": 51.5507,
+        "lng": -0.3156
+      },
+      "zone": 4,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "12:03",
+          "14:03",
+          "16:03"
+        ],
+        "afternoon": [
+          "18:03",
+          "20:03",
+          "22:03"
+        ],
+        "evening": [
+          "00:03",
+          "02:03",
+          "04:03"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Sudbury Hill",
+      "code": "SUH",
+      "coordinates": {
+        "lat": 51.5569,
+        "lng": -0.3366
+      },
+      "zone": 4,
+      "interchange": [
+        "National Rail"
+      ],
+      "times": {
+        "morning": [
+          "10:32",
+          "12:32",
+          "14:32"
+        ],
+        "afternoon": [
+          "16:32",
+          "18:32",
+          "20:32"
+        ],
+        "evening": [
+          "22:32",
+          "00:32",
+          "02:32"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "South Harrow",
+      "code": "SHR",
+      "coordinates": {
+        "lat": 51.5646,
+        "lng": -0.3521
+      },
+      "zone": 5,
+      "interchange": [],
+      "times": {
+        "morning": [
+          "15:57",
+          "17:57",
+          "19:57"
+        ],
+        "afternoon": [
+          "21:57",
+          "23:57",
+          "01:57"
+        ],
+        "evening": [
+          "03:57",
+          "05:57",
+          "07:57"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Rayners Lane",
+      "code": "RLN",
+      "coordinates": {
+        "lat": 51.5753,
+        "lng": -0.3714
+      },
+      "zone": 5,
+      "interchange": [
+        "Metropolitan Line"
+      ],
+      "times": {
+        "morning": [
+          "10:03",
+          "12:03",
+          "14:03"
+        ],
+        "afternoon": [
+          "16:03",
+          "18:03",
+          "20:03"
+        ],
+        "evening": [
+          "22:03",
+          "00:03",
+          "02:03"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Eastcote",
+      "code": "EAS",
+      "coordinates": {
+        "lat": 51.5765,
+        "lng": -0.3971
+      },
+      "zone": 5,
+      "interchange": [
+        "Metropolitan Line"
+      ],
+      "times": {
+        "morning": [
+          "09:56",
+          "11:56",
+          "13:56"
+        ],
+        "afternoon": [
+          "15:56",
+          "17:56",
+          "19:56"
+        ],
+        "evening": [
+          "21:56",
+          "23:56",
+          "01:56"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Ruislip Manor",
+      "code": "RUM",
+      "coordinates": {
+        "lat": 51.5732,
+        "lng": -0.4125
+      },
+      "zone": 6,
+      "interchange": [
+        "Metropolitan Line"
+      ],
+      "times": {
+        "morning": [
+          "11:08",
+          "13:08",
+          "15:08"
+        ],
+        "afternoon": [
+          "17:08",
+          "19:08",
+          "21:08"
+        ],
+        "evening": [
+          "23:08",
+          "01:08",
+          "03:08"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Ruislip",
+      "code": "RUI",
+      "coordinates": {
+        "lat": 51.5715,
+        "lng": -0.4213
+      },
+      "zone": 6,
+      "interchange": [
+        "Metropolitan Line"
+      ],
+      "times": {
+        "morning": [
+          "10:05",
+          "12:05",
+          "14:05"
+        ],
+        "afternoon": [
+          "16:05",
+          "18:05",
+          "20:05"
+        ],
+        "evening": [
+          "22:05",
+          "00:05",
+          "02:05"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Ickenham",
+      "code": "ICK",
+      "coordinates": {
+        "lat": 51.5619,
+        "lng": -0.4421
+      },
+      "zone": 6,
+      "interchange": [
+        "Metropolitan Line"
+      ],
+      "times": {
+        "morning": [
+          "14:05",
+          "16:05",
+          "18:05"
+        ],
+        "afternoon": [
+          "20:05",
+          "22:05",
+          "00:05"
+        ],
+        "evening": [
+          "02:05",
+          "04:05",
+          "06:05"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Hillingdon",
+      "code": "HIL",
+      "coordinates": {
+        "lat": 51.5538,
+        "lng": -0.4499
+      },
+      "zone": 6,
+      "interchange": [
+        "Metropolitan Line"
+      ],
+      "times": {
+        "morning": [
+          "12:08",
+          "14:08",
+          "16:08"
+        ],
+        "afternoon": [
+          "18:08",
+          "20:08",
+          "22:08"
+        ],
+        "evening": [
+          "00:08",
+          "02:08",
+          "04:08"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Uxbridge",
+      "code": "UXB",
+      "coordinates": {
+        "lat": 51.5463,
+        "lng": -0.4786
+      },
+      "zone": 6,
+      "interchange": [
+        "Metropolitan Line"
+      ],
+      "times": {
+        "morning": [
+          "11:36",
+          "13:36",
+          "15:36"
+        ],
+        "afternoon": [
+          "17:36",
+          "19:36",
+          "21:36"
+        ],
+        "evening": [
+          "23:36",
+          "01:36",
+          "03:36"
+        ],
+        "night": []
+      }
+    }
+  ]
+}

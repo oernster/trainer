@@ -1,0 +1,509 @@
+{
+  "metadata": {
+    "line_name": "Merseyrail Wirral Line",
+    "description": "Merseyrail's Wirral Line serving the Wirral Peninsula from Liverpool",
+    "operator": "Merseyrail",
+    "total_stations": 15,
+    "typical_frequency": "Every 15 minutes",
+    "peak_hours": "07:00-09:00, 17:00-19:00",
+    "frequency": {
+      "weekday_peak": "Every 15 minutes",
+      "weekday_off_peak": "Every 30 minutes",
+      "weekend": "Every 30 minutes",
+      "night": "No service"
+    }
+  },
+  "typical_journey_times": {
+    "LVC-HMS": 8,
+    "HMS-BHM": 3,
+    "BHM-GNL": 2,
+    "GNL-RFY": 3,
+    "RFY-PSL": 2,
+    "PSL-SPT": 2,
+    "SPT-BEB": 2,
+    "BEB-EHR": 3,
+    "EHR-BMB": 2,
+    "BMB-BMR": 2,
+    "BMR-CVP": 5,
+    "CVP-BHN": 3,
+    "BHN-WGR": 2,
+    "WGR-WLV": 2,
+    "WLV-NBN": 3,
+    "LVC-NBN": 45
+  },
+  "typical_services": {
+    "peak_frequency": "Every 15 minutes",
+    "off_peak_frequency": "Every 30 minutes",
+    "evening_frequency": "Every 30 minutes",
+    "weekend_frequency": "Every 30 minutes",
+    "first_train": "05:30",
+    "last_train": "23:30"
+  },
+  "stations": [
+    {
+      "name": "Liverpool Central",
+      "code": "LVC",
+      "coordinates": {
+        "lat": 53.4044,
+        "lng": -2.9925
+      },
+      "interchange": [
+        "Merseyrail",
+        "Northern Rail"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Hamilton Square",
+      "code": "HMS",
+      "coordinates": {
+        "lat": 53.3939,
+        "lng": -3.0133
+      },
+      "interchange": [
+        "Merseyrail"
+      ],
+      "times": {
+        "morning": [
+          "06:08",
+          "08:08",
+          "10:08"
+        ],
+        "afternoon": [
+          "12:08",
+          "14:08",
+          "16:08"
+        ],
+        "evening": [
+          "18:08",
+          "20:08",
+          "22:08"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Birkenhead Central",
+      "code": "BHM",
+      "coordinates": {
+        "lat": 53.3889,
+        "lng": -3.0181
+      },
+      "interchange": [
+        "Merseyrail"
+      ],
+      "times": {
+        "morning": [
+          "06:11",
+          "08:11",
+          "10:11"
+        ],
+        "afternoon": [
+          "12:11",
+          "14:11",
+          "16:11"
+        ],
+        "evening": [
+          "18:11",
+          "20:11",
+          "22:11"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Green Lane",
+      "code": "GNL",
+      "coordinates": {
+        "lat": 53.3856,
+        "lng": -3.0203
+      },
+      "interchange": [
+        "Merseyrail"
+      ],
+      "times": {
+        "morning": [
+          "06:13",
+          "08:13",
+          "10:13"
+        ],
+        "afternoon": [
+          "12:13",
+          "14:13",
+          "16:13"
+        ],
+        "evening": [
+          "18:13",
+          "20:13",
+          "22:13"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Rock Ferry",
+      "code": "RFY",
+      "coordinates": {
+        "lat": 53.3719,
+        "lng": -3.0181
+      },
+      "interchange": [
+        "Merseyrail"
+      ],
+      "times": {
+        "morning": [
+          "06:16",
+          "08:16",
+          "10:16"
+        ],
+        "afternoon": [
+          "12:16",
+          "14:16",
+          "16:16"
+        ],
+        "evening": [
+          "18:16",
+          "20:16",
+          "22:16"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Port Sunlight",
+      "code": "PSL",
+      "coordinates": {
+        "lat": 53.3581,
+        "lng": -3.0069
+      },
+      "interchange": [
+        "Merseyrail"
+      ],
+      "times": {
+        "morning": [
+          "06:18",
+          "08:18",
+          "10:18"
+        ],
+        "afternoon": [
+          "12:18",
+          "14:18",
+          "16:18"
+        ],
+        "evening": [
+          "18:18",
+          "20:18",
+          "22:18"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Spital",
+      "code": "SPT",
+      "coordinates": {
+        "lat": 53.3481,
+        "lng": -3.0069
+      },
+      "interchange": [
+        "Merseyrail"
+      ],
+      "times": {
+        "morning": [
+          "06:20",
+          "08:20",
+          "10:20"
+        ],
+        "afternoon": [
+          "12:20",
+          "14:20",
+          "16:20"
+        ],
+        "evening": [
+          "18:20",
+          "20:20",
+          "22:20"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Bebington",
+      "code": "BEB",
+      "coordinates": {
+        "lat": 53.3481,
+        "lng": -3.0069
+      },
+      "interchange": [
+        "Merseyrail"
+      ],
+      "times": {
+        "morning": [
+          "06:22",
+          "08:22",
+          "10:22"
+        ],
+        "afternoon": [
+          "12:22",
+          "14:22",
+          "16:22"
+        ],
+        "evening": [
+          "18:22",
+          "20:22",
+          "22:22"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Eastham Rake",
+      "code": "EHR",
+      "coordinates": {
+        "lat": 53.3281,
+        "lng": -2.9681
+      },
+      "interchange": [
+        "Merseyrail"
+      ],
+      "times": {
+        "morning": [
+          "06:25",
+          "08:25",
+          "10:25"
+        ],
+        "afternoon": [
+          "12:25",
+          "14:25",
+          "16:25"
+        ],
+        "evening": [
+          "18:25",
+          "20:25",
+          "22:25"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Bromborough",
+      "code": "BMB",
+      "coordinates": {
+        "lat": 53.3181,
+        "lng": -2.9581
+      },
+      "interchange": [
+        "Merseyrail"
+      ],
+      "times": {
+        "morning": [
+          "06:27",
+          "08:27",
+          "10:27"
+        ],
+        "afternoon": [
+          "12:27",
+          "14:27",
+          "16:27"
+        ],
+        "evening": [
+          "18:27",
+          "20:27",
+          "22:27"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Bromborough Rake",
+      "code": "BMR",
+      "coordinates": {
+        "lat": 53.3081,
+        "lng": -2.9481
+      },
+      "interchange": [
+        "Merseyrail"
+      ],
+      "times": {
+        "morning": [
+          "06:29",
+          "08:29",
+          "10:29"
+        ],
+        "afternoon": [
+          "12:29",
+          "14:29",
+          "16:29"
+        ],
+        "evening": [
+          "18:29",
+          "20:29",
+          "22:29"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Conway Park",
+      "code": "CVP",
+      "coordinates": {
+        "lat": 53.3981,
+        "lng": -3.0381
+      },
+      "interchange": [
+        "Merseyrail"
+      ],
+      "times": {
+        "morning": [
+          "06:34",
+          "08:34",
+          "10:34"
+        ],
+        "afternoon": [
+          "12:34",
+          "14:34",
+          "16:34"
+        ],
+        "evening": [
+          "18:34",
+          "20:34",
+          "22:34"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Birkenhead North",
+      "code": "BHN",
+      "coordinates": {
+        "lat": 53.4081,
+        "lng": -3.0481
+      },
+      "interchange": [
+        "Merseyrail"
+      ],
+      "times": {
+        "morning": [
+          "06:37",
+          "08:37",
+          "10:37"
+        ],
+        "afternoon": [
+          "12:37",
+          "14:37",
+          "16:37"
+        ],
+        "evening": [
+          "18:37",
+          "20:37",
+          "22:37"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Wallasey Grove Road",
+      "code": "WGR",
+      "coordinates": {
+        "lat": 53.4181,
+        "lng": -3.0581
+      },
+      "interchange": [
+        "Merseyrail"
+      ],
+      "times": {
+        "morning": [
+          "06:39",
+          "08:39",
+          "10:39"
+        ],
+        "afternoon": [
+          "12:39",
+          "14:39",
+          "16:39"
+        ],
+        "evening": [
+          "18:39",
+          "20:39",
+          "22:39"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Wallasey Village",
+      "code": "WLV",
+      "coordinates": {
+        "lat": 53.4281,
+        "lng": -3.0681
+      },
+      "interchange": [
+        "Merseyrail"
+      ],
+      "times": {
+        "morning": [
+          "06:41",
+          "08:41",
+          "10:41"
+        ],
+        "afternoon": [
+          "12:41",
+          "14:41",
+          "16:41"
+        ],
+        "evening": [
+          "18:41",
+          "20:41",
+          "22:41"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "New Brighton",
+      "code": "NBN",
+      "coordinates": {
+        "lat": 53.4381,
+        "lng": -3.0781
+      },
+      "interchange": [
+        "Merseyrail"
+      ],
+      "times": {
+        "morning": [
+          "06:44",
+          "08:44",
+          "10:44"
+        ],
+        "afternoon": [
+          "12:44",
+          "14:44",
+          "16:44"
+        ],
+        "evening": [
+          "18:44",
+          "20:44",
+          "22:44"
+        ],
+        "night": []
+      }
+    }
+  ]
+}
