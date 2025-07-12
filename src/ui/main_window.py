@@ -600,14 +600,16 @@ class MainWindow(QMainWindow):
 
         # Update weather widget
         if self.weather_widget:
-            # Create theme colors dictionary for weather widget with transparent items
+            # Create theme colors dictionary for weather widget
             theme_colors = {
                 "background_primary": "#1a1a1a" if theme_name == "dark" else "#ffffff",
-                "background_secondary": "transparent",  # Make weather items transparent
-                "background_hover": "rgba(79, 195, 247, 0.2)",  # Light blue hover
+                "background_secondary": (
+                    "#2d2d2d" if theme_name == "dark" else "#f5f5f5"
+                ),
+                "background_hover": "#404040" if theme_name == "dark" else "#e0e0e0",
                 "text_primary": "#ffffff" if theme_name == "dark" else "#000000",
                 "primary_accent": "#4fc3f7",
-                "border_primary": "transparent",  # Remove borders from weather items
+                "border_primary": "#404040" if theme_name == "dark" else "#cccccc",
             }
             self.weather_widget.apply_theme(theme_colors)
 
@@ -674,11 +676,13 @@ class MainWindow(QMainWindow):
                 "background_primary": (
                     "#1a1a1a" if current_theme == "dark" else "#ffffff"
                 ),
-                "background_secondary": "transparent",  # Make weather items transparent
-                "background_hover": "rgba(79, 195, 247, 0.2)",  # Light blue hover
+                "background_secondary": (
+                    "#2d2d2d" if current_theme == "dark" else "#f5f5f5"
+                ),
+                "background_hover": "#404040" if current_theme == "dark" else "#e0e0e0",
                 "text_primary": "#ffffff" if current_theme == "dark" else "#000000",
                 "primary_accent": "#4fc3f7",
-                "border_primary": "transparent",  # Remove borders from weather items
+                "border_primary": "#404040" if current_theme == "dark" else "#cccccc",
             }
             self.weather_widget.apply_theme(theme_colors)
 

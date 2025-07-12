@@ -239,32 +239,22 @@ class WeatherItemWidget(WeatherDisplayComponent):
             return
 
         # Get theme colors with fallbacks
-        bg_color = self._theme_colors.get("background_secondary", "#2d2d2d")
-        border_color = self._theme_colors.get("border_primary", "#404040")
         text_color = self._theme_colors.get("text_primary", "#ffffff")
         hover_color = self._theme_colors.get("background_hover", "#404040")
         accent_color = self._theme_colors.get("primary_accent", "#4fc3f7")
 
-        # Handle transparent background properly
-        if bg_color == "transparent":
-            bg_style = "background: transparent;"
-            border_style = "border: none;" if border_color == "transparent" else f"border: 1px solid {border_color};"
-        else:
-            bg_style = f"background-color: {bg_color};"
-            border_style = f"border: 1px solid {border_color};"
-
-        # Apply styling with no padding - spacing controlled by layout margins
+        # Apply styling with completely transparent background
         style = f"""
         WeatherItemWidget {{
-            {bg_style}
-            {border_style}
+            background: transparent;
+            border: none;
             border-radius: 12px;
             color: {text_color};
             padding: 0px;
         }}
         WeatherItemWidget:hover {{
             background-color: {hover_color};
-            border-color: {accent_color};
+            border: 1px solid {accent_color};
         }}
         QLabel {{
             color: {text_color};
@@ -380,22 +370,12 @@ class WeatherForecastWidget(QWidget):
         for item in self._weather_items:
             item.apply_theme(theme_colors)
 
-        # Apply theme directly with !important to force rounded corners
-        bg_color = theme_colors.get("background_primary", "#1a1a1a")
-        border_color = theme_colors.get("border_primary", "#404040")
-
-        # Handle transparent border properly
-        if border_color == "transparent":
-            border_style = "border: none !important;"
-        else:
-            border_style = f"border: 1px solid {border_color} !important;"
-
-        # Force rounded corners with !important
+        # Make the forecast container completely transparent to allow weather items to blend with main window
         self.setStyleSheet(
             f"""
-            background-color: {bg_color} !important;
-            {border_style}
-            border-radius: 12px !important;
+            background: transparent !important;
+            border: none !important;
+            border-radius: 0px !important;
             margin: 0px !important;
             padding: 0px !important;
         """
@@ -563,21 +543,23 @@ class WeatherWidget(QWidget):
         if self._weekly_label:
             self._weekly_label.setStyleSheet(label_style)
 
-        # Apply theme to main widget WITHOUT borders - let children handle their own borders
+        # Apply theme to main widget - make completely transparent to blend with main window
         widget_style = f"""
         WeatherWidget {{
-            background-color: {bg_color};
+            background: transparent;
             border: none;
             border-radius: 0px;
             margin: 0px;
             padding: 0px;
         }}
         WeatherWidget QWidget {{
+            background: transparent;
             border: none;
             margin: 0px;
             padding: 0px;
         }}
         WeatherWidget QFrame {{
+            background: transparent;
             border: none;
             margin: 0px;
             padding: 0px;
