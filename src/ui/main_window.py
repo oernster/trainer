@@ -49,7 +49,7 @@ class MainWindow(QMainWindow):
     Features:
     - Light/Dark theme switching (defaults to dark)
     - Unicode train emoji (🚂) in window title and about dialog
-    - Real-time train data display
+    - Scheduled train data display
     - 16-hour time window
     - Automatic and manual refresh
     """
@@ -93,6 +93,7 @@ class MainWindow(QMainWindow):
         self.weather_widget: Optional[WeatherWidget] = None
         self.astronomy_widget: Optional[AstronomyWidget] = None
         self.theme_button: Optional[QPushButton] = None
+        self.astronomy_button: Optional[QPushButton] = None
 
         # Managers
         self.weather_manager: Optional[WeatherManager] = None
@@ -145,22 +146,42 @@ class MainWindow(QMainWindow):
         self.is_small_screen = screen_width <= 1440 or screen_height <= 900
         self.ui_scale_factor = 0.8 if self.is_small_screen else 1.0
         
+        # Check if astronomy is enabled to determine window height
+        astronomy_enabled = (
+            self.config and
+            hasattr(self.config, 'astronomy') and
+            self.config.astronomy and
+            self.config.astronomy.enabled
+        )
+        
         if self.is_small_screen:
             # Further reduced height for 13" MacBook compatibility but increased width for astronomy widget
             min_width = int(900 * 0.8)  # 720
-            min_height = int(950 * 0.8)  # 760
             default_width = int(1100 * 0.8)  # 880
-            default_height = int(1050 * 0.8)  # 840
             
-            logger.info(f"Small screen detected ({screen_width}x{screen_height}), using scaled window size: {default_width}x{default_height}")
+            if astronomy_enabled:
+                min_height = int(950 * 0.8)  # 760
+                default_height = int(1050 * 0.8)  # 840
+            else:
+                # Compact height when astronomy disabled
+                min_height = int(700 * 0.8)  # 560
+                default_height = int(800 * 0.8)  # 640
+            
+            logger.info(f"Small screen detected ({screen_width}x{screen_height}), using scaled window size: {default_width}x{default_height} (astronomy {'enabled' if astronomy_enabled else 'disabled'})")
         else:
             # Increased width for larger screens to accommodate astronomy widget
             min_width = 900
-            min_height = 1100
             default_width = 1100
-            default_height = 1200
             
-            logger.debug(f"Large screen detected ({screen_width}x{screen_height}), using full window size: {default_width}x{default_height}")
+            if astronomy_enabled:
+                min_height = 1100
+                default_height = 1200
+            else:
+                # Compact height when astronomy disabled
+                min_height = 800
+                default_height = 900
+            
+            logger.debug(f"Large screen detected ({screen_width}x{screen_height}), using full window size: {default_width}x{default_height} (astronomy {'enabled' if astronomy_enabled else 'disabled'})")
         
         self.setMinimumSize(min_width, min_height)
         self.resize(default_width, default_height)
@@ -192,12 +213,10 @@ class MainWindow(QMainWindow):
         ):
             self.weather_widget.hide()
 
-        # Astronomy widget (always create, show/hide based on config)
+        # Astronomy widget (create and conditionally add to layout based on config)
         self.astronomy_widget = AstronomyWidget(scale_factor=self.ui_scale_factor)
-        layout.addWidget(self.astronomy_widget)
 
-        # Always show astronomy widget by default - it will show placeholder content if no API key
-        # Only hide if explicitly disabled in config
+        # Only add to layout if astronomy is enabled - this prevents wasted space
         should_show_astronomy = True
         if (
             self.config
@@ -208,11 +227,12 @@ class MainWindow(QMainWindow):
             should_show_astronomy = False
         
         if should_show_astronomy:
+            layout.addWidget(self.astronomy_widget)
             self.astronomy_widget.show()
-            logger.debug("Astronomy widget shown (will show placeholder if no API key)")
+            logger.debug("Astronomy widget added to layout and shown")
         else:
-            self.astronomy_widget.hide()
-            logger.info("Astronomy widget hidden (disabled in config)")
+            # Don't add to layout when disabled - this saves vertical space
+            logger.info("Astronomy widget not added to layout (disabled in config)")
 
         # Train list with extended capacity and reduced height for small screens
         self.train_list_widget = TrainListWidget(max_trains=50)
@@ -228,8 +248,8 @@ class MainWindow(QMainWindow):
         # Menu bar
         self.setup_menu_bar()
         
-        # Standalone theme button in top-right corner
-        self.setup_theme_button()
+        # Standalone header buttons in top-right corner
+        self.setup_header_buttons()
 
     def setup_application_icon(self):
         """Setup application icon using Unicode train emoji."""
@@ -345,30 +365,54 @@ class MainWindow(QMainWindow):
         # Apply menu bar styling
         self.apply_menu_bar_styling(menubar)
 
-    def setup_theme_button(self):
-        """Setup standalone theme toggle button in top-right corner."""
-        # Create theme button as a child of the main window
+    def setup_header_buttons(self):
+        """Setup header buttons (theme and astronomy toggle) in top-right corner."""
+        # Create theme button
         self.theme_button = QPushButton(self.theme_manager.get_theme_icon(), self)
         self.theme_button.clicked.connect(self.toggle_theme)
         self.theme_button.setToolTip(self.theme_manager.get_theme_tooltip())
         self.theme_button.setFixedSize(32, 32)
         
-        # Apply styling to the theme button
-        self.apply_theme_button_styling()
+        # Create astronomy toggle button
+        self.astronomy_button = QPushButton(self.get_astronomy_icon(), self)
+        self.astronomy_button.clicked.connect(self.toggle_astronomy)
+        self.astronomy_button.setToolTip(self.get_astronomy_tooltip())
+        self.astronomy_button.setFixedSize(32, 32)
         
-        # Position the button in the top-right corner
-        # We'll update the position in resizeEvent to keep it positioned correctly
-        self.position_theme_button()
+        # Apply styling to both buttons
+        self.apply_header_button_styling()
         
-        # Make sure the button stays on top
+        # Position the buttons in the top-right corner
+        self.position_header_buttons()
+        
+        # Make sure the buttons stay on top
         self.theme_button.raise_()
+        self.astronomy_button.raise_()
         self.theme_button.show()
+        self.astronomy_button.show()
 
-    def apply_theme_button_styling(self):
-        """Apply styling to the standalone theme button."""
-        if not self.theme_button:
-            return
-            
+    def get_astronomy_icon(self):
+        """Get astronomy button icon based on current state."""
+        if (self.config and
+            hasattr(self.config, 'astronomy') and
+            self.config.astronomy and
+            self.config.astronomy.enabled):
+            return "🌏"  # Earth/space when enabled
+        else:
+            return "🔭"  # Telescope when disabled (to enable)
+
+    def get_astronomy_tooltip(self):
+        """Get astronomy button tooltip based on current state."""
+        if (self.config and
+            hasattr(self.config, 'astronomy') and
+            self.config.astronomy and
+            self.config.astronomy.enabled):
+            return "Astronomy enabled - click to disable"
+        else:
+            return "Astronomy disabled - click to enable"
+
+    def apply_header_button_styling(self):
+        """Apply styling to header buttons (theme and astronomy)."""
         # Get current theme colors
         if self.theme_manager.current_theme == "dark":
             button_style = """
@@ -381,10 +425,10 @@ class MainWindow(QMainWindow):
             }
             QPushButton:hover {
                 background-color: #404040;
-                border-color: #4fc3f7;
+                border-color: #1976d2;
             }
             QPushButton:pressed {
-                background-color: #4fc3f7;
+                background-color: #1976d2;
             }
             """
         else:
@@ -398,23 +442,128 @@ class MainWindow(QMainWindow):
             }
             QPushButton:hover {
                 background-color: #e0e0e0;
-                border-color: #4fc3f7;
+                border-color: #1976d2;
             }
             QPushButton:pressed {
-                background-color: #4fc3f7;
+                background-color: #1976d2;
                 color: #ffffff;
             }
             """
         
-        self.theme_button.setStyleSheet(button_style)
+        if self.theme_button:
+            self.theme_button.setStyleSheet(button_style)
+        if self.astronomy_button:
+            self.astronomy_button.setStyleSheet(button_style)
+
+    def apply_theme_button_styling(self):
+        """Apply styling to the standalone theme button (legacy method)."""
+        # Delegate to the new header button styling method
+        self.apply_header_button_styling()
+
+    def position_header_buttons(self):
+        """Position header buttons (theme and astronomy) in the top-right corner."""
+        button_width = 32
+        button_spacing = 8
+        right_margin = 8
+        top_margin = 8
+        
+        if self.astronomy_button:
+            # Astronomy button (rightmost)
+            astro_x = self.width() - button_width - right_margin
+            self.astronomy_button.move(astro_x, top_margin)
+        
+        if self.theme_button:
+            # Theme button (left of astronomy button)
+            theme_x = self.width() - (button_width * 2) - button_spacing - right_margin
+            self.theme_button.move(theme_x, top_margin)
 
     def position_theme_button(self):
-        """Position the theme button in the top-right corner."""
-        if self.theme_button:
-            # Position 8 pixels from the right edge and 8 pixels from the top
-            x = self.width() - self.theme_button.width() - 8
-            y = 8
-            self.theme_button.move(x, y)
+        """Position the theme button (legacy method)."""
+        # Delegate to the new header button positioning method
+        self.position_header_buttons()
+
+    def _update_window_size_for_astronomy(self):
+        """Update window size and center window based on astronomy enabled state (legacy method)."""
+        # Delegate to the new unified method
+        self._update_window_size_for_widgets()
+
+    def _update_window_size_for_widgets(self):
+        """Update window size and center window based on currently visible widgets."""
+        # Determine which widgets are currently visible by checking layout presence
+        weather_visible = False
+        astronomy_visible = False
+        
+        central_widget = self.centralWidget()
+        if central_widget:
+            layout = central_widget.layout()
+            if layout:
+                # Check if weather widget is in layout and visible
+                if self.weather_widget:
+                    for i in range(layout.count()):
+                        item = layout.itemAt(i)
+                        if item and item.widget() == self.weather_widget:
+                            weather_visible = self.weather_widget.isVisible()
+                            break
+                
+                # Check if astronomy widget is in layout and visible
+                if self.astronomy_widget:
+                    for i in range(layout.count()):
+                        item = layout.itemAt(i)
+                        if item and item.widget() == self.astronomy_widget:
+                            astronomy_visible = self.astronomy_widget.isVisible()
+                            break
+        
+        # Calculate target height with AGGRESSIVE differences for dramatic visible changes
+        if self.is_small_screen:
+            # Small screen calculations (scaled by 0.8) - aggressive sizing
+            if weather_visible and astronomy_visible:
+                target_height = int(1200 * 0.8)  # 960 - both widgets (full height)
+            elif weather_visible:
+                target_height = int(725 * 0.8)   # 580 - weather only (HALF + 1/8th + 50px for proper display)
+            elif astronomy_visible:
+                target_height = int(600 * 0.8)   # 480 - astronomy only (HALF height)
+            else:
+                target_height = int(450 * 0.8)   # 360 - trains only (QUARTER height + 150px for perfect usability)
+        else:
+            # Large screen calculations - aggressive sizing
+            if weather_visible and astronomy_visible:
+                target_height = 1200  # Both widgets (full height)
+            elif weather_visible:
+                target_height = 725   # Weather only (HALF + 1/8th + 50px for proper display)
+            elif astronomy_visible:
+                target_height = 600   # Astronomy only (HALF height)
+            else:
+                target_height = 450   # Trains only (QUARTER height + 150px for perfect usability)
+        
+        # Always force resize regardless of current size
+        current_height = self.height()
+        current_width = self.width()
+        
+        # CRITICAL FIX: Temporarily remove minimum size constraint to allow ultra-aggressive shrinking
+        self.setMinimumSize(0, 0)
+        
+        # Force resize to target height
+        self.resize(current_width, target_height)
+        
+        # CRITICAL FIX: Restore a reasonable minimum size but much smaller than before
+        # This allows the ultra-tiny sizes while preventing complete collapse
+        min_width = 400  # Reasonable minimum width
+        min_height = 100  # Very small minimum height to allow ultra-aggressive shrinking
+        self.setMinimumSize(min_width, min_height)
+        
+        # Center the window on screen after resizing
+        self.center_window()
+        
+        # Log the resize with widget status
+        widget_status = []
+        if weather_visible:
+            widget_status.append("weather")
+        if astronomy_visible:
+            widget_status.append("astronomy")
+        if not widget_status:
+            widget_status.append("trains only")
+        
+        logger.info(f"Window FORCED resize from {current_width}x{current_height} to {current_width}x{target_height} and recentered (visible: {', '.join(widget_status)})")
 
     def setup_theme_system(self):
         """Setup theme switching system."""
@@ -587,15 +736,65 @@ class MainWindow(QMainWindow):
             except ConfigurationError as e:
                 logger.error(f"Failed to save theme setting: {e}")
 
+    def toggle_astronomy(self):
+        """Toggle astronomy integration with smart API key detection."""
+        if not self.config:
+            logger.warning("Cannot toggle astronomy: no configuration available")
+            return
+            
+        # Check if astronomy config exists
+        if not hasattr(self.config, 'astronomy') or not self.config.astronomy:
+            logger.warning("Cannot toggle astronomy: no astronomy configuration available")
+            return
+            
+        # Smart toggle logic: check for API key if trying to enable
+        current_enabled = self.config.astronomy.enabled
+        
+        if not current_enabled and not self.config.astronomy.has_valid_api_key():
+            # User wants to enable but no API key - launch settings dialog
+            logger.info("Astronomy toggle requested but no API key - launching NASA settings dialog")
+            self.show_nasa_settings_dialog()
+            return
+            
+        # Direct toggle - API key is available or user is disabling
+        self.config.astronomy.enabled = not current_enabled
+        
+        try:
+            self.config_manager.save_config(self.config)
+            logger.info(f"Astronomy {'enabled' if self.config.astronomy.enabled else 'disabled'}")
+            
+            # Update button appearance
+            if self.astronomy_button:
+                self.astronomy_button.setText(self.get_astronomy_icon())
+                self.astronomy_button.setToolTip(self.get_astronomy_tooltip())
+            
+            # Handle layout and window resize directly for immediate toggle
+            if self.config.astronomy.enabled:
+                # Enabling astronomy - add widget and resize window
+                self._ensure_astronomy_widget_in_layout()
+                self._update_window_size_for_widgets()
+            else:
+                # Disabling astronomy - remove widget and resize window
+                self._remove_astronomy_widget_from_layout()
+                self._update_window_size_for_widgets()
+            
+        except ConfigurationError as e:
+            logger.error(f"Failed to save astronomy setting: {e}")
+            # Revert the change
+            self.config.astronomy.enabled = current_enabled
+
     def on_theme_changed(self, theme_name: str):
         """Handle theme change."""
         self.apply_theme()
 
-        # Update theme button
+        # Update header buttons
         if self.theme_button:
             self.theme_button.setText(self.theme_manager.get_theme_icon())
             self.theme_button.setToolTip(self.theme_manager.get_theme_tooltip())
-            self.apply_theme_button_styling()
+        if self.astronomy_button:
+            self.astronomy_button.setText(self.get_astronomy_icon())
+            self.astronomy_button.setToolTip(self.get_astronomy_tooltip())
+        self.apply_header_button_styling()
 
         # Update menu bar styling
         menubar = self.menuBar()
@@ -616,7 +815,7 @@ class MainWindow(QMainWindow):
                 ),
                 "background_hover": "#404040" if theme_name == "dark" else "#e0e0e0",
                 "text_primary": "#ffffff" if theme_name == "dark" else "#000000",
-                "primary_accent": "#4fc3f7",
+                "primary_accent": "#1976d2",
                 "border_primary": "#404040" if theme_name == "dark" else "#cccccc",
             }
             self.weather_widget.apply_theme(theme_colors)
@@ -631,7 +830,7 @@ class MainWindow(QMainWindow):
                 ),
                 "background_hover": "#404040" if theme_name == "dark" else "#e0e0e0",
                 "text_primary": "#ffffff" if theme_name == "dark" else "#000000",
-                "primary_accent": "#4fc3f7",
+                "primary_accent": "#1976d2",
                 "border_primary": "#404040" if theme_name == "dark" else "#cccccc",
             }
             self.astronomy_widget.apply_theme(theme_colors)
@@ -689,7 +888,7 @@ class MainWindow(QMainWindow):
                 ),
                 "background_hover": "#404040" if current_theme == "dark" else "#e0e0e0",
                 "text_primary": "#ffffff" if current_theme == "dark" else "#000000",
-                "primary_accent": "#4fc3f7",
+                "primary_accent": "#1976d2",
                 "border_primary": "#404040" if current_theme == "dark" else "#cccccc",
             }
             self.weather_widget.apply_theme(theme_colors)
@@ -705,7 +904,7 @@ class MainWindow(QMainWindow):
                 ),
                 "background_hover": "#404040" if current_theme == "dark" else "#e0e0e0",
                 "text_primary": "#ffffff" if current_theme == "dark" else "#000000",
-                "primary_accent": "#4fc3f7",
+                "primary_accent": "#1976d2",
                 "border_primary": "#404040" if current_theme == "dark" else "#cccccc",
             }
             self.astronomy_widget.apply_theme(theme_colors)
@@ -932,7 +1131,7 @@ class MainWindow(QMainWindow):
     def show_stations_settings_dialog(self):
         """Show stations settings dialog."""
         try:
-            dialog = StationsSettingsDialog(self.config_manager, self)
+            dialog = StationsSettingsDialog(self.config_manager, self, self.theme_manager)
             dialog.settings_saved.connect(self.on_settings_saved)
             dialog.exec()
         except Exception as e:
@@ -942,8 +1141,9 @@ class MainWindow(QMainWindow):
     def show_nasa_settings_dialog(self):
         """Show NASA settings dialog."""
         try:
-            dialog = NASASettingsDialog(self.config_manager, self)
+            dialog = NASASettingsDialog(self.config_manager, self, self.theme_manager)
             dialog.settings_saved.connect(self.on_settings_saved)
+            dialog.astronomy_enable_requested.connect(self.on_astronomy_enable_requested)
             dialog.exec()
         except Exception as e:
             logger.error(f"Failed to show NASA settings dialog: {e}")
@@ -1057,14 +1257,78 @@ class MainWindow(QMainWindow):
                     if needs_data_fetch and self.astronomy_manager:
                         logger.info("Emitting astronomy manager ready signal to trigger data fetch")
                         self.astronomy_manager_ready.emit()
+                    
+                    # ADDITIONAL FIX: Also trigger data fetch if astronomy was just enabled with existing API key
+                    elif (self.config.astronomy.enabled and
+                          self.astronomy_manager and
+                          self.config.astronomy.has_valid_api_key()):
+                        logger.info("Astronomy enabled with existing API key - triggering data fetch")
+                        self.astronomy_manager_ready.emit()
 
                     # Always update astronomy widget configuration
                     if self.astronomy_widget:
                         self.astronomy_widget.update_config(self.config.astronomy)
-                        self.astronomy_widget.setVisible(self.config.astronomy.enabled)
+                        
+                        # CRITICAL: Ensure widget is hidden if not in layout to prevent white space
+                        if self.config.astronomy.enabled:
+                            # Check if widget is actually in layout
+                            central_widget = self.centralWidget()
+                            if central_widget:
+                                layout = central_widget.layout()
+                                widget_in_layout = False
+                                if layout:
+                                    for i in range(layout.count()):
+                                        item = layout.itemAt(i)
+                                        if item and item.widget() == self.astronomy_widget:
+                                            widget_in_layout = True
+                                            break
+                                
+                                # If enabled but not in layout, keep it hidden until data is ready
+                                if not widget_in_layout:
+                                    self.astronomy_widget.setVisible(False)
+                                    logger.debug("Astronomy widget kept hidden until data is ready")
+                        
+                        # Handle layout changes when enabling/disabling astronomy
+                        central_widget = self.centralWidget()
+                        if central_widget:
+                            from PySide6.QtWidgets import QVBoxLayout
+                            layout = central_widget.layout()
+                            
+                            if isinstance(layout, QVBoxLayout):
+                                is_currently_in_layout = False
+                                for i in range(layout.count()):
+                                    item = layout.itemAt(i)
+                                    if item and item.widget() == self.astronomy_widget:
+                                        is_currently_in_layout = True
+                                        break
+                                
+                                should_be_in_layout = self.config.astronomy.enabled
+                                
+                                if is_currently_in_layout != should_be_in_layout:
+                                    if should_be_in_layout:
+                                        # Don't add to layout immediately - wait for data to be ready
+                                        # The widget will be added by _ensure_astronomy_widget_in_layout()
+                                        # when astronomy data is actually loaded
+                                        logger.info("Astronomy enabled - will add widget to layout when data is ready")
+                                    else:
+                                        # Remove from layout and hide
+                                        layout.removeWidget(self.astronomy_widget)
+                                        self.astronomy_widget.setVisible(False)
+                                        logger.info("Astronomy widget removed from layout (disabled in settings)")
+                        
+                        # Update menu action state
+                        if self.astronomy_toggle_action:
+                            self.astronomy_toggle_action.setChecked(self.config.astronomy.enabled)
 
                     # Update astronomy status
                     self.update_astronomy_status(self.config.astronomy.enabled)
+                    
+                    # Only update window size if astronomy is being disabled
+                    # If enabling, wait for data to be ready before resizing
+                    if not self.config.astronomy.enabled:
+                        self._update_window_size_for_widgets()
+                    else:
+                        logger.debug("Deferring window resize until astronomy data is ready")
                 elif hasattr(self.config, "astronomy"):
                     # Astronomy config exists but is None, disable astronomy
                     self.update_astronomy_status(False)
@@ -1103,28 +1367,38 @@ class MainWindow(QMainWindow):
         msg_box.exec()
 
     def toggle_weather_visibility(self):
-        """Toggle weather widget visibility."""
+        """Toggle weather widget visibility and resize window accordingly."""
         if self.weather_widget:
             is_visible = self.weather_widget.isVisible()
+            
+            # Simply toggle visibility
             self.weather_widget.setVisible(not is_visible)
 
             # Update menu action text
             if self.weather_toggle_action:
                 self.weather_toggle_action.setChecked(not is_visible)
 
-            logger.info(f"Weather widget {'hidden' if is_visible else 'shown'}")
+            # Resize and center the window
+            self._update_window_size_for_widgets()
+            
+            logger.info(f"Weather widget {'hidden' if is_visible else 'shown'} - window resized and centered")
 
     def toggle_astronomy_visibility(self):
-        """Toggle astronomy widget visibility."""
+        """Toggle astronomy widget visibility and resize window accordingly."""
         if self.astronomy_widget:
             is_visible = self.astronomy_widget.isVisible()
+            
+            # Simply toggle visibility
             self.astronomy_widget.setVisible(not is_visible)
 
             # Update menu action text
             if self.astronomy_toggle_action:
                 self.astronomy_toggle_action.setChecked(not is_visible)
 
-            logger.info(f"Astronomy widget {'hidden' if is_visible else 'shown'}")
+            # Resize and center the window
+            self._update_window_size_for_widgets()
+            
+            logger.info(f"Astronomy widget {'hidden' if is_visible else 'shown'} - window resized and centered")
 
     def apply_menu_bar_styling(self, menubar):
         """Apply styling to the menu bar."""
@@ -1146,11 +1420,11 @@ class MainWindow(QMainWindow):
                 border: none;
             }
             QMenuBar::item:selected {
-                background-color: #4fc3f7;
+                background-color: #1976d2;
                 color: #ffffff;
             }
             QMenuBar::item:pressed {
-                background-color: #0288d1;
+                background-color: #0d47a1;
             }
             QMenu {
                 background-color: #2d2d2d;
@@ -1162,7 +1436,7 @@ class MainWindow(QMainWindow):
                 background-color: transparent;
             }
             QMenu::item:selected {
-                background-color: #4fc3f7;
+                background-color: #1976d2;
                 color: #ffffff;
             }
             QMenu::separator {
@@ -1188,11 +1462,11 @@ class MainWindow(QMainWindow):
                 border: none;
             }
             QMenuBar::item:selected {
-                background-color: #4fc3f7;
+                background-color: #1976d2;
                 color: #ffffff;
             }
             QMenuBar::item:pressed {
-                background-color: #0288d1;
+                background-color: #0d47a1;
             }
             QMenu {
                 background-color: #ffffff;
@@ -1204,7 +1478,7 @@ class MainWindow(QMainWindow):
                 background-color: transparent;
             }
             QMenu::item:selected {
-                background-color: #4fc3f7;
+                background-color: #1976d2;
                 color: #ffffff;
             }
             QMenu::separator {
@@ -1238,6 +1512,218 @@ class MainWindow(QMainWindow):
         else:
             logger.warning("Astronomy manager ready signal received but no manager available")
 
+    def on_astronomy_enable_requested(self):
+        """Handle astronomy enable request from settings dialog - wait for data before showing success."""
+        if self.astronomy_manager:
+            # Connect to astronomy signals to wait for data
+            self.astronomy_manager.astronomy_updated.connect(self._on_astronomy_data_ready_after_enable)
+            self.astronomy_manager.astronomy_error.connect(self._on_astronomy_error_after_enable)
+            logger.debug("Connected to astronomy signals to wait for data after enable")
+        else:
+            # No manager available, show immediate message
+            self._show_astronomy_enabled_message()
+
+    def _on_astronomy_data_ready_after_enable(self, forecast_data):
+        """Handle astronomy data ready after enable request."""
+        # Disconnect the temporary signals
+        if self.astronomy_manager:
+            self.astronomy_manager.astronomy_updated.disconnect(self._on_astronomy_data_ready_after_enable)
+            self.astronomy_manager.astronomy_error.disconnect(self._on_astronomy_error_after_enable)
+        
+        # Now that data is ready, add astronomy widget to layout if not already there
+        self._ensure_astronomy_widget_in_layout()
+        
+        # Show success message now that data is ready
+        self._show_astronomy_enabled_message()
+        logger.info("Astronomy data loaded successfully after enable")
+
+    def _on_astronomy_error_after_enable(self, error_message):
+        """Handle astronomy error after enable request."""
+        # Disconnect the temporary signals
+        if self.astronomy_manager:
+            self.astronomy_manager.astronomy_updated.disconnect(self._on_astronomy_data_ready_after_enable)
+            self.astronomy_manager.astronomy_error.disconnect(self._on_astronomy_error_after_enable)
+        
+        # Show error message
+        from PySide6.QtWidgets import QMessageBox
+        msg_box = QMessageBox(self)
+        msg_box.setWindowTitle("Astronomy Data Error")
+        msg_box.setText(f"Astronomy integration has been enabled, but there was an error loading data:\n\n{error_message}\n\n"
+                       "You can try refreshing the data later.")
+        msg_box.setIcon(QMessageBox.Icon.Warning)
+        msg_box.setStyleSheet("""
+            QMessageBox {
+                background-color: #ffffff;
+                color: #1976d2;
+            }
+            QMessageBox QLabel {
+                color: #1976d2;
+                background-color: #ffffff;
+            }
+            QMessageBox QPushButton {
+                background-color: #f0f0f0;
+                border: 1px solid #cccccc;
+                border-radius: 4px;
+                padding: 6px 12px;
+                color: #1976d2;
+                min-width: 80px;
+            }
+            QMessageBox QPushButton:hover {
+                background-color: #e0e0e0;
+                border-color: #1976d2;
+            }
+            QMessageBox QPushButton:pressed {
+                background-color: #1976d2;
+                color: #ffffff;
+            }
+        """)
+        msg_box.exec()
+        logger.warning(f"Astronomy error after enable: {error_message}")
+
+    def _ensure_astronomy_widget_in_layout(self):
+        """Ensure astronomy widget is added to layout when data is ready."""
+        if not self.astronomy_widget:
+            return
+            
+        central_widget = self.centralWidget()
+        if central_widget:
+            from PySide6.QtWidgets import QVBoxLayout
+            layout = central_widget.layout()
+            
+            if isinstance(layout, QVBoxLayout):
+                # Check if widget is already in the layout
+                is_in_layout = False
+                for i in range(layout.count()):
+                    item = layout.itemAt(i)
+                    if item and item.widget() == self.astronomy_widget:
+                        is_in_layout = True
+                        break
+                
+                if not is_in_layout:
+                    # Add to layout between weather and train widgets
+                    weather_index = -1
+                    train_index = -1
+                    for i in range(layout.count()):
+                        item = layout.itemAt(i)
+                        if item and item.widget():
+                            if item.widget() == self.weather_widget:
+                                weather_index = i
+                            elif item.widget() == self.train_list_widget:
+                                train_index = i
+                    
+                    # Insert astronomy widget after weather widget
+                    insert_index = weather_index + 1 if weather_index >= 0 else 0
+                    if train_index >= 0 and insert_index > train_index:
+                        insert_index = train_index
+                    
+                    layout.insertWidget(insert_index, self.astronomy_widget)
+                    self.astronomy_widget.setVisible(True)
+                    logger.info("Astronomy widget added to layout after data ready")
+                    
+                    # Update window size for astronomy now that widget is in layout with data
+                    self._update_window_size_for_widgets()
+
+    def _remove_astronomy_widget_from_layout(self):
+        """Remove astronomy widget from layout when disabled."""
+        if not self.astronomy_widget:
+            return
+            
+        central_widget = self.centralWidget()
+        if central_widget:
+            from PySide6.QtWidgets import QVBoxLayout
+            layout = central_widget.layout()
+            
+            if isinstance(layout, QVBoxLayout):
+                # Check if widget is in the layout and remove it
+                for i in range(layout.count()):
+                    item = layout.itemAt(i)
+                    if item and item.widget() == self.astronomy_widget:
+                        layout.removeWidget(self.astronomy_widget)
+                        self.astronomy_widget.setVisible(False)
+                        logger.info("Astronomy widget removed from layout")
+                        break
+
+    def _ensure_weather_widget_in_layout(self):
+        """Ensure weather widget is added to layout at the correct position (first position)."""
+        if not self.weather_widget:
+            return
+            
+        central_widget = self.centralWidget()
+        if central_widget:
+            from PySide6.QtWidgets import QVBoxLayout
+            layout = central_widget.layout()
+            
+            if isinstance(layout, QVBoxLayout):
+                # Check if widget is already in the layout
+                is_in_layout = False
+                for i in range(layout.count()):
+                    item = layout.itemAt(i)
+                    if item and item.widget() == self.weather_widget:
+                        is_in_layout = True
+                        break
+                
+                if not is_in_layout:
+                    # Add weather widget at the beginning (index 0)
+                    layout.insertWidget(0, self.weather_widget)
+                    self.weather_widget.setVisible(True)
+                    logger.info("Weather widget added to layout at position 0")
+
+    def _remove_weather_widget_from_layout(self):
+        """Remove weather widget from layout when hidden."""
+        if not self.weather_widget:
+            return
+            
+        central_widget = self.centralWidget()
+        if central_widget:
+            from PySide6.QtWidgets import QVBoxLayout
+            layout = central_widget.layout()
+            
+            if isinstance(layout, QVBoxLayout):
+                # Check if widget is in the layout and remove it
+                for i in range(layout.count()):
+                    item = layout.itemAt(i)
+                    if item and item.widget() == self.weather_widget:
+                        layout.removeWidget(self.weather_widget)
+                        self.weather_widget.setVisible(False)
+                        logger.info("Weather widget removed from layout")
+                        break
+
+    def _show_astronomy_enabled_message(self):
+        """Show the astronomy enabled success message."""
+        from PySide6.QtWidgets import QMessageBox
+        msg_box = QMessageBox(self)
+        msg_box.setWindowTitle("Astronomy Enabled")
+        msg_box.setText("Astronomy integration has been enabled! "
+                       "You'll now see space events and astronomical data in your app.")
+        msg_box.setIcon(QMessageBox.Icon.Information)
+        msg_box.setStyleSheet("""
+            QMessageBox {
+                background-color: #ffffff;
+                color: #1976d2;
+            }
+            QMessageBox QLabel {
+                color: #1976d2;
+                background-color: #ffffff;
+            }
+            QMessageBox QPushButton {
+                background-color: #f0f0f0;
+                border: 1px solid #cccccc;
+                border-radius: 4px;
+                padding: 6px 12px;
+                color: #1976d2;
+                min-width: 80px;
+            }
+            QMessageBox QPushButton:hover {
+                background-color: #e0e0e0;
+                border-color: #1976d2;
+            }
+            QMessageBox QPushButton:pressed {
+                background-color: #1976d2;
+                color: #ffffff;
+            }
+        """)
+        msg_box.exec()
+
     def showEvent(self, event):
         """Handle window show event - trigger astronomy data fetch when UI is displayed."""
         super().showEvent(event)
@@ -1250,10 +1736,10 @@ class MainWindow(QMainWindow):
                 self.astronomy_manager_ready.emit()
 
     def resizeEvent(self, event):
-        """Handle window resize event - reposition theme button."""
+        """Handle window resize event - reposition header buttons."""
         super().resizeEvent(event)
-        # Reposition the theme button when window is resized
-        self.position_theme_button()
+        # Reposition the header buttons when window is resized
+        self.position_header_buttons()
 
     def closeEvent(self, event):
         """Handle window close event."""

@@ -111,50 +111,64 @@ class HorizontalSpinWidget(QWidget):
         """Apply styling to the widget."""
         # Get theme colors if theme manager is available
         if self.theme_manager:
-            primary_accent = self.theme_manager.get_color("primary_accent")
-            text_primary = self.theme_manager.get_color("text_primary")
-            background_hover = self.theme_manager.get_color("background_hover")
-            border_accent = self.theme_manager.get_color("border_accent")
-            background_secondary = self.theme_manager.get_color("background_secondary")
-            border_primary = self.theme_manager.get_color("border_primary")
+            current_theme = self.theme_manager.current_theme
+            if current_theme == "light":
+                # Light theme styling
+                primary_accent = "#1976d2"
+                text_primary = "#1976d2"
+                background_primary = "#f0f0f0"
+                background_hover = "#e0e0e0"
+                border_primary = "#cccccc"
+                disabled_bg = "#f5f5f5"
+                disabled_text = "#cccccc"
+            else:
+                # Dark theme styling
+                primary_accent = "#1976d2"
+                text_primary = "#ffffff"
+                background_primary = "#2d2d2d"
+                background_hover = "#404040"
+                border_primary = "#404040"
+                disabled_bg = "#424242"
+                disabled_text = "#9e9e9e"
         else:
-            # Fallback colors for dark theme
-            primary_accent = "#4fc3f7"
+            # Fallback to dark theme
+            primary_accent = "#1976d2"
             text_primary = "#ffffff"
+            background_primary = "#2d2d2d"
             background_hover = "#404040"
-            border_accent = "#4fc3f7"
-            background_secondary = "#2d2d2d"
             border_primary = "#404040"
+            disabled_bg = "#424242"
+            disabled_text = "#9e9e9e"
 
-        # Button styling - MUCH LARGER arrows for human visibility with light blue background
+        # Button styling
         button_style = f"""
             QPushButton {{
                 background-color: {primary_accent};
-                border: 1px solid {border_accent};
+                border: 1px solid {primary_accent};
                 border-radius: 3px;
                 font-weight: bold;
                 font-size: 24px;
-                color: {text_primary};
+                color: #ffffff;
             }}
             QPushButton:hover {{
                 background-color: {background_hover};
-                color: {text_primary};
+                color: #ffffff;
             }}
             QPushButton:pressed {{
-                background-color: {border_accent};
-                border: 1px solid {border_accent};
-                color: {text_primary};
+                background-color: {primary_accent};
+                border: 1px solid {primary_accent};
+                color: #ffffff;
             }}
             QPushButton:disabled {{
-                background-color: #f5f5f5;
-                color: #ffc0cb;
+                background-color: {disabled_bg};
+                color: {disabled_text};
             }}
         """
 
-        # Label styling - Dark background for value display
+        # Label styling
         label_style = f"""
             QLabel {{
-                background-color: {background_secondary};
+                background-color: {background_primary};
                 border: 1px solid {border_primary};
                 border-radius: 2px;
                 padding: 4px;
@@ -228,13 +242,14 @@ class StationsSettingsDialog(QDialog):
     # Signal emitted when settings are saved
     settings_saved = Signal()
 
-    def __init__(self, config_manager: ConfigManager, parent=None):
+    def __init__(self, config_manager: ConfigManager, parent=None, theme_manager=None):
         """
         Initialize the stations settings dialog.
 
         Args:
             config_manager: Configuration manager instance
             parent: Parent widget
+            theme_manager: Shared theme manager instance
         """
         super().__init__(parent)
 
@@ -245,8 +260,8 @@ class StationsSettingsDialog(QDialog):
         self.config_manager = config_manager
         self.config: Optional[ConfigData] = None
 
-        # Create theme manager instance
-        self.theme_manager = ThemeManager()
+        # Use shared theme manager or create new one
+        self.theme_manager = theme_manager or ThemeManager()
         
         # Initialize worker manager for async operations
         self.worker_manager = WorkerManager(station_database, self)
@@ -345,13 +360,13 @@ class StationsSettingsDialog(QDialog):
                 self.auto_fix_route_button.setText("Auto-Fixing...")
             elif operation_type == "suggest_via":
                 self.route_info_label.setText(f"🔍 {message}")
-                self.route_info_label.setStyleSheet("color: #4fc3f7; font-style: italic; font-weight: bold;")
+                self.route_info_label.setStyleSheet("color: #1976d2; font-style: italic; font-weight: bold;")
                 # Disable the suggest button during operation
                 self.suggest_route_button.setEnabled(False)
                 self.suggest_route_button.setText("Suggesting...")
             elif operation_type == "fastest_route":
                 self.route_info_label.setText(f"⚡ {message}")
-                self.route_info_label.setStyleSheet("color: #4fc3f7; font-style: italic; font-weight: bold;")
+                self.route_info_label.setStyleSheet("color: #1976d2; font-style: italic; font-weight: bold;")
                 # Disable the fastest route button during operation
                 self.fastest_route_button.setEnabled(False)
                 self.fastest_route_button.setText("Finding...")
@@ -544,15 +559,15 @@ class StationsSettingsDialog(QDialog):
         """Setup the user interface."""
         self.setWindowTitle(__train_settings_title__)
         self.setModal(True)
-        self.setMinimumSize(800, 580)
-        self.resize(850, 610)
+        self.setMinimumSize(800, 650)  # Increased minimum height
+        self.resize(850, 680)  # Increased default height
 
         # Center the dialog on screen
         from PySide6.QtGui import QGuiApplication
 
         screen = QGuiApplication.primaryScreen().geometry()
         x = (screen.width() - 850) // 2
-        y = (screen.height() - 610) // 2
+        y = (screen.height() - 680) // 2  # Updated for new height
         self.move(x, y)
 
         # Main layout
@@ -565,7 +580,6 @@ class StationsSettingsDialog(QDialog):
         # Setup tabs
         self.setup_stations_tab()
         self.setup_display_tab()
-        self.setup_refresh_tab()
 
         # Button layout
         button_layout = QHBoxLayout()
@@ -597,7 +611,7 @@ class StationsSettingsDialog(QDialog):
 
         # From station section
         from_label = QLabel("From Station:")
-        from_label.setStyleSheet("font-weight: bold; color: #4fc3f7;")
+        from_label.setStyleSheet("font-weight: bold; color: #1976d2;")
         form.addRow(from_label)
 
         # From station name with API-based autocomplete
@@ -624,7 +638,7 @@ class StationsSettingsDialog(QDialog):
 
         # To station section
         to_label = QLabel("To Station:")
-        to_label.setStyleSheet("font-weight: bold; color: #4fc3f7;")
+        to_label.setStyleSheet("font-weight: bold; color: #1976d2;")
         form.addRow(to_label)
 
         # To station name - simple line edit with autocomplete (no dropdown)
@@ -653,7 +667,7 @@ class StationsSettingsDialog(QDialog):
 
         # Via stations section
         via_label = QLabel("Via Stations (Optional):")
-        via_label.setStyleSheet("font-weight: bold; color: #4fc3f7;")
+        via_label.setStyleSheet("font-weight: bold; color: #1976d2;")
         form.addRow(via_label)
 
         # Initialize via stations data structure
@@ -665,8 +679,8 @@ class StationsSettingsDialog(QDialog):
         self.via_buttons_widget = QWidget()
         self.via_buttons_widget.setStyleSheet("QWidget { border: none; background: transparent; }")  # Remove any borders
         # No layout needed - using absolute positioning
-        self.via_buttons_widget.setMinimumHeight(44)  # Height for exactly 2 rows: 2 * (20px + 2px) = 44px
-        self.via_buttons_widget.setMaximumHeight(44)  # Prevent excessive expansion
+        self.via_buttons_widget.setMinimumHeight(66)  # Height for exactly 3 rows: 3 * (20px + 2px) = 66px
+        self.via_buttons_widget.setMaximumHeight(66)  # Prevent excessive expansion
         # Don't add to form - add directly to avoid form spacing
         
         # Via stations functionality
@@ -719,21 +733,14 @@ class StationsSettingsDialog(QDialog):
         self.add_via_button.clicked.connect(self.add_via_station)
         via_controls_layout.addWidget(self.add_via_button)
         
-        # Remove via station button
-        self.remove_via_button = QPushButton("Remove")
-        self.remove_via_button.setEnabled(False)
-        self.remove_via_button.setFixedHeight(32)  # Match combobox height exactly
-        self.remove_via_button.clicked.connect(self.remove_via_station)
-        via_controls_layout.addWidget(self.remove_via_button)
-        
-        # Suggest route button
+        # Suggest route button (moved left to replace Remove button)
         self.suggest_route_button = QPushButton("Suggest Route")
         self.suggest_route_button.setEnabled(False)
         self.suggest_route_button.setFixedHeight(32)  # Match combobox height exactly
         self.suggest_route_button.clicked.connect(self.suggest_route)
         via_controls_layout.addWidget(self.suggest_route_button)
         
-        # Fastest route button
+        # Fastest route button (moved left)
         self.fastest_route_button = QPushButton("Fastest Route")
         self.fastest_route_button.setEnabled(False)
         self.fastest_route_button.setFixedHeight(32)  # Match combobox height exactly
@@ -784,10 +791,17 @@ class StationsSettingsDialog(QDialog):
         # Add spacing before route info text
         via_layout.addSpacing(8)
         
-        # Route info label
+        # Route info label with word wrapping and proper spacing
         self.route_info_label = QLabel("Select From and To stations to enable routing")
-        self.route_info_label.setStyleSheet("color: #888888; font-style: italic;")
+        self.route_info_label.setStyleSheet("color: #888888; font-style: italic; padding: 5px;")
+        self.route_info_label.setWordWrap(True)  # Enable word wrapping
+        self.route_info_label.setMinimumHeight(40)  # Ensure minimum height for wrapped text
+        self.route_info_label.setMaximumHeight(80)  # Allow for up to 3-4 lines of text
+        self.route_info_label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)  # Left-align and top-align
         via_layout.addWidget(self.route_info_label)
+        
+        # Add extra spacing after route info to lower the UI elements below
+        via_layout.addSpacing(15)
         
         form.addRow("", via_layout)
 
@@ -814,11 +828,6 @@ class StationsSettingsDialog(QDialog):
         display_group = QGroupBox("Display Settings")
         form = QFormLayout(display_group)
 
-        # Theme
-        self.theme_combo = QComboBox()
-        self.theme_combo.addItems(["dark", "light"])
-        form.addRow("Theme:", self.theme_combo)
-
         # Max trains
         self.max_trains_spin = HorizontalSpinWidget(
             10, 100, 50, 1, theme_manager=self.theme_manager
@@ -835,32 +844,6 @@ class StationsSettingsDialog(QDialog):
 
         self.tab_widget.addTab(display_widget, "Display")
 
-    def setup_refresh_tab(self):
-        """Setup refresh configuration tab - now only contains manual refresh settings."""
-        refresh_widget = QWidget()
-        layout = QVBoxLayout(refresh_widget)
-
-        refresh_group = QGroupBox("Manual Refresh Settings")
-        form = QFormLayout(refresh_group)
-
-        # Info label
-        info_label = QLabel("The application works fully offline. Manual refresh uses Train API for live data when available.")
-        info_label.setStyleSheet("color: #cccccc; font-style: italic; background: transparent;")
-        form.addRow(info_label)
-
-        # Manual refresh only
-        self.manual_refresh_check = QCheckBox("Enable manual refresh button")
-        self.manual_refresh_check.setChecked(True)  # Keep manual refresh enabled by default
-        form.addRow("", self.manual_refresh_check)
-
-        # API info section
-        api_info_label = QLabel("Note: Manual refresh will use Train API if available, otherwise uses offline data")
-        api_info_label.setStyleSheet("color: #888888; font-style: italic; font-size: 10px;")
-        form.addRow(api_info_label)
-
-        layout.addWidget(refresh_group)
-
-        self.tab_widget.addTab(refresh_widget, "Refresh")
 
     def api_search_stations(self, query: str, limit: int = 10):
         """Search for stations using the internal database with disambiguation."""
@@ -1188,7 +1171,7 @@ class StationsSettingsDialog(QDialog):
             self.suggest_route_button.setEnabled(False)
             self.suggest_route_button.setText("Suggesting...")
             self.route_info_label.setText("🔍 Finding route suggestions...")
-            self.route_info_label.setStyleSheet("color: #4fc3f7; font-style: italic; font-weight: bold;")
+            self.route_info_label.setStyleSheet("color: #1976d2; font-style: italic; font-weight: bold;")
             
             # Force UI update
             QApplication.processEvents()
@@ -1233,7 +1216,7 @@ class StationsSettingsDialog(QDialog):
         
         # Info label
         info_label = QLabel(f"Suggested via stations for: {from_station} → {to_station}")
-        info_label.setStyleSheet("font-weight: bold; color: #4fc3f7;")
+        info_label.setStyleSheet("font-weight: bold; color: #1976d2;")
         layout.addWidget(info_label)
         
         # Suggestions list
@@ -1303,7 +1286,6 @@ class StationsSettingsDialog(QDialog):
             
             # Disable all via station buttons
             self.add_via_button.setEnabled(False)
-            self.remove_via_button.setEnabled(False)
             self.suggest_route_button.setEnabled(False)
             
             # Update placeholder text
@@ -1349,11 +1331,22 @@ class StationsSettingsDialog(QDialog):
             # Add visual indicator if route was auto-fixed (regardless of via stations count)
             if self.route_auto_fixed:
                 route_text += " 🔧 (Auto-Fixed)"
-                # Update label style to show auto-fixed state
-                self.route_info_label.setStyleSheet("color: #ff9800; font-style: italic; font-weight: bold;")
+                # Update label style to show auto-fixed state with word wrapping
+                self.route_info_label.setStyleSheet("""
+                    color: #ff9800;
+                    font-style: italic;
+                    font-weight: bold;
+                    padding: 5px;
+                    background-color: rgba(255, 152, 0, 0.1);
+                    border-radius: 4px;
+                """)
             else:
-                # Reset to normal style
-                self.route_info_label.setStyleSheet("color: #888888; font-style: italic;")
+                # Reset to normal style with word wrapping
+                self.route_info_label.setStyleSheet("""
+                    color: #888888;
+                    font-style: italic;
+                    padding: 5px;
+                """)
             
             self.route_info_label.setText(route_text)
             
@@ -1749,7 +1742,7 @@ class StationsSettingsDialog(QDialog):
             self.fastest_route_button.setEnabled(False)
             self.fastest_route_button.setText("Finding...")
             self.route_info_label.setText("⚡ Finding fastest route...")
-            self.route_info_label.setStyleSheet("color: #4fc3f7; font-style: italic; font-weight: bold;")
+            self.route_info_label.setStyleSheet("color: #1976d2; font-style: italic; font-weight: bold;")
             
             # Force UI update
             QApplication.processEvents()
@@ -2010,7 +2003,6 @@ class StationsSettingsDialog(QDialog):
                     self.suggest_route_button.setEnabled(False)
                     self.fastest_route_button.setEnabled(False)
                     self.auto_fix_route_button.setEnabled(False)
-                    self.remove_via_button.setEnabled(False)
                     
                     # Clear via stations list
                     self.via_stations.clear()
@@ -2045,7 +2037,6 @@ class StationsSettingsDialog(QDialog):
                 self.suggest_route_button.setEnabled(False)
                 self.fastest_route_button.setEnabled(False)
                 self.auto_fix_route_button.setEnabled(False)
-                self.remove_via_button.setEnabled(False)
             except Exception as fallback_error:
                 print(f"Error in fallback disable: {fallback_error}")
 
@@ -2077,14 +2068,8 @@ class StationsSettingsDialog(QDialog):
             self.update_via_buttons()
 
         # Display settings
-        theme_index = self.theme_combo.findText(self.config.display.theme)
-        if theme_index >= 0:
-            self.theme_combo.setCurrentIndex(theme_index)
         self.max_trains_spin.set_value(self.config.display.max_trains)
         self.time_window_spin.set_value(self.config.display.time_window_hours)
-
-        # Refresh settings - only manual refresh now
-        self.manual_refresh_check.setChecked(self.config.refresh.manual_enabled)
 
     def reset_to_defaults(self):
         """Reset all settings to defaults."""
@@ -2163,14 +2148,13 @@ class StationsSettingsDialog(QDialog):
             # Save auto-fixed flag
             self.config.stations.route_auto_fixed = self.route_auto_fixed
 
-            self.config.display.theme = self.theme_combo.currentText()
             self.config.display.max_trains = self.max_trains_spin.value()
             self.config.display.time_window_hours = self.time_window_spin.value()
 
             # Auto-refresh removed - set to disabled and use default interval
             self.config.refresh.auto_enabled = False
             self.config.refresh.interval_minutes = 30  # Default interval
-            self.config.refresh.manual_enabled = self.manual_refresh_check.isChecked()
+            self.config.refresh.manual_enabled = True  # Always enable manual refresh
 
             # Save configuration
             self.config_manager.save_config(self.config)
@@ -2201,8 +2185,105 @@ class StationsSettingsDialog(QDialog):
         # Get current theme
         current_theme = self.theme_manager.current_theme
 
-        # Apply dark theme styling to the dialog
-        if current_theme == "dark":
+        if current_theme == "light":
+            # Light theme styling
+            dialog_style = """
+            QDialog {
+                background-color: #ffffff;
+                color: #1976d2;
+            }
+            QTabWidget::pane {
+                border: 1px solid #cccccc;
+                background-color: #ffffff;
+            }
+            QTabBar::tab {
+                background-color: #f5f5f5;
+                color: #1976d2;
+                padding: 8px 16px;
+                border: 1px solid #cccccc;
+                border-bottom: none;
+            }
+            QTabBar::tab:selected {
+                background-color: #1976d2;
+                color: #ffffff;
+            }
+            QTabBar::tab:hover {
+                background-color: #e3f2fd;
+            }
+            QGroupBox {
+                color: #1976d2;
+                border: 1px solid #cccccc;
+                border-radius: 4px;
+                margin-top: 8px;
+                padding-top: 8px;
+                background-color: #ffffff;
+            }
+            QGroupBox::title {
+                color: #1976d2;
+                subcontrol-origin: margin;
+                left: 8px;
+                padding: 0 4px 0 4px;
+                background-color: #ffffff;
+            }
+            QLineEdit {
+                background-color: #ffffff;
+                border: 1px solid #cccccc;
+                border-radius: 4px;
+                padding: 4px;
+                color: #1976d2;
+            }
+            QLineEdit:focus {
+                border-color: #1976d2;
+            }
+            QCheckBox {
+                color: #1976d2;
+                background-color: #ffffff;
+            }
+            QCheckBox::indicator {
+                background-color: #ffffff;
+                border: 1px solid #cccccc;
+            }
+            QCheckBox::indicator:checked {
+                background-color: #1976d2;
+                border: 1px solid #1976d2;
+            }
+            QComboBox {
+                background-color: #ffffff;
+                border: 1px solid #cccccc;
+                border-radius: 4px;
+                padding: 4px;
+                color: #1976d2;
+            }
+            QComboBox:focus {
+                border-color: #1976d2;
+            }
+            QComboBox QAbstractItemView {
+                background-color: #ffffff;
+                border: 1px solid #cccccc;
+                color: #1976d2;
+            }
+            QPushButton {
+                background-color: #f0f0f0;
+                border: 1px solid #cccccc;
+                border-radius: 4px;
+                padding: 6px 12px;
+                color: #1976d2;
+            }
+            QPushButton:hover {
+                background-color: #e0e0e0;
+                border-color: #1976d2;
+            }
+            QPushButton:pressed {
+                background-color: #1976d2;
+                color: #ffffff;
+            }
+            QLabel {
+                color: #1976d2;
+                background-color: transparent;
+            }
+            """
+        else:
+            # Dark theme styling
             dialog_style = """
             QDialog {
                 background-color: #1a1a1a;
@@ -2220,8 +2301,11 @@ class StationsSettingsDialog(QDialog):
                 border-bottom: none;
             }
             QTabBar::tab:selected {
-                background-color: #4fc3f7;
+                background-color: #1976d2;
                 color: #ffffff;
+            }
+            QTabBar::tab:hover {
+                background-color: #404040;
             }
             QGroupBox {
                 color: #ffffff;
@@ -2229,12 +2313,14 @@ class StationsSettingsDialog(QDialog):
                 border-radius: 4px;
                 margin-top: 8px;
                 padding-top: 8px;
+                background-color: #1a1a1a;
             }
             QGroupBox::title {
-                color: #4fc3f7;
+                color: #1976d2;
                 subcontrol-origin: margin;
                 left: 8px;
                 padding: 0 4px 0 4px;
+                background-color: #1a1a1a;
             }
             QLineEdit {
                 background-color: #2d2d2d;
@@ -2244,14 +2330,19 @@ class StationsSettingsDialog(QDialog):
                 color: #ffffff;
             }
             QLineEdit:focus {
-                border-color: #4fc3f7;
+                border-color: #1976d2;
             }
             QCheckBox {
                 color: #ffffff;
+                background-color: #1a1a1a;
+            }
+            QCheckBox::indicator {
+                background-color: #2d2d2d;
+                border: 1px solid #404040;
             }
             QCheckBox::indicator:checked {
-                background-color: #4fc3f7;
-                border: 1px solid #4fc3f7;
+                background-color: #1976d2;
+                border: 1px solid #1976d2;
             }
             QComboBox {
                 background-color: #2d2d2d;
@@ -2261,7 +2352,12 @@ class StationsSettingsDialog(QDialog):
                 color: #ffffff;
             }
             QComboBox:focus {
-                border-color: #4fc3f7;
+                border-color: #1976d2;
+            }
+            QComboBox QAbstractItemView {
+                background-color: #2d2d2d;
+                border: 1px solid #404040;
+                color: #ffffff;
             }
             QPushButton {
                 background-color: #2d2d2d;
@@ -2272,21 +2368,15 @@ class StationsSettingsDialog(QDialog):
             }
             QPushButton:hover {
                 background-color: #404040;
-                border-color: #4fc3f7;
+                border-color: #1976d2;
             }
             QPushButton:pressed {
-                background-color: #4fc3f7;
+                background-color: #1976d2;
+                color: #ffffff;
             }
             QLabel {
                 color: #ffffff;
-            }
-            """
-        else:
-            # Light theme styling
-            dialog_style = """
-            QDialog {
-                background-color: #ffffff;
-                color: #000000;
+                background-color: transparent;
             }
             """
 

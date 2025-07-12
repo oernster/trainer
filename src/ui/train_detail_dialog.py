@@ -257,7 +257,7 @@ class TrainDetailDialog(QDialog):
                     background-color: transparent;
                 }
                 QPushButton {
-                    background-color: #4fc3f7;
+                    background-color: #1976d2;
                     color: #000000;
                     border: none;
                     border-radius: 4px;
@@ -265,7 +265,7 @@ class TrainDetailDialog(QDialog):
                     font-weight: bold;
                 }
                 QPushButton:hover {
-                    background-color: #29b6f6;
+                    background-color: #1565c0;
                 }
                 QScrollArea {
                     border: 1px solid #404040;

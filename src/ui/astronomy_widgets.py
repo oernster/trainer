@@ -109,8 +109,8 @@ class AstronomyEventIcon(QLabel):
                 font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji';
             }}
             AstronomyEventIcon:hover {{
-                border: 1px solid #4fc3f7;
-                background-color: rgba(79, 195, 247, 0.1);
+                border: 1px solid #1976d2;
+                background-color: rgba(25, 118, 210, 0.1);
                 font-size: {font_size};
                 font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji';
             }}
@@ -256,9 +256,9 @@ class DailyAstronomyPanel(QFrame):
             self.setStyleSheet(
                 """
                 DailyAstronomyPanel {
-                    border: 1px solid #4fc3f7;
+                    border: 1px solid #1976d2;
                     border-radius: 12px;
-                    background-color: rgba(79, 195, 247, 0.05);
+                    background-color: rgba(25, 118, 210, 0.05);
                 }
             """
             )
@@ -386,7 +386,7 @@ class AstronomyEventDetails(QFrame):
         font.setPointSize(14)
         font.setBold(True)
         date_label.setFont(font)
-        date_label.setStyleSheet("color: #4fc3f7; margin-bottom: 8px;")
+        date_label.setStyleSheet("color: #1976d2; margin-bottom: 8px;")
         self._layout.addWidget(date_label)
 
         # Moon phase info
@@ -478,7 +478,7 @@ class AstronomyEventDetails(QFrame):
         if event.priority.value >= 3:
             border_color = "#ff9800"  # Orange for high priority
         else:
-            border_color = "#4fc3f7"  # Blue for normal priority
+            border_color = "#1976d2"  # Blue for normal priority
 
         widget.setStyleSheet(
             f"""
@@ -543,7 +543,7 @@ class AstronomyEventDetails(QFrame):
             link_button.setStyleSheet(
                 """
                 QPushButton {
-                    background-color: #4fc3f7;
+                    background-color: #1976d2;
                     color: white;
                     border: none;
                     border-radius: 4px;
@@ -551,10 +551,10 @@ class AstronomyEventDetails(QFrame):
                     font-weight: bold;
                 }
                 QPushButton:hover {
-                    background-color: #29b6f6;
+                    background-color: #1565c0;
                 }
                 QPushButton:pressed {
-                    background-color: #0288d1;
+                    background-color: #0d47a1;
                 }
             """
             )
@@ -634,9 +634,9 @@ class AstronomyExpandablePanel(QWidget):
         header.setStyleSheet(
             """
             QFrame {
-                border: 1px solid #4fc3f7;
+                border: 1px solid #1976d2;
                 border-radius: 6px;
-                background-color: rgba(79, 195, 247, 0.1);
+                background-color: rgba(25, 118, 210, 0.1);
                 padding: 8px;
             }
             QFrame:hover {
@@ -803,7 +803,7 @@ class AstronomyWidget(QWidget):
         self._sky_button.setStyleSheet(
             f"""
             QPushButton {{
-                background-color: #4fc3f7;
+                background-color: #1976d2;
                 color: white;
                 border: none;
                 border-radius: {scaled_border_radius}px;
@@ -813,10 +813,10 @@ class AstronomyWidget(QWidget):
                 max-height: {scaled_max_height}px;
             }}
             QPushButton:hover {{
-                background-color: #29b6f6;
+                background-color: #1565c0;
             }}
             QPushButton:pressed {{
-                background-color: #0288d1;
+                background-color: #0d47a1;
             }}
         """
         )
@@ -903,8 +903,9 @@ class AstronomyWidget(QWidget):
         old_config = self._config
         self._config = config
 
-        # Update visibility based on config
-        self.setVisible(config.enabled and config.display.show_in_forecast)
+        # Don't automatically show the widget here - let the main window control visibility
+        # based on whether it's properly added to the layout with data
+        # self.setVisible(config.enabled and config.display.show_in_forecast)
         
         # If API key was just added, show loading state
         if (old_config and not old_config.has_valid_api_key() and

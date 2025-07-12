@@ -184,7 +184,7 @@ class AstronomyConfig:
     astronomy configuration management and validation.
     """
 
-    enabled: bool = True
+    enabled: bool = False
     nasa_api_key: str = ""
     location_name: str = "London"
     location_latitude: float = 51.5074
@@ -235,7 +235,7 @@ class AstronomyConfig:
         cache_data = data.get("cache", {})
 
         return cls(
-            enabled=data.get("enabled", True),
+            enabled=data.get("enabled", False),
             nasa_api_key=data.get("nasa_api_key", ""),
             location_name=data.get("location_name", "London"),
             location_latitude=data.get("location_latitude", 51.5074),

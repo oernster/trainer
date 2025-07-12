@@ -38,20 +38,20 @@ class ThemeManager(QObject):
                 "text_primary": "#ffffff",
                 "text_secondary": "#b0b0b0",
                 "text_disabled": "#666666",
-                "text_accent": "#4fc3f7",
+                "text_accent": "#1976d2",
                 # Status Colors
                 "success": "#4caf50",
                 "warning": "#ff9800",
                 "error": "#f44336",
                 "info": "#2196f3",
                 # Accent Colors
-                "primary_accent": "#4fc3f7",
+                "primary_accent": "#1976d2",
                 "secondary_accent": "#81c784",
                 "tertiary_accent": "#ffb74d",
                 # Border Colors
                 "border_primary": "#404040",
                 "border_secondary": "#555555",
-                "border_accent": "#4fc3f7",
+                "border_accent": "#1976d2",
             },
             "light": {
                 # Background Colors

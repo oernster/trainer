@@ -56,6 +56,13 @@ class CustomScrollBar(QWidget):
         self._drag_start_pos = None
         self._drag_start_value = None
         
+        # Theme properties
+        self._current_theme = "dark"
+        self._track_color = "#2d2d2d"
+        self._handle_color = "#555555"
+        self._handle_hover_color = "#666666"
+        self._handle_pressed_color = "#666666"
+        
         # Set fixed width for vertical scroll bar
         self.setFixedWidth(12)
         self.setMinimumHeight(50)
@@ -129,21 +136,21 @@ class CustomScrollBar(QWidget):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         
-        # Draw background track
-        track_color = QColor("#2d2d2d")  # Dark theme background
+        # Draw background track using theme-aware color
+        track_color = QColor(self._track_color)
         painter.fillRect(self.rect(), track_color)
         
         # Only draw handle if there's content to scroll
         if self._maximum > self._minimum:
             handle_rect = self._get_handle_rect()
             
-            # Handle color based on state
+            # Handle color based on state using theme-aware colors
             if self._handle_pressed:
-                handle_color = QColor("#666666")  # Pressed state
+                handle_color = QColor(self._handle_pressed_color)
             elif self._handle_hover:
-                handle_color = QColor("#666666")  # Hover state
+                handle_color = QColor(self._handle_hover_color)
             else:
-                handle_color = QColor("#555555")  # Normal state
+                handle_color = QColor(self._handle_color)
             
             # Draw handle with rounded corners
             painter.fillRect(handle_rect, handle_color)
@@ -225,6 +232,24 @@ class CustomScrollBar(QWidget):
         
         self.setValue(int(new_value))
         self.scroll_requested.emit(self._value)
+    
+    def apply_theme(self, theme: str):
+        """Apply theme-specific colors to the scroll bar."""
+        self._current_theme = theme
+        
+        if theme == "dark":
+            self._track_color = "#2d2d2d"
+            self._handle_color = "#555555"
+            self._handle_hover_color = "#666666"
+            self._handle_pressed_color = "#666666"
+        else:  # light theme
+            self._track_color = "#f5f5f5"
+            self._handle_color = "#bdbdbd"
+            self._handle_hover_color = "#9e9e9e"
+            self._handle_pressed_color = "#9e9e9e"
+        
+        # Trigger repaint with new colors
+        self.update()
 
 
 class TrainItemWidget(QFrame):
@@ -305,7 +330,7 @@ class TrainItemWidget(QFrame):
         self.details_button.setStyleSheet("""
             QLabel {
                 background-color: rgba(79, 195, 247, 0.2);
-                border: 1px solid #4fc3f7;
+                border: 1px solid #1976d2;
                 border-radius: 4px;
                 padding: 2px 6px;
                 margin-left: 8px;
@@ -412,7 +437,7 @@ class TrainItemWidget(QFrame):
                     arrow_label.setStyleSheet("""
                         QLabel {
                             background-color: transparent;
-                            color: #81d4fa;
+                            color: #1976d2;
                             border: none;
                             margin: 0px;
                             padding: 0px;
@@ -428,7 +453,7 @@ class TrainItemWidget(QFrame):
                     arrow_label.setStyleSheet("""
                         QLabel {
                             background-color: transparent;
-                            color: #81d4fa;
+                            color: #1976d2;
                             border: none;
                             margin: 0px;
                             padding: 0px;
@@ -460,7 +485,7 @@ class TrainItemWidget(QFrame):
                     station_label.setStyleSheet("""
                         QLabel {
                             background-color: transparent;
-                            color: #81d4fa;
+                            color: #1976d2;
                             border: none;
                             margin: 0px;
                             padding: 0px;
@@ -535,7 +560,7 @@ class TrainItemWidget(QFrame):
         
         QFrame:hover {{
             background-color: #3d3d3d;
-            border-color: #4fc3f7;
+            border-color: #1976d2;
         }}
         
         QLabel {{
@@ -620,7 +645,7 @@ class TrainItemWidget(QFrame):
                     label.setStyleSheet("""
                         QLabel {
                             background-color: transparent;
-                            color: #81d4fa;
+                            color: #1976d2;
                             border: none;
                             margin: 0px;
                             padding: 0px;
@@ -741,6 +766,10 @@ class TrainListWidget(QScrollArea):
             self.setStyleSheet(self.get_dark_scroll_style())
         else:
             self.setStyleSheet(self.get_light_scroll_style())
+
+        # Update custom scroll bar theme
+        if hasattr(self, 'custom_scroll_bar'):
+            self.custom_scroll_bar.apply_theme(self.current_theme)
 
         # Update all train items
         for train_item in self.train_items:
@@ -1262,7 +1291,7 @@ class RouteDisplayDialog(QDialog):
                     background-color: transparent;
                 }
                 QPushButton {
-                    background-color: #4fc3f7;
+                    background-color: #1976d2;
                     color: #000000;
                     border: none;
                     border-radius: 4px;
@@ -1270,7 +1299,7 @@ class RouteDisplayDialog(QDialog):
                     font-weight: bold;
                 }
                 QPushButton:hover {
-                    background-color: #29b6f6;
+                    background-color: #1565c0;
                 }
                 QScrollArea {
                     border: 1px solid #404040;

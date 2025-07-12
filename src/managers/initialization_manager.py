@@ -354,7 +354,7 @@ class InitializationManager(QObject):
                     "background_secondary": "transparent",  # Make weather items transparent
                     "background_hover": "rgba(79, 195, 247, 0.2)",  # Light blue hover
                     "text_primary": "#ffffff" if current_theme == "dark" else "#000000",
-                    "primary_accent": "#4fc3f7",
+                    "primary_accent": "#1976d2",
                     "border_primary": "transparent",  # Remove borders from weather items
                 }
                 

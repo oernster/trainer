@@ -241,7 +241,7 @@ class WeatherItemWidget(WeatherDisplayComponent):
         # Get theme colors with fallbacks
         text_color = self._theme_colors.get("text_primary", "#ffffff")
         hover_color = self._theme_colors.get("background_hover", "#404040")
-        accent_color = self._theme_colors.get("primary_accent", "#4fc3f7")
+        accent_color = self._theme_colors.get("primary_accent", "#1976d2")
 
         # Apply styling with completely transparent background
         style = f"""
@@ -526,7 +526,7 @@ class WeatherWidget(QWidget):
             self._weekly_forecast_widget.apply_theme(theme_colors)
 
         # Apply theme to labels
-        text_color = theme_colors.get("primary_accent", "#4fc3f7")
+        text_color = theme_colors.get("primary_accent", "#1976d2")
         bg_color = theme_colors.get("background_primary", "#1a1a1a")
 
         label_style = f"""

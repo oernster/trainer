@@ -94,53 +94,66 @@ class HorizontalSpinWidget(QWidget):
         """Apply styling to the widget."""
         # Get theme colors if theme manager is available
         if self.theme_manager:
-            primary_accent = self.theme_manager.get_color("primary_accent")
-            text_primary = self.theme_manager.get_color("text_primary")
-            background_hover = self.theme_manager.get_color("background_hover")
-            border_accent = self.theme_manager.get_color("border_accent")
-            background_secondary = self.theme_manager.get_color("background_secondary")
-            border_primary = self.theme_manager.get_color("border_primary")
+            current_theme = self.theme_manager.current_theme
+            if current_theme == "light":
+                # Light theme styling
+                primary_accent = "#1976d2"
+                text_primary = "#1976d2"
+                background_primary = "#f0f0f0"
+                background_hover = "#e0e0e0"
+                border_primary = "#cccccc"
+                disabled_bg = "#f5f5f5"
+                disabled_text = "#cccccc"
+            else:
+                # Dark theme styling
+                primary_accent = "#1976d2"
+                text_primary = "#ffffff"
+                background_primary = "#2d2d2d"
+                background_hover = "#404040"
+                border_primary = "#404040"
+                disabled_bg = "#424242"
+                disabled_text = "#9e9e9e"
         else:
-            # Fallback colors for dark theme
-            primary_accent = "#4fc3f7"
+            # Fallback to dark theme
+            primary_accent = "#1976d2"
             text_primary = "#ffffff"
+            background_primary = "#2d2d2d"
             background_hover = "#404040"
-            border_accent = "#4fc3f7"
-            background_secondary = "#2d2d2d"
             border_primary = "#404040"
+            disabled_bg = "#424242"
+            disabled_text = "#9e9e9e"
 
         # Button styling
         button_style = f"""
             QPushButton {{
-                background-color: {primary_accent};
-                border: 1px solid {border_accent};
-                border-radius: 3px;
+                background-color: {background_primary};
+                border: 1px solid {border_primary};
+                border-radius: 4px;
                 font-weight: bold;
-                font-size: 24px;
+                font-size: 16px;
                 color: {text_primary};
             }}
             QPushButton:hover {{
                 background-color: {background_hover};
-                color: {text_primary};
+                border-color: {primary_accent};
             }}
             QPushButton:pressed {{
-                background-color: {border_accent};
-                border: 1px solid {border_accent};
-                color: {text_primary};
+                background-color: {primary_accent};
+                color: #ffffff;
             }}
             QPushButton:disabled {{
-                background-color: #f5f5f5;
-                color: #ffc0cb;
+                background-color: {disabled_bg};
+                color: {disabled_text};
             }}
         """
 
         # Label styling
         label_style = f"""
             QLabel {{
-                background-color: {background_secondary};
+                background-color: {background_primary};
                 border: 1px solid {border_primary};
-                border-radius: 2px;
-                padding: 4px;
+                border-radius: 4px;
+                padding: 6px 12px;
                 font-weight: bold;
                 color: {text_primary};
             }}
@@ -209,14 +222,17 @@ class NASASettingsDialog(QDialog):
 
     # Signal emitted when settings are saved
     settings_saved = Signal()
+    # Signal emitted when astronomy should be enabled and we need to wait for data
+    astronomy_enable_requested = Signal()
 
-    def __init__(self, config_manager: ConfigManager, parent=None):
+    def __init__(self, config_manager: ConfigManager, parent=None, theme_manager=None):
         """
         Initialize the NASA settings dialog.
 
         Args:
             config_manager: Configuration manager instance
             parent: Parent widget
+            theme_manager: Shared theme manager instance
         """
         super().__init__(parent)
 
@@ -227,8 +243,8 @@ class NASASettingsDialog(QDialog):
         self.config_manager = config_manager
         self.config: Optional[ConfigData] = None
 
-        # Create theme manager instance
-        self.theme_manager = ThemeManager()
+        # Use shared theme manager or create new one
+        self.theme_manager = theme_manager or ThemeManager()
 
         # Load current configuration
         try:
@@ -249,14 +265,14 @@ class NASASettingsDialog(QDialog):
         """Setup the user interface."""
         self.setWindowTitle(__nasa_settings_title__)
         self.setModal(True)
-        self.setMinimumSize(750, 450)
-        self.resize(800, 480)
+        self.setMinimumSize(900, 450)
+        self.resize(950, 480)
 
         # Center the dialog on screen
         from PySide6.QtGui import QGuiApplication
 
         screen = QGuiApplication.primaryScreen().geometry()
-        x = (screen.width() - 800) // 2
+        x = (screen.width() - 950) // 2
         y = (screen.height() - 480) // 2
         self.move(x, y)
 
@@ -266,7 +282,7 @@ class NASASettingsDialog(QDialog):
         # Setup NASA tab content directly (no tab widget needed for single tab)
         self.setup_nasa_content(layout)
 
-        # Button layout
+        # Bottom button layout (only Test and Reset buttons)
         button_layout = QHBoxLayout()
 
         self.test_nasa_button = QPushButton("Test NASA API")
@@ -275,18 +291,9 @@ class NASASettingsDialog(QDialog):
         self.reset_button = QPushButton("Reset to Defaults")
         self.reset_button.clicked.connect(self.reset_to_defaults)
 
-        self.cancel_button = QPushButton("Cancel")
-        self.cancel_button.clicked.connect(self.reject)
-
-        self.save_button = QPushButton("Save")
-        self.save_button.clicked.connect(self.save_settings)
-        self.save_button.setDefault(True)
-
         button_layout.addWidget(self.test_nasa_button)
         button_layout.addWidget(self.reset_button)
         button_layout.addStretch()
-        button_layout.addWidget(self.cancel_button)
-        button_layout.addWidget(self.save_button)
 
         layout.addLayout(button_layout)
 
@@ -302,10 +309,10 @@ class NASASettingsDialog(QDialog):
         nasa_form = QFormLayout(nasa_group)
 
         # Compact info label with clickable link
-        info_label = QLabel('<a href="https://api.nasa.gov/" style="color: #4fc3f7;">Get your NASA API key from https://api.nasa.gov/</a>')
+        info_label = QLabel('<a href="https://api.nasa.gov/" style="color: #1976d2; text-decoration: none;">Get your NASA API key from https://api.nasa.gov/</a>')
         info_label.setOpenExternalLinks(True)
         info_label.setStyleSheet(
-            "color: #cccccc; font-style: italic; background: transparent;"
+            "color: #1976d2; font-style: italic; background: transparent;"
         )
         nasa_form.addRow(info_label)
 
@@ -326,10 +333,6 @@ class NASASettingsDialog(QDialog):
         # Astronomy Settings Group
         astronomy_group = QGroupBox("Location & Settings")
         astronomy_form = QFormLayout(astronomy_group)
-
-        # Enable astronomy
-        self.astronomy_enabled_check = QCheckBox("Enable astronomy integration")
-        astronomy_form.addRow("", self.astronomy_enabled_check)
 
         # Location settings in compact form with lookup button
         location_layout = QHBoxLayout()
@@ -396,6 +399,32 @@ class NASASettingsDialog(QDialog):
         services_layout.addWidget(self.epic_service_check)
 
         right_column.addWidget(services_group)
+        
+        # Add specific spacing to align buttons with bottom of Location Settings
+        right_column.addSpacing(45)  # Adjusted spacing to align with Location Settings bottom border
+        
+        # Create horizontal layout for the buttons directly in right column
+        right_buttons_layout = QHBoxLayout()
+        
+        # Create the buttons (moved from bottom layout)
+        self.cancel_button = QPushButton("Cancel")
+        self.cancel_button.clicked.connect(self.reject)
+        self.cancel_button.setMinimumWidth(120)
+        self.cancel_button.setMinimumHeight(40)
+        
+        self.save_button = QPushButton("Save")
+        self.save_button.clicked.connect(self.save_settings)
+        self.save_button.setDefault(True)
+        self.save_button.setMinimumWidth(120)
+        self.save_button.setMinimumHeight(40)
+        
+        right_buttons_layout.addWidget(self.cancel_button)
+        right_buttons_layout.addWidget(self.save_button)
+        
+        # Add the button layout directly to right column
+        right_column.addLayout(right_buttons_layout)
+        
+        # Add remaining stretch to fill bottom space
         right_column.addStretch()
 
         # Add columns to main layout
@@ -546,7 +575,6 @@ class NASASettingsDialog(QDialog):
             astronomy_config = AstronomyConfig.create_default()
 
         self.nasa_api_key_edit.setText(astronomy_config.nasa_api_key)
-        self.astronomy_enabled_check.setChecked(astronomy_config.enabled)
         self.astronomy_location_edit.setText(astronomy_config.location_name)
         self.astronomy_latitude_edit.setText(str(astronomy_config.location_latitude))
         self.astronomy_longitude_edit.setText(str(astronomy_config.location_longitude))
@@ -618,7 +646,7 @@ class NASASettingsDialog(QDialog):
             )
 
             self.config.astronomy = AstronomyConfig(
-                enabled=self.astronomy_enabled_check.isChecked(),
+                enabled=self.config.astronomy.enabled,  # Preserve current enabled state
                 nasa_api_key=self.nasa_api_key_edit.text().strip(),
                 location_name=self.astronomy_location_edit.text().strip(),
                 location_latitude=latitude,
@@ -635,16 +663,131 @@ class NASASettingsDialog(QDialog):
             # Save configuration
             self.config_manager.save_config(self.config)
 
-            # Emit signal and close dialog
+            # Close dialog immediately to avoid strange UI experience during window resize
+            self.accept()
+            
+            # Emit signal after dialog is closed
             self.settings_saved.emit()
             
-            # Use QTimer to ensure the signal is processed before showing the message
-            QTimer.singleShot(100, lambda: [
-                self.accept(),
-                QMessageBox.information(
-                    self, "Settings Saved", "NASA settings have been saved successfully."
-                )
-            ])
+            # Check if user just added an API key and astronomy is disabled
+            if (self.config.astronomy.has_valid_api_key() and
+                not self.config.astronomy.enabled):
+                
+                # Ask user if they want to enable astronomy
+                msg_box = QMessageBox(self)
+                msg_box.setWindowTitle("Enable Astronomy Integration?")
+                msg_box.setText("You've configured your NASA API key successfully!\n\n"
+                               "Would you like to enable astronomy integration to see "
+                               "space events, astronomy pictures, and celestial data?")
+                msg_box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+                msg_box.setDefaultButton(QMessageBox.StandardButton.Yes)
+                
+                # Apply light theme styling to the message box
+                msg_box.setStyleSheet("""
+                    QMessageBox {
+                        background-color: #ffffff;
+                        color: #1976d2;
+                    }
+                    QMessageBox QLabel {
+                        color: #1976d2;
+                        background-color: #ffffff;
+                    }
+                    QMessageBox QPushButton {
+                        background-color: #f0f0f0;
+                        border: 1px solid #cccccc;
+                        border-radius: 4px;
+                        padding: 6px 12px;
+                        color: #1976d2;
+                        min-width: 80px;
+                    }
+                    QMessageBox QPushButton:hover {
+                        background-color: #e0e0e0;
+                        border-color: #1976d2;
+                    }
+                    QMessageBox QPushButton:pressed {
+                        background-color: #1976d2;
+                        color: #ffffff;
+                    }
+                """)
+                
+                reply = msg_box.exec()
+                
+                if reply == QMessageBox.StandardButton.Yes:
+                    # Enable astronomy and save config
+                    self.config.astronomy.enabled = True
+                    self.config_manager.save_config(self.config)
+                    
+                    # Emit signal again to trigger UI update with astronomy enabled
+                    self.settings_saved.emit()
+                    
+                    # Emit signal to request astronomy enable and wait for data
+                    self.astronomy_enable_requested.emit()
+                else:
+                    msg_box = QMessageBox(self)
+                    msg_box.setWindowTitle("Settings Saved")
+                    msg_box.setText("NASA settings have been saved. You can enable astronomy "
+                                   "anytime using the 🌏 button in the top-right corner.")
+                    msg_box.setIcon(QMessageBox.Icon.Information)
+                    msg_box.setStyleSheet("""
+                        QMessageBox {
+                            background-color: #ffffff;
+                            color: #1976d2;
+                        }
+                        QMessageBox QLabel {
+                            color: #1976d2;
+                            background-color: #ffffff;
+                        }
+                        QMessageBox QPushButton {
+                            background-color: #f0f0f0;
+                            border: 1px solid #cccccc;
+                            border-radius: 4px;
+                            padding: 6px 12px;
+                            color: #1976d2;
+                            min-width: 80px;
+                        }
+                        QMessageBox QPushButton:hover {
+                            background-color: #e0e0e0;
+                            border-color: #1976d2;
+                        }
+                        QMessageBox QPushButton:pressed {
+                            background-color: #1976d2;
+                            color: #ffffff;
+                        }
+                    """)
+                    msg_box.exec()
+            else:
+                # Show standard success message
+                msg_box = QMessageBox(self)
+                msg_box.setWindowTitle("Settings Saved")
+                msg_box.setText("NASA settings have been saved successfully.")
+                msg_box.setIcon(QMessageBox.Icon.Information)
+                msg_box.setStyleSheet("""
+                    QMessageBox {
+                        background-color: #ffffff;
+                        color: #1976d2;
+                    }
+                    QMessageBox QLabel {
+                        color: #1976d2;
+                        background-color: #ffffff;
+                    }
+                    QMessageBox QPushButton {
+                        background-color: #f0f0f0;
+                        border: 1px solid #cccccc;
+                        border-radius: 4px;
+                        padding: 6px 12px;
+                        color: #1976d2;
+                        min-width: 80px;
+                    }
+                    QMessageBox QPushButton:hover {
+                        background-color: #e0e0e0;
+                        border-color: #1976d2;
+                    }
+                    QMessageBox QPushButton:pressed {
+                        background-color: #1976d2;
+                        color: #ffffff;
+                    }
+                """)
+                msg_box.exec()
 
         except ConfigurationError as e:
             QMessageBox.critical(self, "Save Error", f"Failed to save settings: {e}")
@@ -661,8 +804,80 @@ class NASASettingsDialog(QDialog):
         # Get current theme
         current_theme = self.theme_manager.current_theme
 
-        # Apply dark theme styling to the dialog
-        if current_theme == "dark":
+        if current_theme == "light":
+            # Light theme styling
+            dialog_style = """
+            QDialog {
+                background-color: #ffffff;
+                color: #1976d2;
+            }
+            QGroupBox {
+                color: #1976d2;
+                border: 1px solid #cccccc;
+                border-radius: 4px;
+                margin-top: 8px;
+                padding-top: 8px;
+                background-color: #ffffff;
+            }
+            QGroupBox::title {
+                color: #1976d2;
+                subcontrol-origin: margin;
+                left: 8px;
+                padding: 0 4px 0 4px;
+                background-color: #ffffff;
+            }
+            QLineEdit {
+                background-color: #ffffff;
+                border: 1px solid #cccccc;
+                border-radius: 4px;
+                padding: 4px;
+                color: #1976d2;
+            }
+            QLineEdit:focus {
+                border-color: #1976d2;
+            }
+            QCheckBox {
+                color: #1976d2;
+                background-color: #ffffff;
+            }
+            QCheckBox::indicator {
+                background-color: #ffffff;
+                border: 1px solid #cccccc;
+            }
+            QCheckBox::indicator:checked {
+                background-color: #1976d2;
+                border: 1px solid #1976d2;
+            }
+            QPushButton {
+                background-color: #f0f0f0;
+                border: 1px solid #cccccc;
+                border-radius: 4px;
+                padding: 6px 12px;
+                color: #1976d2;
+            }
+            QPushButton:hover {
+                background-color: #e0e0e0;
+                border-color: #1976d2;
+            }
+            QPushButton:pressed {
+                background-color: #1976d2;
+                color: #ffffff;
+            }
+            QLabel {
+                color: #1976d2;
+                background-color: transparent;
+            }
+            QLabel a {
+                color: #1976d2;
+                text-decoration: none;
+            }
+            QLabel a:hover {
+                color: #0d47a1;
+                text-decoration: underline;
+            }
+            """
+        else:
+            # Dark theme styling
             dialog_style = """
             QDialog {
                 background-color: #1a1a1a;
@@ -674,12 +889,14 @@ class NASASettingsDialog(QDialog):
                 border-radius: 4px;
                 margin-top: 8px;
                 padding-top: 8px;
+                background-color: #1a1a1a;
             }
             QGroupBox::title {
-                color: #4fc3f7;
+                color: #1976d2;
                 subcontrol-origin: margin;
                 left: 8px;
                 padding: 0 4px 0 4px;
+                background-color: #1a1a1a;
             }
             QLineEdit {
                 background-color: #2d2d2d;
@@ -689,14 +906,19 @@ class NASASettingsDialog(QDialog):
                 color: #ffffff;
             }
             QLineEdit:focus {
-                border-color: #4fc3f7;
+                border-color: #1976d2;
             }
             QCheckBox {
                 color: #ffffff;
+                background-color: #1a1a1a;
+            }
+            QCheckBox::indicator {
+                background-color: #2d2d2d;
+                border: 1px solid #404040;
             }
             QCheckBox::indicator:checked {
-                background-color: #4fc3f7;
-                border: 1px solid #4fc3f7;
+                background-color: #1976d2;
+                border: 1px solid #1976d2;
             }
             QPushButton {
                 background-color: #2d2d2d;
@@ -707,21 +929,23 @@ class NASASettingsDialog(QDialog):
             }
             QPushButton:hover {
                 background-color: #404040;
-                border-color: #4fc3f7;
+                border-color: #1976d2;
             }
             QPushButton:pressed {
-                background-color: #4fc3f7;
+                background-color: #1976d2;
+                color: #ffffff;
             }
             QLabel {
                 color: #ffffff;
+                background-color: transparent;
             }
-            """
-        else:
-            # Light theme styling
-            dialog_style = """
-            QDialog {
-                background-color: #ffffff;
-                color: #000000;
+            QLabel a {
+                color: #1976d2;
+                text-decoration: none;
+            }
+            QLabel a:hover {
+                color: #42a5f5;
+                text-decoration: underline;
             }
             """
 

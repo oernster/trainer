@@ -95,7 +95,7 @@ class TrainerSplashScreen(QSplashScreen):
         QWidget {
             background-color: #1a1a1a;
             color: #ffffff;
-            border: 2px solid #4fc3f7;
+            border: 2px solid #1976d2;
             border-radius: 8px;
         }
         QLabel {

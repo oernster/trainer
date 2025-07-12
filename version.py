@@ -20,11 +20,10 @@ __description__ = "Train times application with integrated weather forecasting a
 
 # Feature information
 __features__ = [
-    "Real-time train departure information",
+    "Scheduled train departure information",
     "3-hourly weather forecasts for current day",
     "7-day weather outlook",
     "Dark/Light theme support",
-    "Configurable refresh intervals",
     "Weather data for destination location",
     "No API key required for weather data",
     "Astronomical information with a 7 day outlook",
@@ -54,7 +53,7 @@ __train_api_provider__ = "Transport API"
 __train_api_url__ = "https://transportapi.com/"
 
 # License information
-__license__ = "Proprietary"
+__license__ = "GPL v3"
 __license_weather_compliance__ = "LGPL v3 (PySide6)"
 
 # Development information
@@ -117,8 +116,13 @@ def get_about_text() -> str:
 
 <p><b>Data Sources:</b></p>
 <ul>
-<li>Train data: {__train_api_provider__}</li>
 <li>Weather data: {__weather_api_provider__}</li>
+</ul>
+
+<p><b>License Information:</b></p>
+<ul>
+<li>Application: {__license__}</li>
+<li>PySide6 Framework: LGPL v3 compliant</li>
 </ul>
 
 <p>{__copyright__}</p>
