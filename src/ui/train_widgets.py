@@ -442,17 +442,18 @@ class TrainItemWidget(QFrame):
                 station_font.setItalic(True)
                 station_label.setFont(station_font)
                 
-                # Check if this is a major interchange station for yellow text
+                # Check if this is a major interchange station for colored text
                 if self._is_major_interchange(station.station_name):
-                    # Yellow text for interchange stations
-                    station_label.setStyleSheet("""
-                        QLabel {
+                    # Theme-aware color for interchange stations
+                    interchange_color = "#4caf50" if self.current_theme == "light" else "#ffeb3b"
+                    station_label.setStyleSheet(f"""
+                        QLabel {{
                             background-color: transparent;
-                            color: #ffeb3b;
+                            color: {interchange_color};
                             border: none;
                             margin: 0px;
                             padding: 0px;
-                        }
+                        }}
                     """)
                 else:
                     # Regular light blue text for normal stations
@@ -591,6 +592,40 @@ class TrainItemWidget(QFrame):
         """
         self.current_theme = theme
         self.apply_theme()
+        
+        # Update station label colors for interchange stations
+        self._update_station_label_colors()
+
+    def _update_station_label_colors(self):
+        """Update the colors of station labels based on current theme."""
+        # Find all station labels and update their colors
+        for label in self.findChildren(QLabel):
+            station_name = label.text()
+            # Skip non-station labels
+            if station_name not in ["Via:", "→", "    ", "Direct service"] and station_name:
+                if self._is_major_interchange(station_name):
+                    # Update interchange station color based on theme
+                    interchange_color = "#4caf50" if self.current_theme == "light" else "#ffeb3b"
+                    label.setStyleSheet(f"""
+                        QLabel {{
+                            background-color: transparent;
+                            color: {interchange_color};
+                            border: none;
+                            margin: 0px;
+                            padding: 0px;
+                        }}
+                    """)
+                elif "→" not in station_name and not station_name.startswith("Current:") and not station_name.startswith("Arrives:"):
+                    # Update regular station color
+                    label.setStyleSheet("""
+                        QLabel {
+                            background-color: transparent;
+                            color: #81d4fa;
+                            border: none;
+                            margin: 0px;
+                            padding: 0px;
+                        }
+                    """)
 
     def mousePressEvent(self, event):
         """Handle mouse press event."""
@@ -1172,15 +1207,27 @@ class RouteDisplayDialog(QDialog):
                     }
                 """)
             elif self._is_major_interchange(calling_point.station_name):
-                # Highlight interchange stations in yellow
-                station_frame.setStyleSheet("""
-                    QFrame {
-                        background-color: rgba(255, 235, 59, 0.2);
-                        border-left: 3px solid #ffeb3b;
-                        border-radius: 4px;
-                        margin: 1px;
-                    }
-                """)
+                # Highlight interchange stations with theme-aware color
+                if self.current_theme == "light":
+                    # Green for light theme
+                    station_frame.setStyleSheet("""
+                        QFrame {
+                            background-color: rgba(76, 175, 80, 0.2);
+                            border-left: 3px solid #4caf50;
+                            border-radius: 4px;
+                            margin: 1px;
+                        }
+                    """)
+                else:
+                    # Yellow for dark theme
+                    station_frame.setStyleSheet("""
+                        QFrame {
+                            background-color: rgba(255, 235, 59, 0.2);
+                            border-left: 3px solid #ffeb3b;
+                            border-radius: 4px;
+                            margin: 1px;
+                        }
+                    """)
             else:
                 station_frame.setStyleSheet("""
                     QFrame {

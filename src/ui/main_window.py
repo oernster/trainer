@@ -92,11 +92,7 @@ class MainWindow(QMainWindow):
         self.train_list_widget: Optional[TrainListWidget] = None
         self.weather_widget: Optional[WeatherWidget] = None
         self.astronomy_widget: Optional[AstronomyWidget] = None
-        self.last_update_label: Optional[QLabel] = None
-        self.next_update_label: Optional[QLabel] = None
-        self.time_window_label: Optional[QLabel] = None
         self.theme_button: Optional[QPushButton] = None
-        self.refresh_button: Optional[QPushButton] = None
 
         # Managers
         self.weather_manager: Optional[WeatherManager] = None
@@ -183,9 +179,6 @@ class MainWindow(QMainWindow):
         scaled_spacing = int(12 * self.ui_scale_factor)
         layout.setSpacing(scaled_spacing)
 
-        # Header
-        self.setup_header(layout)
-
         # Weather widget (always create, show/hide based on config)
         self.weather_widget = WeatherWidget(scale_factor=self.ui_scale_factor)
         layout.addWidget(self.weather_widget)
@@ -234,6 +227,9 @@ class MainWindow(QMainWindow):
 
         # Menu bar
         self.setup_menu_bar()
+        
+        # Standalone theme button in top-right corner
+        self.setup_theme_button()
 
     def setup_application_icon(self):
         """Setup application icon using Unicode train emoji."""
@@ -272,54 +268,6 @@ class MainWindow(QMainWindow):
         except Exception as e:
             logger.warning(f"Failed to create emoji window icon: {e}")
             logger.info("Using Unicode train emoji in window title only")
-
-    def setup_header(self, layout):
-        """Setup header section with theme toggle."""
-        header_widget = QWidget()
-        header_widget.setObjectName("headerWidget")
-        header_layout = QHBoxLayout(header_widget)
-        header_layout.setContentsMargins(8, 4, 8, 4)  # Reduced margins
-        header_layout.setSpacing(8)
-
-        # Status labels
-        self.last_update_label = QLabel("Last Updated: --:--:--")
-        self.time_window_label = QLabel("Showing trains for next 16 hours")
-        self.route_display_label = QLabel("Route: Not set")
-        
-        # Initialize route display with current config
-        if self.config and hasattr(self.config, 'stations'):
-            via_stations = getattr(self.config.stations, 'via_stations', [])
-            if self.config.stations.from_name and self.config.stations.to_name:
-                self.update_route_display(
-                    self.config.stations.from_name,
-                    self.config.stations.to_name,
-                    via_stations
-                )
-
-        # Control buttons
-        self.theme_button = QPushButton(self.theme_manager.get_theme_icon())
-        self.theme_button.clicked.connect(self.toggle_theme)
-        self.theme_button.setToolTip(self.theme_manager.get_theme_tooltip())
-        self.theme_button.setFixedSize(32, 32)
-
-        self.refresh_button = QPushButton("🔄 Refresh")
-        self.refresh_button.clicked.connect(self.manual_refresh)
-        self.refresh_button.setToolTip("Refresh train data (F5)")
-
-        # Auto-refresh removed as obsolete
-
-        # Layout
-        header_layout.addWidget(self.last_update_label)
-        header_layout.addWidget(self.route_display_label)
-        header_layout.addWidget(self.time_window_label)
-        header_layout.addStretch()
-        header_layout.addWidget(self.theme_button)
-        header_layout.addWidget(self.refresh_button)
-
-        # Apply header-specific styling to remove borders
-        self.apply_header_styling(header_widget)
-
-        layout.addWidget(header_widget)
 
 
     def setup_menu_bar(self):
@@ -367,14 +315,6 @@ class MainWindow(QMainWindow):
         # View menu
         view_menu = menubar.addMenu("&View")
 
-        self.theme_action = QAction("Switch &Theme", self)
-        self.theme_action.setShortcut(QKeySequence("Ctrl+T"))
-        self.theme_action.setStatusTip("Toggle between light and dark theme")
-        self.theme_action.triggered.connect(self.toggle_theme)
-        view_menu.addAction(self.theme_action)
-
-        view_menu.addSeparator()
-
         # Weather toggle
         self.weather_toggle_action = QAction("Show &Weather", self)
         self.weather_toggle_action.setCheckable(True)
@@ -399,8 +339,82 @@ class MainWindow(QMainWindow):
         about_action.triggered.connect(self.show_about_dialog)
         help_menu.addAction(about_action)
 
+        # Theme button will be created as a standalone floating button
+        self.theme_button = None  # Will be created in setup_theme_button()
+
         # Apply menu bar styling
         self.apply_menu_bar_styling(menubar)
+
+    def setup_theme_button(self):
+        """Setup standalone theme toggle button in top-right corner."""
+        # Create theme button as a child of the main window
+        self.theme_button = QPushButton(self.theme_manager.get_theme_icon(), self)
+        self.theme_button.clicked.connect(self.toggle_theme)
+        self.theme_button.setToolTip(self.theme_manager.get_theme_tooltip())
+        self.theme_button.setFixedSize(32, 32)
+        
+        # Apply styling to the theme button
+        self.apply_theme_button_styling()
+        
+        # Position the button in the top-right corner
+        # We'll update the position in resizeEvent to keep it positioned correctly
+        self.position_theme_button()
+        
+        # Make sure the button stays on top
+        self.theme_button.raise_()
+        self.theme_button.show()
+
+    def apply_theme_button_styling(self):
+        """Apply styling to the standalone theme button."""
+        if not self.theme_button:
+            return
+            
+        # Get current theme colors
+        if self.theme_manager.current_theme == "dark":
+            button_style = """
+            QPushButton {
+                background-color: #2d2d2d;
+                border: 1px solid #404040;
+                border-radius: 4px;
+                color: #ffffff;
+                padding: 4px;
+            }
+            QPushButton:hover {
+                background-color: #404040;
+                border-color: #4fc3f7;
+            }
+            QPushButton:pressed {
+                background-color: #4fc3f7;
+            }
+            """
+        else:
+            button_style = """
+            QPushButton {
+                background-color: #f0f0f0;
+                border: 1px solid #cccccc;
+                border-radius: 4px;
+                color: #000000;
+                padding: 4px;
+            }
+            QPushButton:hover {
+                background-color: #e0e0e0;
+                border-color: #4fc3f7;
+            }
+            QPushButton:pressed {
+                background-color: #4fc3f7;
+                color: #ffffff;
+            }
+            """
+        
+        self.theme_button.setStyleSheet(button_style)
+
+    def position_theme_button(self):
+        """Position the theme button in the top-right corner."""
+        if self.theme_button:
+            # Position 8 pixels from the right edge and 8 pixels from the top
+            x = self.width() - self.theme_button.width() - 8
+            y = 8
+            self.theme_button.move(x, y)
 
     def setup_theme_system(self):
         """Setup theme switching system."""
@@ -581,18 +595,12 @@ class MainWindow(QMainWindow):
         if self.theme_button:
             self.theme_button.setText(self.theme_manager.get_theme_icon())
             self.theme_button.setToolTip(self.theme_manager.get_theme_tooltip())
-
-        # Status bar removed - no longer updating theme status
+            self.apply_theme_button_styling()
 
         # Update menu bar styling
         menubar = self.menuBar()
         if menubar:
             self.apply_menu_bar_styling(menubar)
-
-        # Update header styling
-        header_widget = self.findChild(QWidget, "headerWidget")
-        if header_widget:
-            self.apply_header_styling(header_widget)
 
         # Update train list widget
         if self.train_list_widget:
@@ -711,53 +719,36 @@ class MainWindow(QMainWindow):
 
     def update_route_display(self, from_station: str, to_station: str, via_stations: Optional[List[str]] = None):
         """
-        Update route display in header.
+        Update route display (header removed - now only logs route info).
         
         Args:
             from_station: Origin station name
             to_station: Destination station name
             via_stations: Optional list of via stations
         """
-        if self.route_display_label:
-            # Clean up station names by removing railway line context for display
-            def clean_station_name(station_name: str) -> str:
-                """Remove railway line context from station name for cleaner display."""
-                if not station_name:
-                    return station_name
-                # Remove text in parentheses (railway line context)
-                if '(' in station_name:
-                    return station_name.split('(')[0].strip()
+        # Header removed - route display no longer shown in UI, only logged
+        # Clean up station names by removing railway line context for logging
+        def clean_station_name(station_name: str) -> str:
+            """Remove railway line context from station name for cleaner display."""
+            if not station_name:
                 return station_name
-            
-            clean_from = clean_station_name(from_station)
-            clean_to = clean_station_name(to_station)
-            
-            if via_stations:
-                # Clean via station names
-                clean_via_stations = [clean_station_name(station) for station in via_stations]
-                
-                # Try to show all stops first
-                all_stops_text = " → ".join([clean_from] + clean_via_stations + [clean_to])
-                full_route_text = f"Route: {all_stops_text}"
-                
-                # Check if the full route fits (approximate character limit for UI)
-                if len(full_route_text) <= 120:  # Reasonable limit for header display
-                    route_text = full_route_text
-                else:
-                    # If too long, limit via stations and add ellipsis
-                    if len(clean_via_stations) > 2:
-                        via_text = " → ".join(clean_via_stations[:2]) + " → ..."
-                        route_text = f"Route: {clean_from} → {via_text} → {clean_to}"
-                    else:
-                        via_text = " → ".join(clean_via_stations)
-                        route_text = f"Route: {clean_from} → {via_text} → {clean_to}"
-            else:
-                route_text = f"Route: {clean_from} → {clean_to}"
-            
-            self.route_display_label.setText(route_text)
-            # Use ASCII arrow for logging to avoid Unicode encoding errors
-            log_text = route_text.replace("→", "->")
-            logger.debug(f"Route display updated: {log_text}")
+            # Remove text in parentheses (railway line context)
+            if '(' in station_name:
+                return station_name.split('(')[0].strip()
+            return station_name
+        
+        clean_from = clean_station_name(from_station)
+        clean_to = clean_station_name(to_station)
+        
+        if via_stations:
+            # Clean via station names
+            clean_via_stations = [clean_station_name(station) for station in via_stations]
+            via_text = " -> ".join(clean_via_stations)
+            route_text = f"Route: {clean_from} -> {via_text} -> {clean_to}"
+        else:
+            route_text = f"Route: {clean_from} -> {clean_to}"
+        
+        logger.debug(f"Route display updated: {route_text}")
 
     def update_train_display(self, trains: List[TrainData]):
         """
@@ -783,13 +774,13 @@ class MainWindow(QMainWindow):
 
     def update_last_update_time(self, timestamp: str):
         """
-        Update last update timestamp.
+        Update last update timestamp (header removed - now only logs).
 
         Args:
             timestamp: Formatted timestamp string
         """
-        if self.last_update_label:
-            self.last_update_label.setText(f"Last Updated: {timestamp}")
+        # Header removed - last update time no longer shown in UI, only logged
+        logger.debug(f"Last Updated: {timestamp}")
 
     # Auto-refresh countdown removed
 
@@ -981,13 +972,12 @@ class MainWindow(QMainWindow):
                 if hasattr(self.config, 'display') and self.config.display:
                     new_time_window = self.config.display.time_window_hours
                     if old_time_window != new_time_window:
-                        # Update time window label
-                        if self.time_window_label:
-                            self.time_window_label.setText(f"Showing trains for next {new_time_window} hours")
+                        # Header removed - time window no longer shown in UI, only logged
+                        logger.info(f"Time window changed from {old_time_window} to {new_time_window} hours")
                         
                         # Trigger refresh to reload trains with new time window
                         self.refresh_requested.emit()
-                        logger.info(f"Time window changed from {old_time_window} to {new_time_window} hours - refreshing train data")
+                        logger.info(f"Refreshing train data for new time window")
                 
                 # Update train manager route if stations changed
                 # This signal will be connected from main.py
@@ -1226,70 +1216,6 @@ class MainWindow(QMainWindow):
 
         menubar.setStyleSheet(menu_style)
 
-    def apply_header_styling(self, header_widget):
-        """Apply styling to the header widget to remove borders."""
-        # Get current theme colors
-        if self.theme_manager.current_theme == "dark":
-            header_style = """
-            QWidget#headerWidget {
-                background-color: #1a1a1a;
-                border: none;
-                padding: 0px;
-                margin: 0px;
-            }
-            QLabel {
-                color: #ffffff;
-                background-color: transparent;
-                border: none;
-                padding: 2px;
-            }
-            QPushButton {
-                background-color: #2d2d2d;
-                border: 1px solid #404040;
-                border-radius: 4px;
-                color: #ffffff;
-                padding: 4px 8px;
-            }
-            QPushButton:hover {
-                background-color: #404040;
-                border-color: #4fc3f7;
-            }
-            QPushButton:pressed {
-                background-color: #4fc3f7;
-            }
-            """
-        else:
-            header_style = """
-            QWidget#headerWidget {
-                background-color: #ffffff;
-                border: none;
-                padding: 0px;
-                margin: 0px;
-            }
-            QLabel {
-                color: #000000;
-                background-color: transparent;
-                border: none;
-                padding: 2px;
-            }
-            QPushButton {
-                background-color: #f0f0f0;
-                border: 1px solid #cccccc;
-                border-radius: 4px;
-                color: #000000;
-                padding: 4px 8px;
-            }
-            QPushButton:hover {
-                background-color: #e0e0e0;
-                border-color: #4fc3f7;
-            }
-            QPushButton:pressed {
-                background-color: #4fc3f7;
-                color: #ffffff;
-            }
-            """
-
-        header_widget.setStyleSheet(header_style)
 
     def connect_signals(self):
         """Connect internal signals."""
@@ -1322,6 +1248,12 @@ class MainWindow(QMainWindow):
             if self.astronomy_manager:
                 logger.debug("UI displayed - emitting astronomy manager ready signal")
                 self.astronomy_manager_ready.emit()
+
+    def resizeEvent(self, event):
+        """Handle window resize event - reposition theme button."""
+        super().resizeEvent(event)
+        # Reposition the theme button when window is resized
+        self.position_theme_button()
 
     def closeEvent(self, event):
         """Handle window close event."""
