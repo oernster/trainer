@@ -63,6 +63,19 @@ class DisplayConfig(BaseModel):
     theme: str = "dark"  # Default to dark theme - "dark" or "light"
 
 
+class UIConfig(BaseModel):
+    """Configuration for UI state persistence."""
+    
+    weather_widget_visible: bool = True
+    astronomy_widget_visible: bool = True
+    
+    # Window sizing per widget state (width, height)
+    window_size_both_visible: tuple[int, int] = (1100, 1200)  # Both weather and astronomy visible
+    window_size_weather_only: tuple[int, int] = (1100, 800)   # Only weather visible
+    window_size_astronomy_only: tuple[int, int] = (1100, 750) # Only astronomy visible
+    window_size_trains_only: tuple[int, int] = (1100, 500)    # Only trains visible
+
+
 class ConfigData(BaseModel):
     """Main configuration data model with weather and astronomy integration."""
 
@@ -70,11 +83,12 @@ class ConfigData(BaseModel):
     stations: StationConfig
     refresh: RefreshConfig
     display: DisplayConfig
+    ui: UIConfig = UIConfig()  # Default UI state
     weather: Optional[WeatherConfig] = None
     astronomy: Optional[AstronomyConfig] = None
 
     def __init__(self, **data):
-        """Initialize ConfigData with optional weather and astronomy config."""
+        """Initialize ConfigData with optional weather, astronomy, and UI config."""
         # If weather config is not provided, create default
         if "weather" not in data or data["weather"] is None:
             data["weather"] = WeatherConfigFactory.create_waterloo_config()
@@ -82,6 +96,10 @@ class ConfigData(BaseModel):
         # If astronomy config is not provided, create default
         if "astronomy" not in data or data["astronomy"] is None:
             data["astronomy"] = AstronomyConfig.create_default()
+            
+        # If UI config is not provided, create default (for backward compatibility)
+        if "ui" not in data or data["ui"] is None:
+            data["ui"] = UIConfig()
 
         super().__init__(**data)
 
@@ -184,6 +202,7 @@ class ConfigManager:
                     stations=StationConfig(),
                     refresh=RefreshConfig(),
                     display=DisplayConfig(),
+                    ui=UIConfig(),
                     weather=WeatherConfigFactory.create_waterloo_config(),
                     astronomy=AstronomyConfig.create_default(),
                 )
@@ -270,6 +289,7 @@ class ConfigManager:
             stations=StationConfig(),
             refresh=RefreshConfig(),
             display=DisplayConfig(),
+            ui=UIConfig(),
             weather=WeatherConfigFactory.create_waterloo_config(),
             astronomy=AstronomyConfig.create_default(),
         )

@@ -91,6 +91,7 @@ class AstronomyEvent:
 
     Follows Single Responsibility Principle - only responsible for
     astronomy event representation and basic validation.
+    Enhanced to support multiple link categories and types.
     """
 
     event_type: AstronomyEventType
@@ -99,10 +100,13 @@ class AstronomyEvent:
     start_time: datetime
     end_time: Optional[datetime] = None
     visibility_info: Optional[str] = None
-    nasa_url: Optional[str] = None
+    nasa_url: Optional[str] = None  # Kept for backward compatibility
     image_url: Optional[str] = None
     priority: AstronomyEventPriority = AstronomyEventPriority.MEDIUM
     metadata: Dict[str, Any] = field(default_factory=dict)
+    # New fields for enhanced link support
+    related_links: List[str] = field(default_factory=list)  # List of link IDs from astronomy_links_db
+    suggested_categories: List[str] = field(default_factory=list)  # Suggested link categories
 
     def __post_init__(self):
         """Validate astronomy event data on creation."""
@@ -177,17 +181,18 @@ class AstronomyEvent:
 
     @property
     def event_icon(self) -> str:
-        """Get emoji icon for event type."""
+        """Get enhanced emoji icon for event type."""
+        # Enhanced emojis - more visually distinctive and space-themed
         icons = {
-            AstronomyEventType.APOD: "📸",
-            AstronomyEventType.ISS_PASS: "🛰️",
-            AstronomyEventType.NEAR_EARTH_OBJECT: "☄️",
-            AstronomyEventType.MOON_PHASE: "🌙",
-            AstronomyEventType.PLANETARY_EVENT: "🪐",
-            AstronomyEventType.METEOR_SHOWER: "⭐",
-            AstronomyEventType.SOLAR_EVENT: "☀️",
-            AstronomyEventType.SATELLITE_IMAGE: "🌍",
-            AstronomyEventType.UNKNOWN: "❓",
+            AstronomyEventType.APOD: "🌌",              # More space-themed
+            AstronomyEventType.ISS_PASS: "🚀",          # More dynamic
+            AstronomyEventType.NEAR_EARTH_OBJECT: "💫", # More distinctive
+            AstronomyEventType.MOON_PHASE: "🌕",        # Fuller, more visible
+            AstronomyEventType.PLANETARY_EVENT: "🌟",   # More prominent
+            AstronomyEventType.METEOR_SHOWER: "✨",     # More sparkly
+            AstronomyEventType.SOLAR_EVENT: "🌞",       # More expressive
+            AstronomyEventType.SATELLITE_IMAGE: "🛰️",  # More specific
+            AstronomyEventType.UNKNOWN: "❓",           # Unchanged
         }
         return icons.get(self.event_type, "❓")
 
@@ -207,6 +212,60 @@ class AstronomyEvent:
         if hours > 0:
             return f"{hours}h {minutes}m"
         return f"{minutes}m"
+
+    def get_suggested_links(self) -> List[str]:
+        """Get suggested astronomy links for this event type."""
+        try:
+            # Import here to avoid circular imports
+            from .astronomy_links import astronomy_links_db
+            
+            # Get suggested links based on event type
+            event_type_str = self.event_type.value
+            suggested_links = astronomy_links_db.get_suggested_links_for_event_type(event_type_str)
+            
+            # Combine with any manually specified related links
+            all_links = []
+            
+            # Add suggested links
+            for link in suggested_links:
+                all_links.append(link.name)
+            
+            # Add any manually specified related links
+            all_links.extend(self.related_links)
+            
+            return list(set(all_links))  # Remove duplicates
+            
+        except ImportError:
+            # Fallback if astronomy_links module not available
+            return self.related_links
+
+    def get_primary_link(self) -> Optional[str]:
+        """Get the primary link for this event (nasa_url or first suggested link)."""
+        if self.nasa_url:
+            return self.nasa_url
+        
+        suggested_links = self.get_suggested_links()
+        if suggested_links:
+            try:
+                from .astronomy_links import astronomy_links_db
+                # Get the actual link URL for the first suggestion
+                link_key = suggested_links[0].lower().replace(" ", "_")
+                all_links = astronomy_links_db.get_all_links()
+                for link in all_links:
+                    if link.name.lower().replace(" ", "_") == link_key:
+                        return link.url
+            except ImportError:
+                pass
+        
+        return None
+
+    def has_multiple_links(self) -> bool:
+        """Check if this event has multiple associated links."""
+        link_count = 0
+        if self.nasa_url:
+            link_count += 1
+        link_count += len(self.get_suggested_links())
+        return link_count > 1
 
 
 @dataclass(frozen=True)
@@ -482,15 +541,15 @@ class EmojiAstronomyIconStrategy(AstronomyIconStrategy):
     """Strategy using emoji icons for astronomy event display."""
 
     ASTRONOMY_ICONS = {
-        AstronomyEventType.APOD: "📸",
-        AstronomyEventType.ISS_PASS: "🛰️",
-        AstronomyEventType.NEAR_EARTH_OBJECT: "☄️",
-        AstronomyEventType.MOON_PHASE: "🌙",
-        AstronomyEventType.PLANETARY_EVENT: "🪐",
-        AstronomyEventType.METEOR_SHOWER: "⭐",
-        AstronomyEventType.SOLAR_EVENT: "☀️",
-        AstronomyEventType.SATELLITE_IMAGE: "🌍",
-        AstronomyEventType.UNKNOWN: "❓",
+        AstronomyEventType.APOD: "🌌",              # More space-themed
+        AstronomyEventType.ISS_PASS: "🚀",          # More dynamic
+        AstronomyEventType.NEAR_EARTH_OBJECT: "💫", # More distinctive
+        AstronomyEventType.MOON_PHASE: "🌕",        # Fuller, more visible
+        AstronomyEventType.PLANETARY_EVENT: "🌟",   # More prominent
+        AstronomyEventType.METEOR_SHOWER: "✨",     # More sparkly
+        AstronomyEventType.SOLAR_EVENT: "🌞",       # More expressive
+        AstronomyEventType.SATELLITE_IMAGE: "🛰️",  # More specific
+        AstronomyEventType.UNKNOWN: "❓",           # Unchanged
     }
 
     def get_icon(self, event_type: AstronomyEventType) -> str:

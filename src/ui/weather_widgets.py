@@ -447,6 +447,9 @@ class WeatherWidget(QWidget):
         self._current_forecast: Optional[WeatherForecastData] = None
         self._config: Optional[WeatherConfig] = None
         self._is_loading = False
+        
+        # Track user's manual visibility preference to prevent automatic overrides
+        self._user_manually_hidden: bool = False
 
         # Auto-hide timer for error messages
         self._status_timer = QTimer()
@@ -476,8 +479,8 @@ class WeatherWidget(QWidget):
         self._daily_forecast_widget = HourlyForecastWidget(scale_factor=self._scale_factor)
         layout.addWidget(self._daily_forecast_widget)
 
-        # Add more spacing before the 7-Day Forecast label to center it between compact panes
-        scaled_extra_spacing = int(35 * self._scale_factor)
+        # Reduced spacing before the 7-Day Forecast label for more compact layout
+        scaled_extra_spacing = int(10 * self._scale_factor)  # Reduced from 35 to 10
         layout.addSpacing(scaled_extra_spacing)
 
         # Weekly forecast section
@@ -492,11 +495,11 @@ class WeatherWidget(QWidget):
 
         # Set size policy with reasonable height (scaled)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        # Increased height to accommodate centered text without cutting off second pane
+        # Further increased height to prevent truncation of humidity values
         if self._scale_factor < 1.0:  # Small screens
-            base_height = 310  # Increased to prevent cut-off
+            base_height = 330  # Increased from 310 to 330 to prevent cut-off
         else:  # Large screens
-            base_height = 350  # Increased to prevent cut-off
+            base_height = 370  # Increased from 350 to 370 to prevent cut-off
         scaled_height = int(base_height * self._scale_factor)
         self.setFixedHeight(scaled_height)
 
@@ -513,8 +516,19 @@ class WeatherWidget(QWidget):
             for item in self._weekly_forecast_widget._weather_items:
                 item.update_config(config)
 
-        # Show/hide widget based on config
-        self.setVisible(config.enabled)
+        # CRITICAL FIX: Don't override user's manual visibility preference
+        # Never automatically set visibility based on config.enabled during updates
+        # The visibility should only be controlled by user actions, not config updates
+        if not hasattr(self, '_config_visibility_set'):
+            # Only set visibility on the very first initialization, not on subsequent updates
+            self.setVisible(config.enabled)
+            self._config_visibility_set = True
+            logger.debug(f"Weather widget visibility set to {config.enabled} (initial setup only)")
+        else:
+            # ALWAYS preserve user's manual visibility preference during any config update
+            current_visibility = self.isVisible()
+            logger.debug(f"Weather widget visibility preserved during config update: {current_visibility} (user preference)")
+            # Do NOT call setVisible() here - this was causing the widget to reappear
 
     def apply_theme(self, theme_colors: Dict[str, str]) -> None:
         """Apply theme to weather widget and children."""

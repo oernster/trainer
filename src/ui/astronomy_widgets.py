@@ -14,11 +14,11 @@ from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
     QHBoxLayout,
+    QGridLayout,
     QLabel,
     QPushButton,
     QFrame,
     QScrollArea,
-    QGridLayout,
     QSizePolicy,
     QSpacerItem,
     QToolTip,
@@ -171,16 +171,22 @@ class DailyAstronomyPanel(QFrame):
         self._date_label.setFont(font)
         layout.addWidget(self._date_label)
 
-        # Icons container - remove any background styling (scaled)
+        # Icons container - 2x2 grid layout for better space utilization (scaled)
         self._icons_widget = QWidget()
         self._icons_widget.setStyleSheet("background: transparent; border: none;")
-        self._icons_layout = QHBoxLayout(self._icons_widget)
+        self._icons_layout = QGridLayout(self._icons_widget)  # Changed from QHBoxLayout to QGridLayout
         scaled_icon_margin_h = int(2 * self._scale_factor)
         scaled_icon_margin_v = int(4 * self._scale_factor)
         scaled_icon_spacing = int(3 * self._scale_factor)
         self._icons_layout.setContentsMargins(scaled_icon_margin_h, scaled_icon_margin_v, scaled_icon_margin_h, scaled_icon_margin_v)
         self._icons_layout.setSpacing(scaled_icon_spacing)
-        self._icons_layout.addStretch()  # Center icons
+        
+        # Configure grid for 2x2 layout with equal spacing
+        self._icons_layout.setColumnStretch(0, 1)
+        self._icons_layout.setColumnStretch(1, 1)
+        self._icons_layout.setRowStretch(0, 1)
+        self._icons_layout.setRowStretch(1, 1)
+        
         layout.addWidget(self._icons_widget)
 
         # Moon phase label - ensure no background styling, reasonable size for small screens (scaled)
@@ -196,7 +202,7 @@ class DailyAstronomyPanel(QFrame):
 
         # Set size policy - expanding width, fixed height for better distribution
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        base_height = 160 if self._scale_factor < 1.0 else 180  # Increased to prevent internal content truncation
+        base_height = 200 if self._scale_factor < 1.0 else 240  # Significantly increased for 2x2 emoji layout
         base_min_width = 100 if self._scale_factor < 1.0 else 120  # Minimum width
         scaled_height = int(base_height * self._scale_factor)
         scaled_min_width = int(base_min_width * self._scale_factor)
@@ -214,14 +220,18 @@ class DailyAstronomyPanel(QFrame):
         # Clear existing icons
         self._clear_icons()
 
-        # Add event icons (limit to 3 for space)
-        events_to_show = astronomy_data.get_sorted_events(by_priority=True)[:3]
+        # Add event icons (up to 4 for 2x2 grid)
+        events_to_show = astronomy_data.get_sorted_events(by_priority=True)[:4]
 
-        for event in events_to_show:
+        for i, event in enumerate(events_to_show):
             icon = AstronomyEventIcon(event, scale_factor=self._scale_factor)
             icon.event_clicked.connect(self.event_icon_clicked.emit)
             self._event_icons.append(icon)
-            self._icons_layout.insertWidget(self._icons_layout.count() - 1, icon)
+            
+            # Calculate grid position (2x2 layout)
+            row = i // 2  # 0 or 1
+            col = i % 2   # 0 or 1
+            self._icons_layout.addWidget(icon, row, col)
 
         # Update moon phase
         self._moon_label.setText(astronomy_data.moon_phase_icon)
@@ -793,15 +803,18 @@ class AstronomyWidget(QWidget):
         self._forecast_panel = AstronomyForecastPanel(scale_factor=self._scale_factor)
         layout.addWidget(self._forecast_panel)
 
-        # Astronomical events button (scaled)
-        self._sky_button = QPushButton("🌟 Current Astronomical Events")
-        scaled_font_size = int(12 * self._scale_factor)
-        scaled_padding_h = int(12 * self._scale_factor)
-        scaled_padding_v = int(6 * self._scale_factor)
-        scaled_border_radius = int(6 * self._scale_factor)
-        scaled_max_height = int(32 * self._scale_factor)
-        self._sky_button.setStyleSheet(
-            f"""
+        # Create horizontal layout for astronomy link buttons
+        self._buttons_layout = QHBoxLayout()
+        self._buttons_layout.setSpacing(int(4 * self._scale_factor))
+        
+        # Button styling
+        scaled_font_size = int(10 * self._scale_factor)
+        scaled_padding_h = int(8 * self._scale_factor)
+        scaled_padding_v = int(4 * self._scale_factor)
+        scaled_border_radius = int(4 * self._scale_factor)
+        scaled_max_height = int(28 * self._scale_factor)
+        
+        button_style = f"""
             QPushButton {{
                 background-color: #1976d2;
                 color: white;
@@ -819,19 +832,56 @@ class AstronomyWidget(QWidget):
                 background-color: #0d47a1;
             }}
         """
-        )
+        
+        # Create buttons and add them to layout immediately - always visible
+        # Tonight's Sky button
+        self._sky_button = QPushButton("🌌 Tonight's Sky")
+        self._sky_button.setStyleSheet(button_style)
         self._sky_button.clicked.connect(self._open_night_sky_view)
-        layout.addWidget(self._sky_button)
+        self._buttons_layout.addWidget(self._sky_button)
+        
+        # Observatories button
+        self._observatories_button = QPushButton("🔭 Observatories")
+        self._observatories_button.setStyleSheet(button_style)
+        self._observatories_button.clicked.connect(self._open_observatories_view)
+        self._buttons_layout.addWidget(self._observatories_button)
+        
+        # Space Agencies button
+        self._agencies_button = QPushButton("🚀 Space Agencies")
+        self._agencies_button.setStyleSheet(button_style)
+        self._agencies_button.clicked.connect(self._open_space_agencies_view)
+        self._buttons_layout.addWidget(self._agencies_button)
+        
+        # Educational Resources button
+        self._educational_button = QPushButton("📚 Educational")
+        self._educational_button.setStyleSheet(button_style)
+        self._educational_button.clicked.connect(self._open_educational_view)
+        self._buttons_layout.addWidget(self._educational_button)
+        
+        # Live Data Feeds button
+        self._live_data_button = QPushButton("📡 Live Data")
+        self._live_data_button.setStyleSheet(button_style)
+        self._live_data_button.clicked.connect(self._open_live_data_view)
+        self._buttons_layout.addWidget(self._live_data_button)
+        
+        # Community Forums button
+        self._community_button = QPushButton("👥 Community")
+        self._community_button.setStyleSheet(button_style)
+        self._community_button.clicked.connect(self._open_community_view)
+        self._buttons_layout.addWidget(self._community_button)
+        
+        # All buttons are now visible by default and added to layout
+        
+        layout.addLayout(self._buttons_layout)
 
-        # Set size policy - adjusted height to accommodate taller panels
-        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        # Increased height to prevent internal content truncation while still being compact
-        if self._scale_factor < 1.0:  # Small screens
-            base_height = 220  # Increased from 200 to accommodate taller panels
-        else:  # Large screens
-            base_height = 280  # Increased from 260 to accommodate taller panels
-        scaled_max_height = int(base_height * self._scale_factor)
-        self.setMaximumHeight(scaled_max_height)
+        # Set size policy and minimum height to ensure all content is visible
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        # Set appropriate minimum height to show forecast panels + buttons
+        min_height = int(320 * self._scale_factor)  # Reduced to proper size for forecast + buttons
+        self.setMinimumHeight(min_height)
+        
+        # Buttons are now always visible by default - no need for complex visibility logic
+        logger.info("Astronomy buttons initialized and visible by default")
 
     def _connect_signals(self) -> None:
         """Connect internal signals."""
@@ -840,27 +890,144 @@ class AstronomyWidget(QWidget):
 
     def _on_event_icon_clicked(self, event: AstronomyEvent) -> None:
         """Handle event icon click."""
-        # Open NASA website for the specific event
-        if event.nasa_url:
-            self._open_nasa_link(event.nasa_url)
+        # Get event-specific link based on event type
+        primary_link = event.get_primary_link()
+        
+        if primary_link:
+            # Open the event-specific link
+            self._open_nasa_link(primary_link)
+            logger.info(f"Opened event-specific link for {event.event_type.value}: {primary_link}")
         else:
-            # Fallback to general NASA astronomy page
-            self._open_nasa_astronomy_page()
+            # Get suggested links for this event type
+            try:
+                from ..models.astronomy_links import astronomy_links_db
+                suggested_links = astronomy_links_db.get_suggested_links_for_event_type(event.event_type.value)
+                
+                if suggested_links:
+                    # Open the highest priority suggested link
+                    best_link = min(suggested_links, key=lambda x: x.priority)
+                    self._open_nasa_link(best_link.url)
+                    logger.info(f"Opened suggested link for {event.event_type.value}: {best_link.name} - {best_link.url}")
+                else:
+                    # Final fallback to general NASA astronomy page
+                    self._open_nasa_astronomy_page()
+                    logger.info(f"Used fallback NASA page for {event.event_type.value}")
+                    
+            except ImportError:
+                # Fallback if astronomy_links module not available
+                self._open_nasa_astronomy_page()
+                logger.warning(f"Astronomy links database not available, using fallback for {event.event_type.value}")
 
         # Emit signal for external handling
         self.astronomy_event_clicked.emit(event)
 
-        logger.debug(f"Astronomy event clicked: {event.title}")
+        logger.debug(f"Astronomy event clicked: {event.title} ({event.event_type.value})")
 
     def _open_night_sky_view(self) -> None:
         """Open current astronomical events page showing today's phenomena."""
-        # Use EarthSky's Tonight page - always shows current date's astronomical events
-        # This automatically updates daily with current planetary positions, conjunctions,
-        # meteor showers, comets, solar activity, and other interesting phenomena
-        sky_url = "https://earthsky.org/tonight/"
+        # Import the astronomy links database
+        from ..models.astronomy_links import astronomy_links_db, LinkCategory
+        
+        # Get tonight's sky links
+        tonight_links = astronomy_links_db.get_links_by_category(LinkCategory.TONIGHT_SKY)
+        
+        if tonight_links:
+            # Open the highest priority tonight's sky link
+            primary_link = min(tonight_links, key=lambda x: x.priority)
+            self._open_nasa_link(primary_link.url)
+            logger.info(f"Opened {primary_link.name}: {primary_link.url}")
+        else:
+            # Fallback to EarthSky if no links available
+            sky_url = "https://earthsky.org/tonight/"
+            self._open_nasa_link(sky_url)
+            logger.info("Opened EarthSky's current astronomical events for tonight")
 
-        self._open_nasa_link(sky_url)
-        logger.info("Opened EarthSky's current astronomical events for tonight")
+    def _open_observatories_view(self) -> None:
+        """Open observatories page."""
+        from ..models.astronomy_links import astronomy_links_db, LinkCategory
+        
+        # Get observatory links
+        observatory_links = astronomy_links_db.get_links_by_category(LinkCategory.OBSERVATORY)
+        
+        if observatory_links:
+            # Open the highest priority observatory link (Hubble)
+            primary_link = min(observatory_links, key=lambda x: x.priority)
+            self._open_nasa_link(primary_link.url)
+            logger.info(f"Opened {primary_link.name}: {primary_link.url}")
+        else:
+            # Fallback to NASA if no links available
+            self._open_nasa_astronomy_page()
+
+    def _open_space_agencies_view(self) -> None:
+        """Open space agencies page."""
+        from ..models.astronomy_links import astronomy_links_db, LinkCategory
+        
+        # Get space agency links
+        agency_links = astronomy_links_db.get_links_by_category(LinkCategory.SPACE_AGENCY)
+        
+        if agency_links:
+            # Open the highest priority space agency link (NASA)
+            primary_link = min(agency_links, key=lambda x: x.priority)
+            self._open_nasa_link(primary_link.url)
+            logger.info(f"Opened {primary_link.name}: {primary_link.url}")
+        else:
+            # Fallback to NASA if no links available
+            self._open_nasa_astronomy_page()
+
+
+    def _open_educational_view(self) -> None:
+        """Open educational resources page."""
+        from ..models.astronomy_links import astronomy_links_db, LinkCategory
+        
+        # Get educational links
+        educational_links = astronomy_links_db.get_links_by_category(LinkCategory.EDUCATIONAL)
+        
+        if educational_links:
+            # Open the highest priority educational link
+            primary_link = min(educational_links, key=lambda x: x.priority)
+            self._open_nasa_link(primary_link.url)
+            logger.info(f"Opened {primary_link.name}: {primary_link.url}")
+        else:
+            # Fallback to NASA education
+            edu_url = "https://www.nasa.gov/audience/foreducators/"
+            self._open_nasa_link(edu_url)
+            logger.info("Opened NASA Education")
+
+    def _open_live_data_view(self) -> None:
+        """Open live data feeds page."""
+        from ..models.astronomy_links import astronomy_links_db, LinkCategory
+        
+        # Get live data links
+        live_data_links = astronomy_links_db.get_links_by_category(LinkCategory.LIVE_DATA)
+        
+        if live_data_links:
+            # Open the highest priority live data link
+            primary_link = min(live_data_links, key=lambda x: x.priority)
+            self._open_nasa_link(primary_link.url)
+            logger.info(f"Opened {primary_link.name}: {primary_link.url}")
+        else:
+            # Fallback to NASA live data
+            live_url = "https://www.nasa.gov/live/"
+            self._open_nasa_link(live_url)
+            logger.info("Opened NASA Live")
+
+    def _open_community_view(self) -> None:
+        """Open community forums page."""
+        from ..models.astronomy_links import astronomy_links_db, LinkCategory
+        
+        # Get community links
+        community_links = astronomy_links_db.get_links_by_category(LinkCategory.COMMUNITY)
+        
+        if community_links:
+            # Open the highest priority community link
+            primary_link = min(community_links, key=lambda x: x.priority)
+            self._open_nasa_link(primary_link.url)
+            logger.info(f"Opened {primary_link.name}: {primary_link.url}")
+        else:
+            # Fallback to Reddit astronomy
+            community_url = "https://www.reddit.com/r/astronomy/"
+            self._open_nasa_link(community_url)
+            logger.info("Opened Reddit Astronomy")
 
     def _open_nasa_astronomy_page(self) -> None:
         """Open NASA astronomy page in browser."""
@@ -907,12 +1074,17 @@ class AstronomyWidget(QWidget):
         # based on whether it's properly added to the layout with data
         # self.setVisible(config.enabled and config.display.show_in_forecast)
         
-        # If API key was just added, show loading state
-        if (old_config and not old_config.has_valid_api_key() and
-            config.has_valid_api_key()):
-            logger.info("API key newly available - astronomy widget ready for data")
+        # SIMPLIFIED: Don't update button visibility - keep all buttons always visible
+        # self._update_link_buttons_visibility()
+        
+        # API-free mode - always ready for data when enabled
+        if config.enabled:
+            logger.info("Astronomy widget ready for data (API-free mode)")
 
         logger.debug("Astronomy widget configuration updated")
+    
+    # REMOVED: Complex visibility update methods that were hiding buttons
+    # All buttons are now always visible by default as created in _setup_ui()
 
     def apply_theme(self, theme_colors: Dict[str, str]) -> None:
         """Apply theme colors to astronomy widget."""

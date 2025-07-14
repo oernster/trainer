@@ -7,11 +7,68 @@ and starts the main window with theme support and custom icon.
 """
 
 import sys
+import tempfile
+import os
+from pathlib import Path
+
+# CRITICAL: Ultra-early singleton check before ANY imports or initialization
+def check_single_instance_ultra_early():
+    """Ultra-early singleton check using file lock before any Qt imports."""
+    lock_file_path = Path(tempfile.gettempdir()) / "trainer_app_ultra_early.lock"
+    
+    try:
+        # Try to create lock file exclusively
+        if lock_file_path.exists():
+            # Check if the process that created the lock is still running
+            try:
+                with open(lock_file_path, 'r') as f:
+                    pid = int(f.read().strip())
+                
+                # Check if process is still running
+                if sys.platform == "win32":
+                    import subprocess
+                    result = subprocess.run(['tasklist', '/FI', f'PID eq {pid}'],
+                                          capture_output=True, text=True, timeout=5)
+                    if str(pid) in result.stdout:
+                        print("ERROR: Another instance of Trainer is already running!")
+                        print("Please close the existing instance before starting a new one.")
+                        sys.exit(1)
+                    else:
+                        # Process not running, remove stale lock file
+                        lock_file_path.unlink()
+                else:
+                    # Unix-like systems
+                    try:
+                        os.kill(pid, 0)  # Check if process exists
+                        print("ERROR: Another instance of Trainer is already running!")
+                        print("Please close the existing instance before starting a new one.")
+                        sys.exit(1)
+                    except OSError:
+                        # Process not running, remove stale lock file
+                        lock_file_path.unlink()
+            except (ValueError, FileNotFoundError):
+                # Invalid lock file, remove it
+                lock_file_path.unlink()
+        
+        # Create new lock file with current PID
+        with open(lock_file_path, 'w') as f:
+            f.write(str(os.getpid()))
+        
+        print("Ultra-early singleton check passed - proceeding with application startup")
+        return lock_file_path
+        
+    except Exception as e:
+        print(f"Warning: Failed to create ultra-early lock file: {e}")
+        return None
+
+# Perform ultra-early singleton check BEFORE any other imports
+_ultra_early_lock_file = check_single_instance_ultra_early()
+
+# Now proceed with normal imports
 import asyncio
 import logging
-from pathlib import Path
-from PySide6.QtWidgets import QApplication
-from PySide6.QtCore import QTimer, QSize
+from PySide6.QtWidgets import QApplication, QMessageBox
+from PySide6.QtCore import QTimer, QSize, QSharedMemory
 from PySide6.QtGui import QIcon
 from src.ui.main_window import MainWindow
 from src.ui.splash_screen import TrainerSplashScreen
@@ -24,6 +81,16 @@ from version import (
     __company__,
     __copyright__,
 )
+
+
+def cleanup_ultra_early_lock():
+    """Clean up the ultra-early lock file."""
+    global _ultra_early_lock_file
+    if _ultra_early_lock_file and _ultra_early_lock_file.exists():
+        try:
+            _ultra_early_lock_file.unlink()
+        except Exception as e:
+            print(f"Warning: Failed to remove ultra-early lock file: {e}")
 
 
 def setup_logging():
@@ -125,128 +192,182 @@ def connect_signals(window: MainWindow, train_manager: TrainManager):
     logging.info("Signals connected between main window and train manager")
 
 
+class SingleInstanceApplication(QApplication):
+    """QApplication subclass that enforces single instance with dual protection."""
+    
+    def __init__(self, argv):
+        # Additional Qt-level singleton check
+        existing_app = QApplication.instance()
+        if existing_app is not None:
+            print("CRITICAL ERROR: QApplication instance already exists!")
+            print("This indicates multiple application launches. Exiting immediately.")
+            sys.exit(1)
+        
+        # Create shared memory segment for single instance check
+        temp_shared_memory = QSharedMemory("TrainerAppSingleInstance")
+        
+        # Try to attach to existing shared memory
+        if temp_shared_memory.attach():
+            # Another instance is already running - exit immediately
+            print("ERROR: Another Qt instance of Trainer is already running!")
+            print("Please close the existing instance before starting a new one.")
+            temp_shared_memory.detach()
+            sys.exit(1)
+        
+        # No existing instance found, proceed with initialization
+        super().__init__(argv)
+        
+        # Now create our own shared memory segment
+        self.shared_memory = QSharedMemory("TrainerAppSingleInstance")
+        if not self.shared_memory.create(1):
+            print("CRITICAL ERROR: Failed to create shared memory for single instance check!")
+            print("This should not happen. Exiting to prevent multiple instances.")
+            sys.exit(1)
+        
+        print("Qt singleton check passed - application starting normally.")
+
+
 def main():
     """Main application entry point."""
-    # Setup logging first
-    setup_logging()
-    logger = logging.getLogger(__name__)
-
-    logger.info("Starting Trainer - Trainer train times application")
-
-    # Create QApplication
-    app = QApplication(sys.argv)
-    app.setApplicationName(__app_name__)
-    app.setApplicationDisplayName(__app_display_name__)
-    app.setApplicationVersion(__version__)
-    app.setOrganizationName(__company__)
-    app.setOrganizationDomain("trainer.local")
-
-    # Set desktop file name for better Linux integration
-    app.setDesktopFileName("trainer")
-
-    # Setup application icon (must be done early for Windows taskbar)
-    setup_application_icon(app)
-
-    # Create and show splash screen first
-    splash = TrainerSplashScreen()
-    splash.show()
-    splash.show_message("Initializing application...")
-    app.processEvents()  # Process events to show splash screen
-
     try:
-        # Initialize configuration manager (will use AppData on Windows)
-        splash.show_message("Loading configuration...")
-        app.processEvents()
+        # Setup logging first
+        setup_logging()
+        logger = logging.getLogger(__name__)
 
-        config_manager = ConfigManager()
+        logger.info("Starting Trainer - Trainer train times application")
 
-        # Install default config to AppData if needed
-        if config_manager.install_default_config_to_appdata():
-            logger.info("Default configuration installed to AppData")
+        # Create single instance QApplication with dual protection
+        app = SingleInstanceApplication(sys.argv)
+        app.setApplicationName(__app_name__)
+        app.setApplicationDisplayName(__app_display_name__)
+        app.setApplicationVersion(__version__)
+        app.setOrganizationName(__company__)
+        app.setOrganizationDomain("trainer.local")
 
-        # Load configuration
-        config = config_manager.load_config()
-        logger.info(f"Configuration loaded from: {config_manager.config_path}")
+        # Set desktop file name for better Linux integration
+        app.setDesktopFileName("trainer")
 
-        # Create main window with shared config manager (but don't show it yet)
-        splash.show_message("Creating main window...")
-        app.processEvents()
+        # Prevent multiple instances
+        app.setQuitOnLastWindowClosed(True)
 
-        window = MainWindow(config_manager)
+        # Setup application icon (must be done early for Windows taskbar)
+        setup_application_icon(app)
 
-        # Initialize train manager (now works offline without API)
-        splash.show_message("Initializing train manager...")
-        app.processEvents()
-        
-        logger.info("Starting in offline mode - API credentials not required")
+        # Create and show splash screen first
+        splash = TrainerSplashScreen()
+        splash.show()
+        splash.show_message("Initializing application...")
+        app.processEvents()  # Process events to show splash screen
 
-        # Create train manager with updated config
-        train_manager = TrainManager(config)
-
-        # Set the route from configuration for offline timetable generation
-        if config and config.stations:
-            train_manager.set_route(config.stations.from_code, config.stations.to_code)
-            logger.info(f"Route configured: {config.stations.from_name} ({config.stations.from_code}) -> {config.stations.to_name} ({config.stations.to_code})")
-
-        # Connect signals between components
-        splash.show_message("Connecting components...")
-        app.processEvents()
-
-        # Attach train manager to window for access by dialogs
-        window.train_manager = train_manager
-
-        connect_signals(window, train_manager)
-
-        # The optimized widget initialization will handle weather and NASA widgets
-        # Train data will be fetched after widget initialization completes
-        splash.show_message("Optimizing widget initialization...")
-        app.processEvents()
-        
-        # Connect to initialization completion to start train data fetch
-        def on_widgets_ready():
-            splash.show_message("Loading train data...")
-            app.processEvents()
-            # Delay train data fetch to allow widgets to fully initialize
-            QTimer.singleShot(500, train_manager.fetch_trains)
-            logger.info("Train data fetch scheduled after widget initialization")
-        
-        if window.initialization_manager:
-            window.initialization_manager.initialization_completed.connect(on_widgets_ready)
-        else:
-            # Fallback if initialization manager not available
-            QTimer.singleShot(1000, train_manager.fetch_trains)
-
-        # Show main window and close splash screen
-        splash.show_message("Ready!")
-        app.processEvents()
-
-        # Small delay to show "Ready!" message
-        QTimer.singleShot(500, lambda: [window.show(), splash.close()])
-
-        logger.info("Application initialized successfully")
-
-        # Start event loop
-        exit_code = app.exec()
-
-        # Cleanup
-        logger.info(f"Application exiting with code {exit_code}")
-        sys.exit(exit_code)
-
-    except ConfigurationError as e:
-        logger.error(f"Configuration error: {e}")
-        # Still try to show window with error message
         try:
-            window = MainWindow()  # Use default config manager in error case
-            window.show_error_message("Configuration Error", str(e))
-            window.show()
-            app.exec()
-        except:
-            pass
-        sys.exit(1)
+            # Initialize configuration manager (will use AppData on Windows)
+            splash.show_message("Loading configuration...")
+            app.processEvents()
 
-    except Exception as e:
-        logger.error(f"Fatal error: {e}", exc_info=True)
-        sys.exit(1)
+            config_manager = ConfigManager()
+
+            # Install default config to AppData if needed
+            if config_manager.install_default_config_to_appdata():
+                logger.info("Default configuration installed to AppData")
+
+            # Load configuration
+            config = config_manager.load_config()
+            logger.info(f"Configuration loaded from: {config_manager.config_path}")
+
+            # Create main window with shared config manager (but don't show it yet)
+            splash.show_message("Creating main window...")
+            app.processEvents()
+
+            window = MainWindow(config_manager)
+
+            # Initialize train manager (now works offline without API)
+            splash.show_message("Initializing train manager...")
+            app.processEvents()
+            
+            logger.info("Starting in offline mode - API credentials not required")
+
+            # Create train manager with updated config
+            train_manager = TrainManager(config)
+
+            # Set the route from configuration for offline timetable generation
+            if config and config.stations:
+                train_manager.set_route(config.stations.from_code, config.stations.to_code)
+                logger.info(f"Route configured: {config.stations.from_name} ({config.stations.from_code}) -> {config.stations.to_name} ({config.stations.to_code})")
+
+            # Connect signals between components
+            splash.show_message("Connecting components...")
+            app.processEvents()
+
+            # Attach train manager to window for access by dialogs
+            window.train_manager = train_manager
+
+            connect_signals(window, train_manager)
+
+            # The optimized widget initialization will handle weather and NASA widgets
+            # Train data will be fetched after widget initialization completes
+            splash.show_message("Optimizing widget initialization...")
+            app.processEvents()
+            
+            # Connect to initialization completion to start train data fetch and show window
+            def on_widgets_ready():
+                splash.show_message("Loading train data...")
+                app.processEvents()
+                # Single train data fetch after widgets are ready
+                train_manager.fetch_trains()
+                logger.info("Train data fetched after widget initialization")
+                
+                # Wait a bit more for train data to load, then show window
+                def show_main_window():
+                    splash.show_message("Ready!")
+                    app.processEvents()
+                    # Small delay to show "Ready!" message, then show window and close splash
+                    QTimer.singleShot(300, lambda: [window.show(), splash.close()])
+                    logger.info("Main window shown after full initialization")
+                
+                # Give train data more time to load before showing window
+                QTimer.singleShot(1500, show_main_window)
+            
+            # Schedule train data fetch and window display with single fallback
+            if window.initialization_manager:
+                window.initialization_manager.initialization_completed.connect(on_widgets_ready)
+                logger.info("Train data fetch and window display scheduled with initialization manager")
+            else:
+                # Fallback if initialization manager not available
+                def fallback_startup():
+                    train_manager.fetch_trains()
+                    QTimer.singleShot(1500, lambda: [window.show(), splash.close()])
+                QTimer.singleShot(1000, fallback_startup)
+                logger.info("Train data fetch and window display scheduled with fallback timer")
+
+            # Don't show main window immediately - wait for initialization to complete
+            # The window will be shown by the on_widgets_ready callback
+
+            logger.info("Application initialized successfully")
+
+            # Start event loop
+            exit_code = app.exec()
+
+            # Cleanup
+            logger.info(f"Application exiting with code {exit_code}")
+            sys.exit(exit_code)
+
+        except ConfigurationError as e:
+            logger.error(f"Configuration error: {e}")
+            # Show error message without creating another window
+            msg_box = QMessageBox()
+            msg_box.setIcon(QMessageBox.Icon.Critical)
+            msg_box.setWindowTitle("Configuration Error")
+            msg_box.setText(str(e))
+            msg_box.exec()
+            sys.exit(1)
+
+        except Exception as e:
+            logger.error(f"Fatal error: {e}", exc_info=True)
+            sys.exit(1)
+
+    finally:
+        # Always cleanup the ultra-early lock file
+        cleanup_ultra_early_lock()
 
 
 if __name__ == "__main__":

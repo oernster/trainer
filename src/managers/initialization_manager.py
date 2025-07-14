@@ -186,41 +186,79 @@ class InitializationManager(QObject):
             logger.debug("Initializing weather widgets...")
             
             # Initialize weather manager if config available
-            if (self.config and 
-                hasattr(self.config, "weather") and 
-                self.config.weather and 
+            if (self.config and
+                hasattr(self.config, "weather") and
+                self.config.weather and
                 self.config.weather.enabled):
                 
-                self.weather_manager = WeatherManager(self.config.weather)
+                # Only create weather manager if it doesn't exist
+                if not self.weather_manager:
+                    self.weather_manager = WeatherManager(self.config.weather)
                 
                 # Connect to main window's weather widget
                 if main_window.weather_widget:
-                    # Connect signals
-                    self.weather_manager.weather_updated.connect(
-                        main_window.weather_widget.on_weather_updated
-                    )
-                    self.weather_manager.weather_error.connect(
-                        main_window.weather_widget.on_weather_error
-                    )
-                    self.weather_manager.loading_state_changed.connect(
-                        main_window.weather_widget.on_weather_loading
-                    )
+                    # Only connect signals if not already connected
+                    if not hasattr(main_window.weather_widget, '_initialization_signals_connected'):
+                        # Connect signals
+                        self.weather_manager.weather_updated.connect(
+                            main_window.weather_widget.on_weather_updated
+                        )
+                        self.weather_manager.weather_error.connect(
+                            main_window.weather_widget.on_weather_error
+                        )
+                        self.weather_manager.loading_state_changed.connect(
+                            main_window.weather_widget.on_weather_loading
+                        )
+                        main_window.weather_widget._initialization_signals_connected = True
                     
                     # Update widget config
                     main_window.weather_widget.update_config(self.config.weather)
-                    main_window.weather_widget.setVisible(True)
+                    
+                    # CRITICAL FIX: Don't override user's manual visibility preference
+                    # Only set visible if this is the first initialization
+                    if not hasattr(main_window, '_weather_widget_initialized'):
+                        # CRITICAL FIX: Don't override user's manual visibility preference
+                        # Only set visibility if weather is enabled in config AND user hasn't manually hidden it
+                        if (hasattr(main_window, 'config') and main_window.config and
+                            hasattr(main_window.config, 'weather') and main_window.config.weather and
+                            main_window.config.weather.enabled):
+                            # Only set visible if user hasn't manually hidden the widget
+                            if not hasattr(main_window.weather_widget, '_user_manually_hidden'):
+                                main_window.weather_widget.setVisible(True)
+                                logger.debug("Weather widget set visible during initialization (config enabled)")
+                            else:
+                                logger.debug("Weather widget kept hidden during initialization (user preference)")
+                        else:
+                            main_window.weather_widget.setVisible(False)
+                            logger.debug("Weather widget set hidden during initialization (config disabled)")
+                        main_window._weather_widget_initialized = True
+                        logger.debug("Weather widget visibility set to True (first initialization)")
+                    else:
+                        logger.debug("Weather widget visibility preserved (user preference)")
                     
                     # Apply theme to weather widget immediately
                     self._apply_weather_theme(main_window)
                     
-                    # Start initial weather fetch (non-blocking)
-                    QTimer.singleShot(100, self._fetch_weather_data)
+                    # Start initial weather fetch (non-blocking) only if manager is new
+                    if not hasattr(self, '_weather_fetch_started'):
+                        QTimer.singleShot(100, self._fetch_weather_data)
+                        self._weather_fetch_started = True
                     
                 logger.info("Weather widgets initialized successfully")
             else:
                 logger.info("Weather widgets skipped (disabled or no config)")
-                if main_window.weather_widget:
-                    main_window.weather_widget.setVisible(False)
+                # CRITICAL FIX: Don't override user's manual visibility preference
+                # Only hide if this is the first initialization
+                if main_window.weather_widget and not hasattr(main_window, '_weather_widget_initialized'):
+                    # CRITICAL FIX: Don't override user's manual visibility preference
+                    # Only set visibility based on config if user hasn't manually changed it
+                    if not hasattr(main_window.weather_widget, '_user_manually_hidden'):
+                        main_window.weather_widget.setVisible(False)
+                        logger.debug("Weather widget set hidden during initialization (weather disabled)")
+                    else:
+                        logger.debug("Weather widget visibility preserved during initialization (user preference)")
+                    main_window._weather_widget_initialized = True
+                    logger.debug("Weather widget visibility set to False (first initialization)")
             
             self.weather_initialized.emit()
             
@@ -253,17 +291,26 @@ class InitializationManager(QObject):
         try:
             logger.debug("Initializing NASA widgets...")
             
+            # CRITICAL FIX: Only initialize if astronomy widget actually exists
+            # This prevents trying to initialize astronomy when it's disabled
+            if not main_window.astronomy_widget:
+                logger.info("NASA widgets skipped (astronomy widget does not exist - astronomy disabled)")
+                self.nasa_initialized.emit()
+                return
+            
             # Initialize astronomy manager if config available
-            if (self.config and 
-                hasattr(self.config, "astronomy") and 
-                self.config.astronomy and 
+            if (self.config and
+                hasattr(self.config, "astronomy") and
+                self.config.astronomy and
                 self.config.astronomy.enabled):
                 
-                # Create astronomy manager
-                self.astronomy_manager = AstronomyManager(self.config.astronomy)
+                # Only create astronomy manager if it doesn't exist
+                if not self.astronomy_manager:
+                    self.astronomy_manager = AstronomyManager(self.config.astronomy)
                 
-                # Connect to main window's astronomy widget
-                if main_window.astronomy_widget:
+                # Connect to main window's astronomy widget (we know it exists now)
+                # Only connect signals if not already connected
+                if not hasattr(main_window.astronomy_widget, '_initialization_signals_connected'):
                     # Connect signals
                     self.astronomy_manager.astronomy_updated.connect(
                         main_window.astronomy_widget.on_astronomy_updated
@@ -274,22 +321,35 @@ class InitializationManager(QObject):
                     self.astronomy_manager.loading_state_changed.connect(
                         main_window.astronomy_widget.on_astronomy_loading
                     )
-                    
-                    # Update widget config
-                    main_window.astronomy_widget.update_config(self.config.astronomy)
+                    main_window.astronomy_widget._initialization_signals_connected = True
+                
+                # Update widget config
+                main_window.astronomy_widget.update_config(self.config.astronomy)
+                
+                # CRITICAL FIX: Don't override user's manual visibility preference
+                # Only set visible if this is the first initialization
+                if not hasattr(main_window, '_astronomy_widget_initialized'):
                     main_window.astronomy_widget.setVisible(True)
+                    main_window._astronomy_widget_initialized = True
+                    logger.debug("Astronomy widget visibility set to True (first initialization)")
+                else:
+                    logger.debug("Astronomy widget visibility preserved (user preference)")
+                
+                # Start parallel NASA data fetching (API-free mode) only if manager is new
+                if not hasattr(self, '_nasa_fetch_started'):
+                    self._start_parallel_nasa_fetch()
+                    self._nasa_fetch_started = True
+                    logger.info("NASA widget initialized (API-free mode)")
                     
-                    # Start parallel NASA data fetching if API key available
-                    if self.config.astronomy.has_valid_api_key():
-                        self._start_parallel_nasa_fetch()
-                    else:
-                        logger.info("NASA widget initialized without API key (placeholder mode)")
-                        
                 logger.info("NASA widgets initialized successfully")
             else:
                 logger.info("NASA widgets skipped (disabled or no config)")
-                if main_window.astronomy_widget:
+                # CRITICAL FIX: Don't override user's manual visibility preference
+                # Only hide if this is the first initialization
+                if not hasattr(main_window, '_astronomy_widget_initialized'):
                     main_window.astronomy_widget.setVisible(False)
+                    main_window._astronomy_widget_initialized = True
+                    logger.debug("Astronomy widget visibility set to False (first initialization)")
             
             self.nasa_initialized.emit()
             

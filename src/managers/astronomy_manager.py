@@ -5,28 +5,26 @@ Author: Oliver Ernster
 This module provides business logic for astronomy data management,
 following solid Object-Oriented design principles with proper
 abstraction, error handling, and integration with the UI layer.
+
+Now API-free - generates static astronomy events without requiring NASA API.
 """
 
 import asyncio
 import logging
 from datetime import datetime, timedelta
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 from PySide6.QtCore import QObject, Signal, QTimer
 
 from ..models.astronomy_data import (
     AstronomyForecastData,
+    AstronomyEvent,
+    AstronomyEventType,
+    AstronomyData,
     Location,
     AstronomyDataValidator,
 )
-from ..api.nasa_api_manager import (
-    AstronomyAPIManager,
-    AstronomyAPIFactory,
-    AstronomyAPIException,
-    AstronomyNetworkException,
-    AstronomyRateLimitException,
-    AstronomyAuthenticationException,
-)
 from ..managers.astronomy_config import AstronomyConfig
+from ..models.astronomy_data import MoonPhase
 
 logger = logging.getLogger(__name__)
 
@@ -36,8 +34,10 @@ class AstronomyManager(QObject):
     Business logic manager for astronomy data.
 
     Follows Single Responsibility Principle - only responsible for
-    astronomy data management and coordination between API and UI layers.
+    astronomy data management and coordination with the UI layer.
     Implements Observer pattern through Qt signals for UI updates.
+    
+    Now API-free - generates static astronomy events without requiring NASA API.
     """
 
     # Qt Signals for observer pattern
@@ -55,7 +55,6 @@ class AstronomyManager(QObject):
         """
         super().__init__()
         self._config = config
-        self._api_manager: Optional[AstronomyAPIManager] = None
         self._validator = AstronomyDataValidator()
         self._last_update_time: Optional[datetime] = None
         self._current_forecast: Optional[AstronomyForecastData] = None
@@ -65,28 +64,70 @@ class AstronomyManager(QObject):
         self._refresh_timer = QTimer()
         self._refresh_timer.timeout.connect(self._auto_refresh)
 
-        # Initialize API manager if enabled
-        if config.enabled and config.has_valid_api_key():
-            self._initialize_api_manager()
+        logger.debug(f"AstronomyManager initialized (enabled: {config.enabled}, API-free mode)")
 
-        logger.debug(f"AstronomyManager initialized (enabled: {config.enabled})")
-
-    def _initialize_api_manager(self) -> None:
-        """Initialize the astronomy API manager."""
-        try:
-            self._api_manager = AstronomyAPIFactory.create_manager_from_config(
-                self._config
-            )
-            logger.debug("Astronomy API manager initialized successfully")
-        except Exception as e:
-            logger.error(f"Failed to initialize astronomy API manager: {e}")
-            self.astronomy_error.emit(f"Failed to initialize astronomy system: {e}")
+    def _generate_static_astronomy_events(self) -> List[AstronomyEvent]:
+        """Generate static astronomy events for demonstration."""
+        now = datetime.now()
+        events = []
+        
+        # Generate events for the next 7 days
+        for day_offset in range(7):
+            event_date = now + timedelta(days=day_offset)
+            
+            # Generate 2-4 events per day with variety
+            daily_events = [
+                AstronomyEvent(
+                    event_type=AstronomyEventType.PLANETARY_EVENT,
+                    title="Jupiter Visible",
+                    description="Jupiter is visible in the evening sky, reaching its highest point around midnight.",
+                    start_time=event_date.replace(hour=20, minute=30, second=0, microsecond=0),
+                    visibility_info="Eastern Sky, magnitude -2.1",
+                    related_links=["https://in-the-sky.org/jupiter.php"],
+                    suggested_categories=["Observatory", "Tonight's Sky"]
+                ),
+                AstronomyEvent(
+                    event_type=AstronomyEventType.MOON_PHASE,
+                    title="Moon Phase",
+                    description=f"The Moon is in {'Waxing Crescent' if day_offset < 3 else 'First Quarter' if day_offset < 5 else 'Waxing Gibbous'} phase.",
+                    start_time=event_date.replace(hour=22, minute=0, second=0, microsecond=0),
+                    visibility_info="Night Sky, magnitude -12.7",
+                    related_links=["https://timeanddate.com/astronomy/moon/"],
+                    suggested_categories=["Moon Info", "Tonight's Sky"]
+                ),
+                AstronomyEvent(
+                    event_type=AstronomyEventType.ISS_PASS,
+                    title="ISS Pass",
+                    description="International Space Station visible pass overhead.",
+                    start_time=event_date.replace(hour=6, minute=15, second=0, microsecond=0),
+                    visibility_info="Southwest to Northeast, magnitude -3.5",
+                    related_links=["https://spotthestation.nasa.gov/"],
+                    suggested_categories=["Space Agencies", "Live Data"]
+                ),
+                AstronomyEvent(
+                    event_type=AstronomyEventType.NEAR_EARTH_OBJECT,
+                    title="Orion Nebula",
+                    description="The Orion Nebula (M42) is well-positioned for observation.",
+                    start_time=event_date.replace(hour=23, minute=45, second=0, microsecond=0),
+                    visibility_info="Constellation Orion, magnitude 4.0",
+                    related_links=["https://messier.seds.org/m/m042.html"],
+                    suggested_categories=["Observatory", "Educational"]
+                )
+            ]
+            
+            # Add some variety - not all events every day
+            if day_offset % 2 == 0:
+                events.extend(daily_events[:3])  # 3 events on even days
+            else:
+                events.extend(daily_events[:2])  # 2 events on odd days
+                
+        return events
 
     async def refresh_astronomy(
         self, force_refresh: bool = False
     ) -> Optional[AstronomyForecastData]:
         """
-        Refresh astronomy data from API.
+        Refresh astronomy data (now generates static events).
 
         Args:
             force_refresh: Force refresh even if cache is valid
@@ -96,12 +137,6 @@ class AstronomyManager(QObject):
         """
         if not self._config.enabled:
             logger.warning("Astronomy refresh requested but astronomy is disabled")
-            return None
-
-        if not self._api_manager:
-            error_msg = "Astronomy API manager not initialized"
-            logger.error(error_msg)
-            self.astronomy_error.emit(error_msg)
             return None
 
         # Check if we should skip refresh (unless forced)
@@ -120,14 +155,46 @@ class AstronomyManager(QObject):
                 timezone=self._config.timezone,
             )
 
-            # Fetch astronomy data
-            forecast_data = await self._api_manager.get_astronomy_forecast(
-                location, days=7
+            # Generate static astronomy events
+            events = self._generate_static_astronomy_events()
+
+            # Create daily astronomy data from events
+            daily_astronomy = []
+            events_by_date = {}
+            
+            # Group events by date
+            for event in events:
+                event_date = event.start_time.date()
+                if event_date not in events_by_date:
+                    events_by_date[event_date] = []
+                events_by_date[event_date].append(event)
+            
+            # Create AstronomyData for each date with proper moon phases
+            for event_date, date_events in sorted(events_by_date.items()):
+                # Calculate moon phase for this date
+                moon_phase = self._calculate_moon_phase_for_date(event_date)
+                moon_illumination = self._calculate_moon_illumination(moon_phase)
+                
+                daily_data = AstronomyData(
+                    date=event_date,
+                    events=date_events,
+                    primary_event=date_events[0] if date_events else None,
+                    moon_phase=moon_phase,
+                    moon_illumination=moon_illumination
+                )
+                daily_astronomy.append(daily_data)
+
+            # Create forecast data
+            forecast_data = AstronomyForecastData(
+                location=location,
+                daily_astronomy=daily_astronomy,
+                last_updated=datetime.now(),
+                data_source="Static Generator"
             )
 
             # Validate data
             if not self._validator.validate_astronomy_forecast(forecast_data):
-                raise ValueError("Invalid astronomy data received from API")
+                raise ValueError("Invalid astronomy data generated")
 
             # Update internal state
             self._current_forecast = forecast_data
@@ -138,36 +205,12 @@ class AstronomyManager(QObject):
             self._emit_cache_status()
 
             logger.info(
-                f"Astronomy data refreshed successfully: {forecast_data.total_events} events"
+                f"Astronomy data generated successfully: {forecast_data.total_events} events"
             )
             return forecast_data
 
-        except AstronomyAuthenticationException as e:
-            error_msg = f"NASA API authentication failed: {e}"
-            logger.error(error_msg)
-            self.astronomy_error.emit(error_msg)
-            return None
-
-        except AstronomyRateLimitException as e:
-            error_msg = f"NASA API rate limit exceeded: {e}"
-            logger.warning(error_msg)
-            self.astronomy_error.emit(error_msg)
-            return None
-
-        except AstronomyNetworkException as e:
-            error_msg = f"Network error fetching astronomy data: {e}"
-            logger.warning(error_msg)
-            self.astronomy_error.emit(error_msg)
-            return None
-
-        except AstronomyAPIException as e:
-            error_msg = f"Astronomy API error: {e}"
-            logger.error(error_msg)
-            self.astronomy_error.emit(error_msg)
-            return None
-
         except Exception as e:
-            error_msg = f"Unexpected error refreshing astronomy data: {e}"
+            error_msg = f"Unexpected error generating astronomy data: {e}"
             logger.error(error_msg)
             self.astronomy_error.emit(error_msg)
             return None
@@ -194,15 +237,13 @@ class AstronomyManager(QObject):
 
     def _emit_cache_status(self) -> None:
         """Emit cache status information."""
-        if self._api_manager:
-            cache_info = self._api_manager.get_cache_info()
-            cache_info.update(
-                {
-                    "manager_last_update": self._last_update_time,
-                    "has_current_forecast": self._current_forecast is not None,
-                }
-            )
-            self.cache_status_changed.emit(cache_info)
+        # API-free mode - emit basic cache info
+        cache_info = {
+            "manager_last_update": self._last_update_time,
+            "has_current_forecast": self._current_forecast is not None,
+            "cache_type": "static_generator"
+        }
+        self.cache_status_changed.emit(cache_info)
 
     def _auto_refresh(self) -> None:
         """Handle automatic refresh timer."""
@@ -221,7 +262,8 @@ class AstronomyManager(QObject):
             logger.warning("Cannot start auto-refresh: astronomy is disabled")
             return
 
-        interval_ms = self._config.get_update_interval_seconds() * 1000
+        # Use a default 1-hour interval for API-free mode
+        interval_ms = 3600 * 1000  # 1 hour
         self._refresh_timer.start(interval_ms)
         logger.info(
             f"Astronomy auto-refresh started (interval: {interval_ms/1000:.0f}s)"
@@ -258,25 +300,20 @@ class AstronomyManager(QObject):
         """Get comprehensive cache information."""
         info = {
             "enabled": self._config.enabled,
-            "has_api_manager": self._api_manager is not None,
+            "has_api_manager": False,  # API-free mode
             "has_current_forecast": self._current_forecast is not None,
             "last_update_time": self._last_update_time,
             "is_loading": self._is_loading,
             "auto_refresh_active": self.is_auto_refresh_active(),
             "data_stale": self.is_data_stale(),
+            "cache_type": "static_generator"
         }
-
-        if self._api_manager:
-            api_cache_info = self._api_manager.get_cache_info()
-            info.update(api_cache_info)
 
         return info
 
     def clear_cache(self) -> None:
         """Clear all cached astronomy data."""
-        if self._api_manager:
-            self._api_manager.clear_cache()
-
+        # API-free mode - just clear local data
         self._current_forecast = None
         self._last_update_time = None
 
@@ -291,34 +328,18 @@ class AstronomyManager(QObject):
             new_config: New astronomy configuration
         """
         old_enabled = self._config.enabled
-        old_api_key = self._config.nasa_api_key
-
         self._config = new_config
 
         # Handle enable/disable state changes
         if not old_enabled and new_config.enabled:
             # Astronomy was enabled
-            if new_config.has_valid_api_key():
-                self._initialize_api_manager()
-                logger.info("Astronomy enabled and API manager initialized")
-            else:
-                logger.warning("Astronomy enabled but no valid API key provided")
+            logger.info("Astronomy enabled (API-free mode)")
 
         elif old_enabled and not new_config.enabled:
             # Astronomy was disabled
             self.stop_auto_refresh()
             self.clear_cache()
             logger.info("Astronomy disabled")
-
-        elif new_config.enabled:
-            # Astronomy remains enabled, check for API key changes
-            if old_api_key != new_config.nasa_api_key:
-                # API key changed, reinitialize
-                if self._api_manager:
-                    asyncio.create_task(self._api_manager.shutdown())
-                self._initialize_api_manager()
-                self.clear_cache()  # Clear cache with old API key
-                logger.info("NASA API key updated, manager reinitialized")
 
         # Update auto-refresh if needed
         if new_config.enabled and self.is_auto_refresh_active():
@@ -331,9 +352,6 @@ class AstronomyManager(QObject):
         """Get a human-readable status summary."""
         if not self._config.enabled:
             return "Astronomy disabled"
-
-        if not self._api_manager:
-            return "Astronomy API not initialized"
 
         if self._is_loading:
             return "Loading astronomy data..."
@@ -350,7 +368,8 @@ class AstronomyManager(QObject):
 
     def get_enabled_services(self) -> list[str]:
         """Get list of enabled astronomy services."""
-        return self._config.services.get_enabled_services()
+        # Return default services for API-free mode
+        return ["Static Generator", "Astronomy Links"]
 
     def shutdown(self) -> None:
         """Shutdown astronomy manager and cleanup resources."""
@@ -359,29 +378,55 @@ class AstronomyManager(QObject):
         # Stop auto-refresh
         self.stop_auto_refresh()
 
-        # Shutdown API manager asynchronously
-        if self._api_manager:
-            try:
-                # Try synchronous shutdown first
-                self._api_manager.shutdown_sync()
-            except Exception as e:
-                logger.warning(f"Error during synchronous shutdown: {e}")
-                # Fall back to async shutdown
-                try:
-                    loop = asyncio.get_event_loop()
-                    if loop.is_running():
-                        asyncio.create_task(self._api_manager.shutdown())
-                    else:
-                        asyncio.run(self._api_manager.shutdown())
-                except Exception as e2:
-                    logger.error(f"Error during async shutdown: {e2}")
-
-        # Clear data
+        # Clear data (API-free mode - no API manager to shutdown)
         self._current_forecast = None
         self._last_update_time = None
-        self._api_manager = None
 
         logger.debug("Astronomy manager shutdown complete")
+
+    def _calculate_moon_phase_for_date(self, target_date) -> MoonPhase:
+        """Calculate moon phase for a given date using a simplified lunar cycle."""
+        from datetime import date
+        
+        # Use a known new moon date as reference (January 1, 2024 was approximately new moon)
+        reference_date = date(2024, 1, 1)
+        days_since_reference = (target_date - reference_date).days
+        
+        # Lunar cycle is approximately 29.53 days
+        lunar_cycle_days = 29.53
+        cycle_position = (days_since_reference % lunar_cycle_days) / lunar_cycle_days
+        
+        # Map cycle position to moon phases
+        if cycle_position < 0.0625:  # 0-1.8 days
+            return MoonPhase.NEW_MOON
+        elif cycle_position < 0.1875:  # 1.8-5.5 days
+            return MoonPhase.WAXING_CRESCENT
+        elif cycle_position < 0.3125:  # 5.5-9.2 days
+            return MoonPhase.FIRST_QUARTER
+        elif cycle_position < 0.4375:  # 9.2-12.9 days
+            return MoonPhase.WAXING_GIBBOUS
+        elif cycle_position < 0.5625:  # 12.9-16.6 days
+            return MoonPhase.FULL_MOON
+        elif cycle_position < 0.6875:  # 16.6-20.3 days
+            return MoonPhase.WANING_GIBBOUS
+        elif cycle_position < 0.8125:  # 20.3-24.0 days
+            return MoonPhase.LAST_QUARTER
+        else:  # 24.0-29.5 days
+            return MoonPhase.WANING_CRESCENT
+
+    def _calculate_moon_illumination(self, moon_phase: MoonPhase) -> float:
+        """Calculate approximate moon illumination percentage based on phase."""
+        illumination_map = {
+            MoonPhase.NEW_MOON: 0.0,
+            MoonPhase.WAXING_CRESCENT: 0.25,
+            MoonPhase.FIRST_QUARTER: 0.5,
+            MoonPhase.WAXING_GIBBOUS: 0.75,
+            MoonPhase.FULL_MOON: 1.0,
+            MoonPhase.WANING_GIBBOUS: 0.75,
+            MoonPhase.LAST_QUARTER: 0.5,
+            MoonPhase.WANING_CRESCENT: 0.25,
+        }
+        return illumination_map.get(moon_phase, 0.5)
 
 
 class AstronomyManagerFactory:
@@ -407,9 +452,10 @@ class AstronomyManagerFactory:
         """Create astronomy manager for testing."""
         config = AstronomyConfig(
             enabled=True,
-            nasa_api_key=api_key,
             location_name="Test Location",
             location_latitude=51.5074,
             location_longitude=-0.1278,
         )
         return AstronomyManager(config)
+
+

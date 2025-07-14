@@ -46,88 +46,61 @@ class TrainerSplashScreen(QSplashScreen):
 
     def setup_ui(self):
         """Setup the splash screen UI."""
-        # Create main widget and layout
-        self.main_widget = QWidget()
-        layout = QVBoxLayout(self.main_widget)
-        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.setSpacing(20)
-
-        # Add train emoji icon
-        emoji_label = QLabel("🚂")
-        emoji_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        emoji_font = QFont()
-        emoji_font.setPointSize(72)  # Large emoji
-        emoji_label.setFont(emoji_font)
-        layout.addWidget(emoji_label)
-
-        # Add application title
-        title_label = QLabel("🚂 Trainer")
-        title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title_font = QFont()
-        title_font.setPointSize(24)
-        title_font.setBold(True)
-        title_label.setFont(title_font)
-        layout.addWidget(title_label)
-
-        # Add subtitle
-        subtitle_label = QLabel("Train Times Application")
-        subtitle_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        subtitle_font = QFont()
-        subtitle_font.setPointSize(12)
-        subtitle_label.setFont(subtitle_font)
-        layout.addWidget(subtitle_label)
-
-        # Add loading text
-        self.loading_label = QLabel("Loading...")
-        self.loading_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        loading_font = QFont()
-        loading_font.setPointSize(10)
-        self.loading_label.setFont(loading_font)
-        layout.addWidget(self.loading_label)
-
-        # Set the main widget
-        self.main_widget.setFixedSize(400, 300)
+        # Initialize loading message
+        self.loading_message = "Loading..."
 
 
     def apply_styling(self):
         """Apply dark theme styling to the splash screen."""
-        style = """
-        QWidget {
-            background-color: #1a1a1a;
-            color: #ffffff;
-            border: 2px solid #1976d2;
-            border-radius: 8px;
-        }
-        QLabel {
-            background-color: transparent;
-            color: #ffffff;
-            border: none;
-        }
-        """
-        self.main_widget.setStyleSheet(style)
+        # Styling is now handled in paintEvent - no widget styling needed
+        pass
 
     def paintEvent(self, event):
-        """Custom paint event to draw the main widget."""
-        super().paintEvent(event)
-
-        # Paint the main widget onto the splash screen
-        if hasattr(self, "main_widget"):
-            painter = QPainter(self)
-
-            # Calculate center position
-            splash_rect = self.rect()
-            widget_rect = self.main_widget.rect()
-            x = (splash_rect.width() - widget_rect.width()) // 2
-            y = (splash_rect.height() - widget_rect.height()) // 2
-
-            # Render the widget
-            self.main_widget.render(
-                painter,
-                painter.deviceTransform().map(splash_rect.topLeft())
-                + painter.deviceTransform().map(QPoint(x, y)),
-            )
-
-            painter.end()
+        """Custom paint event to draw the splash screen content."""
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        
+        # Fill background
+        painter.fillRect(self.rect(), Qt.GlobalColor.black)
+        
+        # Draw border
+        painter.setPen(Qt.GlobalColor.blue)
+        painter.drawRect(self.rect().adjusted(1, 1, -1, -1))
+        
+        # Calculate center position for main content
+        center_y = self.rect().height() // 2
+        
+        # Draw train emoji centered
+        painter.setPen(Qt.GlobalColor.white)
+        emoji_font = QFont()
+        emoji_font.setPointSize(48)
+        painter.setFont(emoji_font)
+        emoji_rect = self.rect().adjusted(0, center_y - 80, 0, center_y - 30)
+        painter.drawText(emoji_rect, Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop, "🚂")
+        
+        # Draw title below emoji
+        title_font = QFont()
+        title_font.setPointSize(24)
+        title_font.setBold(True)
+        painter.setFont(title_font)
+        title_rect = self.rect().adjusted(0, center_y - 20, 0, center_y + 10)
+        painter.drawText(title_rect, Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop, "Trainer")
+        
+        # Draw subtitle below title
+        subtitle_font = QFont()
+        subtitle_font.setPointSize(12)
+        painter.setFont(subtitle_font)
+        subtitle_rect = self.rect().adjusted(0, center_y + 20, 0, center_y + 50)
+        painter.drawText(subtitle_rect, Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop, "Train Times Application")
+        
+        # Draw loading message at bottom
+        loading_font = QFont()
+        loading_font.setPointSize(10)
+        painter.setFont(loading_font)
+        loading_rect = self.rect().adjusted(0, 0, 0, -20)
+        painter.drawText(loading_rect, Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignBottom, self.loading_message)
+        
+        painter.end()
 
     def show_message(self, message: str):
         """
@@ -136,10 +109,9 @@ class TrainerSplashScreen(QSplashScreen):
         Args:
             message: The message to display
         """
-        if hasattr(self, "loading_label"):
-            self.loading_label.setText(message)
-            self.repaint()  # Force immediate repaint
-            logger.debug(f"Splash screen message: {message}")
+        self.loading_message = message
+        self.repaint()  # Force immediate repaint
+        logger.debug(f"Splash screen message: {message}")
 
     def close_splash(self):
         """Close the splash screen."""

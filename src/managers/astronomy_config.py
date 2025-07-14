@@ -184,19 +184,19 @@ class AstronomyConfig:
     astronomy configuration management and validation.
     """
 
-    enabled: bool = False
-    nasa_api_key: str = ""
+    enabled: bool = True  # Default to enabled since no API required
     location_name: str = "London"
     location_latitude: float = 51.5074
     location_longitude: float = -0.1278
     timezone: str = "Europe/London"
-    update_interval_minutes: int = 360  # 6 hours
-    timeout_seconds: int = 15
-    max_retries: int = 3
-    retry_delay_seconds: int = 2
-    services: AstronomyServiceConfig = field(default_factory=AstronomyServiceConfig)
+    # Removed API-related fields: nasa_api_key, timeout_seconds, max_retries, retry_delay_seconds
+    # Removed update_interval_minutes since we're using static content
     display: AstronomyDisplayConfig = field(default_factory=AstronomyDisplayConfig)
     cache: AstronomyCacheConfig = field(default_factory=AstronomyCacheConfig)
+    # New field for link preferences
+    enabled_link_categories: List[str] = field(default_factory=lambda: [
+        "observatory", "space_agency", "tonight_sky"
+    ])
 
     def __post_init__(self):
         """Validate astronomy configuration."""
@@ -210,62 +210,49 @@ class AstronomyConfig:
         if not self.location_name.strip():
             raise ValueError("Location name cannot be empty")
 
-        # Validate API key if astronomy is enabled
-        if self.enabled and not self.nasa_api_key.strip():
-            logger.warning("Astronomy is enabled but NASA API key is empty")
+        # Validate enabled link categories
+        if self.enabled and not self.enabled_link_categories:
+            logger.warning("Astronomy is enabled but no link categories are enabled")
 
-        # Validate timing parameters
-        if self.update_interval_minutes < 60:  # Minimum 1 hour
-            raise ValueError("update_interval_minutes must be at least 60")
-
-        if self.timeout_seconds < 5 or self.timeout_seconds > 60:
-            raise ValueError("timeout_seconds must be between 5 and 60")
-
-        if self.max_retries < 0 or self.max_retries > 5:
-            raise ValueError("max_retries must be between 0 and 5")
-
-        if self.retry_delay_seconds < 1 or self.retry_delay_seconds > 10:
-            raise ValueError("retry_delay_seconds must be between 1 and 10")
+        # Validate link categories are valid
+        valid_categories = [
+            "observatory", "space_agency", "astronomy_tool", "educational",
+            "live_data", "community", "tonight_sky", "moon_info"
+        ]
+        for category in self.enabled_link_categories:
+            if category not in valid_categories:
+                logger.warning(f"Unknown link category: {category}")
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "AstronomyConfig":
         """Create astronomy config from dictionary."""
-        services_data = data.get("services", {})
         display_data = data.get("display", {})
         cache_data = data.get("cache", {})
 
         return cls(
-            enabled=data.get("enabled", False),
-            nasa_api_key=data.get("nasa_api_key", ""),
+            enabled=data.get("enabled", True),  # Default to enabled for API-free approach
             location_name=data.get("location_name", "London"),
             location_latitude=data.get("location_latitude", 51.5074),
             location_longitude=data.get("location_longitude", -0.1278),
             timezone=data.get("timezone", "Europe/London"),
-            update_interval_minutes=data.get("update_interval_minutes", 360),
-            timeout_seconds=data.get("timeout_seconds", 15),
-            max_retries=data.get("max_retries", 3),
-            retry_delay_seconds=data.get("retry_delay_seconds", 2),
-            services=AstronomyServiceConfig.from_dict(services_data),
             display=AstronomyDisplayConfig.from_dict(display_data),
             cache=AstronomyCacheConfig.from_dict(cache_data),
+            enabled_link_categories=data.get("enabled_link_categories", [
+                "observatory", "space_agency", "tonight_sky"
+            ]),
         )
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert astronomy config to dictionary."""
         return {
             "enabled": self.enabled,
-            "nasa_api_key": self.nasa_api_key,
             "location_name": self.location_name,
             "location_latitude": self.location_latitude,
             "location_longitude": self.location_longitude,
             "timezone": self.timezone,
-            "update_interval_minutes": self.update_interval_minutes,
-            "timeout_seconds": self.timeout_seconds,
-            "max_retries": self.max_retries,
-            "retry_delay_seconds": self.retry_delay_seconds,
-            "services": self.services.to_dict(),
             "display": self.display.to_dict(),
             "cache": self.cache.to_dict(),
+            "enabled_link_categories": self.enabled_link_categories,
         }
 
     @classmethod
@@ -320,10 +307,6 @@ class AstronomyConfig:
         """Validate configuration and return list of issues."""
         issues = []
 
-        # Check API key
-        if self.enabled and not self.nasa_api_key.strip():
-            issues.append("NASA API key is required when astronomy is enabled")
-
         # Check location
         if not self.location_name.strip():
             issues.append("Location name cannot be empty")
@@ -334,18 +317,18 @@ class AstronomyConfig:
         if not (-180 <= self.location_longitude <= 180):
             issues.append(f"Invalid longitude: {self.location_longitude}")
 
-        # Check if at least one service is enabled
-        if self.enabled and not any(
-            [
-                self.services.apod,
-                self.services.neows,
-                self.services.iss,
-                self.services.epic,
-                self.services.mars_weather,
-                self.services.exoplanets,
-            ]
-        ):
-            issues.append("At least one astronomy service must be enabled")
+        # Check if at least one link category is enabled
+        if self.enabled and not self.enabled_link_categories:
+            issues.append("At least one link category must be enabled when astronomy is enabled")
+
+        # Validate link categories
+        valid_categories = [
+            "observatory", "space_agency", "astronomy_tool", "educational",
+            "live_data", "community", "tonight_sky", "moon_info"
+        ]
+        for category in self.enabled_link_categories:
+            if category not in valid_categories:
+                issues.append(f"Unknown link category: {category}")
 
         return issues
 
@@ -361,23 +344,29 @@ class AstronomyConfig:
         """Get cache duration in seconds."""
         return self.cache.get_cache_duration_seconds()
 
-    def get_update_interval_seconds(self) -> int:
-        """Get update interval in seconds."""
-        return self.update_interval_minutes * 60
+    def get_enabled_link_categories_count(self) -> int:
+        """Get number of enabled link categories."""
+        return len(self.enabled_link_categories)
 
-    def has_valid_api_key(self) -> bool:
-        """Check if NASA API key is present and non-empty."""
-        return bool(self.nasa_api_key.strip())
+    def is_link_category_enabled(self, category: str) -> bool:
+        """Check if a specific link category is enabled."""
+        return category in self.enabled_link_categories
 
-    def get_enabled_services_count(self) -> int:
-        """Get number of enabled services."""
-        return len(self.services.get_enabled_services())
+    def add_link_category(self, category: str) -> None:
+        """Add a link category to enabled list."""
+        if category not in self.enabled_link_categories:
+            self.enabled_link_categories.append(category)
+
+    def remove_link_category(self, category: str) -> None:
+        """Remove a link category from enabled list."""
+        if category in self.enabled_link_categories:
+            self.enabled_link_categories.remove(category)
 
     def __str__(self) -> str:
         """String representation of astronomy config."""
         status = "enabled" if self.enabled else "disabled"
-        services_count = self.get_enabled_services_count()
-        return f"AstronomyConfig({status}, {services_count} services, {self.location_name})"
+        categories_count = self.get_enabled_link_categories_count()
+        return f"AstronomyConfig({status}, {categories_count} link categories, {self.location_name})"
 
 
 class AstronomyConfigManager:

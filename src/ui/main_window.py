@@ -35,7 +35,7 @@ from .train_widgets import TrainListWidget, RouteDisplayDialog
 from .weather_widgets import WeatherWidget
 from .astronomy_widgets import AstronomyWidget
 from .stations_settings_dialog import StationsSettingsDialog
-from .nasa_settings_dialog import NASASettingsDialog
+from .astronomy_settings_dialog import AstronomySettingsDialog
 from .train_detail_dialog import TrainDetailDialog
 from version import __version__, __app_display_name__, get_about_text
 
@@ -69,6 +69,14 @@ class MainWindow(QMainWindow):
         # Make window completely invisible during initialization
         self.setVisible(False)
         self.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen, True)
+        self.hide()  # Explicitly hide the window
+        
+        # Set a proper background color immediately to prevent white flash
+        self.setStyleSheet("QMainWindow { background-color: #1a1a1a; }")
+        
+        # Additional measures to prevent visibility
+        self.setWindowOpacity(0.0)  # Make completely transparent
+        self.move(-10000, -10000)   # Move off-screen
 
         # Initialize managers
         self.config_manager = config_manager or ConfigManager()
@@ -125,10 +133,9 @@ class MainWindow(QMainWindow):
 
         logger.debug("Main window initialized")
 
-        # Remove the invisible attributes but don't show yet - let main.py control when to show
-        self.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen, False)
-        self.setVisible(False)
-        # Don't call show() here - main.py will call it when ready
+        # Keep invisible attributes until main.py is ready to show the window
+        # The attributes will be removed when show() is called
+        logger.debug("Main window initialized but kept invisible until ready")
 
     def setup_ui(self):
         """Initialize UI components."""
@@ -146,45 +153,43 @@ class MainWindow(QMainWindow):
         self.is_small_screen = screen_width <= 1440 or screen_height <= 900
         self.ui_scale_factor = 0.8 if self.is_small_screen else 1.0
         
-        # Check if astronomy is enabled to determine window height
-        astronomy_enabled = (
-            self.config and
-            hasattr(self.config, 'astronomy') and
-            self.config.astronomy and
-            self.config.astronomy.enabled
-        )
+        # Determine initial widget visibility from persisted UI state
+        weather_visible = True  # Default
+        astronomy_visible = True  # Default
+        
+        if self.config and hasattr(self.config, 'ui') and self.config.ui:
+            weather_visible = self.config.ui.weather_widget_visible
+            astronomy_visible = self.config.ui.astronomy_widget_visible
+        else:
+            # Fallback: Check if astronomy is enabled to determine initial visibility
+            astronomy_visible = bool(
+                self.config and
+                hasattr(self.config, 'astronomy') and
+                self.config.astronomy and
+                self.config.astronomy.enabled
+            )
+        
+        # Get target window size from persisted config
+        default_width, default_height = self._get_target_window_size(weather_visible, astronomy_visible)
         
         if self.is_small_screen:
-            # Further reduced height for 13" MacBook compatibility but increased width for astronomy widget
+            # Apply scaling for small screens
             min_width = int(900 * 0.8)  # 720
-            default_width = int(1100 * 0.8)  # 880
+            min_height = int(450 * 0.8)  # 360
+            default_width = int(default_width * 0.8)
+            default_height = int(default_height * 0.8)
             
-            if astronomy_enabled:
-                min_height = int(950 * 0.8)  # 760
-                default_height = int(1050 * 0.8)  # 840
-            else:
-                # Compact height when astronomy disabled
-                min_height = int(700 * 0.8)  # 560
-                default_height = int(800 * 0.8)  # 640
-            
-            logger.info(f"Small screen detected ({screen_width}x{screen_height}), using scaled window size: {default_width}x{default_height} (astronomy {'enabled' if astronomy_enabled else 'disabled'})")
+            logger.info(f"Small screen detected ({screen_width}x{screen_height}), using scaled window size: {default_width}x{default_height} (weather={weather_visible}, astronomy={astronomy_visible})")
         else:
-            # Increased width for larger screens to accommodate astronomy widget
+            # Set reasonable minimums for large screens
             min_width = 900
-            default_width = 1100
+            min_height = 450
             
-            if astronomy_enabled:
-                min_height = 1100
-                default_height = 1200
-            else:
-                # Compact height when astronomy disabled
-                min_height = 800
-                default_height = 900
-            
-            logger.debug(f"Large screen detected ({screen_width}x{screen_height}), using full window size: {default_width}x{default_height} (astronomy {'enabled' if astronomy_enabled else 'disabled'})")
+            logger.debug(f"Large screen detected ({screen_width}x{screen_height}), using persisted window size: {default_width}x{default_height} (weather={weather_visible}, astronomy={astronomy_visible})")
         
         self.setMinimumSize(min_width, min_height)
-        self.resize(default_width, default_height)
+        # Increase window height to accommodate both weather and astronomy widgets without overlap
+        self.resize(1100, 1200)  # Increased from 1000 to 1200 to prevent widget overlap
         
         # Center the window on the screen
         self.center_window()
@@ -193,55 +198,55 @@ class MainWindow(QMainWindow):
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
 
-        # Main layout
+        # Main layout with minimal spacing for very compact UI
         layout = QVBoxLayout(central_widget)
         layout.setContentsMargins(8, 8, 8, 8)
-        # Add proper spacing between widgets to prevent overlap (scaled)
-        scaled_spacing = int(12 * self.ui_scale_factor)
+        # Minimal spacing between widgets for very compact layout
+        scaled_spacing = int(5 * self.ui_scale_factor)  # Further reduced from 10 to 5
         layout.setSpacing(scaled_spacing)
 
         # Weather widget (always create, show/hide based on config)
         self.weather_widget = WeatherWidget(scale_factor=self.ui_scale_factor)
+        self.weather_widget.setContentsMargins(0, 0, 0, 0)  # Removed bottom margin completely
         layout.addWidget(self.weather_widget)
 
-        # Hide initially if weather is disabled
-        if not (
-            self.config
-            and hasattr(self.config, "weather")
-            and self.config.weather
-            and self.config.weather.enabled
-        ):
-            self.weather_widget.hide()
+        # Set initial visibility based on persisted UI state
+        if self.config and hasattr(self.config, 'ui') and self.config.ui:
+            self.weather_widget.setVisible(self.config.ui.weather_widget_visible)
+            logger.debug(f"Weather widget visibility restored from config: {self.config.ui.weather_widget_visible}")
+        else:
+            # Fallback: Hide initially if weather is disabled
+            if not (
+                self.config
+                and hasattr(self.config, "weather")
+                and self.config.weather
+                and self.config.weather.enabled
+            ):
+                self.weather_widget.hide()
 
-        # Astronomy widget (create and conditionally add to layout based on config)
+        # Astronomy widget (create and show by default, hide if disabled)
         self.astronomy_widget = AstronomyWidget(scale_factor=self.ui_scale_factor)
+        self.astronomy_widget.setContentsMargins(0, 0, 0, 5)  # Removed top margin, kept small bottom margin
+        layout.addWidget(self.astronomy_widget)
 
-        # Only add to layout if astronomy is enabled - this prevents wasted space
-        should_show_astronomy = True
+        # Hide astronomy widget if astronomy is disabled in config
         if (
             self.config
             and hasattr(self.config, "astronomy")
             and self.config.astronomy
             and not self.config.astronomy.enabled
         ):
-            should_show_astronomy = False
-        
-        if should_show_astronomy:
-            layout.addWidget(self.astronomy_widget)
-            self.astronomy_widget.show()
-            logger.debug("Astronomy widget added to layout and shown")
+            self.astronomy_widget.hide()
+            logger.debug("Astronomy widget hidden (astronomy disabled in config)")
         else:
-            # Don't add to layout when disabled - this saves vertical space
-            logger.info("Astronomy widget not added to layout (disabled in config)")
+            logger.debug("Astronomy widget shown (astronomy enabled or no config)")
 
-        # Train list with extended capacity and reduced height for small screens
+        # Train list with extended capacity and reduced top margin for compact layout
         self.train_list_widget = TrainListWidget(max_trains=50)
+        self.train_list_widget.setContentsMargins(0, 5, 0, 0)  # Reduced top margin from 15 to 5
         
-        # For small screens, reduce train pane height by ~20% by setting a maximum height
-        if self.is_small_screen:
-            # Calculate reduced height: base height * scale * reduction factor
-            max_train_height = int(400 * self.ui_scale_factor * 0.8)  # ~20% reduction
-            self.train_list_widget.setMaximumHeight(max_train_height)
+        # Removed maximum height constraint to allow window to be taller
+        # Train list widget will expand to fill available space
         
         layout.addWidget(self.train_list_widget)
 
@@ -327,29 +332,12 @@ class MainWindow(QMainWindow):
         stations_action.triggered.connect(self.show_stations_settings_dialog)
         settings_menu.addAction(stations_action)
 
-        nasa_action = QAction("&NASA API...", self)
-        nasa_action.setStatusTip("Configure NASA API settings and astronomy options")
-        nasa_action.triggered.connect(self.show_nasa_settings_dialog)
-        settings_menu.addAction(nasa_action)
+        astronomy_action = QAction("&Astronomy...", self)
+        astronomy_action.setStatusTip("Configure astronomy settings and link preferences")
+        astronomy_action.triggered.connect(self.show_astronomy_settings_dialog)
+        settings_menu.addAction(astronomy_action)
 
-        # View menu
-        view_menu = menubar.addMenu("&View")
-
-        # Weather toggle
-        self.weather_toggle_action = QAction("Show &Weather", self)
-        self.weather_toggle_action.setCheckable(True)
-        self.weather_toggle_action.setChecked(True)  # Default checked
-        self.weather_toggle_action.setStatusTip("Show/hide weather widget")
-        self.weather_toggle_action.triggered.connect(self.toggle_weather_visibility)
-        view_menu.addAction(self.weather_toggle_action)
-
-        # Astronomy toggle
-        self.astronomy_toggle_action = QAction("Show &Astronomy", self)
-        self.astronomy_toggle_action.setCheckable(True)
-        self.astronomy_toggle_action.setChecked(True)  # Default checked
-        self.astronomy_toggle_action.setStatusTip("Show/hide astronomy widget")
-        self.astronomy_toggle_action.triggered.connect(self.toggle_astronomy_visibility)
-        view_menu.addAction(self.astronomy_toggle_action)
+        # View menu removed - reverting to pre-menu checkbox state
 
         # Help menu
         help_menu = menubar.addMenu("&Help")
@@ -513,27 +501,13 @@ class MainWindow(QMainWindow):
                             astronomy_visible = self.astronomy_widget.isVisible()
                             break
         
-        # Calculate target height with AGGRESSIVE differences for dramatic visible changes
+        # Get target size from persisted UI config or calculate defaults
+        target_width, target_height = self._get_target_window_size(weather_visible, astronomy_visible)
+        
+        # Apply scaling for small screens
         if self.is_small_screen:
-            # Small screen calculations (scaled by 0.8) - aggressive sizing
-            if weather_visible and astronomy_visible:
-                target_height = int(1200 * 0.8)  # 960 - both widgets (full height)
-            elif weather_visible:
-                target_height = int(725 * 0.8)   # 580 - weather only (HALF + 1/8th + 50px for proper display)
-            elif astronomy_visible:
-                target_height = int(600 * 0.8)   # 480 - astronomy only (HALF height)
-            else:
-                target_height = int(450 * 0.8)   # 360 - trains only (QUARTER height + 150px for perfect usability)
-        else:
-            # Large screen calculations - aggressive sizing
-            if weather_visible and astronomy_visible:
-                target_height = 1200  # Both widgets (full height)
-            elif weather_visible:
-                target_height = 725   # Weather only (HALF + 1/8th + 50px for proper display)
-            elif astronomy_visible:
-                target_height = 600   # Astronomy only (HALF height)
-            else:
-                target_height = 450   # Trains only (QUARTER height + 150px for perfect usability)
+            target_width = int(target_width * 0.8)
+            target_height = int(target_height * 0.8)
         
         # Always force resize regardless of current size
         current_height = self.height()
@@ -542,13 +516,13 @@ class MainWindow(QMainWindow):
         # CRITICAL FIX: Temporarily remove minimum size constraint to allow ultra-aggressive shrinking
         self.setMinimumSize(0, 0)
         
-        # Force resize to target height
-        self.resize(current_width, target_height)
+        # Force resize to target size
+        self.resize(target_width, target_height)
         
-        # CRITICAL FIX: Restore a reasonable minimum size but much smaller than before
-        # This allows the ultra-tiny sizes while preventing complete collapse
-        min_width = 400  # Reasonable minimum width
-        min_height = 100  # Very small minimum height to allow ultra-aggressive shrinking
+        # CRITICAL FIX: Restore a reasonable minimum size to prevent UI truncation
+        # This ensures widgets remain usable while still allowing dynamic resizing
+        min_width = 600   # Increased minimum width for better astronomy widget display
+        min_height = 450  # Increased minimum height to prevent severe truncation
         self.setMinimumSize(min_width, min_height)
         
         # Center the window on screen after resizing
@@ -563,7 +537,7 @@ class MainWindow(QMainWindow):
         if not widget_status:
             widget_status.append("trains only")
         
-        logger.info(f"Window FORCED resize from {current_width}x{current_height} to {current_width}x{target_height} and recentered (visible: {', '.join(widget_status)})")
+        logger.info(f"Window FORCED resize from {current_width}x{current_height} to {target_width}x{target_height} and recentered (visible: {', '.join(widget_status)})")
 
     def setup_theme_system(self):
         """Setup theme switching system."""
@@ -621,8 +595,22 @@ class MainWindow(QMainWindow):
             enabled = self.config.weather.enabled
             self.update_weather_status(enabled)
 
-            if self.weather_widget:
-                self.weather_widget.setVisible(enabled)
+            # CRITICAL FIX: Don't override user's manual visibility preference
+            # Only set visibility if this is the first time AND user hasn't manually hidden the widget
+            if self.weather_widget and not hasattr(self, '_weather_system_initialized'):
+                if not hasattr(self.weather_widget, '_user_manually_hidden') or not self.weather_widget._user_manually_hidden:
+                    # Don't override persisted UI state during system initialization
+                    # Only set visibility if no UI config exists
+                    if not (self.config and hasattr(self.config, 'ui') and self.config.ui):
+                        self.weather_widget.setVisible(enabled)
+                        logger.debug(f"Weather widget visibility set to {enabled} (first weather system setup, no UI config)")
+                    else:
+                        logger.debug("Weather widget visibility preserved from UI config during system setup")
+                else:
+                    logger.debug("Weather widget visibility preserved during system setup (user manually hidden)")
+                self._weather_system_initialized = True
+            elif self.weather_widget:
+                logger.debug("Weather widget visibility preserved (user preference)")
 
             if enabled:
                 logger.debug("Weather system initialized and enabled")
@@ -674,8 +662,8 @@ class MainWindow(QMainWindow):
                 # Update astronomy widget config
                 self.astronomy_widget.update_config(self.config.astronomy)
 
-            # Only initialize astronomy manager if API key is present
-            if self.config.astronomy.has_valid_api_key():
+            # Only initialize astronomy manager if astronomy is enabled
+            if self.config.astronomy.enabled:
                 # Initialize astronomy manager
                 self.astronomy_manager = AstronomyManager(self.config.astronomy)
 
@@ -750,11 +738,8 @@ class MainWindow(QMainWindow):
         # Smart toggle logic: check for API key if trying to enable
         current_enabled = self.config.astronomy.enabled
         
-        if not current_enabled and not self.config.astronomy.has_valid_api_key():
-            # User wants to enable but no API key - launch settings dialog
-            logger.info("Astronomy toggle requested but no API key - launching NASA settings dialog")
-            self.show_nasa_settings_dialog()
-            return
+        # Direct toggle - astronomy is API-free now
+        # No need to check for API key since we use static content
             
         # Direct toggle - API key is available or user is disabling
         self.config.astronomy.enabled = not current_enabled
@@ -820,7 +805,7 @@ class MainWindow(QMainWindow):
             }
             self.weather_widget.apply_theme(theme_colors)
 
-        # Update astronomy widget
+        # Update astronomy widget (only if it exists)
         if self.astronomy_widget:
             # Use same theme colors for astronomy widget
             theme_colors = {
@@ -893,7 +878,7 @@ class MainWindow(QMainWindow):
             }
             self.weather_widget.apply_theme(theme_colors)
 
-        # Apply theme to astronomy widget
+        # Apply theme to astronomy widget (only if it exists)
         if self.astronomy_widget:
             theme_colors = {
                 "background_primary": (
@@ -1138,16 +1123,16 @@ class MainWindow(QMainWindow):
             logger.error(f"Failed to show stations settings dialog: {e}")
             self.show_error_message("Settings Error", f"Failed to open stations settings: {e}")
 
-    def show_nasa_settings_dialog(self):
-        """Show NASA settings dialog."""
+    def show_astronomy_settings_dialog(self):
+        """Show astronomy settings dialog."""
         try:
-            dialog = NASASettingsDialog(self.config_manager, self, self.theme_manager)
+            dialog = AstronomySettingsDialog(self.config_manager, self, self.theme_manager)
             dialog.settings_saved.connect(self.on_settings_saved)
             dialog.astronomy_enable_requested.connect(self.on_astronomy_enable_requested)
             dialog.exec()
         except Exception as e:
-            logger.error(f"Failed to show NASA settings dialog: {e}")
-            self.show_error_message("Settings Error", f"Failed to open NASA settings: {e}")
+            logger.error(f"Failed to show astronomy settings dialog: {e}")
+            self.show_error_message("Settings Error", f"Failed to open astronomy settings: {e}")
 
 
     def on_settings_saved(self):
@@ -1207,7 +1192,18 @@ class MainWindow(QMainWindow):
                         # Update weather widget configuration
                         if self.weather_widget:
                             self.weather_widget.update_config(self.config.weather)
-                            self.weather_widget.setVisible(self.config.weather.enabled)
+                            # CRITICAL FIX: Don't override user's manual visibility preference during settings save
+                            # Never automatically change visibility when user has manually hidden widgets
+                            if not hasattr(self.weather_widget, '_user_manually_hidden') or not self.weather_widget._user_manually_hidden:
+                                # Only set visibility if user hasn't manually hidden the widget
+                                if not hasattr(self, '_weather_settings_applied'):
+                                    self.weather_widget.setVisible(self.config.weather.enabled)
+                                    self._weather_settings_applied = True
+                                    logger.debug(f"Weather widget visibility set to {self.config.weather.enabled} (first settings save)")
+                                else:
+                                    logger.debug("Weather widget visibility preserved during settings update (no manual override)")
+                            else:
+                                logger.debug("Weather widget visibility preserved during settings update (user manually hidden)")
 
                     # Update weather status
                     self.update_weather_status(self.config.weather.enabled)
@@ -1222,23 +1218,10 @@ class MainWindow(QMainWindow):
                     needs_data_fetch = False
 
                     if self.config.astronomy.enabled:
-                        if (
-                            not self.astronomy_manager
-                            and self.config.astronomy.has_valid_api_key()
-                        ):
-                            # Astronomy was enabled and API key is now available
+                        if not self.astronomy_manager:
+                            # Astronomy was enabled, initialize manager
                             needs_reinit = True
                             needs_data_fetch = True
-                        elif (
-                            self.astronomy_manager
-                            and not self.config.astronomy.has_valid_api_key()
-                        ):
-                            # API key was removed, shutdown manager
-                            self.astronomy_manager.shutdown()
-                            self.astronomy_manager = None
-                            logger.info(
-                                "Astronomy manager shutdown due to missing API key"
-                            )
                         elif self.astronomy_manager:
                             # Update existing astronomy manager configuration
                             self.astronomy_manager.update_config(self.config.astronomy)
@@ -1258,16 +1241,23 @@ class MainWindow(QMainWindow):
                         logger.info("Emitting astronomy manager ready signal to trigger data fetch")
                         self.astronomy_manager_ready.emit()
                     
-                    # ADDITIONAL FIX: Also trigger data fetch if astronomy was just enabled with existing API key
+                    # ADDITIONAL FIX: Also trigger data fetch if astronomy was just enabled
                     elif (self.config.astronomy.enabled and
-                          self.astronomy_manager and
-                          self.config.astronomy.has_valid_api_key()):
-                        logger.info("Astronomy enabled with existing API key - triggering data fetch")
+                          self.astronomy_manager):
+                        logger.info("Astronomy enabled - triggering data fetch")
                         self.astronomy_manager_ready.emit()
+                    
+                    # IMMEDIATE REFRESH: Force immediate astronomy data refresh after settings save
+                    if (self.config.astronomy.enabled and self.astronomy_manager):
+                        logger.info("Forcing immediate astronomy refresh after settings save")
+                        self.refresh_astronomy()
 
                     # Always update astronomy widget configuration
                     if self.astronomy_widget:
+                        logger.info(f"Updating astronomy widget with config: enabled={self.config.astronomy.enabled}, categories={self.config.astronomy.enabled_link_categories}")
                         self.astronomy_widget.update_config(self.config.astronomy)
+                        # Buttons are now always visible - no need to update visibility
+                        logger.info("Updated astronomy widget configuration")
                         
                         # CRITICAL: Ensure widget is hidden if not in layout to prevent white space
                         if self.config.astronomy.enabled:
@@ -1316,9 +1306,7 @@ class MainWindow(QMainWindow):
                                         self.astronomy_widget.setVisible(False)
                                         logger.info("Astronomy widget removed from layout (disabled in settings)")
                         
-                        # Update menu action state
-                        if self.astronomy_toggle_action:
-                            self.astronomy_toggle_action.setChecked(self.config.astronomy.enabled)
+                        # Menu action state update removed - no longer using menu toggles
 
                     # Update astronomy status
                     self.update_astronomy_status(self.config.astronomy.enabled)
@@ -1366,39 +1354,7 @@ class MainWindow(QMainWindow):
         msg_box.setText(about_text)
         msg_box.exec()
 
-    def toggle_weather_visibility(self):
-        """Toggle weather widget visibility and resize window accordingly."""
-        if self.weather_widget:
-            is_visible = self.weather_widget.isVisible()
-            
-            # Simply toggle visibility
-            self.weather_widget.setVisible(not is_visible)
-
-            # Update menu action text
-            if self.weather_toggle_action:
-                self.weather_toggle_action.setChecked(not is_visible)
-
-            # Resize and center the window
-            self._update_window_size_for_widgets()
-            
-            logger.info(f"Weather widget {'hidden' if is_visible else 'shown'} - window resized and centered")
-
-    def toggle_astronomy_visibility(self):
-        """Toggle astronomy widget visibility and resize window accordingly."""
-        if self.astronomy_widget:
-            is_visible = self.astronomy_widget.isVisible()
-            
-            # Simply toggle visibility
-            self.astronomy_widget.setVisible(not is_visible)
-
-            # Update menu action text
-            if self.astronomy_toggle_action:
-                self.astronomy_toggle_action.setChecked(not is_visible)
-
-            # Resize and center the window
-            self._update_window_size_for_widgets()
-            
-            logger.info(f"Astronomy widget {'hidden' if is_visible else 'shown'} - window resized and centered")
+    # Widget visibility toggle methods removed - reverting to pre-menu checkbox state
 
     def apply_menu_bar_styling(self, menubar):
         """Apply styling to the menu bar."""
@@ -1490,6 +1446,62 @@ class MainWindow(QMainWindow):
 
         menubar.setStyleSheet(menu_style)
 
+    def _sync_menu_states(self):
+        """Synchronize menu action checked states with actual widget visibility - REMOVED."""
+        # Menu toggle actions removed - this method is now a no-op
+        pass
+
+    def _get_target_window_size(self, weather_visible: bool, astronomy_visible: bool) -> tuple[int, int]:
+        """Get target window size based on widget visibility state from persisted config."""
+        if self.config and hasattr(self.config, 'ui') and self.config.ui:
+            if weather_visible and astronomy_visible:
+                return self.config.ui.window_size_both_visible
+            elif weather_visible:
+                return self.config.ui.window_size_weather_only
+            elif astronomy_visible:
+                return self.config.ui.window_size_astronomy_only
+            else:
+                return self.config.ui.window_size_trains_only
+        else:
+            # Fallback to default sizes if no config - properly sized for all widgets
+            if weather_visible and astronomy_visible:
+                return (1100, 1200)  # Proper size for both widgets without overlap
+            elif weather_visible:
+                return (1100, 800)   # Appropriate size for weather only
+            elif astronomy_visible:
+                return (1100, 900)   # Appropriate size for astronomy only
+            else:
+                return (1100, 600)   # Compact size for trains only
+
+    def _save_ui_state(self):
+        """Save current UI widget visibility states and window size to configuration."""
+        if self.config and hasattr(self.config, 'ui') and self.config.ui:
+            # Update UI state in config
+            if self.weather_widget:
+                self.config.ui.weather_widget_visible = self.weather_widget.isVisible()
+            if self.astronomy_widget:
+                self.config.ui.astronomy_widget_visible = self.astronomy_widget.isVisible()
+            
+            # Save current window size for the current widget state
+            current_size = (self.width(), self.height())
+            weather_visible = self.weather_widget.isVisible() if self.weather_widget else False
+            astronomy_visible = self.astronomy_widget.isVisible() if self.astronomy_widget else False
+            
+            if weather_visible and astronomy_visible:
+                self.config.ui.window_size_both_visible = current_size
+            elif weather_visible:
+                self.config.ui.window_size_weather_only = current_size
+            elif astronomy_visible:
+                self.config.ui.window_size_astronomy_only = current_size
+            else:
+                self.config.ui.window_size_trains_only = current_size
+            
+            # Save to file
+            try:
+                self.config_manager.save_config(self.config)
+                logger.debug(f"UI state saved: weather={self.config.ui.weather_widget_visible}, astronomy={self.config.ui.astronomy_widget_visible}, size={current_size}")
+            except Exception as e:
+                logger.error(f"Failed to save UI state: {e}")
 
     def connect_signals(self):
         """Connect internal signals."""
@@ -1618,6 +1630,7 @@ class MainWindow(QMainWindow):
                     
                     layout.insertWidget(insert_index, self.astronomy_widget)
                     self.astronomy_widget.setVisible(True)
+                    self._sync_menu_states()  # Sync menu after visibility change
                     logger.info("Astronomy widget added to layout after data ready")
                     
                     # Update window size for astronomy now that widget is in layout with data
@@ -1640,6 +1653,7 @@ class MainWindow(QMainWindow):
                     if item and item.widget() == self.astronomy_widget:
                         layout.removeWidget(self.astronomy_widget)
                         self.astronomy_widget.setVisible(False)
+                        self._sync_menu_states()  # Sync menu after visibility change
                         logger.info("Astronomy widget removed from layout")
                         break
 
@@ -1666,6 +1680,7 @@ class MainWindow(QMainWindow):
                     # Add weather widget at the beginning (index 0)
                     layout.insertWidget(0, self.weather_widget)
                     self.weather_widget.setVisible(True)
+                    self._sync_menu_states()  # Sync menu after visibility change
                     logger.info("Weather widget added to layout at position 0")
 
     def _remove_weather_widget_from_layout(self):
@@ -1685,6 +1700,7 @@ class MainWindow(QMainWindow):
                     if item and item.widget() == self.weather_widget:
                         layout.removeWidget(self.weather_widget)
                         self.weather_widget.setVisible(False)
+                        self._sync_menu_states()  # Sync menu after visibility change
                         logger.info("Weather widget removed from layout")
                         break
 
@@ -1843,8 +1859,44 @@ class MainWindow(QMainWindow):
         if self.initialization_manager:
             self.weather_manager = self.initialization_manager.weather_manager
             self.astronomy_manager = self.initialization_manager.astronomy_manager
+        
+        # Ensure menu states are synchronized with actual widget visibility after initialization
+        # Use a slight delay to ensure all visibility changes have been processed
+        QTimer.singleShot(50, self._final_menu_sync)
+        logger.debug("Final menu sync scheduled after initialization completion")
+    
+    def _final_menu_sync(self):
+        """Final menu synchronization after all initialization is complete."""
+        # Ensure both widgets are initialized
+        if self.weather_widget and self.astronomy_widget:
+            self._sync_menu_states()
+            logger.debug("Final menu states synchronized with widget visibility")
+            
+            # Log current states for debugging
+            weather_visible = self.weather_widget.isVisible()
+            astronomy_visible = self.astronomy_widget.isVisible()
+            
+            logger.info(f"Widget visibility - Weather: {weather_visible} | Astronomy: {astronomy_visible}")
+        else:
+            # Retry sync after a short delay if widgets aren't ready
+            QTimer.singleShot(100, self._final_menu_sync)
+            logger.debug("Widgets not ready for menu sync, retrying in 100ms")
 
     def _on_nasa_data_ready(self) -> None:
         """Handle NASA data ready signal from parallel fetch."""
         logger.info("NASA data ready from parallel fetch")
         # The astronomy widget will be automatically updated via signals
+
+    def show(self):
+        """Override show to properly remove invisible attributes when ready."""
+        # Remove all invisible attributes and restore normal visibility
+        self.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen, False)
+        self.setWindowOpacity(1.0)  # Restore full opacity
+        
+        # Move window back to center before showing
+        self.center_window()
+        
+        # Now show the window normally
+        self.setVisible(True)
+        super().show()
+        logger.debug("Main window shown with all invisible attributes removed")
