@@ -36,7 +36,6 @@
   "stations": [
     {
       "name": "London Kings Cross",
-      "code": "KGX",
       "coordinates": {
         "lat": 51.5308,
         "lng": -0.1238
@@ -69,7 +68,6 @@
     },
     {
       "name": "Stevenage",
-      "code": "ST5",
       "coordinates": {
         "lat": 51.9022,
         "lng": -0.2058
@@ -96,7 +94,6 @@
     },
     {
       "name": "Peterborough",
-      "code": "PBO",
       "coordinates": {
         "lat": 52.5742,
         "lng": -0.2506
@@ -123,7 +120,6 @@
     },
     {
       "name": "Grantham",
-      "code": "GRA",
       "coordinates": {
         "lat": 52.9111,
         "lng": -0.6417
@@ -150,7 +146,6 @@
     },
     {
       "name": "Newark North Gate",
-      "code": "NNG",
       "coordinates": {
         "lat": 53.0783,
         "lng": -0.8139
@@ -177,7 +172,6 @@
     },
     {
       "name": "Retford",
-      "code": "RET",
       "coordinates": {
         "lat": 53.3222,
         "lng": -0.9472
@@ -203,7 +197,6 @@
     },
     {
       "name": "Doncaster",
-      "code": "DON",
       "coordinates": {
         "lat": 53.5222,
         "lng": -1.1403
@@ -231,7 +224,6 @@
     },
     {
       "name": "Selby",
-      "code": "SBY",
       "coordinates": {
         "lat": 53.7833,
         "lng": -1.0667
@@ -257,7 +249,6 @@
     },
     {
       "name": "Brough",
-      "code": "BUH",
       "coordinates": {
         "lat": 53.7278,
         "lng": -0.5944
@@ -282,7 +273,6 @@
     },
     {
       "name": "Hull",
-      "code": "HUL",
       "coordinates": {
         "lat": 53.7444,
         "lng": -0.3525

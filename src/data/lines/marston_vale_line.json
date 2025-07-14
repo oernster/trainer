@@ -14,7 +14,6 @@
   "stations": [
     {
       "name": "Bletchley",
-      "code": "BLY",
       "coordinates": {
         "lat": 51.9981,
         "lng": -0.7331
@@ -79,7 +78,6 @@
     },
     {
       "name": "Fenny Stratford",
-      "code": "FEN",
       "coordinates": {
         "lat": 51.9931,
         "lng": -0.7181
@@ -142,7 +140,6 @@
     },
     {
       "name": "Bow Brickhill",
-      "code": "BWB",
       "coordinates": {
         "lat": 52.0081,
         "lng": -0.6831
@@ -205,7 +202,6 @@
     },
     {
       "name": "Woburn Sands",
-      "code": "WOB",
       "coordinates": {
         "lat": 52.0181,
         "lng": -0.6531
@@ -268,7 +264,6 @@
     },
     {
       "name": "Aspley Guise",
-      "code": "APG",
       "coordinates": {
         "lat": 52.0231,
         "lng": -0.6331
@@ -331,7 +326,6 @@
     },
     {
       "name": "Ridgmont",
-      "code": "RID",
       "coordinates": {
         "lat": 52.0281,
         "lng": -0.5931
@@ -394,7 +388,6 @@
     },
     {
       "name": "Lidlington",
-      "code": "LID",
       "coordinates": {
         "lat": 52.0331,
         "lng": -0.5631
@@ -457,7 +450,6 @@
     },
     {
       "name": "Millbrook",
-      "code": "MLB",
       "coordinates": {
         "lat": 52.0431,
         "lng": -0.5331
@@ -520,7 +512,6 @@
     },
     {
       "name": "Stewartby",
-      "code": "SWR",
       "coordinates": {
         "lat": 52.0631,
         "lng": -0.5231
@@ -583,7 +574,6 @@
     },
     {
       "name": "Kempston Hardwick",
-      "code": "KMH",
       "coordinates": {
         "lat": 52.0831,
         "lng": -0.5031
@@ -646,7 +636,6 @@
     },
     {
       "name": "Bedford St Johns",
-      "code": "BSJ",
       "coordinates": {
         "lat": 52.1281,
         "lng": -0.4731
@@ -709,7 +698,6 @@
     },
     {
       "name": "Bedford",
-      "code": "BDF",
       "coordinates": {
         "lat": 52.1361,
         "lng": -0.4781
@@ -773,5 +761,24 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations"
+    },
+    "semi_fast": {
+      "stations": [
+        "BLY",
+        "FEN",
+        "WOB",
+        "RID",
+        "LID",
+        "SWR",
+        "BSJ",
+        "BDF"
+      ],
+      "description": "Semi-fast service calling at major stations"
+    }
+  }
 }

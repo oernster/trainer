@@ -82,63 +82,19 @@ class TimetableManager:
             logger.error(f"Failed to load timetable data: {e}")
             return False
     
-    def get_journey_time(self, from_code: str, to_code: str) -> Optional[int]:
-        """Get typical journey time between two stations in minutes."""
-        if not self.loaded:
-            if not self.load_timetable_data():
-                return None
-        
-        # Try direct lookup
-        key = f"{from_code}-{to_code}"
-        if key in self.journey_times:
-            return self.journey_times[key]
-        
-        # Try reverse lookup
-        reverse_key = f"{to_code}-{from_code}"
-        if reverse_key in self.journey_times:
-            return self.journey_times[reverse_key]
-        
-        # Estimate based on distance (fallback)
-        return self._estimate_journey_time(from_code, to_code)
     
-    def _estimate_journey_time(self, from_code: str, to_code: str) -> int:
-        """Estimate journey time based on typical speeds and station types."""
-        # Basic estimation based on station codes and typical speeds
-        estimates = {
-            # London terminals to major cities
-            ("WAT", "SOU"): 79, ("WAT", "BSK"): 47, ("WAT", "WIN"): 63,
-            ("PAD", "RDG"): 25, ("PAD", "BRI"): 105, ("PAD", "CDF"): 120,
-            ("KGX", "YRK"): 120, ("KGX", "EDB"): 270, ("KGX", "LDS"): 135,
-            ("EUS", "BHM"): 85, ("EUS", "MAN"): 125, ("EUS", "GLC"): 270,
-            ("VIC", "BTN"): 52, ("VIC", "GTW"): 30,
-            ("LST", "NRW"): 115, ("LST", "IPS"): 68,
-        }
-        
-        # Check both directions
-        key = (from_code, to_code)
-        reverse_key = (to_code, from_code)
-        
-        if key in estimates:
-            return estimates[key]
-        elif reverse_key in estimates:
-            return estimates[reverse_key]
-        
-        # Default estimate: 45 minutes for unknown routes
-        return 45
-    
-    def generate_train_services(self, from_code: str, to_code: str, 
-                              departure_time: datetime, 
+    def generate_train_services(self, from_station: str, to_station: str,
+                              departure_time: datetime,
                               num_services: int = 10) -> List[TrainService]:
-        """Generate realistic train services for a route."""
+        """Generate realistic train services for a route using station names."""
         if not self.loaded:
             if not self.load_timetable_data():
                 return []
         
         services = []
-        journey_time = self.get_journey_time(from_code, to_code) or 45
-        
-        # Get operator and service info from railway data
-        operator = self._get_operator_for_route(from_code, to_code)
+        # Get journey time and operator directly from station names
+        journey_time = self.get_journey_time_by_name(from_station, to_station) or 45
+        operator = self._get_operator_for_route_by_name(from_station, to_station)
         
         current_time = departure_time
         
@@ -183,52 +139,37 @@ class TimetableManager:
         
         return services
     
-    def _get_operator_for_route(self, from_code: str, to_code: str) -> str:
-        """Get the typical operator for a route."""
-        # Map station codes to typical operators
-        operator_mappings = {
-            "WAT": "South Western Railway",
-            "VIC": "Southern",
-            "PAD": "Great Western Railway", 
-            "KGX": "LNER",
-            "EUS": "Avanti West Coast",
-            "LST": "Greater Anglia",
-            "STP": "East Midlands Railway",
-            "MYB": "Chiltern Railways"
-        }
-        
-        return operator_mappings.get(from_code, "National Rail")
     
     def _generate_platform(self) -> str:
         """Generate a realistic platform number."""
         # Most UK stations have platforms 1-20
         return str(random.randint(1, 12))
     
-    def get_next_departures(self, from_code: str, to_code: str, 
+    def get_next_departures(self, from_station: str, to_station: str,
                            count: int = 5) -> List[TrainService]:
         """Get next departures from current time."""
         now = datetime.now()
-        return self.generate_train_services(from_code, to_code, now, count)
+        return self.generate_train_services(from_station, to_station, now, count)
     
-    def get_departures_at_time(self, from_code: str, to_code: str, 
+    def get_departures_at_time(self, from_station: str, to_station: str,
                               departure_time: str, count: int = 10) -> List[TrainService]:
         """Get departures from a specific time (HH:MM format)."""
         try:
             hour, minute = map(int, departure_time.split(':'))
             today = datetime.now().replace(hour=hour, minute=minute, second=0, microsecond=0)
-            return self.generate_train_services(from_code, to_code, today, count)
+            return self.generate_train_services(from_station, to_station, today, count)
         except ValueError:
             # Invalid time format, use current time
-            return self.get_next_departures(from_code, to_code, count)
+            return self.get_next_departures(from_station, to_station, count)
     
-    def get_service_frequency(self, from_code: str, to_code: str) -> Dict[str, str]:
+    def get_service_frequency(self, from_station: str, to_station: str) -> Dict[str, str]:
         """Get typical service frequency information for a route."""
         # Find the railway line for this route
         for line_name, line_data in self.railway_data.items():
             if 'typical_services' in line_data:
                 # Check if both stations are on this line
-                station_codes = [station.get('code', '') for station in line_data.get('stations', [])]
-                if from_code in station_codes and to_code in station_codes:
+                station_names = [station.get('name', '') for station in line_data.get('stations', [])]
+                if from_station in station_names and to_station in station_names:
                     return line_data['typical_services']
         
         # Default frequency information
@@ -240,3 +181,91 @@ class TimetableManager:
             "first_train": "06:00",
             "last_train": "23:00"
         }
+    
+    def get_journey_time_by_name(self, from_station: str, to_station: str) -> Optional[int]:
+        """Get typical journey time between two stations using station names."""
+        if not from_station or not to_station:
+            return None
+            
+        # Search through railway data for journey times using station names
+        for line_name, line_data in self.railway_data.items():
+            stations = line_data.get('stations', [])
+            station_names = [s.get('name', '') for s in stations]
+            
+            # Check if both stations are on this line
+            if from_station in station_names and to_station in station_names:
+                # Try to find journey time data
+                journey_times = line_data.get('typical_journey_times', {})
+                
+                # Look for journey time using station names as keys
+                for key, time in journey_times.items():
+                    if (from_station.lower() in key.lower() and to_station.lower() in key.lower()) or \
+                       (to_station.lower() in key.lower() and from_station.lower() in key.lower()):
+                        return time
+                
+                # If no specific journey time found, estimate based on station positions
+                try:
+                    from_idx = station_names.index(from_station)
+                    to_idx = station_names.index(to_station)
+                    station_distance = abs(to_idx - from_idx)
+                    # Estimate 3-5 minutes per station
+                    return max(15, station_distance * 4)
+                except ValueError:
+                    continue
+        
+        # Fallback estimates for common routes
+        return self._estimate_journey_time_by_name(from_station, to_station)
+    
+    def _estimate_journey_time_by_name(self, from_station: str, to_station: str) -> int:
+        """Estimate journey time based on station names and typical routes."""
+        # Common route estimates
+        route_estimates = {
+            ("farnborough", "london waterloo"): 47,
+            ("london waterloo", "farnborough"): 47,
+            ("woking", "london waterloo"): 35,
+            ("london waterloo", "woking"): 35,
+            ("clapham junction", "london waterloo"): 12,
+            ("london waterloo", "clapham junction"): 12,
+            ("surbiton", "london waterloo"): 25,
+            ("london waterloo", "surbiton"): 25,
+        }
+        
+        from_lower = from_station.lower()
+        to_lower = to_station.lower()
+        
+        # Check for exact matches
+        for (from_key, to_key), time in route_estimates.items():
+            if from_key in from_lower and to_key in to_lower:
+                return time
+        
+        # Default estimate
+        return 45
+    
+    def _get_operator_for_route_by_name(self, from_station: str, to_station: str) -> str:
+        """Get the typical operator for a route using station names."""
+        # Map station names to typical operators
+        from_lower = from_station.lower()
+        to_lower = to_station.lower()
+        
+        # London Waterloo routes
+        if "waterloo" in from_lower or "waterloo" in to_lower:
+            return "South Western Railway"
+        
+        # London Victoria routes
+        if "victoria" in from_lower or "victoria" in to_lower:
+            return "Southern"
+        
+        # London Paddington routes
+        if "paddington" in from_lower or "paddington" in to_lower:
+            return "Great Western Railway"
+        
+        # London King's Cross routes
+        if "king" in from_lower or "king" in to_lower:
+            return "LNER"
+        
+        # London Euston routes
+        if "euston" in from_lower or "euston" in to_lower:
+            return "Avanti West Coast"
+        
+        # Default
+        return "National Rail"

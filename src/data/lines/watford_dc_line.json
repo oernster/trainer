@@ -1,0 +1,92 @@
+{
+  "metadata": {
+    "line_name": "Watford DC Line",
+    "description": "London Euston to Watford Junction via DC lines",
+    "operator": "London Northwestern Railway",
+    "total_stations": 8,
+    "line_color": "#F166A7"
+  },
+  "stations": [
+    {
+      "name": "London Euston",
+      "coordinates": {
+        "lat": 51.5282,
+        "lng": -0.1337
+      }
+    },
+    {
+      "name": "South Hampstead",
+      "coordinates": {
+        "lat": 51.5419,
+        "lng": -0.1789
+      }
+    },
+    {
+      "name": "Kilburn High Road",
+      "coordinates": {
+        "lat": 51.5478,
+        "lng": -0.1946
+      }
+    },
+    {
+      "name": "Queen's Park",
+      "coordinates": {
+        "lat": 51.5341,
+        "lng": -0.2047
+      }
+    },
+    {
+      "name": "Kensal Green",
+      "coordinates": {
+        "lat": 51.5301,
+        "lng": -0.2251
+      }
+    },
+    {
+      "name": "Willesden Junction",
+      "coordinates": {
+        "lat": 51.5324,
+        "lng": -0.2446
+      }
+    },
+    {
+      "name": "Harrow & Wealdstone",
+      "coordinates": {
+        "lat": 51.5925,
+        "lng": -0.3347
+      }
+    },
+    {
+      "name": "Watford Junction",
+      "coordinates": {
+        "lat": 51.6623,
+        "lng": -0.3962
+      }
+    }
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations",
+      "service_type": "stopping",
+      "typical_journey_time": 30,
+      "frequency": "Every 30 minutes"
+    },
+    "semi_fast": {
+      "stations": [
+        "EUS",
+        "WIJ",
+        "HRW",
+        "WFJ"
+      ],
+      "description": "Semi-fast service with limited stops",
+      "service_type": "semi_fast",
+      "typical_journey_time": 30,
+      "frequency": "Every 60 minutes"
+    }
+  },
+  "typical_journey_times": {
+    "EUS-WFJ": 25,
+    "WFJ-EUS": 25
+  }
+}

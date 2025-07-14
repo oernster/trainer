@@ -15,24 +15,11 @@
   },
   "typical_journey_times": {
     "LVC-MRF": 3,
-    "MRF-SFX": 3,
-    "SFX-BNP": 3,
-    "BNP-WWT": 3,
-    "WWT-SFD": 3,
-    "SFD-BLN": 3,
-    "BLN-AIN": 3,
     "AIN-FBY": 3,
     "FBY-HTO": 3,
-    "HTO-HAW": 3,
-    "HAW-BKP": 3,
-    "BKP-HI1": 3,
     "HI1-SOP": 3,
-    "MRF-KRK": 3,
-    "KRK-RCE": 3,
     "RCE-AUG": 3,
-    "AUG-OMS": 3,
-    "MRF-WAL": 3,
-    "WAL-KIR": 3
+    "AUG-OMS": 3
   },
   "typical_services": {
     "peak_frequency": "Every 7.5 minutes",
@@ -45,7 +32,6 @@
   "stations": [
     {
       "name": "Liverpool Central",
-      "code": "LVC",
       "coordinates": {
         "lat": 53.4053,
         "lng": -2.9797
@@ -75,7 +61,6 @@
     },
     {
       "name": "Moorfields",
-      "code": "MRF",
       "coordinates": {
         "lat": 53.4097,
         "lng": -2.9889
@@ -104,7 +89,6 @@
     },
     {
       "name": "Sandhills",
-      "code": "SDL",
       "coordinates": {
         "lat": 53.4294,
         "lng": -2.9917
@@ -133,7 +117,6 @@
     },
     {
       "name": "Bank Hall",
-      "code": "BAH",
       "coordinates": {
         "lat": 53.4375,
         "lng": -2.9917
@@ -159,7 +142,6 @@
     },
     {
       "name": "Bootle Oriel Road",
-      "code": "BOT",
       "coordinates": {
         "lat": 53.4458,
         "lng": -2.9917
@@ -185,7 +167,6 @@
     },
     {
       "name": "Bootle New Strand",
-      "code": "BNS",
       "coordinates": {
         "lat": 53.4542,
         "lng": -2.9917
@@ -211,7 +192,6 @@
     },
     {
       "name": "Seaforth & Litherland",
-      "code": "SFL",
       "coordinates": {
         "lat": 53.4625,
         "lng": -2.9917
@@ -237,7 +217,6 @@
     },
     {
       "name": "Waterloo",
-      "code": "WWT",
       "coordinates": {
         "lat": 53.4708,
         "lng": -2.9917
@@ -263,7 +242,6 @@
     },
     {
       "name": "Blundellsands & Crosby",
-      "code": "BDC",
       "coordinates": {
         "lat": 53.4792,
         "lng": -2.9917
@@ -289,7 +267,6 @@
     },
     {
       "name": "Hall Road",
-      "code": "HLR",
       "coordinates": {
         "lat": 53.4875,
         "lng": -2.9917
@@ -315,7 +292,6 @@
     },
     {
       "name": "Hightown",
-      "code": "HTO",
       "coordinates": {
         "lat": 53.5208,
         "lng": -2.9917
@@ -341,7 +317,6 @@
     },
     {
       "name": "Formby",
-      "code": "FBY",
       "coordinates": {
         "lat": 53.5542,
         "lng": -2.9917
@@ -367,7 +342,6 @@
     },
     {
       "name": "Freshfield",
-      "code": "FRE",
       "coordinates": {
         "lat": 53.5625,
         "lng": -2.9917
@@ -393,7 +367,6 @@
     },
     {
       "name": "Ainsdale",
-      "code": "ANS",
       "coordinates": {
         "lat": 53.5792,
         "lng": -2.9917
@@ -419,7 +392,6 @@
     },
     {
       "name": "Hillside",
-      "code": "HI1",
       "coordinates": {
         "lat": 53.5875,
         "lng": -2.9917
@@ -445,7 +417,6 @@
     },
     {
       "name": "Birkdale",
-      "code": "BDL",
       "coordinates": {
         "lat": 53.5958,
         "lng": -2.9917
@@ -471,7 +442,6 @@
     },
     {
       "name": "Southport",
-      "code": "SOP",
       "coordinates": {
         "lat": 53.6458,
         "lng": -2.9917
@@ -500,7 +470,6 @@
     },
     {
       "name": "Brunswick",
-      "code": "BRU",
       "coordinates": {
         "lat": 53.3875,
         "lng": -2.9708
@@ -526,7 +495,6 @@
     },
     {
       "name": "St Michaels",
-      "code": "STM",
       "coordinates": {
         "lat": 53.3792,
         "lng": -2.9542
@@ -552,7 +520,6 @@
     },
     {
       "name": "Aigburth",
-      "code": "AIG",
       "coordinates": {
         "lat": 53.3708,
         "lng": -2.9375
@@ -578,7 +545,6 @@
     },
     {
       "name": "Cressington",
-      "code": "CSG",
       "coordinates": {
         "lat": 53.3625,
         "lng": -2.9208
@@ -604,7 +570,6 @@
     },
     {
       "name": "Liverpool South Parkway",
-      "code": "LPY",
       "coordinates": {
         "lat": 53.3542,
         "lng": -2.9042
@@ -636,7 +601,6 @@
     },
     {
       "name": "Hunts Cross",
-      "code": "HNX",
       "coordinates": {
         "lat": 53.3458,
         "lng": -2.8875
@@ -665,7 +629,6 @@
     },
     {
       "name": "Rice Lane",
-      "code": "RCE",
       "coordinates": {
         "lat": 53.4458,
         "lng": -2.9708
@@ -691,7 +654,6 @@
     },
     {
       "name": "Kirkby",
-      "code": "KIR",
       "coordinates": {
         "lat": 53.4792,
         "lng": -2.9042
@@ -720,7 +682,6 @@
     },
     {
       "name": "Fazakerley",
-      "code": "FAZ",
       "coordinates": {
         "lat": 53.4625,
         "lng": -2.9375
@@ -746,7 +707,6 @@
     },
     {
       "name": "Walton",
-      "code": "WAO",
       "coordinates": {
         "lat": 53.4542,
         "lng": -2.9542
@@ -772,7 +732,6 @@
     },
     {
       "name": "Orrell Park",
-      "code": "OPK",
       "coordinates": {
         "lat": 53.4458,
         "lng": -2.9625
@@ -798,7 +757,6 @@
     },
     {
       "name": "Aintree",
-      "code": "AIN",
       "coordinates": {
         "lat": 53.4708,
         "lng": -2.9375
@@ -827,7 +785,6 @@
     },
     {
       "name": "Old Roan",
-      "code": "ORN",
       "coordinates": {
         "lat": 53.4792,
         "lng": -2.9375
@@ -853,7 +810,6 @@
     },
     {
       "name": "Maghull",
-      "code": "MAG",
       "coordinates": {
         "lat": 53.5042,
         "lng": -2.9375
@@ -879,7 +835,6 @@
     },
     {
       "name": "Maghull North",
-      "code": "MNO",
       "coordinates": {
         "lat": 53.5125,
         "lng": -2.9375
@@ -905,7 +860,6 @@
     },
     {
       "name": "Town Green",
-      "code": "TWN",
       "coordinates": {
         "lat": 53.5375,
         "lng": -2.9208
@@ -931,7 +885,6 @@
     },
     {
       "name": "Aughton Park",
-      "code": "AUG",
       "coordinates": {
         "lat": 53.5458,
         "lng": -2.9125
@@ -957,7 +910,6 @@
     },
     {
       "name": "Ormskirk",
-      "code": "OMS",
       "coordinates": {
         "lat": 53.5708,
         "lng": -2.8875

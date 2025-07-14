@@ -33,7 +33,6 @@
   "stations": [
     {
       "name": "London Kings Cross",
-      "code": "KGX",
       "coordinates": {
         "lat": 51.5322,
         "lng": -0.1235
@@ -71,7 +70,6 @@
     },
     {
       "name": "York",
-      "code": "YRK",
       "coordinates": {
         "lat": 53.9581,
         "lng": -1.0931
@@ -103,7 +101,6 @@
     },
     {
       "name": "Thirsk",
-      "code": "THI",
       "coordinates": {
         "lat": 54.2333,
         "lng": -1.3417
@@ -133,7 +130,6 @@
     },
     {
       "name": "Northallerton",
-      "code": "NTR",
       "coordinates": {
         "lat": 54.3333,
         "lng": -1.4333
@@ -163,7 +159,6 @@
     },
     {
       "name": "Eaglescliffe",
-      "code": "EAG",
       "coordinates": {
         "lat": 54.5333,
         "lng": -1.3583
@@ -189,7 +184,6 @@
     },
     {
       "name": "Hartlepool",
-      "code": "HPL",
       "coordinates": {
         "lat": 54.6861,
         "lng": -1.2111
@@ -215,7 +209,6 @@
     },
     {
       "name": "Sunderland",
-      "code": "SUN",
       "coordinates": {
         "lat": 54.9061,
         "lng": -1.3822
@@ -245,7 +238,6 @@
     },
     {
       "name": "Newcastle",
-      "code": "NCL",
       "coordinates": {
         "lat": 54.9681,
         "lng": -1.6181
@@ -278,7 +270,6 @@
     },
     {
       "name": "Doncaster",
-      "code": "DON",
       "coordinates": {
         "lat": 53.5219,
         "lng": -1.1419
@@ -310,7 +301,6 @@
     },
     {
       "name": "Wakefield Kirkgate",
-      "code": "WKK",
       "coordinates": {
         "lat": 53.6778,
         "lng": -1.4972
@@ -339,7 +329,6 @@
     },
     {
       "name": "Mirfield",
-      "code": "MIR",
       "coordinates": {
         "lat": 53.6722,
         "lng": -1.6944
@@ -365,7 +354,6 @@
     },
     {
       "name": "Brighouse",
-      "code": "BGH",
       "coordinates": {
         "lat": 53.7,
         "lng": -1.7833
@@ -391,7 +379,6 @@
     },
     {
       "name": "Halifax",
-      "code": "HFX",
       "coordinates": {
         "lat": 53.7231,
         "lng": -1.8631
@@ -420,7 +407,6 @@
     },
     {
       "name": "Low Moor",
-      "code": "LMR",
       "coordinates": {
         "lat": 53.75,
         "lng": -1.7667
@@ -446,7 +432,6 @@
     },
     {
       "name": "Bradford Interchange",
-      "code": "BDI",
       "coordinates": {
         "lat": 53.7931,
         "lng": -1.7531

@@ -11,6 +11,9 @@ import requests
 import time
 from pathlib import Path
 from typing import Optional, List
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 from PySide6.QtWidgets import (
     QDialog,
     QVBoxLayout,
@@ -44,32 +47,257 @@ station_database = StationDatabaseManager()
 
 # Load the database immediately and log status
 try:
-    print("🔄 Attempting to load station database...")
+    logger.debug("Attempting to load station database...")
     if station_database.load_database():
-        print(f"✅ Station database loaded successfully: {len(station_database.all_stations)} stations")
-        print(f"📊 Database stats: {station_database.get_database_stats()}")
+        logger.info(f"Station database loaded successfully: {len(station_database.all_stations)} stations")
+        logger.debug(f"Database stats: {station_database.get_database_stats()}")
         
         # Debug: Check if South Western Main Line loaded
         swml_line = station_database.railway_lines.get("South Western Main Line")
         if swml_line:
-            print(f"✅ South Western Main Line loaded with {len(swml_line.stations)} stations")
+            logger.debug(f"South Western Main Line loaded with {len(swml_line.stations)} stations")
             # Check for Farnborough stations specifically
             farnborough_stations = [s.name for s in swml_line.stations if 'farnborough' in s.name.lower()]
-            print(f"🔍 Farnborough stations in SWML: {farnborough_stations}")
+            logger.debug(f"Farnborough stations in SWML: {farnborough_stations}")
         else:
-            print("❌ South Western Main Line not found in loaded lines")
-            print(f"🔍 Available lines: {list(station_database.railway_lines.keys())}")
+            logger.warning("South Western Main Line not found in loaded lines")
+            logger.debug(f"Available lines: {list(station_database.railway_lines.keys())}")
         
         # Check station name mappings for Farnborough
         farnborough_mappings = {name: code for name, code in station_database.station_name_to_code.items() if 'farnborough' in name.lower()}
-        print(f"🔍 Farnborough name mappings: {farnborough_mappings}")
+        logger.debug(f"Farnborough name mappings: {farnborough_mappings}")
         
     else:
-        print("❌ Failed to load station database")
+        logger.error("Failed to load station database")
 except Exception as e:
-    print(f"❌ Error loading station database: {e}")
+    logger.error(f"Error loading station database: {e}")
     import traceback
     traceback.print_exc()
+
+
+class TimePickerWidget(QWidget):
+    """A time picker widget with hour and minute spinners."""
+
+    timeChanged = Signal(str)  # Emits time in HH:MM format
+
+    def __init__(self, initial_time="", parent=None, theme_manager=None):
+        super().__init__(parent)
+        self.theme_manager = theme_manager
+        
+        # Parse initial time or use current time
+        if initial_time and ":" in initial_time:
+            try:
+                hour, minute = map(int, initial_time.split(":"))
+                self._hour = max(0, min(23, hour))
+                self._minute = max(0, min(59, minute))
+            except (ValueError, IndexError):
+                # Default to 09:00 if parsing fails
+                self._hour = 9
+                self._minute = 0
+        else:
+            # Default to 09:00
+            self._hour = 9
+            self._minute = 0
+
+        self.setup_ui()
+        self.setup_style()
+
+    def setup_ui(self):
+        """Set up the user interface."""
+        # Create main layout
+        main_layout = QHBoxLayout(self)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(2)
+
+        # Hour controls
+        self.hour_down_button = QPushButton("◀")
+        self.hour_down_button.setFixedSize(40, 32)
+        self.hour_down_button.clicked.connect(self.decrement_hour)
+
+        self.hour_label = QLabel(f"{self._hour:02d}")
+        self.hour_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.hour_label.setMinimumWidth(30)
+        self.hour_label.setFixedHeight(32)
+
+        self.hour_up_button = QPushButton("▶")
+        self.hour_up_button.setFixedSize(40, 32)
+        self.hour_up_button.clicked.connect(self.increment_hour)
+
+        # Colon separator
+        colon_label = QLabel(":")
+        colon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        colon_label.setFixedHeight(32)
+        colon_label.setStyleSheet("font-weight: bold; font-size: 16px;")
+
+        # Minute controls
+        self.minute_down_button = QPushButton("◀")
+        self.minute_down_button.setFixedSize(40, 32)
+        self.minute_down_button.clicked.connect(self.decrement_minute)
+
+        self.minute_label = QLabel(f"{self._minute:02d}")
+        self.minute_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.minute_label.setMinimumWidth(30)
+        self.minute_label.setFixedHeight(32)
+
+        self.minute_up_button = QPushButton("▶")
+        self.minute_up_button.setFixedSize(40, 32)
+        self.minute_up_button.clicked.connect(self.increment_minute)
+
+        # Add widgets to layout
+        main_layout.addWidget(self.hour_down_button)
+        main_layout.addWidget(self.hour_label)
+        main_layout.addWidget(self.hour_up_button)
+        main_layout.addWidget(colon_label)
+        main_layout.addWidget(self.minute_down_button)
+        main_layout.addWidget(self.minute_label)
+        main_layout.addWidget(self.minute_up_button)
+
+    def setup_style(self):
+        """Apply styling to the widget."""
+        # Get theme colors if theme manager is available
+        if self.theme_manager:
+            current_theme = self.theme_manager.current_theme
+            if current_theme == "light":
+                # Light theme styling
+                primary_accent = "#1976d2"
+                text_primary = "#1976d2"
+                background_primary = "#f0f0f0"
+                background_hover = "#e0e0e0"
+                border_primary = "#cccccc"
+                disabled_bg = "#f5f5f5"
+                disabled_text = "#cccccc"
+            else:
+                # Dark theme styling
+                primary_accent = "#1976d2"
+                text_primary = "#ffffff"
+                background_primary = "#2d2d2d"
+                background_hover = "#404040"
+                border_primary = "#404040"
+                disabled_bg = "#424242"
+                disabled_text = "#9e9e9e"
+        else:
+            # Fallback to dark theme
+            primary_accent = "#1976d2"
+            text_primary = "#ffffff"
+            background_primary = "#2d2d2d"
+            background_hover = "#404040"
+            border_primary = "#404040"
+            disabled_bg = "#424242"
+            disabled_text = "#9e9e9e"
+
+        # Button styling
+        button_style = f"""
+            QPushButton {{
+                background-color: {primary_accent};
+                border: 1px solid {primary_accent};
+                border-radius: 3px;
+                font-weight: bold;
+                font-size: 16px;
+                color: #ffffff;
+            }}
+            QPushButton:hover {{
+                background-color: {background_hover};
+                color: #ffffff;
+            }}
+            QPushButton:pressed {{
+                background-color: {primary_accent};
+                border: 1px solid {primary_accent};
+                color: #ffffff;
+            }}
+            QPushButton:disabled {{
+                background-color: {disabled_bg};
+                color: {disabled_text};
+            }}
+        """
+
+        # Label styling
+        label_style = f"""
+            QLabel {{
+                background-color: {background_primary};
+                border: 1px solid {border_primary};
+                border-radius: 2px;
+                padding: 4px;
+                font-weight: bold;
+                color: {text_primary};
+            }}
+        """
+
+        self.hour_up_button.setStyleSheet(button_style)
+        self.hour_down_button.setStyleSheet(button_style)
+        self.minute_up_button.setStyleSheet(button_style)
+        self.minute_down_button.setStyleSheet(button_style)
+        self.hour_label.setStyleSheet(label_style)
+        self.minute_label.setStyleSheet(label_style)
+
+    def increment_hour(self):
+        """Increment the hour value."""
+        self._hour = (self._hour + 1) % 24
+        self.update_display()
+        self.emit_time_changed()
+
+    def decrement_hour(self):
+        """Decrement the hour value."""
+        self._hour = (self._hour - 1) % 24
+        self.update_display()
+        self.emit_time_changed()
+
+    def increment_minute(self):
+        """Increment the minute value."""
+        self._minute = (self._minute + 5) % 60  # Increment by 5 minutes
+        self.update_display()
+        self.emit_time_changed()
+
+    def decrement_minute(self):
+        """Decrement the minute value."""
+        self._minute = (self._minute - 5) % 60  # Decrement by 5 minutes
+        self.update_display()
+        self.emit_time_changed()
+
+
+    def update_display(self):
+        """Update the display labels."""
+        self.hour_label.setText(f"{self._hour:02d}")
+        self.minute_label.setText(f"{self._minute:02d}")
+
+    def emit_time_changed(self):
+        """Emit the timeChanged signal with current time."""
+        time_str = f"{self._hour:02d}:{self._minute:02d}"
+        self.timeChanged.emit(time_str)
+
+    def get_time(self):
+        """Get the current time as HH:MM string."""
+        return f"{self._hour:02d}:{self._minute:02d}"
+
+    def set_time(self, time_str):
+        """Set the time from HH:MM string."""
+        if not time_str or time_str == "":
+            self._hour = 9
+            self._minute = 0
+        else:
+            try:
+                hour, minute = map(int, time_str.split(":"))
+                self._hour = max(0, min(23, hour))
+                self._minute = max(0, min(59, minute))
+            except (ValueError, IndexError):
+                self._hour = 9
+                self._minute = 0
+        self.update_display()
+
+    def is_empty(self):
+        """Check if time is at default/empty state."""
+        return self._hour == 9 and self._minute == 0
+
+    def suggest_times(self, suggested_times):
+        """Show a tooltip or context menu with suggested times."""
+        if not suggested_times:
+            return
+        
+        # Create a simple tooltip with suggested times
+        times_text = "Suggested times: " + ", ".join(suggested_times[:6])  # Show first 6 times
+        self.setToolTip(times_text)
+        
+        # You could also implement a dropdown or context menu here
+        # For now, just update the tooltip
 
 
 class HorizontalSpinWidget(QWidget):
@@ -245,9 +473,6 @@ class HorizontalSpinWidget(QWidget):
         self.value_label.setText(str(self._value) + self.suffix)
 
 
-logger = logging.getLogger(__name__)
-
-
 class StationsSettingsDialog(QDialog):
     """
     Stations settings dialog for configuring station settings, display preferences, and refresh settings.
@@ -272,11 +497,11 @@ class StationsSettingsDialog(QDialog):
             parent: Parent widget
             theme_manager: Shared theme manager instance
         """
-        print("🚨 CRASH-PROOF DIALOG: Starting initialization...")
+        logger.debug("Starting crash-proof dialog initialization...")
         
         try:
             super().__init__(parent)
-            print("✅ QDialog.__init__ completed")
+            logger.debug("QDialog.__init__ completed")
         except Exception as e:
             print(f"❌ CRITICAL: QDialog.__init__ failed: {e}")
             # This is catastrophic - we can't continue
@@ -842,19 +1067,14 @@ class StationsSettingsDialog(QDialog):
         time_label.setStyleSheet("font-weight: bold; color: #1976d2;")
         form.addRow(time_label)
 
-        # Departure time input
-        self.departure_time_edit = QLineEdit()
-        self.departure_time_edit.setPlaceholderText("HH:MM (e.g., 14:30) - leave empty for any time")
-        self.departure_time_edit.setMaximumWidth(200)
+        # Departure time picker widget
+        self.departure_time_picker = TimePickerWidget(
+            initial_time="",
+            parent=self,
+            theme_manager=self.theme_manager
+        )
         
-        # Add input validation for time format
-        from PySide6.QtGui import QRegularExpressionValidator
-        from PySide6.QtCore import QRegularExpression
-        time_regex = QRegularExpression(r"^([01]?[0-9]|2[0-3]):[0-5][0-9]$")
-        time_validator = QRegularExpressionValidator(time_regex)
-        self.departure_time_edit.setValidator(time_validator)
-        
-        form.addRow("Departure Time:", self.departure_time_edit)
+        form.addRow("Departure Time:", self.departure_time_picker)
 
         # Add some spacing
         form.addRow(QLabel(""))
@@ -869,12 +1089,12 @@ class StationsSettingsDialog(QDialog):
         self.route_auto_fixed = False  # Track if route has been auto-fixed
         
         # Via stations buttons display (shows current via stations as clickable buttons)
-        # Using absolute positioning for exact 2px spacing control
+        # Using absolute positioning for exact spacing control with improved sizing
         self.via_buttons_widget = QWidget()
         self.via_buttons_widget.setStyleSheet("QWidget { border: none; background: transparent; }")  # Remove any borders
         # No layout needed - using absolute positioning
-        self.via_buttons_widget.setMinimumHeight(66)  # Height for exactly 3 rows: 3 * (20px + 2px) = 66px
-        self.via_buttons_widget.setMaximumHeight(66)  # Prevent excessive expansion
+        self.via_buttons_widget.setMinimumHeight(100)  # Increased height to accommodate larger buttons and more rows
+        self.via_buttons_widget.setMaximumHeight(200)  # Allow for more expansion when needed
         # Don't add to form - add directly to avoid form spacing
         
         # Via stations functionality
@@ -989,9 +1209,14 @@ class StationsSettingsDialog(QDialog):
         self.route_info_label = QLabel("Select From and To stations to enable routing")
         self.route_info_label.setStyleSheet("color: #888888; font-style: italic; padding: 5px;")
         self.route_info_label.setWordWrap(True)  # Enable word wrapping
-        self.route_info_label.setMinimumHeight(40)  # Ensure minimum height for wrapped text
-        self.route_info_label.setMaximumHeight(80)  # Allow for up to 3-4 lines of text
+        self.route_info_label.setMinimumHeight(50)  # Increased minimum height for wrapped text
+        self.route_info_label.setMaximumHeight(100)  # Increased maximum height for longer text
         self.route_info_label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)  # Left-align and top-align
+        from PySide6.QtWidgets import QSizePolicy
+        self.route_info_label.setSizePolicy(
+            QSizePolicy.Policy.Preferred,
+            QSizePolicy.Policy.Expanding
+        )  # Allow vertical expansion
         via_layout.addWidget(self.route_info_label)
         
         # Add extra spacing after route info to lower the UI elements below
@@ -1051,11 +1276,16 @@ class StationsSettingsDialog(QDialog):
             print(f"Error in database station search: {e}")
             return []
 
-    def api_get_station_code(self, station_name: str):
-        """Get station code for a station name using the internal database with smart matching."""
+    def api_get_station_code(self, station_name: str, strict_mode: bool = False):
+        """Get station code for a station name using the internal database with smart matching.
+        
+        Args:
+            station_name: The station name to look up
+            strict_mode: If True, only allow exact matches (for validating autocomplete selections)
+        """
         try:
             station_name_clean = station_name.strip()
-            print(f"🔍 api_get_station_code called with: '{station_name_clean}'")
+            print(f"🔍 api_get_station_code called with: '{station_name_clean}', strict_mode={strict_mode}")
             
             # First try exact match with original name (don't parse yet)
             code = station_database.get_station_code(station_name_clean)
@@ -1072,6 +1302,11 @@ class StationsSettingsDialog(QDialog):
                 if code:
                     print(f"✅ Found station code '{code}' for parsed name '{parsed_name}' in internal database")
                     return code
+            
+            # In strict mode, don't use fallback search - require exact matches
+            if strict_mode:
+                print(f"❌ Strict mode: No exact match found for '{station_name_clean}'")
+                return None
             
             # If exact matches fail, try to find the best match from search results
             print(f"🔍 No exact match found, trying search for '{station_name_clean}'...")
@@ -1237,8 +1472,11 @@ class StationsSettingsDialog(QDialog):
                 if line_edit:
                     line_edit.setPlaceholderText("Start typing destination station...")
                 
-                # Clear any existing to station selection but don't disable the field
-                self.to_name_edit.clear()
+                # FIXED: Don't clear existing to station selection - preserve it if valid
+                current_to_station = self.to_name_edit.text().strip()
+                if not current_to_station:
+                    # Only clear if there's no existing to station
+                    self.to_name_edit.clear()
                 
                 # Pre-populate to station dropdown with reachable destinations
                 self.populate_to_stations_completer(code)
@@ -1305,8 +1543,8 @@ class StationsSettingsDialog(QDialog):
             # Set loading state
             self.to_name_edit.setPlaceholderText("Loading destinations...")
             
-            # Clear existing text
-            self.to_name_edit.clear()
+            # FIXED: Don't clear existing text - preserve user's to station selection
+            # self.to_name_edit.clear()  # Commented out to preserve existing selection
             
             # Get all stations with disambiguation context
             all_stations = station_database.get_all_stations_with_context()
@@ -1425,7 +1663,7 @@ class StationsSettingsDialog(QDialog):
             to_parsed = station_database.parse_station_name(to_station)
             
             # Get departure time if specified
-            departure_time = self.departure_time_edit.text().strip() if hasattr(self, 'departure_time_edit') else None
+            departure_time = self.departure_time_picker.get_time() if hasattr(self, 'departure_time_picker') and not self.departure_time_picker.is_empty() else None
             departure_time = departure_time if departure_time else None
             
             # Get via station suggestions (note: suggest_via_stations doesn't use time constraints)
@@ -1614,25 +1852,26 @@ class StationsSettingsDialog(QDialog):
             
             # Only show buttons for stations that are actually in self.via_stations
             if self.via_stations:
-                # Dynamic button sizing parameters
-                min_button_width = 120  # Minimum button width
-                max_button_width = 300  # Maximum button width to prevent excessive stretching
-                button_height = 20      # Fixed button height
-                horizontal_spacing = 2  # Horizontal spacing between buttons
-                vertical_spacing = 2    # Vertical spacing between rows
-                max_row_width = 650     # Maximum width available for buttons per row
+                # Dynamic button sizing parameters - optimized for better layout
+                min_button_width = 120  # Reduced minimum button width
+                max_button_width = 200  # Reduced maximum button width to prevent overflow
+                button_height = 28      # Increased button height for better readability
+                horizontal_spacing = 4  # Spacing between buttons
+                vertical_spacing = 4    # Spacing between rows
+                max_row_width = 700     # Maximum width available for buttons per row
                 
-                # Calculate button widths based on text content
+                # Calculate button widths based on text content with better estimation
                 button_data = []
                 for station in self.via_stations:
-                    # Estimate text width (rough approximation: 8 pixels per character)
-                    estimated_text_width = len(station) * 8 + 20  # +20 for padding
+                    # Better text width estimation: 8 pixels per character + padding
+                    estimated_text_width = len(station) * 8 + 25  # +25 for padding and margins
                     button_width = max(min_button_width, min(estimated_text_width, max_button_width))
                     button_data.append({'station': station, 'width': button_width})
                 
                 # Arrange buttons with line wrapping
                 current_row = 0
                 current_x = 0
+                max_rows_used = 0
                 
                 for i, data in enumerate(button_data):
                     station = data['station']
@@ -1644,6 +1883,9 @@ class StationsSettingsDialog(QDialog):
                         current_row += 1
                         current_x = 0
                     
+                    # Track maximum rows used
+                    max_rows_used = max(max_rows_used, current_row)
+                    
                     # Calculate position
                     x = current_x
                     y = current_row * (button_height + vertical_spacing)
@@ -1652,17 +1894,17 @@ class StationsSettingsDialog(QDialog):
                     button = QPushButton(station, self.via_buttons_widget)
                     button.setGeometry(x, y, button_width, button_height)
                     
-                    # Style as selected/active via station
+                    # Style as selected/active via station with improved styling
                     button.setStyleSheet("""
                         QPushButton {
                             background-color: #2e7d32;
                             border: 1px solid #1b5e20;
                             border-radius: 4px;
-                            padding: 2px 4px;
+                            padding: 3px 6px;
                             margin: 0px;
                             color: white;
                             font-weight: bold;
-                            font-size: 10px;
+                            font-size: 11px;
                             text-align: center;
                         }
                         QPushButton:hover {
@@ -1681,10 +1923,15 @@ class StationsSettingsDialog(QDialog):
                     # Update position for next button
                     current_x += button_width + horizontal_spacing
                 
-                # Update widget height to accommodate all rows
-                total_height = (current_row + 1) * (button_height + vertical_spacing)
+                # Update widget height to accommodate all rows with some extra padding
+                total_height = (max_rows_used + 1) * (button_height + vertical_spacing) + 10  # +10 for extra padding
                 self.via_buttons_widget.setMinimumHeight(total_height)
                 self.via_buttons_widget.setMaximumHeight(total_height)
+                
+            else:
+                # No via stations - reset to minimal height
+                self.via_buttons_widget.setMinimumHeight(30)
+                self.via_buttons_widget.setMaximumHeight(30)
                 
         except Exception as e:
             print(f"Error updating via buttons: {e}")
@@ -1922,7 +2169,7 @@ class StationsSettingsDialog(QDialog):
         """Automatically fix an invalid route by finding a valid path."""
         try:
             # Get departure time if specified
-            departure_time = self.departure_time_edit.text().strip() if hasattr(self, 'departure_time_edit') else None
+            departure_time = self.departure_time_picker.get_time() if hasattr(self, 'departure_time_picker') and not self.departure_time_picker.is_empty() else None
             departure_time = departure_time if departure_time else None
             
             # Find a valid route using the station database - let it determine optimal search strategy
@@ -2010,7 +2257,7 @@ class StationsSettingsDialog(QDialog):
             to_parsed = station_database.parse_station_name(to_station)
             
             # Get departure time if specified and validate it
-            departure_time = self.departure_time_edit.text().strip() if hasattr(self, 'departure_time_edit') else None
+            departure_time = self.departure_time_picker.get_time() if hasattr(self, 'departure_time_picker') and not self.departure_time_picker.is_empty() else None
             departure_time = departure_time if departure_time else None
             
             # If departure time is specified, validate it and suggest alternatives if needed
@@ -2035,10 +2282,10 @@ class StationsSettingsDialog(QDialog):
             if not station_database.load_database():
                 print("❌ Database reload failed")
             
-            # Debug: Check if stations exist in database using enhanced lookup
-            from_code = self.api_get_station_code(from_station)
-            to_code = self.api_get_station_code(to_station)
-            print(f"🔍 Station codes: from_code='{from_code}', to_code='{to_code}'")
+            # Debug: Check if stations exist in database using strict lookup for validation
+            from_code = self.api_get_station_code(from_station, strict_mode=True)
+            to_code = self.api_get_station_code(to_station, strict_mode=True)
+            print(f"🔍 Station codes (strict): from_code='{from_code}', to_code='{to_code}'")
             
             if not from_code:
                 print(f"❌ CRITICAL: Cannot find station code for '{from_parsed}' (original: '{from_station}')")
@@ -2080,23 +2327,26 @@ class StationsSettingsDialog(QDialog):
             
             if not from_code or not to_code:
                 print("❌ Cannot proceed with route finding - missing station codes")
-                # Re-enable button and show specific error
+                # Re-enable button and show user-friendly error
                 self.fastest_route_button.setEnabled(True)
                 self.fastest_route_button.setText("Fastest Route")
                 self.update_route_info()
                 
+                # Show user-friendly message asking them to select from autocomplete
                 missing_stations = []
                 if not from_code:
-                    missing_stations.append(f"From station: '{from_station}'")
+                    missing_stations.append("From station")
                 if not to_code:
-                    missing_stations.append(f"To station: '{to_station}'")
+                    missing_stations.append("To station")
                 
-                QMessageBox.critical(
+                station_text = " and ".join(missing_stations)
+                
+                QMessageBox.information(
                     self,
-                    "Station Not Found",
-                    f"Cannot find the following stations in the database:\n\n" +
-                    "\n".join(missing_stations) +
-                    f"\n\nPlease check the station names and try again."
+                    "Please Select Valid Stations",
+                    f"Please select a valid {station_text.lower()} from the autocomplete list.\n\n"
+                    f"Start typing the station name and then click on one of the suggestions "
+                    f"that appear in the dropdown list."
                 )
                 return
             
@@ -2199,10 +2449,25 @@ class StationsSettingsDialog(QDialog):
                     message = f"A route exists between {from_station} and {to_station}.\n\n"
                     
                     if departure_time and valid_times:
+                        # Update time picker with suggestions
+                        self.departure_time_picker.suggest_times(valid_times)
+                        
                         nearest_time = self._find_nearest_valid_time(departure_time, valid_times)
                         if nearest_time:
                             message += f"The departure time {departure_time} may not be available.\n"
                             message += f"Try using {nearest_time} instead.\n\n"
+                            
+                            # Ask if user wants to use the suggested time
+                            reply = QMessageBox.question(
+                                self,
+                                "Route Available - Time Suggestion",
+                                f"{message}Would you like to use the suggested time {nearest_time}?",
+                                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                                QMessageBox.StandardButton.Yes
+                            )
+                            if reply == QMessageBox.StandardButton.Yes:
+                                self.departure_time_picker.set_time(nearest_time)
+                                return  # Exit early, user can try again with new time
                         
                         # Show some available times
                         if len(valid_times) > 0:
@@ -2224,22 +2489,70 @@ class StationsSettingsDialog(QDialog):
                     if departure_time:
                         valid_times = self._get_valid_departure_times(from_parsed, to_parsed)
                         if valid_times:
+                            # Update time picker with suggestions
+                            self.departure_time_picker.suggest_times(valid_times)
+                            
                             nearest_time = self._find_nearest_valid_time(departure_time, valid_times)
                             if nearest_time:
                                 error_msg = f"No route found for departure time {departure_time}.\n\nSuggested alternative: {nearest_time}"
+                                # Optionally set the suggested time
+                                reply = QMessageBox.question(
+                                    self,
+                                    "No Route Found - Time Suggestion",
+                                    f"{error_msg}\n\nWould you like to use the suggested time {nearest_time}?",
+                                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                                    QMessageBox.StandardButton.Yes
+                                )
+                                if reply == QMessageBox.StandardButton.Yes:
+                                    self.departure_time_picker.set_time(nearest_time)
+                                    return  # Exit early, user can try again with new time
                             else:
                                 times_str = ", ".join(valid_times[:5])  # Show first 5 times
                                 error_msg = f"No route found for departure time {departure_time}.\n\nAvailable departure times: {times_str}"
+                                QMessageBox.information(
+                                    self,
+                                    "No Route Found",
+                                    error_msg
+                                )
                         else:
-                            error_msg = f"No route found for departure time {departure_time}.\n\nNo service timetable data available for this route."
+                            # Even if no service timetable data, provide common suggested times
+                            common_times = ["06:00", "07:00", "08:00", "09:00", "10:00", "11:00",
+                                          "12:00", "13:00", "14:00", "15:00", "16:00", "17:00",
+                                          "18:00", "19:00", "20:00", "21:00", "22:00"]
+                            
+                            # Update time picker with common suggestions
+                            self.departure_time_picker.suggest_times(common_times)
+                            
+                            # Find nearest common time
+                            nearest_time = self._find_nearest_valid_time(departure_time, common_times)
+                            
+                            if nearest_time:
+                                error_msg = f"No route found for departure time {departure_time}.\n\nNo service timetable data available for this route.\n\nSuggested times to try: {', '.join(common_times[:8])}\n\nNearest suggestion: {nearest_time}"
+                                
+                                reply = QMessageBox.question(
+                                    self,
+                                    "No Route Found - Try Different Time",
+                                    f"{error_msg}\n\nWould you like to try {nearest_time}?",
+                                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                                    QMessageBox.StandardButton.Yes
+                                )
+                                if reply == QMessageBox.StandardButton.Yes:
+                                    self.departure_time_picker.set_time(nearest_time)
+                                    return  # Exit early, user can try again with new time
+                            else:
+                                error_msg = f"No route found for departure time {departure_time}.\n\nNo service timetable data available for this route.\n\nSuggested times to try: {', '.join(common_times[:8])}"
+                                QMessageBox.information(
+                                    self,
+                                    "No Route Found",
+                                    error_msg
+                                )
                     else:
                         error_msg = "No Route Found\n\nNo optimal route could be found between the selected stations.\n\nPlease check that both stations are valid and try again."
-                    
-                    QMessageBox.information(
-                        self,
-                        "No Route Found",
-                        error_msg
-                    )
+                        QMessageBox.information(
+                            self,
+                            "No Route Found",
+                            error_msg
+                        )
                 
         except Exception as e:
             print(f"❌ CRITICAL ERROR in find_fastest_route: {e}")
@@ -2264,9 +2577,9 @@ class StationsSettingsDialog(QDialog):
     def _find_fastest_direct_route(self, from_station: str, to_station: str) -> Optional[List[str]]:
         """Find the fastest direct route using actual railway service patterns and real stopping patterns."""
         try:
-            # Get station codes using enhanced lookup
-            from_code = self.api_get_station_code(from_station)
-            to_code = self.api_get_station_code(to_station)
+            # Get station codes using strict lookup for validation
+            from_code = self.api_get_station_code(from_station, strict_mode=True)
+            to_code = self.api_get_station_code(to_station, strict_mode=True)
             
             if not from_code or not to_code:
                 return None
@@ -2296,7 +2609,7 @@ class StationsSettingsDialog(QDialog):
             return None
     
     def _find_best_service_pattern_route(self, railway_line, from_code: str, to_code: str) -> Optional[List[str]]:
-        """Find the best service pattern route that serves both stations."""
+        """Find the best service pattern route that serves both stations with proper time ordering."""
         try:
             print(f"🔍 _find_best_service_pattern_route: from_code='{from_code}', to_code='{to_code}'")
             
@@ -2340,26 +2653,59 @@ class StationsSettingsDialog(QDialog):
                         to_idx = pattern_stations.index(to_code)
                         print(f"🔍 Station indices: from_idx={from_idx}, to_idx={to_idx}")
                         
-                        # Extract route between stations
+                        # Extract route between stations in correct direction
+                        # Always go from the user's specified from_station to to_station
                         if from_idx < to_idx:
+                            # Normal direction: from_station appears before to_station in the line
                             route_codes = pattern_stations[from_idx:to_idx + 1]
                             print(f"🔍 Forward route codes: {route_codes}")
                         else:
+                            # Reverse direction: from_station appears after to_station in the line
+                            # We need to get the stations from to_station to from_station, then reverse
                             route_codes = list(pattern_stations[to_idx:from_idx + 1])
-                            route_codes.reverse()
-                            print(f"🔍 Reverse route codes: {route_codes}")
+                            route_codes.reverse()  # Now we have from_station -> ... -> to_station
+                            print(f"🔍 Corrected reverse route codes: {route_codes}")
                         
-                        # Convert codes to names
-                        route_names = []
+                        # Convert codes to names and create route in user's requested direction
+                        route_with_times = []
                         for code in route_codes:
                             station = station_database.get_station_by_code(code)
-                            if station:
-                                route_names.append(station.name)
+                            if station and station.name:
+                                # Filter out line names that might have been included as stations
+                                if not self._is_line_name(station.name):
+                                    route_with_times.append({
+                                        'name': station.name,
+                                        'code': code,
+                                        'times': self._get_station_times(station, railway_line)
+                                    })
+                                else:
+                                    print(f"⚠️ Filtered out line name: {station.name}")
                             else:
                                 print(f"⚠️ Could not find station for code: {code}")
                         
+                        # Extract just the station names in the order we constructed them
+                        # Do NOT sort by geographical position as this would override our direction correction
+                        route_names = [station['name'] for station in route_with_times]
+                        
+                        # Ensure the route starts with from_station and ends with to_station
+                        if route_names:
+                            from_station_obj = station_database.get_station_by_code(from_code)
+                            to_station_obj = station_database.get_station_by_code(to_code)
+                            from_station_name = from_station_obj.name if from_station_obj else None
+                            to_station_name = to_station_obj.name if to_station_obj else None
+                            
+                            # Verify the route direction is correct
+                            if (from_station_name and to_station_name and
+                                len(route_names) >= 2 and
+                                route_names[0] != from_station_name):
+                                print(f"⚠️ Route direction incorrect: expected to start with {from_station_name}, got {route_names[0]}")
+                                # If the route is backwards, reverse it
+                                if route_names[-1] == from_station_name and route_names[0] == to_station_name:
+                                    route_names.reverse()
+                                    print(f"🔄 Reversed route to correct direction: {' → '.join(route_names)}")
+                        
                         if len(route_names) >= 2:
-                            print(f"✅ Found {pattern_name} service route: {' → '.join(route_names)}")
+                            print(f"✅ Found {pattern_name} service route (time-ordered): {' → '.join(route_names)}")
                             return route_names
                         else:
                             print(f"❌ Route too short: {route_names}")
@@ -2378,7 +2724,7 @@ class StationsSettingsDialog(QDialog):
             return None
     
     def _create_realistic_route(self, from_code: str, to_code: str, railway_line) -> Optional[List[str]]:
-        """Create a realistic route based on actual line geography and typical service patterns."""
+        """Create a realistic route based on actual line geography and typical service patterns with proper time ordering."""
         try:
             all_stations = railway_line.stations
             station_codes = [s.code for s in all_stations]
@@ -2394,13 +2740,48 @@ class StationsSettingsDialog(QDialog):
             if from_idx < to_idx:
                 route_stations = all_stations[from_idx:to_idx + 1]
             else:
-                route_stations = all_stations[to_idx:from_idx + 1]
-                route_stations.reverse()
+                # Reverse direction: from_station appears after to_station in the line
+                # We need to get the stations from to_station to from_station, then reverse
+                route_stations = list(all_stations[to_idx:from_idx + 1])
+                route_stations.reverse()  # Now we have from_station -> ... -> to_station
             
             # Create a realistic stopping pattern based on typical train services
             realistic_route = self._filter_to_realistic_stops(route_stations, railway_line)
             
-            return [station.name for station in realistic_route] if realistic_route else None
+            if not realistic_route:
+                return None
+            
+            # Create route in user's requested direction
+            route_with_times = []
+            for station in realistic_route:
+                if station and station.name and not self._is_line_name(station.name):
+                    route_with_times.append({
+                        'name': station.name,
+                        'code': station.code,
+                        'times': self._get_station_times(station, railway_line)
+                    })
+            
+            # Extract just the station names in the order we constructed them
+            # Do NOT sort by geographical position as this would override our direction correction
+            route_names = [station['name'] for station in route_with_times]
+            
+            # Ensure the route starts with from_station and ends with to_station
+            if route_names and len(route_names) >= 2:
+                from_station_obj = station_database.get_station_by_code(from_code)
+                to_station_obj = station_database.get_station_by_code(to_code)
+                from_station_name = from_station_obj.name if from_station_obj else None
+                to_station_name = to_station_obj.name if to_station_obj else None
+                
+                # Verify the route direction is correct
+                if (from_station_name and to_station_name and
+                    route_names[0] != from_station_name):
+                    print(f"⚠️ Route direction incorrect: expected to start with {from_station_name}, got {route_names[0]}")
+                    # If the route is backwards, reverse it
+                    if route_names[-1] == from_station_name and route_names[0] == to_station_name:
+                        route_names.reverse()
+                        print(f"🔄 Reversed route to correct direction: {' → '.join(route_names)}")
+            
+            return route_names if len(route_names) >= 2 else None
             
         except Exception as e:
             print(f"Error creating realistic route: {e}")
@@ -2589,12 +2970,77 @@ class StationsSettingsDialog(QDialog):
             print(f"Error creating smart route: {e}")
             return None
     
+    def _is_line_name(self, name: str) -> bool:
+        """Check if a name is a railway line name rather than a station name."""
+        line_indicators = [
+            'Main Line', 'Railway', 'Line', 'Network', 'Express', 'Metro',
+            'Coast', 'Valley', 'Branch', 'Junction Line', 'Circle'
+        ]
+        return any(indicator in name for indicator in line_indicators)
+    
+    def _get_station_times(self, station, railway_line) -> List[str]:
+        """Get departure times for a station from the railway line data."""
+        try:
+            # Look for the station in the railway line JSON data
+            line_file = station_database.lines_dir / railway_line.file
+            if not line_file.exists():
+                return []
+            
+            import json
+            with open(line_file, 'r', encoding='utf-8') as f:
+                line_data = json.load(f)
+            
+            # Find the station in the JSON data
+            for station_data in line_data.get('stations', []):
+                if station_data.get('code') == station.code:
+                    times_data = station_data.get('times', {})
+                    all_times = []
+                    # Collect all times from all periods
+                    for period, times in times_data.items():
+                        if isinstance(times, list):
+                            all_times.extend(times)
+                    return sorted(all_times)
+            
+            return []
+        except Exception as e:
+            print(f"Error getting station times: {e}")
+            return []
+    
+    def _sort_route_by_geographical_position(self, route_with_times: List[dict], railway_line) -> List[dict]:
+        """Sort route stations by their geographical position on the railway line, not by times."""
+        try:
+            # Get the original station order from the railway line
+            all_stations = railway_line.stations
+            station_position_map = {station.code: idx for idx, station in enumerate(all_stations)}
+            
+            # Sort by geographical position on the line
+            def get_position_key(station_info):
+                code = station_info.get('code', '')
+                return station_position_map.get(code, 9999)  # Unknown stations go to end
+            
+            sorted_route = sorted(route_with_times, key=get_position_key)
+            
+            # Debug output
+            print("🔍 Route sorting by geographical position:")
+            for station in sorted_route:
+                code = station.get('code', '')
+                position = station_position_map.get(code, 'Unknown')
+                times = station.get('times', [])
+                earliest = min(times) if times else "No times"
+                print(f"   {station['name']} ({code}): position {position}, earliest time {earliest}")
+            
+            return sorted_route
+            
+        except Exception as e:
+            print(f"Error sorting route by geographical position: {e}")
+            return route_with_times  # Return unsorted as fallback
+
     def _find_simple_direct_route_fallback(self, from_station: str, to_station: str) -> Optional[List[str]]:
         """Simple fallback for direct routes on the same line - optimized for fastest route."""
         try:
-            # Get station codes using enhanced lookup
-            from_code = self.api_get_station_code(from_station)
-            to_code = self.api_get_station_code(to_station)
+            # Get station codes using strict lookup for validation
+            from_code = self.api_get_station_code(from_station, strict_mode=True)
+            to_code = self.api_get_station_code(to_station, strict_mode=True)
             
             if not from_code or not to_code:
                 return None
@@ -2637,8 +3083,10 @@ class StationsSettingsDialog(QDialog):
                                 if from_idx < to_idx:
                                     route_codes = pattern_stations[from_idx:to_idx + 1]
                                 else:
+                                    # Reverse direction: from_station appears after to_station in the line
+                                    # We need to get the stations from to_station to from_station, then reverse
                                     route_codes = list(pattern_stations[to_idx:from_idx + 1])
-                                    route_codes.reverse()
+                                    route_codes.reverse()  # Now we have from_station -> ... -> to_station
                                 
                                 # Convert codes to names
                                 route_names = []
@@ -2646,6 +3094,22 @@ class StationsSettingsDialog(QDialog):
                                     station = station_database.get_station_by_code(code)
                                     if station:
                                         route_names.append(station.name)
+                                
+                                # Ensure the route direction is correct
+                                if route_names and len(route_names) >= 2:
+                                    from_station_obj = station_database.get_station_by_code(from_code)
+                                    to_station_obj = station_database.get_station_by_code(to_code)
+                                    from_station_name = from_station_obj.name if from_station_obj else None
+                                    to_station_name = to_station_obj.name if to_station_obj else None
+                                    
+                                    # Verify the route direction is correct
+                                    if (from_station_name and to_station_name and
+                                        route_names[0] != from_station_name):
+                                        print(f"⚠️ Route direction incorrect: expected to start with {from_station_name}, got {route_names[0]}")
+                                        # If the route is backwards, reverse it
+                                        if route_names[-1] == from_station_name and route_names[0] == to_station_name:
+                                            route_names.reverse()
+                                            print(f"🔄 Reversed route to correct direction: {' → '.join(route_names)}")
                                 
                                 return route_names if len(route_names) >= 2 else None
                                 
@@ -2659,8 +3123,8 @@ class StationsSettingsDialog(QDialog):
                         from_idx = station_codes.index(from_code)
                         to_idx = station_codes.index(to_code)
                         
-                        # For fastest route, only include origin and destination
-                        # This gives a direct connection without intermediate stops
+                        # Get the route between stations in correct direction
+                        # For fastest route, always use direct from_station -> to_station order
                         route_codes = [from_code, to_code]
                         
                         # Convert codes to names
@@ -2669,6 +3133,22 @@ class StationsSettingsDialog(QDialog):
                             station = station_database.get_station_by_code(code)
                             if station:
                                 route_names.append(station.name)
+                        
+                        # Ensure the route direction is correct (should already be correct for direct routes)
+                        if route_names and len(route_names) >= 2:
+                            from_station_obj = station_database.get_station_by_code(from_code)
+                            to_station_obj = station_database.get_station_by_code(to_code)
+                            from_station_name = from_station_obj.name if from_station_obj else None
+                            to_station_name = to_station_obj.name if to_station_obj else None
+                            
+                            # Verify the route direction is correct
+                            if (from_station_name and to_station_name and
+                                route_names[0] != from_station_name):
+                                print(f"⚠️ Direct route direction incorrect: expected to start with {from_station_name}, got {route_names[0]}")
+                                # For direct routes, this should not happen, but reverse if needed
+                                if route_names[-1] == from_station_name and route_names[0] == to_station_name:
+                                    route_names.reverse()
+                                    print(f"🔄 Reversed direct route to correct direction: {' → '.join(route_names)}")
                         
                         return route_names if len(route_names) >= 2 else None
                         
@@ -2686,8 +3166,8 @@ class StationsSettingsDialog(QDialog):
         try:
             valid_times = []
             
-            # Get station code using enhanced lookup
-            from_code = self.api_get_station_code(from_station)
+            # Get station code using strict lookup for validation
+            from_code = self.api_get_station_code(from_station, strict_mode=True)
             if not from_code:
                 return []
             
@@ -2806,7 +3286,7 @@ class StationsSettingsDialog(QDialog):
             to_parsed = station_database.parse_station_name(to_station)
             
             # Get departure time if specified
-            departure_time = self.departure_time_edit.text().strip() if hasattr(self, 'departure_time_edit') else None
+            departure_time = self.departure_time_picker.get_time() if hasattr(self, 'departure_time_picker') and not self.departure_time_picker.is_empty() else None
             departure_time = departure_time if departure_time else None
             
             # First try the station database manager's route finding
@@ -2938,8 +3418,15 @@ class StationsSettingsDialog(QDialog):
             print(f"   from_station: '{from_station}'")
             print(f"   to_station: '{to_station}'")
             
-            # Check if we have both from and to stations
-            has_both_stations = bool(from_station and to_station and from_station != to_station)
+            # Check if we have both from and to stations AND they can be found in the database
+            has_both_stations = False
+            if from_station and to_station and from_station != to_station:
+                # Additional check: verify both stations can be found in the database using strict mode
+                from_code = self.api_get_station_code(from_station, strict_mode=True)
+                to_code = self.api_get_station_code(to_station, strict_mode=True)
+                has_both_stations = bool(from_code and to_code)
+                print(f"   from_code: '{from_code}', to_code: '{to_code}'")
+            
             print(f"   has_both_stations: {has_both_stations}")
             
             if has_both_stations:
@@ -3077,8 +3564,8 @@ class StationsSettingsDialog(QDialog):
         
         # Load departure time if available
         if hasattr(self.config.stations, 'departure_time') and self.config.stations.departure_time:
-            if hasattr(self, 'departure_time_edit'):
-                self.departure_time_edit.setText(self.config.stations.departure_time)
+            if hasattr(self, 'departure_time_picker'):
+                self.departure_time_picker.set_time(self.config.stations.departure_time)
 
         # Display settings
         self.max_trains_spin.set_value(self.config.display.max_trains)
@@ -3111,7 +3598,7 @@ class StationsSettingsDialog(QDialog):
         ULTRA CRASH-PROOF VERSION - Prevents entire program crashes with maximum isolation.
         Every single operation is wrapped in multiple layers of try-except blocks.
         """
-        print("🚨🚨🚨 ULTRA CRASH-PROOF SAVE STARTING 🚨🚨🚨")
+        logger.debug("Starting ultra crash-proof save")
         
         # Layer 1: Outer protection against catastrophic failures
         try:
@@ -3171,10 +3658,10 @@ class StationsSettingsDialog(QDialog):
             
             # Collect departure time
             try:
-                if (hasattr(self, 'departure_time_edit') and
-                    self.departure_time_edit and
-                    hasattr(self.departure_time_edit, 'text')):
-                    raw_text = self.departure_time_edit.text()
+                if (hasattr(self, 'departure_time_picker') and
+                    self.departure_time_picker and
+                    True):
+                    raw_text = self.departure_time_picker.get_time()
                     if raw_text:
                         self._safe_departure_time = str(raw_text).strip()
             except Exception as time_error:
@@ -3511,7 +3998,7 @@ class StationsSettingsDialog(QDialog):
         ui_data['departure_station'] = self.from_name_edit.text().strip()
         ui_data['arrival_station'] = self.to_name_edit.text().strip()
         ui_data['via_stations'] = self.via_stations.copy() if hasattr(self, 'via_stations') else []
-        ui_data['departure_time'] = self.departure_time_edit.text().strip() if hasattr(self, 'departure_time_edit') else ''
+        ui_data['departure_time'] = self.departure_time_picker.get_time().strip() if hasattr(self, 'departure_time_picker') else ''
         ui_data['route_auto_fixed'] = getattr(self, 'route_auto_fixed', False)
         ui_data['max_results'] = self.max_trains_spin.value()
         ui_data['refresh_interval'] = self.time_window_spin.value()
@@ -3837,13 +4324,13 @@ class StationsSettingsDialog(QDialog):
         # Collect departure_time with extensive debugging
         print("🔍 Collecting departure_time...")
         try:
-            print(f"   hasattr(self, 'departure_time_edit'): {hasattr(self, 'departure_time_edit')}")
-            if hasattr(self, 'departure_time_edit'):
-                print(f"   self.departure_time_edit is not None: {self.departure_time_edit is not None}")
-                if self.departure_time_edit:
-                    print(f"   hasattr(self.departure_time_edit, 'text'): {hasattr(self.departure_time_edit, 'text')}")
-                    if hasattr(self.departure_time_edit, 'text'):
-                        raw_text = self.departure_time_edit.text()
+            print(f"   hasattr(self, 'departure_time_picker'): {hasattr(self, 'departure_time_picker')}")
+            if hasattr(self, 'departure_time_picker'):
+                print(f"   self.departure_time_picker is not None: {self.departure_time_picker is not None}")
+                if self.departure_time_picker:
+                    print(f"   True: {True}")
+                    if True:
+                        raw_text = self.departure_time_picker.get_time()
                         print(f"   raw text: {repr(raw_text)}")
                         ui_data['departure_time'] = str(raw_text).strip()
                         print(f"   ✅ departure_time: '{ui_data['departure_time']}'")
@@ -4302,8 +4789,8 @@ class StationsSettingsDialog(QDialog):
         
         # Collect departure_time
         try:
-            if hasattr(self, 'departure_time_edit') and self.departure_time_edit and hasattr(self.departure_time_edit, 'text'):
-                ui_data['departure_time'] = str(self.departure_time_edit.text()).strip()
+            if hasattr(self, 'departure_time_picker') and self.departure_time_picker and True:
+                ui_data['departure_time'] = str(self.departure_time_picker.get_time()).strip()
                 print(f"✓ departure_time: '{ui_data['departure_time']}'")
         except Exception as e:
             print(f"⚠ Error getting departure_time: {e}")

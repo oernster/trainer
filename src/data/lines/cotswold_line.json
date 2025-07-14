@@ -3,7 +3,7 @@
     "line_name": "Cotswold Line",
     "description": "Oxford to Worcester and Hereford",
     "operator": "Great Western Railway",
-    "total_stations": 14,
+    "total_stations": 15,
     "frequency": {
       "weekday_peak": "Every hour",
       "weekday_off_peak": "Every 2 hours",
@@ -14,7 +14,6 @@
   "stations": [
     {
       "name": "Oxford",
-      "code": "OXF",
       "coordinates": {
         "lat": 51.7531,
         "lng": -1.2699
@@ -44,7 +43,6 @@
     },
     {
       "name": "Hanborough",
-      "code": "HND",
       "coordinates": {
         "lat": 51.8231,
         "lng": -1.3731
@@ -71,7 +69,6 @@
     },
     {
       "name": "Charlbury",
-      "code": "CBY",
       "coordinates": {
         "lat": 51.8731,
         "lng": -1.4831
@@ -98,7 +95,6 @@
     },
     {
       "name": "Kingham",
-      "code": "KGM",
       "coordinates": {
         "lat": 51.9031,
         "lng": -1.6331
@@ -125,7 +121,6 @@
     },
     {
       "name": "Moreton-in-Marsh",
-      "code": "MIM",
       "coordinates": {
         "lat": 51.9931,
         "lng": -1.7031
@@ -152,7 +147,6 @@
     },
     {
       "name": "Honeybourne",
-      "code": "HYB",
       "coordinates": {
         "lat": 52.0981,
         "lng": -1.8331
@@ -179,7 +173,6 @@
     },
     {
       "name": "Evesham",
-      "code": "EVE",
       "coordinates": {
         "lat": 52.0931,
         "lng": -1.9431
@@ -206,7 +199,6 @@
     },
     {
       "name": "Pershore",
-      "code": "PSH",
       "coordinates": {
         "lat": 52.1431,
         "lng": -2.0731
@@ -233,7 +225,6 @@
     },
     {
       "name": "Worcester Shrub Hill",
-      "code": "WOS",
       "coordinates": {
         "lat": 52.1931,
         "lng": -2.2131
@@ -262,7 +253,6 @@
     },
     {
       "name": "Worcester Foregate Street",
-      "code": "WOF",
       "coordinates": {
         "lat": 52.1931,
         "lng": -2.2231
@@ -291,7 +281,6 @@
     },
     {
       "name": "Malvern Link",
-      "code": "MVL",
       "coordinates": {
         "lat": 52.1231,
         "lng": -2.3231
@@ -318,7 +307,6 @@
     },
     {
       "name": "Great Malvern",
-      "code": "GMV",
       "coordinates": {
         "lat": 52.1131,
         "lng": -2.3331
@@ -345,7 +333,6 @@
     },
     {
       "name": "Colwall",
-      "code": "CWL",
       "coordinates": {
         "lat": 52.0831,
         "lng": -2.3631
@@ -372,7 +359,6 @@
     },
     {
       "name": "Ledbury",
-      "code": "LED",
       "coordinates": {
         "lat": 52.0431,
         "lng": -2.4231
@@ -399,7 +385,6 @@
     },
     {
       "name": "Hereford",
-      "code": "HFD",
       "coordinates": {
         "lat": 52.0531,
         "lng": -2.7131
@@ -427,5 +412,26 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations"
+    },
+    "semi_fast": {
+      "stations": [
+        "OXF",
+        "HND",
+        "KGM",
+        "HYB",
+        "EVE",
+        "WOS",
+        "MVL",
+        "GMV",
+        "LED",
+        "HFD"
+      ],
+      "description": "Semi-fast service calling at major stations"
+    }
+  }
 }

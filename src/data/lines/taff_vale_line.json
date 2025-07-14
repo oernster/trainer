@@ -1,0 +1,150 @@
+{
+  "metadata": {
+    "line_name": "Taff Vale Line",
+    "description": "Cardiff Central to Treherbert via Pontypridd",
+    "operator": "Transport for Wales",
+    "total_stations": 18,
+    "line_color": "#D2001F"
+  },
+  "stations": [
+    {
+      "name": "Cardiff Central",
+      "coordinates": {
+        "lat": 51.4756,
+        "lng": -3.1756
+      }
+    },
+    {
+      "name": "Cardiff Queen Street",
+      "coordinates": {
+        "lat": 51.4806,
+        "lng": -3.1656
+      }
+    },
+    {
+      "name": "Llandaf",
+      "coordinates": {
+        "lat": 51.5006,
+        "lng": -3.2156
+      }
+    },
+    {
+      "name": "Radyr",
+      "coordinates": {
+        "lat": 51.5206,
+        "lng": -3.2556
+      }
+    },
+    {
+      "name": "Taffs Well",
+      "coordinates": {
+        "lat": 51.5406,
+        "lng": -3.2956
+      }
+    },
+    {
+      "name": "Treforest",
+      "coordinates": {
+        "lat": 51.5606,
+        "lng": -3.3356
+      }
+    },
+    {
+      "name": "Treforest Estate",
+      "coordinates": {
+        "lat": 51.5706,
+        "lng": -3.3456
+      }
+    },
+    {
+      "name": "Pontypridd",
+      "coordinates": {
+        "lat": 51.6006,
+        "lng": -3.3456
+      }
+    },
+    {
+      "name": "Trehafod",
+      "coordinates": {
+        "lat": 51.6206,
+        "lng": -3.3656
+      }
+    },
+    {
+      "name": "Porth",
+      "coordinates": {
+        "lat": 51.6406,
+        "lng": -3.4056
+      }
+    },
+    {
+      "name": "Trealaw",
+      "coordinates": {
+        "lat": 51.6506,
+        "lng": -3.4256
+      }
+    },
+    {
+      "name": "Tonypandy",
+      "coordinates": {
+        "lat": 51.6606,
+        "lng": -3.4456
+      }
+    },
+    {
+      "name": "Llwynypia",
+      "coordinates": {
+        "lat": 51.6706,
+        "lng": -3.4656
+      }
+    },
+    {
+      "name": "Ystrad Rhondda",
+      "coordinates": {
+        "lat": 51.6906,
+        "lng": -3.5056
+      }
+    },
+    {
+      "name": "Ton Pentre",
+      "coordinates": {
+        "lat": 51.7006,
+        "lng": -3.5256
+      }
+    },
+    {
+      "name": "Treorchy",
+      "coordinates": {
+        "lat": 51.7106,
+        "lng": -3.5456
+      }
+    },
+    {
+      "name": "Ynyswen",
+      "coordinates": {
+        "lat": 51.7156,
+        "lng": -3.5556
+      }
+    },
+    {
+      "name": "Treherbert",
+      "coordinates": {
+        "lat": 51.7206,
+        "lng": -3.5656
+      }
+    }
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Local service through Taff Vale",
+      "service_type": "stopping",
+      "typical_journey_time": 60,
+      "frequency": "Every 30 minutes"
+    }
+  },
+  "typical_journey_times": {
+    "CDF-TRB": 60,
+    "TRB-CDF": 60
+  }
+}

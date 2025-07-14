@@ -82,7 +82,6 @@ from version import (
     __copyright__,
 )
 
-
 def cleanup_ultra_early_lock():
     """Clean up the ultra-early lock file."""
     global _ultra_early_lock_file
@@ -92,6 +91,146 @@ def cleanup_ultra_early_lock():
         except Exception as e:
             print(f"Warning: Failed to remove ultra-early lock file: {e}")
 
+def cleanup_application_resources():
+    """Comprehensive cleanup of all application resources to prevent hanging processes."""
+    try:
+        print("🧹 Starting comprehensive application cleanup...")
+        
+        # Get the current QApplication instance
+        app = QApplication.instance()
+        if app:
+            # Clean up shared memory if it's our SingleInstanceApplication
+            try:
+                if isinstance(app, SingleInstanceApplication):
+                    app.cleanup_shared_memory()
+            except RuntimeError as runtime_error:
+                print(f"⚠️ Qt runtime error during shared memory cleanup: {runtime_error}")
+            except Exception as shared_memory_error:
+                print(f"⚠️ Error cleaning up shared memory: {shared_memory_error}")
+            
+            # Stop all timers with enhanced error handling
+            try:
+                timers_stopped = 0
+                for obj in app.findChildren(QTimer):
+                    try:
+                        if obj.isActive():
+                            obj.stop()
+                            timers_stopped += 1
+                            print(f"✅ Stopped QTimer: {obj.objectName() or 'unnamed'}")
+                    except RuntimeError as timer_runtime_error:
+                        print(f"⚠️ Qt runtime error stopping timer: {timer_runtime_error}")
+                    except Exception as individual_timer_error:
+                        print(f"⚠️ Error stopping individual timer: {individual_timer_error}")
+                
+                if timers_stopped == 0:
+                    print("ℹ️ No active timers found to stop")
+                else:
+                    print(f"✅ Stopped {timers_stopped} active timers")
+                    
+            except Exception as timer_error:
+                print(f"⚠️ Error during timer cleanup: {timer_error}")
+            
+            # Process any remaining events with timeout protection
+            try:
+                # Process events with a reasonable timeout
+                import time
+                start_time = time.time()
+                timeout = 2.0  # 2 second timeout
+                
+                # Process events in batches with timeout
+                while (time.time() - start_time) < timeout:
+                    app.processEvents()
+                    # Small delay to prevent busy waiting
+                    time.sleep(0.01)
+                    # Break if we've processed for a reasonable time
+                    if (time.time() - start_time) > 0.5:  # Process for at most 0.5 seconds
+                        break
+                
+                print("✅ Processed remaining events")
+                    
+            except RuntimeError as events_runtime_error:
+                print(f"⚠️ Qt runtime error processing events: {events_runtime_error}")
+            except Exception as events_error:
+                print(f"⚠️ Error processing events: {events_error}")
+            
+            # Quit the application properly with enhanced error handling
+            try:
+                # Check if app is still valid before calling quit
+                if app and not app.closingDown():
+                    app.quit()
+                    print("✅ Application quit called")
+                else:
+                    print("ℹ️ Application already closing down")
+            except RuntimeError as quit_runtime_error:
+                print(f"⚠️ Qt runtime error during app.quit(): {quit_runtime_error}")
+            except Exception as quit_error:
+                print(f"⚠️ Error calling app.quit(): {quit_error}")
+        else:
+            print("ℹ️ No QApplication instance found")
+        
+        # Clean up any remaining threads (focus on non-daemon threads only)
+        try:
+            import threading
+            import time
+            
+            active_threads = threading.active_count()
+            if active_threads > 1:  # Main thread + others
+                # Separate daemon and non-daemon threads
+                non_daemon_threads = []
+                daemon_count = 0
+                
+                for thread in threading.enumerate():
+                    if thread != threading.current_thread():
+                        if thread.daemon:
+                            daemon_count += 1
+                        else:
+                            non_daemon_threads.append(thread)
+                
+                # Only handle non-daemon threads (these can prevent shutdown)
+                if non_daemon_threads:
+                    print(f"🔄 Gracefully stopping {len(non_daemon_threads)} non-daemon threads...")
+                    for thread in non_daemon_threads:
+                        try:
+                            thread.join(timeout=1.0)
+                            if thread.is_alive():
+                                print(f"⚠️ Non-daemon thread {thread.name} did not terminate gracefully")
+                            else:
+                                print(f"✅ Non-daemon thread {thread.name} terminated")
+                        except Exception as join_error:
+                            print(f"⚠️ Error joining thread {thread.name}: {join_error}")
+                
+                # Daemon threads are handled silently (they don't prevent shutdown)
+                # No need to actively terminate daemon threads as they won't block shutdown
+                if daemon_count > 0:
+                    pass  # Daemon threads will be cleaned up automatically on exit
+                
+                # Brief pause for cleanup
+                time.sleep(0.2)
+                
+                # Final check - only warn about non-daemon threads
+                final_non_daemon = []
+                for thread in threading.enumerate():
+                    if thread != threading.current_thread() and not thread.daemon:
+                        final_non_daemon.append(thread)
+                
+                if final_non_daemon:
+                    print(f"⚠️ {len(final_non_daemon)} non-daemon threads still active after cleanup")
+                    for thread in final_non_daemon:
+                        print(f"  - Active thread: {thread.name} (alive: {thread.is_alive()})")
+                else:
+                    print("✅ All critical threads cleaned up successfully")
+            else:
+                print("✅ No background threads to clean up")
+                
+        except Exception as thread_error:
+            print(f"⚠️ Error during thread cleanup: {thread_error}")
+        
+        print("✅ Comprehensive application cleanup completed")
+        
+    except Exception as cleanup_error:
+        print(f"❌ Unexpected error during comprehensive cleanup: {cleanup_error}")
+        import traceback
+        traceback.print_exc()
 
 def setup_logging():
     """Setup application logging with file and console output."""
@@ -120,7 +259,6 @@ def setup_logging():
     logging.getLogger("src.api").setLevel(logging.INFO)
     logging.getLogger("src.ui").setLevel(logging.INFO)
     logging.getLogger("src.managers").setLevel(logging.INFO)
-
 
 def setup_application_icon(app: QApplication):
     """
@@ -161,7 +299,6 @@ def setup_application_icon(app: QApplication):
     except Exception as e:
         logging.warning(f"Failed to create emoji icon, using default: {e}")
 
-
 def connect_signals(window: MainWindow, train_manager: TrainManager):
     """
     Connect signals between main window and train manager.
@@ -190,7 +327,6 @@ def connect_signals(window: MainWindow, train_manager: TrainManager):
     # Auto-refresh functionality removed
 
     logging.info("Signals connected between main window and train manager")
-
 
 class SingleInstanceApplication(QApplication):
     """QApplication subclass that enforces single instance with dual protection."""
@@ -225,7 +361,38 @@ class SingleInstanceApplication(QApplication):
             sys.exit(1)
         
         print("Qt singleton check passed - application starting normally.")
-
+    
+    def cleanup_shared_memory(self):
+        """Clean up shared memory segment with enhanced error handling."""
+        try:
+            if hasattr(self, 'shared_memory') and self.shared_memory:
+                try:
+                    if self.shared_memory.isAttached():
+                        self.shared_memory.detach()
+                        print("✅ Shared memory detached successfully")
+                    else:
+                        print("ℹ️ Shared memory was not attached")
+                except RuntimeError as runtime_error:
+                    # Handle Qt runtime errors gracefully
+                    print(f"⚠️ Qt runtime error during shared memory cleanup: {runtime_error}")
+                except Exception as shared_error:
+                    print(f"⚠️ Error detaching shared memory: {shared_error}")
+                
+                # Additional cleanup - try to destroy the shared memory segment
+                try:
+                    # This helps prevent stale shared memory segments
+                    if hasattr(self.shared_memory, 'key') and self.shared_memory.key():
+                        print(f"ℹ️ Shared memory key was: {self.shared_memory.key()}")
+                except Exception as key_error:
+                    print(f"⚠️ Error getting shared memory key: {key_error}")
+                
+                # Clear the reference
+                self.shared_memory = None
+                print("✅ Shared memory reference cleared")
+            else:
+                print("ℹ️ No shared memory to clean up")
+        except Exception as e:
+            print(f"⚠️ Unexpected error during shared memory cleanup: {e}")
 
 def main():
     """Main application entry point."""
@@ -268,11 +435,10 @@ def main():
 
             # Install default config to AppData if needed
             if config_manager.install_default_config_to_appdata():
-                logger.info("Default configuration installed to AppData")
+                logger.debug("Default configuration installed to AppData")
 
             # Load configuration
             config = config_manager.load_config()
-            logger.info(f"Configuration loaded from: {config_manager.config_path}")
 
             # Create main window with shared config manager (but don't show it yet)
             splash.show_message("Creating main window...")
@@ -283,8 +449,6 @@ def main():
             # Initialize train manager (now works offline without API)
             splash.show_message("Initializing train manager...")
             app.processEvents()
-            
-            logger.info("Starting in offline mode - API credentials not required")
 
             # Create train manager with updated config
             train_manager = TrainManager(config)
@@ -295,7 +459,7 @@ def main():
                 getattr(config.stations, 'from_code', None) and
                 getattr(config.stations, 'to_code', None)):
                 train_manager.set_route(config.stations.from_code, config.stations.to_code)
-                logger.info(f"Route configured: {config.stations.from_name} ({config.stations.from_code}) -> {config.stations.to_name} ({config.stations.to_code})")
+                logger.debug(f"Route configured: {config.stations.from_name} ({config.stations.from_code}) -> {config.stations.to_name} ({config.stations.to_code})")
             else:
                 logger.info("No valid station configuration found - train list will be empty until stations are configured")
 
@@ -319,8 +483,7 @@ def main():
                 app.processEvents()
                 # Single train data fetch after widgets are ready
                 train_manager.fetch_trains()
-                logger.info("Train data fetched after widget initialization")
-                
+
                 # Connect to train data completion to show window
                 def on_train_data_ready():
                     splash.show_message("Ready!")
@@ -331,7 +494,7 @@ def main():
                     window.raise_()
                     window.activateWindow()
                     splash.close()
-                    logger.info("Main window shown and focused after full initialization")
+                    
                     # Disconnect the signal to prevent multiple calls
                     train_manager.trains_updated.disconnect(on_train_data_ready)
                 
@@ -341,7 +504,7 @@ def main():
             # Use proper signaling instead of timers
             if window.initialization_manager:
                 window.initialization_manager.initialization_completed.connect(on_widgets_ready)
-                logger.info("Train data fetch and window display scheduled with initialization manager")
+                
             else:
                 # Fallback if initialization manager not available - still use signals
                 def fallback_startup():
@@ -357,18 +520,18 @@ def main():
                     train_manager.trains_updated.connect(on_fallback_train_data)
                 
                 QTimer.singleShot(1000, fallback_startup)
-                logger.info("Train data fetch and window display scheduled with fallback signaling")
 
             # Don't show main window immediately - wait for initialization to complete
             # The window will be shown by the on_widgets_ready callback
 
-            logger.info("Application initialized successfully")
+            print("🚀 Trainer initialized successfully")
 
             # Start event loop
             exit_code = app.exec()
 
-            # Cleanup
+            # Comprehensive cleanup before exit
             logger.info(f"Application exiting with code {exit_code}")
+            cleanup_application_resources()
             sys.exit(exit_code)
 
         except ConfigurationError as e:
@@ -388,7 +551,6 @@ def main():
     finally:
         # Always cleanup the ultra-early lock file
         cleanup_ultra_early_lock()
-
 
 if __name__ == "__main__":
     main()

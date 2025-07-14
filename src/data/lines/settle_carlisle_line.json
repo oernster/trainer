@@ -14,195 +14,471 @@
   "stations": [
     {
       "name": "Leeds",
-      "code": "LDS",
-      "coordinates": {"lat": 53.7944, "lng": -1.5481},
-      "interchange": ["East Coast Main Line", "TransPennine Express", "Cross Country Line"],
+      "coordinates": {
+        "lat": 53.7944,
+        "lng": -1.5481
+      },
+      "interchange": [
+        "East Coast Main Line",
+        "TransPennine Express",
+        "Cross Country Line"
+      ],
       "times": {
-        "morning": ["06:00", "08:00", "10:00"],
-        "afternoon": ["12:00", "14:00", "16:00"],
-        "evening": ["18:00", "20:00", "22:00"],
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
         "night": []
       }
     },
     {
       "name": "Shipley",
-      "code": "SHY",
-      "coordinates": {"lat": 53.8344, "lng": -1.7681},
-      "interchange": ["Airedale Line", "Wharfedale Line"],
+      "coordinates": {
+        "lat": 53.8344,
+        "lng": -1.7681
+      },
+      "interchange": [
+        "Airedale Line",
+        "Wharfedale Line"
+      ],
       "times": {
-        "morning": ["06:15", "08:15", "10:15"],
-        "afternoon": ["12:15", "14:15", "16:15"],
-        "evening": ["18:15", "20:15", "22:15"],
+        "morning": [
+          "06:15",
+          "08:15",
+          "10:15"
+        ],
+        "afternoon": [
+          "12:15",
+          "14:15",
+          "16:15"
+        ],
+        "evening": [
+          "18:15",
+          "20:15",
+          "22:15"
+        ],
         "night": []
       }
     },
     {
       "name": "Keighley",
-      "code": "KEI",
-      "coordinates": {"lat": 53.8681, "lng": -1.9031},
-      "interchange": ["Keighley and Worth Valley Railway"],
+      "coordinates": {
+        "lat": 53.8681,
+        "lng": -1.9031
+      },
+      "interchange": [
+        "Keighley and Worth Valley Railway"
+      ],
       "times": {
-        "morning": ["06:25", "08:25", "10:25"],
-        "afternoon": ["12:25", "14:25", "16:25"],
-        "evening": ["18:25", "20:25", "22:25"],
+        "morning": [
+          "06:25",
+          "08:25",
+          "10:25"
+        ],
+        "afternoon": [
+          "12:25",
+          "14:25",
+          "16:25"
+        ],
+        "evening": [
+          "18:25",
+          "20:25",
+          "22:25"
+        ],
         "night": []
       }
     },
     {
       "name": "Skipton",
-      "code": "SKI",
-      "coordinates": {"lat": 53.9581, "lng": -2.0181},
-      "interchange": ["Airedale Line"],
+      "coordinates": {
+        "lat": 53.9581,
+        "lng": -2.0181
+      },
+      "interchange": [
+        "Airedale Line"
+      ],
       "times": {
-        "morning": ["06:35", "08:35", "10:35"],
-        "afternoon": ["12:35", "14:35", "16:35"],
-        "evening": ["18:35", "20:35", "22:35"],
+        "morning": [
+          "06:35",
+          "08:35",
+          "10:35"
+        ],
+        "afternoon": [
+          "12:35",
+          "14:35",
+          "16:35"
+        ],
+        "evening": [
+          "18:35",
+          "20:35",
+          "22:35"
+        ],
         "night": []
       }
     },
     {
       "name": "Gargrave",
-      "code": "GGV",
-      "coordinates": {"lat": 53.9981, "lng": -2.1081},
+      "coordinates": {
+        "lat": 53.9981,
+        "lng": -2.1081
+      },
       "interchange": [],
       "times": {
-        "morning": ["06:45", "08:45", "10:45"],
-        "afternoon": ["12:45", "14:45", "16:45"],
-        "evening": ["18:45", "20:45", "22:45"],
+        "morning": [
+          "06:45",
+          "08:45",
+          "10:45"
+        ],
+        "afternoon": [
+          "12:45",
+          "14:45",
+          "16:45"
+        ],
+        "evening": [
+          "18:45",
+          "20:45",
+          "22:45"
+        ],
         "night": []
       }
     },
     {
       "name": "Hellifield",
-      "code": "HLD",
-      "coordinates": {"lat": 54.0081, "lng": -2.2181},
-      "interchange": ["Bentham Line"],
+      "coordinates": {
+        "lat": 54.0081,
+        "lng": -2.2181
+      },
+      "interchange": [
+        "Bentham Line"
+      ],
       "times": {
-        "morning": ["06:55", "08:55", "10:55"],
-        "afternoon": ["12:55", "14:55", "16:55"],
-        "evening": ["18:55", "20:55", "22:55"],
+        "morning": [
+          "06:55",
+          "08:55",
+          "10:55"
+        ],
+        "afternoon": [
+          "12:55",
+          "14:55",
+          "16:55"
+        ],
+        "evening": [
+          "18:55",
+          "20:55",
+          "22:55"
+        ],
         "night": []
       }
     },
     {
       "name": "Long Preston",
-      "code": "LPR",
-      "coordinates": {"lat": 54.0231, "lng": -2.2481},
+      "coordinates": {
+        "lat": 54.0231,
+        "lng": -2.2481
+      },
       "interchange": [],
       "times": {
-        "morning": ["07:00", "09:00", "11:00"],
-        "afternoon": ["13:00", "15:00", "17:00"],
-        "evening": ["19:00", "21:00", "23:00"],
+        "morning": [
+          "07:00",
+          "09:00",
+          "11:00"
+        ],
+        "afternoon": [
+          "13:00",
+          "15:00",
+          "17:00"
+        ],
+        "evening": [
+          "19:00",
+          "21:00",
+          "23:00"
+        ],
         "night": []
       }
     },
     {
       "name": "Settle",
-      "code": "SET",
-      "coordinates": {"lat": 54.0681, "lng": -2.2781},
+      "coordinates": {
+        "lat": 54.0681,
+        "lng": -2.2781
+      },
       "interchange": [],
       "times": {
-        "morning": ["07:05", "09:05", "11:05"],
-        "afternoon": ["13:05", "15:05", "17:05"],
-        "evening": ["19:05", "21:05", "23:05"],
+        "morning": [
+          "07:05",
+          "09:05",
+          "11:05"
+        ],
+        "afternoon": [
+          "13:05",
+          "15:05",
+          "17:05"
+        ],
+        "evening": [
+          "19:05",
+          "21:05",
+          "23:05"
+        ],
         "night": []
       }
     },
     {
       "name": "Horton-in-Ribblesdale",
-      "code": "HIR",
-      "coordinates": {"lat": 54.1481, "lng": -2.3031},
+      "coordinates": {
+        "lat": 54.1481,
+        "lng": -2.3031
+      },
       "interchange": [],
       "times": {
-        "morning": ["07:15", "09:15", "11:15"],
-        "afternoon": ["13:15", "15:15", "17:15"],
-        "evening": ["19:15", "21:15", "23:15"],
+        "morning": [
+          "07:15",
+          "09:15",
+          "11:15"
+        ],
+        "afternoon": [
+          "13:15",
+          "15:15",
+          "17:15"
+        ],
+        "evening": [
+          "19:15",
+          "21:15",
+          "23:15"
+        ],
         "night": []
       }
     },
     {
       "name": "Ribblehead",
-      "code": "RHD",
-      "coordinates": {"lat": 54.2081, "lng": -2.3631},
+      "coordinates": {
+        "lat": 54.2081,
+        "lng": -2.3631
+      },
       "interchange": [],
       "times": {
-        "morning": ["07:25", "09:25", "11:25"],
-        "afternoon": ["13:25", "15:25", "17:25"],
-        "evening": ["19:25", "21:25", "23:25"],
+        "morning": [
+          "07:25",
+          "09:25",
+          "11:25"
+        ],
+        "afternoon": [
+          "13:25",
+          "15:25",
+          "17:25"
+        ],
+        "evening": [
+          "19:25",
+          "21:25",
+          "23:25"
+        ],
         "night": []
       }
     },
     {
       "name": "Dent",
-      "code": "DNT",
-      "coordinates": {"lat": 54.2781, "lng": -2.3981},
+      "coordinates": {
+        "lat": 54.2781,
+        "lng": -2.3981
+      },
       "interchange": [],
       "times": {
-        "morning": ["07:35", "09:35", "11:35"],
-        "afternoon": ["13:35", "15:35", "17:35"],
-        "evening": ["19:35", "21:35", "23:35"],
+        "morning": [
+          "07:35",
+          "09:35",
+          "11:35"
+        ],
+        "afternoon": [
+          "13:35",
+          "15:35",
+          "17:35"
+        ],
+        "evening": [
+          "19:35",
+          "21:35",
+          "23:35"
+        ],
         "night": []
       }
     },
     {
       "name": "Garsdale",
-      "code": "GSD",
-      "coordinates": {"lat": 54.3231, "lng": -2.3331},
+      "coordinates": {
+        "lat": 54.3231,
+        "lng": -2.3331
+      },
       "interchange": [],
       "times": {
-        "morning": ["07:45", "09:45", "11:45"],
-        "afternoon": ["13:45", "15:45", "17:45"],
-        "evening": ["19:45", "21:45", "23:45"],
+        "morning": [
+          "07:45",
+          "09:45",
+          "11:45"
+        ],
+        "afternoon": [
+          "13:45",
+          "15:45",
+          "17:45"
+        ],
+        "evening": [
+          "19:45",
+          "21:45",
+          "23:45"
+        ],
         "night": []
       }
     },
     {
       "name": "Kirkby Stephen",
-      "code": "KSW",
-      "coordinates": {"lat": 54.4731, "lng": -2.3731},
+      "coordinates": {
+        "lat": 54.4731,
+        "lng": -2.3731
+      },
       "interchange": [],
       "times": {
-        "morning": ["07:55", "09:55", "11:55"],
-        "afternoon": ["13:55", "15:55", "17:55"],
-        "evening": ["19:55", "21:55", "23:55"],
+        "morning": [
+          "07:55",
+          "09:55",
+          "11:55"
+        ],
+        "afternoon": [
+          "13:55",
+          "15:55",
+          "17:55"
+        ],
+        "evening": [
+          "19:55",
+          "21:55",
+          "23:55"
+        ],
         "night": []
       }
     },
     {
       "name": "Appleby",
-      "code": "APP",
-      "coordinates": {"lat": 54.5781, "lng": -2.4881},
+      "coordinates": {
+        "lat": 54.5781,
+        "lng": -2.4881
+      },
       "interchange": [],
       "times": {
-        "morning": ["08:10", "10:10", "12:10"],
-        "afternoon": ["14:10", "16:10", "18:10"],
-        "evening": ["20:10", "22:10", "00:10"],
+        "morning": [
+          "08:10",
+          "10:10",
+          "12:10"
+        ],
+        "afternoon": [
+          "14:10",
+          "16:10",
+          "18:10"
+        ],
+        "evening": [
+          "20:10",
+          "22:10",
+          "00:10"
+        ],
         "night": []
       }
     },
     {
       "name": "Langwathby",
-      "code": "LGW",
-      "coordinates": {"lat": 54.6981, "lng": -2.6681},
+      "coordinates": {
+        "lat": 54.6981,
+        "lng": -2.6681
+      },
       "interchange": [],
       "times": {
-        "morning": ["08:25", "10:25", "12:25"],
-        "afternoon": ["14:25", "16:25", "18:25"],
-        "evening": ["20:25", "22:25", "00:25"],
+        "morning": [
+          "08:25",
+          "10:25",
+          "12:25"
+        ],
+        "afternoon": [
+          "14:25",
+          "16:25",
+          "18:25"
+        ],
+        "evening": [
+          "20:25",
+          "22:25",
+          "00:25"
+        ],
         "night": []
       }
     },
     {
       "name": "Carlisle",
-      "code": "CAR",
-      "coordinates": {"lat": 54.8881, "lng": -2.9331},
-      "interchange": ["West Coast Main Line", "Tyne Valley Line", "Cumbrian Coast Line"],
+      "coordinates": {
+        "lat": 54.8881,
+        "lng": -2.9331
+      },
+      "interchange": [
+        "West Coast Main Line",
+        "Tyne Valley Line",
+        "Cumbrian Coast Line"
+      ],
       "times": {
-        "morning": ["08:45", "10:45", "12:45"],
-        "afternoon": ["14:45", "16:45", "18:45"],
-        "evening": ["20:45", "22:45", "00:45"],
+        "morning": [
+          "08:45",
+          "10:45",
+          "12:45"
+        ],
+        "afternoon": [
+          "14:45",
+          "16:45",
+          "18:45"
+        ],
+        "evening": [
+          "20:45",
+          "22:45",
+          "00:45"
+        ],
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations"
+    },
+    "semi_fast": {
+      "stations": [
+        "LDS",
+        "SHY",
+        "SKI",
+        "GGV",
+        "LPR",
+        "HIR",
+        "RHD",
+        "GSD",
+        "KSW",
+        "LGW",
+        "CAR"
+      ],
+      "description": "Semi-fast service calling at major stations"
+    },
+    "fast": {
+      "stations": [
+        "LDS",
+        "KEI",
+        "GGV",
+        "LPR",
+        "RHD",
+        "GSD",
+        "APP",
+        "CAR"
+      ],
+      "description": "Fast service calling at principal stations"
+    }
+  }
 }

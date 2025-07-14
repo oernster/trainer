@@ -14,7 +14,6 @@
   "stations": [
     {
       "name": "Perth",
-      "code": "PTH",
       "coordinates": {
         "lat": 56.3919,
         "lng": -3.4381
@@ -43,7 +42,6 @@
     },
     {
       "name": "Dunkeld & Birnam",
-      "code": "DKD",
       "coordinates": {
         "lat": 56.5581,
         "lng": -3.5831
@@ -70,7 +68,6 @@
     },
     {
       "name": "Pitlochry",
-      "code": "PIT",
       "coordinates": {
         "lat": 56.7031,
         "lng": -3.7331
@@ -97,7 +94,6 @@
     },
     {
       "name": "Blair Atholl",
-      "code": "BL1",
       "coordinates": {
         "lat": 56.7731,
         "lng": -3.8531
@@ -124,7 +120,6 @@
     },
     {
       "name": "Dalwhinnie",
-      "code": "DLW",
       "coordinates": {
         "lat": 56.9381,
         "lng": -4.2481
@@ -151,7 +146,6 @@
     },
     {
       "name": "Newtonmore",
-      "code": "NWR",
       "coordinates": {
         "lat": 57.0631,
         "lng": -4.1231
@@ -178,7 +172,6 @@
     },
     {
       "name": "Kingussie",
-      "code": "KGS",
       "coordinates": {
         "lat": 57.0781,
         "lng": -4.0531
@@ -205,7 +198,6 @@
     },
     {
       "name": "Aviemore",
-      "code": "AVM",
       "coordinates": {
         "lat": 57.1931,
         "lng": -3.8281
@@ -234,7 +226,6 @@
     },
     {
       "name": "Carrbridge",
-      "code": "CAG",
       "coordinates": {
         "lat": 57.2831,
         "lng": -3.8231
@@ -261,7 +252,6 @@
     },
     {
       "name": "Tomatin",
-      "code": "TMT",
       "coordinates": {
         "lat": 57.3331,
         "lng": -3.9831
@@ -288,7 +278,6 @@
     },
     {
       "name": "Slochd",
-      "code": "SLO",
       "coordinates": {
         "lat": 57.3531,
         "lng": -3.9531
@@ -315,7 +304,6 @@
     },
     {
       "name": "Inverness",
-      "code": "INV",
       "coordinates": {
         "lat": 57.4781,
         "lng": -4.2231
@@ -344,5 +332,31 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "express": {
+      "stations": [
+        "PTH",
+        "KGS",
+        "INV"
+      ],
+      "description": "Express service calling at major stations only"
+    },
+    "fast": {
+      "stations": [
+        "PTH",
+        "PIT",
+        "DLW",
+        "KGS",
+        "CAG",
+        "SLO",
+        "INV"
+      ],
+      "description": "Fast service with limited stops"
+    },
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations"
+    }
+  }
 }

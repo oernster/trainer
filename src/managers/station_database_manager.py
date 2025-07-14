@@ -50,13 +50,33 @@ class StationDatabaseManager:
         self.data_dir = Path(__file__).parent.parent / "data"
         self.lines_dir = self.data_dir / "lines"
         self.railway_lines: Dict[str, RailwayLine] = {}
-        self.all_stations: Dict[str, Station] = {}  # code -> Station
-        self.station_name_to_code: Dict[str, str] = {}  # name -> code
+        self.all_stations: Dict[str, Station] = {}  # name -> Station (changed from code -> Station)
+        self.station_name_to_code: Dict[str, str] = {}  # name -> code (kept for compatibility)
         self.loaded = False
+    
+    def _generate_station_code(self, station_name: str) -> str:
+        """Generate a simple station code from the station name for backward compatibility."""
+        # Remove common words and create a simple code
+        name = station_name.upper()
+        name = name.replace("(MAIN)", "").replace("(", "").replace(")", "")
+        name = name.replace(" CENTRAL", "").replace(" JUNCTION", " JCT")
+        name = name.replace(" STREET", " ST").replace(" ROAD", " RD")
+        
+        # Split into words and take first letters
+        words = name.split()
+        if len(words) == 1:
+            # Single word - take first 3 characters
+            return words[0][:3]
+        elif len(words) == 2:
+            # Two words - take first 2 chars of first, first char of second
+            return words[0][:2] + words[1][:1]
+        else:
+            # Multiple words - take first char of each up to 3
+            return ''.join(word[:1] for word in words[:3])
     
     def load_database(self) -> bool:
         """Load the railway station database from JSON files."""
-        print("🔄 FORCE RELOADING DATABASE - Clearing all existing data...")
+        logger.info("Loading railway station database...")
         
         # Force clear all existing data
         self.railway_lines.clear()
@@ -74,39 +94,33 @@ class StationDatabaseManager:
             with open(index_file, 'r', encoding='utf-8') as f:
                 index_data = json.load(f)
             
-            # Load each railway line
-            print(f"🔍 Loading {len(index_data['lines'])} railway lines...")
+            # Load each railway line with minimal logging
+            logger.info(f"Loading {len(index_data['lines'])} railway lines...")
             for i, line_info in enumerate(index_data['lines']):
                 line_name = line_info.get('name', 'Unknown')
                 line_file_name = line_info.get('file', 'unknown.json')
                 line_file = self.lines_dir / line_file_name
                 
-                print(f"🔍 [{i+1}/{len(index_data['lines'])}] Loading line: {line_name}")
-                print(f"    File: {line_file}")
-                print(f"    File exists: {line_file.exists()}")
-                
                 if not line_file.exists():
-                    print(f"❌ Railway line file not found: {line_file}")
                     logger.warning(f"Railway line file not found: {line_file}")
                     continue
                 
                 try:
                     with open(line_file, 'r', encoding='utf-8') as f:
                         line_data = json.load(f)
-                    print(f"✅ JSON loaded successfully")
                 except Exception as json_error:
-                    print(f"❌ JSON loading failed: {json_error}")
+                    logger.error(f"JSON loading failed for {line_name}: {json_error}")
                     continue
                 
                 # Create Station objects
                 stations = []
                 stations_data = line_data.get('stations', [])
-                print(f"    Processing {len(stations_data)} stations...")
                 
                 for j, station_data in enumerate(stations_data):
                     try:
                         station_name = station_data.get('name', 'Unknown')
-                        station_code = station_data.get('code', 'UNK')
+                        # Generate a simple code from the name for backward compatibility
+                        station_code = self._generate_station_code(station_name)
                         
                         station = Station(
                             name=station_name,
@@ -117,23 +131,13 @@ class StationDatabaseManager:
                         )
                         stations.append(station)
                         
-                        # Add to global station mappings (ensure consistent uppercase for codes)
-                        station_code_upper = station.code.upper()
-                        self.all_stations[station_code_upper] = station
-                        self.station_name_to_code[station.name] = station_code_upper
-                        
-                        # Debug: Log station loading for key stations
-                        if ('farnborough' in station.name.lower() or
-                            'waterloo' in station.name.lower() or
-                            j < 3 or  # First 3 stations
-                            j >= len(stations_data) - 3):  # Last 3 stations
-                            print(f"      [{j+1}] '{station.name}' -> '{station_code_upper}'")
+                        # Use station name as primary key now
+                        self.all_stations[station_name] = station
+                        self.station_name_to_code[station_name] = station_code
                             
                     except Exception as station_error:
-                        print(f"❌ Error loading station {j+1}: {station_error}")
+                        logger.error(f"Error loading station {j+1} in {line_name}: {station_error}")
                         continue
-                
-                print(f"    ✅ Loaded {len(stations)} stations for {line_name}")
                 
                 # Load service patterns if they exist
                 service_patterns = None
@@ -162,32 +166,26 @@ class StationDatabaseManager:
                 self.railway_lines[line_info['name']] = railway_line
             
             self.loaded = True
-            print(f"🎉 DATABASE LOADING COMPLETE:")
-            print(f"    ✅ Loaded {len(self.railway_lines)} railway lines")
-            print(f"    ✅ Loaded {len(self.all_stations)} total stations")
-            print(f"    ✅ Created {len(self.station_name_to_code)} name-to-code mappings")
+            logger.info(f"Database loading complete: {len(self.railway_lines)} railway lines, {len(self.all_stations)} stations")
             
-            # Debug: Check if our key stations are loaded
+            # Verify key stations are loaded (debug level)
             key_stations = ["Farnborough (Main)", "London Waterloo", "Fleet", "Woking"]
-            print(f"🔍 Checking key stations:")
+            missing_stations = []
             for station_name in key_stations:
                 code = self.station_name_to_code.get(station_name)
-                if code:
-                    print(f"    ✅ '{station_name}' -> '{code}'")
-                else:
-                    print(f"    ❌ '{station_name}' -> NOT FOUND")
+                if not code:
+                    missing_stations.append(station_name)
             
-            # Debug: Show some sample station names
-            sample_names = list(self.station_name_to_code.keys())[:10]
-            print(f"🔍 Sample station names: {sample_names}")
-            
-            logger.info(f"Loaded {len(self.railway_lines)} railway lines with {len(self.all_stations)} stations")
+            if missing_stations:
+                logger.warning(f"Missing key stations: {missing_stations}")
+            else:
+                logger.debug("All key stations loaded successfully")
             
             # Final verification test
-            print(f"🧪 FINAL VERIFICATION TEST:")
+            logger.debug("Running database integrity test...")
             test_result = self._test_database_integrity()
             if not test_result:
-                print(f"❌ Database integrity test FAILED")
+                logger.error("Database integrity test failed")
                 return False
             
             return True
@@ -492,62 +490,56 @@ class StationDatabaseManager:
     def get_station_code(self, station_name: str) -> Optional[str]:
         """Get station code for a station name."""
         if not self.loaded:
-            print(f"🔍 Database not loaded, loading now...")
+            logger.debug("Database not loaded, loading now...")
             if not self.load_database():
-                print(f"❌ Database loading failed")
+                logger.error("Database loading failed")
                 return None
-            print(f"✅ Database loaded successfully")
         
         station_name_clean = station_name.strip()
-        print(f"🔍 Looking up station: '{station_name_clean}'")
-        print(f"🔍 Total stations in name mapping: {len(self.station_name_to_code)}")
-        
-        # Debug: Show some sample station names for comparison
-        sample_names = list(self.station_name_to_code.keys())[:10]
-        print(f"🔍 Sample station names: {sample_names}")
+        logger.debug(f"Looking up station: '{station_name_clean}'")
         
         # Check for exact match
         code = self.station_name_to_code.get(station_name_clean)
         if code:
             result_code = code.upper() if code else None
-            print(f"✅ Found exact match: '{station_name_clean}' -> '{result_code}'")
+            logger.debug(f"Found exact match: '{station_name_clean}' -> '{result_code}'")
             return result_code
         
-        # Debug: Check for case-insensitive matches
-        print(f"❌ No exact match found for '{station_name_clean}'")
+        # Check for case-insensitive matches
         case_insensitive_matches = []
         for name, stored_code in self.station_name_to_code.items():
             if name.lower() == station_name_clean.lower():
                 case_insensitive_matches.append((name, stored_code))
         
         if case_insensitive_matches:
-            print(f"🔍 Case-insensitive matches found: {case_insensitive_matches}")
-            # Use the first case-insensitive match
             _, code = case_insensitive_matches[0]
             result_code = code.upper() if code else None
-            print(f"✅ Using case-insensitive match: '{station_name_clean}' -> '{result_code}'")
+            logger.debug(f"Using case-insensitive match: '{station_name_clean}' -> '{result_code}'")
             return result_code
         
-        # Debug: Check for partial matches
+        # Check for partial matches (for debugging)
         partial_matches = []
         for name in self.station_name_to_code.keys():
             if station_name_clean.lower() in name.lower() or name.lower() in station_name_clean.lower():
                 partial_matches.append(name)
         
         if partial_matches:
-            print(f"🔍 Partial matches found: {partial_matches[:5]}")  # Show first 5
-        else:
-            print(f"❌ No partial matches found")
+            logger.debug(f"Partial matches found for '{station_name_clean}': {partial_matches[:3]}")
         
-        print(f"❌ Station '{station_name_clean}' not found in database")
+        logger.warning(f"Station '{station_name_clean}' not found in database")
         return None
     
     def get_station_by_code(self, station_code: str) -> Optional[Station]:
-        """Get station object by code."""
+        """Get station object by code (now searches by name)."""
         if not self.loaded:
             if not self.load_database():
                 return None
-        return self.all_stations.get(station_code.upper())
+        # Since we now use names as keys, find station by matching generated code
+        for station_name, station in self.all_stations.items():
+            if station.code == station_code.upper():
+                return station
+        return None
+    
     
     def get_railway_lines_for_station(self, station_code: str) -> List[str]:
         """Get all railway lines that serve a given station."""
@@ -674,9 +666,16 @@ class StationDatabaseManager:
         if not station_name:
             return ""
         
-        # Remove line context in parentheses
+        # Remove line context in parentheses - but NOT station name parentheses like (Main)
         if ' (' in station_name:
-            return station_name.split(' (')[0].strip()
+            # Check if this looks like a line disambiguation (contains line-related words)
+            paren_content = station_name.split(' (')[1].split(')')[0] if ')' in station_name else ""
+            line_indicators = ['Line', 'Railway', 'Network', 'Express', 'Main Line', 'Coast']
+            
+            # Only remove if it contains line indicators, keep station name parentheses
+            if any(indicator in paren_content for indicator in line_indicators):
+                return station_name.split(' (')[0].strip()
+        
         return station_name.strip()
     
     def get_all_stations_with_context(self) -> List[str]:
@@ -705,10 +704,7 @@ class StationDatabaseManager:
                 return None
         
         parsed_name = self.parse_station_name(station_name)
-        station_code = self.get_station_code(parsed_name)
-        if station_code:
-            return self.get_station_by_code(station_code)
-        return None
+        return self.all_stations.get(parsed_name)
     
     def suggest_via_stations(self, from_station: str, to_station: str, limit: int = 10) -> List[str]:
         """Suggest via stations for a route."""
@@ -746,9 +742,12 @@ class StationDatabaseManager:
     def find_route_between_stations(self, from_station: str, to_station: str,
                                   max_changes: int = 3, departure_time: Optional[str] = None) -> List[List[str]]:
         """Find routes between stations (UI compatibility method)."""
-        return self.find_route_between_stations_with_service_patterns(
+        print(f"🔍 find_route_between_stations called with: from='{from_station}', to='{to_station}', time='{departure_time}'")
+        result = self.find_route_between_stations_with_service_patterns(
             from_station, to_station, max_changes, departure_time
         )
+        print(f"🔍 find_route_between_stations returning {len(result) if result else 0} routes")
+        return result
     
     def identify_train_changes(self, route: List[str]) -> List[str]:
         """Identify stations where train changes are required."""
@@ -839,20 +838,33 @@ class StationDatabaseManager:
         Find routes between stations using service pattern optimization.
         This is the new main routing method that prioritizes faster services.
         """
+        print(f"🔍 find_route_between_stations_with_service_patterns called with: from='{from_station}', to='{to_station}'")
+        
         if not self.loaded:
+            print("🔍 Database not loaded, loading now...")
             if not self.load_database():
+                print("❌ Database loading failed")
                 return []
         
         # Parse station names to remove line context
         from_parsed = self.parse_station_name(from_station)
         to_parsed = self.parse_station_name(to_station)
+        print(f"🔍 Parsed names: from='{from_parsed}', to='{to_parsed}'")
         
-        # Get station codes
-        from_code = self.get_station_code(from_parsed)
-        to_code = self.get_station_code(to_parsed)
+        # Check if stations exist in the database (using names as primary key now)
+        from_station_obj = self.all_stations.get(from_parsed)
+        to_station_obj = self.all_stations.get(to_parsed)
         
-        if not from_code or not to_code:
+        print(f"🔍 Station objects: from_obj={from_station_obj is not None}, to_obj={to_station_obj is not None}")
+        
+        if not from_station_obj or not to_station_obj:
+            print(f"❌ Station objects not found: from='{from_parsed}' -> {from_station_obj is not None}, to='{to_parsed}' -> {to_station_obj is not None}")
             return []
+        
+        # Get station codes for backward compatibility with existing methods
+        from_code = from_station_obj.code
+        to_code = to_station_obj.code
+        print(f"🔍 Station codes: from_code='{from_code}', to_code='{to_code}'")
         
         # First try simple direct route check
         direct_route = self._find_simple_direct_route(from_code, to_code)
@@ -916,6 +928,12 @@ class StationDatabaseManager:
                 routes.append(direct_route)
                 return routes
             
+            # Try cross-network routing for complex journeys
+            cross_network_routes = self._find_cross_network_routes(from_code, to_code, max_changes)
+            if cross_network_routes:
+                routes.extend(cross_network_routes)
+                return routes
+            
             # Try one-change routes through major interchange stations
             major_interchanges = ['WAT', 'VIC', 'LBG', 'PAD', 'KGX', 'EUS', 'LST', 'CLJ', 'BHM', 'MAN']
             
@@ -949,46 +967,519 @@ class StationDatabaseManager:
         except Exception as e:
             logger.error(f"Error in simple routing: {e}")
             return []
-    def _test_database_integrity(self) -> bool:
-        """Test database integrity by checking key stations."""
+    
+    def _find_cross_network_routes(self, from_code: str, to_code: str, max_changes: int = 3) -> List[List[str]]:
+        """Find routes across different railway networks using dynamic interchange discovery."""
         try:
-            print("    Testing key station lookups...")
+            routes = []
             
-            # Test key stations that should definitely exist
+            # Dynamically identify interchange stations based on connectivity
+            interchange_stations = self._identify_interchange_stations()
+            
+            # Score and rank interchange stations by importance
+            ranked_interchanges = self._rank_interchange_stations(interchange_stations, from_code, to_code)
+            
+            logger.info(f"Attempting generalized cross-network routing from {from_code} to {to_code}")
+            logger.info(f"Found {len(ranked_interchanges)} potential interchange stations")
+            
+            # Try single-interchange routes (2 legs)
+            for interchange_code, score in ranked_interchanges[:20]:  # Top 20 interchanges
+                if interchange_code == from_code or interchange_code == to_code:
+                    continue
+                
+                # Try route: from -> interchange -> to
+                first_leg = self._find_simple_direct_route(from_code, interchange_code)
+                second_leg = self._find_simple_direct_route(interchange_code, to_code)
+                
+                if first_leg and second_leg:
+                    # Combine legs, removing duplicate interchange station
+                    combined_route = first_leg + second_leg[1:]
+                    routes.append(combined_route)
+                    logger.info(f"Found single-interchange route via {interchange_code} (score: {score:.2f}): {len(combined_route)} stations")
+                    
+                    if len(routes) >= 3:  # Limit single-interchange routes
+                        break
+            
+            # If no single-interchange routes found and max_changes allows, try double-interchange routes
+            if not routes and max_changes >= 2:
+                logger.info("Trying double-interchange cross-network routing")
+                routes.extend(self._find_multi_interchange_routes(from_code, to_code, ranked_interchanges, 2))
+            
+            # If still no routes and max_changes allows, try triple-interchange routes
+            if not routes and max_changes >= 3:
+                logger.info("Trying triple-interchange cross-network routing")
+                routes.extend(self._find_multi_interchange_routes(from_code, to_code, ranked_interchanges, 3))
+            
+            return routes
+            
+        except Exception as e:
+            logger.error(f"Error in generalized cross-network routing: {e}")
+            return []
+    
+    def _find_regional_connection_routes(self, from_code: str, to_code: str) -> List[List[str]]:
+        """Find routes using regional connections and operator transfers."""
+        try:
+            routes = []
+            
+            # Define regional connection patterns for common cross-network journeys
+            regional_patterns = {
+                # South to North patterns
+                ('south', 'north'): [
+                    ['WAT', 'CLJ', 'EUS'],  # Waterloo -> Clapham Junction -> Euston
+                    ['WAT', 'CLJ', 'VIC', 'EUS'],  # Via Victoria
+                    ['SOU', 'BSK', 'RDG', 'PAD'],  # Southampton -> Basingstoke -> Reading -> Paddington
+                ],
+                # South to Midlands patterns
+                ('south', 'midlands'): [
+                    ['WAT', 'CLJ', 'RDG', 'BHM'],  # Via Reading
+                    ['SOU', 'BSK', 'RDG', 'BHM'],  # Southampton route
+                ],
+                # London to Manchester patterns
+                ('london', 'manchester'): [
+                    ['WAT', 'CLJ', 'EUS', 'MAN'],  # Waterloo -> Euston -> Manchester
+                    ['PAD', 'RDG', 'BHM', 'MAN'],  # Paddington -> Reading -> Birmingham -> Manchester
+                ],
+            }
+            
+            # Determine journey type based on station locations
+            from_region = self._classify_station_region(from_code)
+            to_region = self._classify_station_region(to_code)
+            
+            logger.info(f"Regional routing: {from_region} to {to_region}")
+            
+            # Try patterns based on journey type
+            journey_key = (from_region, to_region)
+            if journey_key in regional_patterns:
+                for pattern in regional_patterns[journey_key]:
+                    route = self._build_route_through_pattern(from_code, to_code, pattern)
+                    if route:
+                        routes.append(route)
+                        logger.info(f"Found regional pattern route: {len(route)} stations")
+            
+            # Try reverse patterns
+            reverse_key = (to_region, from_region)
+            if reverse_key in regional_patterns:
+                for pattern in regional_patterns[reverse_key]:
+                    # Reverse the pattern
+                    reversed_pattern = list(reversed(pattern))
+                    route = self._build_route_through_pattern(from_code, to_code, reversed_pattern)
+                    if route:
+                        routes.append(route)
+                        logger.info(f"Found reverse regional pattern route: {len(route)} stations")
+            
+            return routes
+            
+        except Exception as e:
+            logger.error(f"Error in regional connection routing: {e}")
+            return []
+    
+    def _classify_station_region(self, station_code: str) -> str:
+        """Classify a station into a regional category."""
+        try:
+            # Get lines serving this station
+            lines = self.get_railway_lines_for_station(station_code)
+            
+            # London terminals and major London stations
+            london_stations = ['WAT', 'VIC', 'LBG', 'PAD', 'KGX', 'EUS', 'LST', 'CLJ', 'OLD', 'MOG']
+            if station_code in london_stations:
+                return 'london'
+            
+            # Northern England
+            northern_lines = ['Northern Rail', 'TransPennine Express', 'East Coast Main Line']
+            northern_stations = ['MAN', 'LIV', 'LDS', 'SHF', 'NCL', 'YRK', 'HUL']
+            if station_code in northern_stations or any(line in northern_lines for line in lines):
+                return 'north'
+            
+            # Midlands
+            midlands_stations = ['BHM', 'CCV', 'NUN', 'LTV', 'WVH']
+            midlands_lines = ['West Midlands Railway', 'Cross Country']
+            if station_code in midlands_stations or any(line in midlands_lines for line in lines):
+                return 'midlands'
+            
+            # South/South West
+            south_lines = ['South Western Main Line', 'Southern Network', 'Great Western Main Line']
+            south_stations = ['SOU', 'WIN', 'BSK', 'WOK', 'FNB', 'FLE', 'BRI', 'RDG']
+            if station_code in south_stations or any(line in south_lines for line in lines):
+                return 'south'
+            
+            # Scotland
+            scottish_lines = ['ScotRail Network', 'Caledonian Sleeper']
+            scottish_stations = ['GLC', 'EDB', 'ABE', 'INV', 'STG']
+            if station_code in scottish_stations or any(line in scottish_lines for line in lines):
+                return 'scotland'
+            
+            # Wales
+            welsh_lines = ['Transport for Wales', 'Heart of Wales Line']
+            if any(line in welsh_lines for line in lines):
+                return 'wales'
+            
+            # Default to south for unknown stations
+            return 'south'
+            
+        except Exception as e:
+            logger.warning(f"Error classifying station region for {station_code}: {e}")
+            return 'unknown'
+    
+    def _build_route_through_pattern(self, from_code: str, to_code: str, pattern: List[str]) -> Optional[List[str]]:
+        """Build a route through a specific pattern of interchange stations."""
+        try:
+            # Find the best entry and exit points in the pattern
+            best_route = None
+            min_total_length = float('inf')
+            
+            for entry_idx, entry_station in enumerate(pattern):
+                for exit_idx, exit_station in enumerate(pattern):
+                    if exit_idx <= entry_idx:
+                        continue
+                    
+                    # Try to build route: from -> entry -> (pattern) -> exit -> to
+                    first_leg = self._find_simple_direct_route(from_code, entry_station)
+                    if not first_leg:
+                        continue
+                    
+                    # Build middle section through pattern
+                    middle_section = []
+                    for i in range(entry_idx, exit_idx + 1):
+                        if i == entry_idx:
+                            middle_section.extend([entry_station])
+                        else:
+                            leg = self._find_simple_direct_route(pattern[i-1], pattern[i])
+                            if leg:
+                                middle_section.extend(leg[1:])  # Skip duplicate station
+                            else:
+                                middle_section = None
+                                break
+                    
+                    if not middle_section:
+                        continue
+                    
+                    final_leg = self._find_simple_direct_route(exit_station, to_code)
+                    if not final_leg:
+                        continue
+                    
+                    # Combine all legs
+                    complete_route = first_leg + middle_section[1:] + final_leg[1:]
+                    
+                    if len(complete_route) < min_total_length:
+                        min_total_length = len(complete_route)
+                        best_route = complete_route
+            
+            return best_route
+            
+        except Exception as e:
+            logger.warning(f"Error building route through pattern: {e}")
+            return None
+    def _test_database_integrity(self) -> bool:
+        """Test database integrity by checking key stations exist by name."""
+        try:
+            # Test key stations that should definitely exist (by name only now)
             test_stations = [
-                ("Farnborough (Main)", "FNB"),
-                ("London Waterloo", "WAT"),
-                ("Fleet", "FLE"),
-                ("Woking", "WOK"),
-                ("Clapham Junction", "CLJ")
+                "Farnborough (Main)",
+                "London Waterloo",
+                "Fleet",
+                "Woking",
+                "Clapham Junction"
             ]
             
             all_passed = True
-            for station_name, expected_code in test_stations:
-                # Test name-to-code lookup
-                found_code = self.station_name_to_code.get(station_name)
-                if found_code == expected_code:
-                    print(f"    ✅ '{station_name}' -> '{found_code}'")
-                else:
-                    print(f"    ❌ '{station_name}' -> Expected '{expected_code}', got '{found_code}'")
+            failed_tests = []
+            
+            for station_name in test_stations:
+                # Test that station exists in all_stations (now keyed by name)
+                if station_name not in self.all_stations:
+                    failed_tests.append(f"'{station_name}' -> Station not found in database")
                     all_passed = False
+                    continue
                 
-                # Test code-to-station lookup
-                if found_code:
-                    station_obj = self.all_stations.get(found_code)
-                    if station_obj and station_obj.name == station_name:
-                        print(f"    ✅ Code '{found_code}' -> Station object OK")
-                    else:
-                        print(f"    ❌ Code '{found_code}' -> Station object FAILED")
-                        all_passed = False
+                # Test that we can get the station object
+                station_obj = self.all_stations.get(station_name)
+                if not station_obj or station_obj.name != station_name:
+                    failed_tests.append(f"'{station_name}' -> Station object lookup failed")
+                    all_passed = False
             
             if all_passed:
-                print("    ✅ All database integrity tests PASSED")
+                logger.debug("All database integrity tests passed")
             else:
-                print("    ❌ Some database integrity tests FAILED")
+                logger.error(f"Database integrity test failures: {failed_tests}")
             
             return all_passed
             
         except Exception as e:
-            print(f"    ❌ Database integrity test error: {e}")
+            logger.error(f"Database integrity test error: {e}")
             return False
+
+    
+    def _identify_interchange_stations(self) -> Dict[str, Dict]:
+        """Dynamically identify interchange stations based on line connectivity."""
+        try:
+            interchange_stations = {}
+            
+            # Analyze each station to determine its interchange potential
+            for station_code, station in self.all_stations.items():
+                lines_served = self.get_railway_lines_for_station(station_code)
+                
+                if len(lines_served) >= 2:  # Station serves multiple lines
+                    # Calculate interchange score based on various factors
+                    score = self._calculate_interchange_score(station_code, lines_served)
+                    
+                    interchange_stations[station_code] = {
+                        'station': station,
+                        'lines_served': lines_served,
+                        'line_count': len(lines_served),
+                        'interchange_score': score,
+                        'is_terminal': self._is_terminal_station(station_code, lines_served),
+                        'network_diversity': self._calculate_network_diversity(lines_served)
+                    }
+            
+            logger.info(f"Identified {len(interchange_stations)} potential interchange stations")
+            return interchange_stations
+            
+        except Exception as e:
+            logger.error(f"Error identifying interchange stations: {e}")
+            return {}
+    
+    def _calculate_interchange_score(self, station_code: str, lines_served: List[str]) -> float:
+        """Calculate a score for how good an interchange station is."""
+        try:
+            score = 0.0
+            
+            # Base score from number of lines
+            score += len(lines_served) * 10
+            
+            # Bonus for serving different types of networks
+            network_types = set()
+            for line_name in lines_served:
+                network_type = self._classify_network_type(line_name)
+                network_types.add(network_type)
+            
+            # Higher score for connecting different network types
+            score += len(network_types) * 15
+            
+            # Bonus for major operators
+            major_operators = {'National Rail', 'London Underground', 'London Overground', 'DLR'}
+            for line_name in lines_served:
+                railway_line = self.railway_lines.get(line_name)
+                if railway_line and any(op in railway_line.operator for op in major_operators):
+                    score += 5
+            
+            # Bonus for stations with "interchange" in their explicit interchange list
+            station = self.all_stations.get(station_code)
+            if station and station.interchange:
+                score += len(station.interchange) * 3
+            
+            # Bonus for terminal stations (often major interchanges)
+            if self._is_terminal_station(station_code, lines_served):
+                score += 20
+            
+            return score
+            
+        except Exception as e:
+            logger.warning(f"Error calculating interchange score for {station_code}: {e}")
+            return 0.0
+    
+    def _classify_network_type(self, line_name: str) -> str:
+        """Classify a railway line into a network type."""
+        line_lower = line_name.lower()
+        
+        if any(keyword in line_lower for keyword in ['underground', 'tube', 'metro']):
+            return 'underground'
+        elif any(keyword in line_lower for keyword in ['overground', 'dlr']):
+            return 'london_rail'
+        elif any(keyword in line_lower for keyword in ['main line', 'express', 'sleeper']):
+            return 'intercity'
+        elif any(keyword in line_lower for keyword in ['railway', 'rail', 'network']):
+            return 'regional'
+        else:
+            return 'suburban'
+    
+    def _is_terminal_station(self, station_code: str, lines_served: List[str]) -> bool:
+        """Check if a station is a terminal station on any of its lines."""
+        try:
+            for line_name in lines_served:
+                railway_line = self.railway_lines.get(line_name)
+                if railway_line and railway_line.stations:
+                    # Check if station is first or last on the line
+                    station_codes = [s.code for s in railway_line.stations]
+                    if station_code in [station_codes[0], station_codes[-1]]:
+                        return True
+            return False
+        except Exception as e:
+            logger.warning(f"Error checking terminal status for {station_code}: {e}")
+            return False
+    
+    def _calculate_network_diversity(self, lines_served: List[str]) -> float:
+        """Calculate how diverse the networks served by this station are."""
+        try:
+            network_types = set()
+            operators = set()
+            
+            for line_name in lines_served:
+                network_types.add(self._classify_network_type(line_name))
+                railway_line = self.railway_lines.get(line_name)
+                if railway_line:
+                    operators.add(railway_line.operator)
+            
+            # Diversity score based on variety of network types and operators
+            return len(network_types) * 2 + len(operators)
+            
+        except Exception as e:
+            logger.warning(f"Error calculating network diversity: {e}")
+            return 0.0
+    
+    def _rank_interchange_stations(self, interchange_stations: Dict[str, Dict], 
+                                 from_code: str, to_code: str) -> List[Tuple[str, float]]:
+        """Rank interchange stations by their suitability for this specific journey."""
+        try:
+            ranked = []
+            
+            from_lines = set(self.get_railway_lines_for_station(from_code))
+            to_lines = set(self.get_railway_lines_for_station(to_code))
+            
+            for station_code, info in interchange_stations.items():
+                station_lines = set(info['lines_served'])
+                
+                # Base score from interchange quality
+                score = info['interchange_score']
+                
+                # Bonus if station connects to origin lines
+                if from_lines.intersection(station_lines):
+                    score += 30
+                
+                # Bonus if station connects to destination lines
+                if to_lines.intersection(station_lines):
+                    score += 30
+                
+                # Bonus if station connects both origin and destination networks
+                if (from_lines.intersection(station_lines) and 
+                    to_lines.intersection(station_lines)):
+                    score += 50
+                
+                # Distance penalty (rough geographic scoring)
+                distance_penalty = self._calculate_geographic_penalty(station_code, from_code, to_code)
+                score -= distance_penalty
+                
+                ranked.append((station_code, score))
+            
+            # Sort by score (highest first)
+            ranked.sort(key=lambda x: x[1], reverse=True)
+            
+            return ranked
+            
+        except Exception as e:
+            logger.error(f"Error ranking interchange stations: {e}")
+            return []
+    
+    def _calculate_geographic_penalty(self, interchange_code: str, from_code: str, to_code: str) -> float:
+        """Calculate a penalty based on geographic detour."""
+        try:
+            interchange_station = self.all_stations.get(interchange_code)
+            from_station = self.all_stations.get(from_code)
+            to_station = self.all_stations.get(to_code)
+            
+            if not interchange_station or not from_station or not to_station:
+                return 0.0
+            
+            # Calculate direct distance from origin to destination
+            direct_distance = self.calculate_haversine_distance(
+                from_station.coordinates, to_station.coordinates
+            )
+            
+            # Calculate distance via interchange
+            via_distance = (
+                self.calculate_haversine_distance(from_station.coordinates, interchange_station.coordinates) +
+                self.calculate_haversine_distance(interchange_station.coordinates, to_station.coordinates)
+            )
+            
+            # Penalty based on detour ratio
+            if direct_distance > 0:
+                detour_ratio = via_distance / direct_distance
+                return max(0, (detour_ratio - 1.0) * 20)  # Penalty for detours
+            
+            return 0.0
+            
+        except Exception as e:
+            logger.warning(f"Error calculating geographic penalty: {e}")
+            return 0.0
+    
+    def _find_multi_interchange_routes(self, from_code: str, to_code: str, 
+                                     ranked_interchanges: List[Tuple[str, float]], 
+                                     num_interchanges: int) -> List[List[str]]:
+        """Find routes using multiple interchange stations."""
+        try:
+            routes = []
+            
+            if num_interchanges == 2:
+                # Try combinations of top interchange stations
+                top_interchanges = [code for code, score in ranked_interchanges[:15]]
+                
+                for i, interchange1 in enumerate(top_interchanges):
+                    for interchange2 in top_interchanges[i+1:]:
+                        if interchange1 == interchange2:
+                            continue
+                        
+                        # Try route: from -> interchange1 -> interchange2 -> to
+                        route = self._build_multi_leg_route(from_code, [interchange1, interchange2], to_code)
+                        if route:
+                            routes.append(route)
+                            logger.info(f"Found double-interchange route via {interchange1} and {interchange2}: {len(route)} stations")
+                            
+                            if len(routes) >= 2:  # Limit routes
+                                break
+                    
+                    if len(routes) >= 2:
+                        break
+            
+            elif num_interchanges == 3:
+                # Try combinations of top interchange stations for 3-interchange routes
+                top_interchanges = [code for code, score in ranked_interchanges[:10]]
+                
+                for i, interchange1 in enumerate(top_interchanges):
+                    for j, interchange2 in enumerate(top_interchanges):
+                        if j <= i:
+                            continue
+                        for k, interchange3 in enumerate(top_interchanges):
+                            if k <= j:
+                                continue
+                            
+                            # Try route: from -> interchange1 -> interchange2 -> interchange3 -> to
+                            route = self._build_multi_leg_route(from_code, [interchange1, interchange2, interchange3], to_code)
+                            if route:
+                                routes.append(route)
+                                logger.info(f"Found triple-interchange route: {len(route)} stations")
+                                
+                                if len(routes) >= 1:  # Limit to 1 triple-interchange route
+                                    return routes
+            
+            return routes
+            
+        except Exception as e:
+            logger.error(f"Error finding multi-interchange routes: {e}")
+            return []
+    
+    def _build_multi_leg_route(self, from_code: str, interchange_codes: List[str], to_code: str) -> Optional[List[str]]:
+        """Build a route through multiple interchange stations."""
+        try:
+            # Build the complete route by connecting all segments
+            all_stations = [from_code] + interchange_codes + [to_code]
+            complete_route = []
+            
+            for i in range(len(all_stations) - 1):
+                current_station = all_stations[i]
+                next_station = all_stations[i + 1]
+                
+                # Find route segment between current and next station
+                segment = self._find_simple_direct_route(current_station, next_station)
+                if not segment:
+                    return None  # Cannot complete this route
+                
+                # Add segment to complete route (avoid duplicating stations)
+                if i == 0:
+                    complete_route.extend(segment)
+                else:
+                    complete_route.extend(segment[1:])  # Skip first station (duplicate)
+            
+            return complete_route if len(complete_route) >= 2 else None
+            
+        except Exception as e:
+            logger.warning(f"Error building multi-leg route: {e}")
+            return None

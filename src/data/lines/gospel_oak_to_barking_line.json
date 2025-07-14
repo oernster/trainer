@@ -3,7 +3,7 @@
     "line_name": "Gospel Oak to Barking Line",
     "description": "Gospel Oak to Barking via South Tottenham",
     "operator": "London Overground (Arriva Rail London)",
-    "total_stations": 13,
+    "total_stations": 12,
     "frequency": {
       "weekday_peak": "Every 15 minutes",
       "weekday_off_peak": "Every 20 minutes",
@@ -14,7 +14,6 @@
   "stations": [
     {
       "name": "Gospel Oak",
-      "code": "GPO",
       "coordinates": {
         "lat": 51.5551,
         "lng": -0.1519
@@ -99,7 +98,6 @@
     },
     {
       "name": "Upper Holloway",
-      "code": "UHL",
       "coordinates": {
         "lat": 51.5631,
         "lng": -0.1305
@@ -182,7 +180,6 @@
     },
     {
       "name": "Crouch Hill",
-      "code": "CRH",
       "coordinates": {
         "lat": 51.5701,
         "lng": -0.1172
@@ -265,7 +262,6 @@
     },
     {
       "name": "Harringay Green Lanes",
-      "code": "HRY",
       "coordinates": {
         "lat": 51.5769,
         "lng": -0.0998
@@ -348,7 +344,6 @@
     },
     {
       "name": "South Tottenham",
-      "code": "STO",
       "coordinates": {
         "lat": 51.5805,
         "lng": -0.0723
@@ -433,7 +428,6 @@
     },
     {
       "name": "Blackhorse Road",
-      "code": "BHO",
       "coordinates": {
         "lat": 51.5867,
         "lng": -0.041
@@ -518,7 +512,6 @@
     },
     {
       "name": "Walthamstow Queens Road",
-      "code": "WWL",
       "coordinates": {
         "lat": 51.5819,
         "lng": -0.0238
@@ -603,7 +596,6 @@
     },
     {
       "name": "Leyton Midland Road",
-      "code": "LEM",
       "coordinates": {
         "lat": 51.5697,
         "lng": -0.0075
@@ -686,7 +678,6 @@
     },
     {
       "name": "Leytonstone High Road",
-      "code": "LER",
       "coordinates": {
         "lat": 51.5682,
         "lng": 0.0083
@@ -769,7 +760,6 @@
     },
     {
       "name": "Wanstead Park",
-      "code": "WNP",
       "coordinates": {
         "lat": 51.5516,
         "lng": 0.0254
@@ -852,7 +842,6 @@
     },
     {
       "name": "Woodgrange Park",
-      "code": "WO1",
       "coordinates": {
         "lat": 51.5487,
         "lng": 0.0448
@@ -935,7 +924,6 @@
     },
     {
       "name": "Barking",
-      "code": "BAK",
       "coordinates": {
         "lat": 51.5396,
         "lng": 0.081
@@ -1020,5 +1008,24 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations"
+    },
+    "semi_fast": {
+      "stations": [
+        "GPO",
+        "UHL",
+        "HRY",
+        "BHO",
+        "WWL",
+        "LER",
+        "WO1",
+        "BAK"
+      ],
+      "description": "Semi-fast service calling at major stations"
+    }
+  }
 }

@@ -14,6 +14,7 @@ from ..models.train_data import TrainData, TrainStatus, ServiceType
 from ..api.api_manager import APIManager, APIException, NetworkException
 from ..managers.config_manager import ConfigData
 from ..managers.timetable_manager import TimetableManager
+from ..managers.station_database_manager import StationDatabaseManager
 from ..utils.helpers import (
     sort_trains_by_departure,
     filter_trains_by_status,
@@ -21,7 +22,6 @@ from ..utils.helpers import (
 )
 
 logger = logging.getLogger(__name__)
-
 
 class TrainManager(QObject):
     """
@@ -49,6 +49,7 @@ class TrainManager(QObject):
         self.config = config
         self.api_manager: Optional[APIManager] = None
         self.timetable_manager: Optional[TimetableManager] = None
+        self.station_database: Optional[StationDatabaseManager] = None
         self.current_trains: List[TrainData] = []
         self.last_update: Optional[datetime] = None
         self.is_fetching = False
@@ -58,6 +59,18 @@ class TrainManager(QObject):
         self.to_station: Optional[str] = None
 
         # Auto-refresh removed as obsolete
+
+        # Initialize station database manager (same as settings dialog)
+        try:
+            self.station_database = StationDatabaseManager()
+            if self.station_database.load_database():
+                logger.debug("StationDatabaseManager initialized successfully")
+            else:
+                logger.error("Failed to load station database")
+                self.station_database = None
+        except Exception as e:
+            logger.error(f"Failed to initialize StationDatabaseManager: {e}")
+            self.station_database = None
 
         # Initialize timetable manager
         try:
@@ -655,7 +668,7 @@ class TrainManager(QObject):
             )
         else:
             # No via stations configured, find direct route
-            logger.info("No via stations configured, finding direct route")
+            
             route = self._find_geographical_route(from_name, to_name, station_network, service_type)
         
         if not route or len(route) < 2:
@@ -1219,7 +1232,7 @@ class TrainManager(QObject):
             # Express: Keep origin, destination, and major stations only
             # Aim for 5-8 stations total
             if len(stations) <= 8:
-                logger.info(f"Express service: keeping all {len(stations)} stations")
+                logger.debug(f"Express service: keeping all {len(stations)} stations")
                 return stations
                 
             # Get major stations from JSON data
@@ -1254,7 +1267,7 @@ class TrainManager(QObject):
             # Fast: Keep more stations but still filter
             # Aim for 8-15 stations total
             if len(stations) <= 15:
-                logger.info(f"Fast service: keeping all {len(stations)} stations")
+                logger.debug(f"Fast service: keeping all {len(stations)} stations")
                 return stations
                 
             # Keep origin, destination, and evenly spaced stations
@@ -1326,48 +1339,35 @@ class TrainManager(QObject):
     
     def _find_geographical_route(self, from_station: str, to_station: str,
                                station_network: Dict[str, Dict], service_type: str) -> List[str]:
-        """Find route using Dijkstra's algorithm with weighted edges."""
+        """Find route using StationDatabaseManager instead of JSON-based network."""
         
         logger.debug(f"Looking for route from {from_station} to {to_station}")
         
-        # Try to find alternative station names if not found
-        if from_station not in station_network:
-            from_alt = self._find_alternative_station_name(from_station, station_network)
-            if from_alt:
-                from_station = from_alt
-                logger.info(f"Using alternative origin: {from_station}")
-            else:
-                logger.warning(f"Origin station not found: {from_station}")
-                return [from_station, to_station]
+        # Use StationDatabaseManager for route finding instead of JSON network
+        if self.station_database and self.station_database.loaded:
+            try:
+                # Parse station names to remove disambiguation
+                from_parsed = self.station_database.parse_station_name(from_station)
+                to_parsed = self.station_database.parse_station_name(to_station)
                 
-        if to_station not in station_network:
-            to_alt = self._find_alternative_station_name(to_station, station_network)
-            if to_alt:
-                to_station = to_alt
-                logger.info(f"Using alternative destination: {to_station}")
-            else:
-                logger.warning(f"Destination station not found: {to_station}")
+                # Find route using the station database
+                routes = self.station_database.find_route_between_stations(from_parsed, to_parsed)
+                
+                if routes:
+                    # Use the first (best) route
+                    route = routes[0]
+                    logger.debug(f"Found route with {len(route)} stations: {' -> '.join(route[:5])}{'...' if len(route) > 5 else ''}")
+                    return self._filter_stations_by_service_type_improved(route, service_type)
+                else:
+                    logger.warning(f"No route found via StationDatabaseManager")
+                    return [from_station, to_station]
+                    
+            except Exception as e:
+                logger.error(f"Error finding route via StationDatabaseManager: {e}")
                 return [from_station, to_station]
-        
-        # Build weighted graph for Dijkstra's algorithm
-        line_data = self._load_all_line_data()
-        weighted_graph, station_timetables = self._build_weighted_graph(line_data)
-        
-        # Get current time for timetable-based routing
-        current_time = datetime.now()
-        
-        # Find route using Dijkstra's algorithm
-        route = self._find_route_dijkstra(
-            from_station, to_station, weighted_graph,
-            station_timetables, service_type, current_time
-        )
-        
-        if route and len(route) >= 2:
-            logger.debug(f"Found route with {len(route)} stations: {' -> '.join(route[:5])}{'...' if len(route) > 5 else ''}")
-            return self._filter_stations_by_service_type_improved(route, service_type)
-        
-        logger.warning(f"No route found, returning direct connection")
-        return [from_station, to_station]
+        else:
+            logger.error("StationDatabaseManager not available for route finding")
+            return [from_station, to_station]
 
     def _follow_railway_lines(self, from_station: str, to_station: str) -> List[str]:
         """Follow railway lines from origin to destination via interchanges."""
@@ -1540,24 +1540,23 @@ class TrainManager(QObject):
         
         # Station appears on multiple lines = major station
         return lines_count >= 2
-    
 
     def _create_station_mapping(self) -> Dict[str, str]:
-        """Create mapping from station codes to full station names using JSON data."""
+        """Create mapping from station codes to full station names using StationDatabaseManager."""
         mapping = {}
         
-        # Load all line data to build comprehensive station mapping
-        line_data = self._load_all_line_data()
-        
-        for line_name, data in line_data.items():
-            stations = data.get('stations', [])
-            for station in stations:
-                code = station.get('code', '')
-                name = station.get('name', '')
+        # Use the same station database as the settings dialog
+        if self.station_database and self.station_database.loaded:
+            # Use the station_name_to_code mapping from the database
+            # Reverse it to get code_to_name mapping
+            for name, code in self.station_database.station_name_to_code.items():
                 if code and name:
                     mapping[code] = name
+            
+            logger.debug(f"Built station mapping with {len(mapping)} stations from StationDatabaseManager")
+        else:
+            logger.warning("StationDatabaseManager not available, using empty mapping")
         
-        logger.debug(f"Built dynamic station mapping with {len(mapping)} stations from JSON data")
         return mapping
 
     def _calculate_realistic_travel_time(self, from_station: str, to_station: str, service_type: str) -> int:
@@ -1667,30 +1666,8 @@ class TrainManager(QObject):
         # Default stop time for non-interchange stations
         return 1
 
-    def _find_alternative_station_name(self, station_name: str, station_network: Dict[str, Dict]) -> Optional[str]:
-        """Find alternative station name in the network using fuzzy matching."""
-        station_lower = station_name.lower()
-        
-        # Try exact partial matches first
-        for network_station in station_network.keys():
-            if station_lower in network_station.lower() or network_station.lower() in station_lower:
-                return network_station
-        
-        # Try common variations
-        variations = {
-            'manchester': 'Manchester Piccadilly',
-            'birmingham': 'Birmingham New Street',
-            'bristol': 'Bristol Temple Meads',
-            'london waterloo': 'London Waterloo',
-            'london paddington': 'London Paddington',
-            'farnborough': 'Farnborough (Main)'
-        }
-        
-        for variation, full_name in variations.items():
-            if variation in station_lower and full_name in station_network:
-                return full_name
-        
-        return None
+    # Removed _find_alternative_station_name method - fuzzy matching should only be used
+    # for autocomplete, not for looking up already-configured stations
 
     def _get_route_from_json_data(self, from_station: str, to_station: str, service_type: str) -> List[str]:
         """Get route using only JSON data - no hardcoded fallbacks."""

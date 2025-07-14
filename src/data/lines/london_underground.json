@@ -3,7 +3,7 @@
     "line_name": "London Underground",
     "description": "London Underground network connecting major terminals and zones",
     "operator": "Transport for London",
-    "total_stations": 45,
+    "total_stations": 46,
     "typical_frequency": "Every 2-5 minutes",
     "note": "Simplified network showing major interchange stations and connections to National Rail",
     "frequency": {
@@ -16,7 +16,6 @@
   "stations": [
     {
       "name": "London Waterloo",
-      "code": "WAT",
       "coordinates": {
         "lat": 51.5036,
         "lng": -0.1144
@@ -51,7 +50,6 @@
     },
     {
       "name": "London Victoria",
-      "code": "VIC",
       "coordinates": {
         "lat": 51.4952,
         "lng": -0.1441
@@ -85,7 +83,6 @@
     },
     {
       "name": "London Bridge",
-      "code": "LO4",
       "coordinates": {
         "lat": 51.5049,
         "lng": -0.0863
@@ -118,7 +115,6 @@
     },
     {
       "name": "London Paddington",
-      "code": "PAD",
       "coordinates": {
         "lat": 51.5154,
         "lng": -0.1755
@@ -152,7 +148,6 @@
     },
     {
       "name": "London Kings Cross",
-      "code": "KGX",
       "coordinates": {
         "lat": 51.5308,
         "lng": -0.1238
@@ -188,7 +183,6 @@
     },
     {
       "name": "London St Pancras",
-      "code": "STP",
       "coordinates": {
         "lat": 51.5308,
         "lng": -0.1267
@@ -224,7 +218,6 @@
     },
     {
       "name": "London Euston",
-      "code": "LO1",
       "coordinates": {
         "lat": 51.5282,
         "lng": -0.1337
@@ -256,7 +249,6 @@
     },
     {
       "name": "London Liverpool Street",
-      "code": "LO3",
       "coordinates": {
         "lat": 51.5178,
         "lng": -0.0823
@@ -290,7 +282,6 @@
     },
     {
       "name": "London Marylebone",
-      "code": "MYB",
       "coordinates": {
         "lat": 51.5226,
         "lng": -0.1631
@@ -321,7 +312,6 @@
     },
     {
       "name": "London Charing Cross",
-      "code": "LON",
       "coordinates": {
         "lat": 51.508,
         "lng": -0.1247
@@ -352,7 +342,6 @@
     },
     {
       "name": "London Cannon Street",
-      "code": "LO5",
       "coordinates": {
         "lat": 51.5113,
         "lng": -0.0904
@@ -383,7 +372,6 @@
     },
     {
       "name": "London Blackfriars",
-      "code": "BFR",
       "coordinates": {
         "lat": 51.512,
         "lng": -0.1037
@@ -414,7 +402,6 @@
     },
     {
       "name": "London Fenchurch Street",
-      "code": "FST",
       "coordinates": {
         "lat": 51.5113,
         "lng": -0.0755
@@ -442,7 +429,6 @@
     },
     {
       "name": "Clapham Junction",
-      "code": "CLJ",
       "coordinates": {
         "lat": 51.4642,
         "lng": -0.1705
@@ -475,7 +461,6 @@
     },
     {
       "name": "Vauxhall",
-      "code": "VXH",
       "coordinates": {
         "lat": 51.4861,
         "lng": -0.1253
@@ -506,7 +491,6 @@
     },
     {
       "name": "Green Park",
-      "code": "GPK",
       "coordinates": {
         "lat": 51.5067,
         "lng": -0.1428
@@ -538,7 +522,6 @@
     },
     {
       "name": "Oxford Circus",
-      "code": "OXC",
       "coordinates": {
         "lat": 51.5154,
         "lng": -0.1419
@@ -570,7 +553,6 @@
     },
     {
       "name": "Bond Street",
-      "code": "BDS",
       "coordinates": {
         "lat": 51.5142,
         "lng": -0.1494
@@ -601,7 +583,6 @@
     },
     {
       "name": "Baker Street",
-      "code": "BST",
       "coordinates": {
         "lat": 51.5226,
         "lng": -0.1571
@@ -634,7 +615,6 @@
     },
     {
       "name": "Finsbury Park",
-      "code": "FPK",
       "coordinates": {
         "lat": 51.5642,
         "lng": -0.1065
@@ -666,7 +646,6 @@
     },
     {
       "name": "Stratford",
-      "code": "SFD",
       "coordinates": {
         "lat": 51.5416,
         "lng": -0.0042
@@ -699,7 +678,6 @@
     },
     {
       "name": "Canary Wharf",
-      "code": "CWF",
       "coordinates": {
         "lat": 51.5051,
         "lng": -0.0209
@@ -730,7 +708,6 @@
     },
     {
       "name": "Westminster",
-      "code": "WSM",
       "coordinates": {
         "lat": 51.501,
         "lng": -0.1254
@@ -762,7 +739,6 @@
     },
     {
       "name": "Embankment",
-      "code": "EMB",
       "coordinates": {
         "lat": 51.5074,
         "lng": -0.1223
@@ -795,7 +771,6 @@
     },
     {
       "name": "Bank",
-      "code": "BNK",
       "coordinates": {
         "lat": 51.5133,
         "lng": -0.0886
@@ -828,7 +803,6 @@
     },
     {
       "name": "Monument",
-      "code": "MNT",
       "coordinates": {
         "lat": 51.5108,
         "lng": -0.0863
@@ -859,7 +833,6 @@
     },
     {
       "name": "Tower Hill",
-      "code": "TWH",
       "coordinates": {
         "lat": 51.5098,
         "lng": -0.0766
@@ -890,7 +863,6 @@
     },
     {
       "name": "London Bridge Underground",
-      "code": "LBU",
       "coordinates": {
         "lat": 51.5049,
         "lng": -0.0863
@@ -921,7 +893,6 @@
     },
     {
       "name": "Tottenham Court Road",
-      "code": "TCR",
       "coordinates": {
         "lat": 51.5165,
         "lng": -0.1308
@@ -952,7 +923,6 @@
     },
     {
       "name": "Leicester Square",
-      "code": "LSQ",
       "coordinates": {
         "lat": 51.5112,
         "lng": -0.1281
@@ -983,7 +953,6 @@
     },
     {
       "name": "Piccadilly Circus",
-      "code": "PCC",
       "coordinates": {
         "lat": 51.5098,
         "lng": -0.1342
@@ -1014,7 +983,6 @@
     },
     {
       "name": "Holborn",
-      "code": "HBN",
       "coordinates": {
         "lat": 51.5174,
         "lng": -0.1203
@@ -1045,7 +1013,6 @@
     },
     {
       "name": "Russell Square",
-      "code": "RSQ",
       "coordinates": {
         "lat": 51.523,
         "lng": -0.1244
@@ -1075,7 +1042,6 @@
     },
     {
       "name": "Moorgate",
-      "code": "MOG",
       "coordinates": {
         "lat": 51.5186,
         "lng": -0.0886
@@ -1108,7 +1074,6 @@
     },
     {
       "name": "Old Street",
-      "code": "OLD",
       "coordinates": {
         "lat": 51.5263,
         "lng": -0.0873
@@ -1138,7 +1103,6 @@
     },
     {
       "name": "Angel",
-      "code": "AGL",
       "coordinates": {
         "lat": 51.5322,
         "lng": -0.1058
@@ -1168,7 +1132,6 @@
     },
     {
       "name": "Highbury & Islington",
-      "code": "HHY",
       "coordinates": {
         "lat": 51.5464,
         "lng": -0.1031
@@ -1199,7 +1162,6 @@
     },
     {
       "name": "Camden Town",
-      "code": "CTN",
       "coordinates": {
         "lat": 51.5392,
         "lng": -0.1426
@@ -1229,7 +1191,6 @@
     },
     {
       "name": "Mornington Crescent",
-      "code": "MRC",
       "coordinates": {
         "lat": 51.5342,
         "lng": -0.1387
@@ -1259,7 +1220,6 @@
     },
     {
       "name": "Warren Street",
-      "code": "WAR",
       "coordinates": {
         "lat": 51.5245,
         "lng": -0.1389
@@ -1290,7 +1250,6 @@
     },
     {
       "name": "Goodge Street",
-      "code": "GDS",
       "coordinates": {
         "lat": 51.5205,
         "lng": -0.1347
@@ -1320,7 +1279,6 @@
     },
     {
       "name": "Edgware Road",
-      "code": "ED1",
       "coordinates": {
         "lat": 51.5199,
         "lng": -0.17
@@ -1353,7 +1311,6 @@
     },
     {
       "name": "Marble Arch",
-      "code": "MAA",
       "coordinates": {
         "lat": 51.5136,
         "lng": -0.1586
@@ -1383,7 +1340,6 @@
     },
     {
       "name": "Hyde Park Corner",
-      "code": "HPC",
       "coordinates": {
         "lat": 51.5027,
         "lng": -0.1527
@@ -1413,7 +1369,6 @@
     },
     {
       "name": "Knightsbridge",
-      "code": "KNB",
       "coordinates": {
         "lat": 51.5015,
         "lng": -0.1607
@@ -1443,7 +1398,6 @@
     },
     {
       "name": "South Kensington",
-      "code": "SKN",
       "coordinates": {
         "lat": 51.4941,
         "lng": -0.1738

@@ -14,7 +14,6 @@
   "stations": [
     {
       "name": "London Marylebone",
-      "code": "MYB",
       "coordinates": {
         "lat": 51.5225,
         "lng": -0.1631
@@ -44,7 +43,6 @@
     },
     {
       "name": "Wembley Stadium",
-      "code": "WCX",
       "coordinates": {
         "lat": 51.5556,
         "lng": -0.2794
@@ -71,7 +69,6 @@
     },
     {
       "name": "Harrow-on-the-Hill",
-      "code": "HOH",
       "coordinates": {
         "lat": 51.5731,
         "lng": -0.3375
@@ -101,7 +98,6 @@
     },
     {
       "name": "Amersham",
-      "code": "AMR",
       "coordinates": {
         "lat": 51.6744,
         "lng": -0.6075
@@ -131,7 +127,6 @@
     },
     {
       "name": "Great Missenden",
-      "code": "GMI",
       "coordinates": {
         "lat": 51.7019,
         "lng": -0.7081
@@ -157,7 +152,6 @@
     },
     {
       "name": "Wendover",
-      "code": "WND",
       "coordinates": {
         "lat": 51.7594,
         "lng": -0.7394
@@ -183,7 +177,6 @@
     },
     {
       "name": "Stoke Mandeville",
-      "code": "SMV",
       "coordinates": {
         "lat": 51.7881,
         "lng": -0.7881
@@ -209,7 +202,6 @@
     },
     {
       "name": "Aylesbury",
-      "code": "AYS",
       "coordinates": {
         "lat": 51.8131,
         "lng": -0.8131
@@ -235,7 +227,6 @@
     },
     {
       "name": "Haddenham & Thame Parkway",
-      "code": "HDM",
       "coordinates": {
         "lat": 51.7719,
         "lng": -0.9319
@@ -261,7 +252,6 @@
     },
     {
       "name": "Princes Risborough",
-      "code": "PPR",
       "coordinates": {
         "lat": 51.7181,
         "lng": -0.8181
@@ -287,7 +277,6 @@
     },
     {
       "name": "High Wycombe",
-      "code": "HWY",
       "coordinates": {
         "lat": 51.6281,
         "lng": -0.7481
@@ -313,7 +302,6 @@
     },
     {
       "name": "Beaconsfield",
-      "code": "BCF",
       "coordinates": {
         "lat": 51.6094,
         "lng": -0.6394
@@ -339,7 +327,6 @@
     },
     {
       "name": "Gerrards Cross",
-      "code": "GER",
       "coordinates": {
         "lat": 51.5881,
         "lng": -0.5581
@@ -365,7 +352,6 @@
     },
     {
       "name": "Denham",
-      "code": "DNM",
       "coordinates": {
         "lat": 51.5681,
         "lng": -0.4881
@@ -391,7 +377,6 @@
     },
     {
       "name": "Banbury",
-      "code": "BAN",
       "coordinates": {
         "lat": 52.0631,
         "lng": -1.33
@@ -417,7 +402,6 @@
     },
     {
       "name": "Leamington Spa",
-      "code": "LMS",
       "coordinates": {
         "lat": 52.2881,
         "lng": -1.5381
@@ -443,7 +427,6 @@
     },
     {
       "name": "Warwick",
-      "code": "WRW",
       "coordinates": {
         "lat": 52.2881,
         "lng": -1.5881
@@ -469,7 +452,6 @@
     },
     {
       "name": "Warwick Parkway",
-      "code": "WRP",
       "coordinates": {
         "lat": 52.3181,
         "lng": -1.5681

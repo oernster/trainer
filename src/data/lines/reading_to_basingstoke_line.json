@@ -1,9 +1,9 @@
 {
   "metadata": {
     "line_name": "Reading to Basingstoke Line",
-    "description": "Reading to Basingstoke via Fleet",
+    "description": "Reading to Basingstoke via Mortimer and Hook",
     "operator": "Great Western Railway",
-    "total_stations": 5,
+    "total_stations": 4,
     "typical_frequency": "Every 30 minutes",
     "peak_hours": "07:00-09:30, 16:30-19:00",
     "frequency": {
@@ -15,8 +15,7 @@
   },
   "typical_journey_times": {
     "RDG-MMR": 10,
-    "MMR-FLE": 12,
-    "FLE-HOK": 8,
+    "MMR-HOK": 20,
     "HOK-BSK": 10,
     "RDG-BSK": 40
   },
@@ -31,7 +30,6 @@
   "stations": [
     {
       "name": "Reading",
-      "code": "RDG",
       "coordinates": {
         "lat": 51.4581,
         "lng": -0.9719
@@ -61,7 +59,6 @@
     },
     {
       "name": "Mortimer",
-      "code": "MMR",
       "coordinates": {
         "lat": 51.3667,
         "lng": -1.0333
@@ -86,37 +83,7 @@
       }
     },
     {
-      "name": "Fleet",
-      "code": "FLE",
-      "coordinates": {
-        "lat": 51.2833,
-        "lng": -0.8333
-      },
-      "interchange": [
-        "South Western Main Line"
-      ],
-      "times": {
-        "morning": [
-          "06:12",
-          "08:12",
-          "10:12"
-        ],
-        "afternoon": [
-          "12:12",
-          "14:12",
-          "16:12"
-        ],
-        "evening": [
-          "18:12",
-          "20:12",
-          "22:12"
-        ],
-        "night": []
-      }
-    },
-    {
       "name": "Hook",
-      "code": "HOK",
       "coordinates": {
         "lat": 51.25,
         "lng": -0.9167
@@ -142,7 +109,6 @@
     },
     {
       "name": "Basingstoke",
-      "code": "BSK",
       "coordinates": {
         "lat": 51.2667,
         "lng": -1.0833
@@ -178,7 +144,6 @@
       "frequency": "Every 30 minutes",
       "stations": [
         "RDG",
-        "FLE",
         "BSK"
       ],
       "peak_frequency": "Every 20 minutes",
@@ -198,7 +163,6 @@
       "stations": [
         "RDG",
         "MMR",
-        "FLE",
         "HOK",
         "BSK"
       ],

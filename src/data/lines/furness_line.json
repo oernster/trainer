@@ -3,7 +3,7 @@
     "line_name": "Furness Line",
     "description": "Lancaster to Barrow-in-Furness",
     "operator": "Northern",
-    "total_stations": 12,
+    "total_stations": 11,
     "frequency": {
       "weekday_peak": "Every hour",
       "weekday_off_peak": "Every 2 hours",
@@ -14,7 +14,6 @@
   "stations": [
     {
       "name": "Lancaster",
-      "code": "LAN",
       "coordinates": {
         "lat": 54.0481,
         "lng": -2.8081
@@ -43,7 +42,6 @@
     },
     {
       "name": "Carnforth",
-      "code": "CNF",
       "coordinates": {
         "lat": 54.1281,
         "lng": -2.7731
@@ -72,7 +70,6 @@
     },
     {
       "name": "Silverdale",
-      "code": "SVR",
       "coordinates": {
         "lat": 54.1731,
         "lng": -2.8131
@@ -99,7 +96,6 @@
     },
     {
       "name": "Arnside",
-      "code": "ARN",
       "coordinates": {
         "lat": 54.2031,
         "lng": -2.8331
@@ -126,7 +122,6 @@
     },
     {
       "name": "Grange-over-Sands",
-      "code": "GOS",
       "coordinates": {
         "lat": 54.1931,
         "lng": -2.9131
@@ -153,7 +148,6 @@
     },
     {
       "name": "Kents Bank",
-      "code": "KBK",
       "coordinates": {
         "lat": 54.1831,
         "lng": -2.9531
@@ -180,7 +174,6 @@
     },
     {
       "name": "Cark & Cartmel",
-      "code": "CAK",
       "coordinates": {
         "lat": 54.1731,
         "lng": -2.9931
@@ -207,7 +200,6 @@
     },
     {
       "name": "Ulverston",
-      "code": "ULV",
       "coordinates": {
         "lat": 54.1931,
         "lng": -3.0931
@@ -234,7 +226,6 @@
     },
     {
       "name": "Dalton",
-      "code": "DLT",
       "coordinates": {
         "lat": 54.1631,
         "lng": -3.1731
@@ -261,7 +252,6 @@
     },
     {
       "name": "Roose",
-      "code": "ROO",
       "coordinates": {
         "lat": 54.1231,
         "lng": -3.2031
@@ -288,7 +278,6 @@
     },
     {
       "name": "Barrow-in-Furness",
-      "code": "BIF",
       "coordinates": {
         "lat": 54.1181,
         "lng": -3.2181
@@ -315,5 +304,23 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations"
+    },
+    "semi_fast": {
+      "stations": [
+        "LAN",
+        "CNF",
+        "ARN",
+        "KBK",
+        "ULV",
+        "ROO",
+        "BIF"
+      ],
+      "description": "Semi-fast service calling at major stations"
+    }
+  }
 }

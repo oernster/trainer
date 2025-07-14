@@ -3,7 +3,7 @@
     "line_name": "Circle Line",
     "description": "Hammersmith to Edgware Road via Liverpool Street",
     "operator": "Transport for London",
-    "total_stations": 36,
+    "total_stations": 35,
     "line_color": "#FFD300",
     "frequency": {
       "weekday_peak": "Every hour",
@@ -15,7 +15,6 @@
   "stations": [
     {
       "name": "Hammersmith",
-      "code": "HMM",
       "coordinates": {
         "lat": 51.4936,
         "lng": -0.2251
@@ -47,7 +46,6 @@
     },
     {
       "name": "Goldhawk Road",
-      "code": "GHR",
       "coordinates": {
         "lat": 51.5018,
         "lng": -0.2267
@@ -77,7 +75,6 @@
     },
     {
       "name": "Shepherd's Bush Market",
-      "code": "SBM",
       "coordinates": {
         "lat": 51.5058,
         "lng": -0.2265
@@ -107,7 +104,6 @@
     },
     {
       "name": "Wood Lane",
-      "code": "WDL",
       "coordinates": {
         "lat": 51.5098,
         "lng": -0.2241
@@ -137,7 +133,6 @@
     },
     {
       "name": "Latimer Road",
-      "code": "LTR",
       "coordinates": {
         "lat": 51.5139,
         "lng": -0.2172
@@ -167,7 +162,6 @@
     },
     {
       "name": "Ladbroke Grove",
-      "code": "LBG",
       "coordinates": {
         "lat": 51.5172,
         "lng": -0.2107
@@ -197,7 +191,6 @@
     },
     {
       "name": "Westbourne Park",
-      "code": "WES",
       "coordinates": {
         "lat": 51.521,
         "lng": -0.2011
@@ -227,7 +220,6 @@
     },
     {
       "name": "Royal Oak",
-      "code": "RYO",
       "coordinates": {
         "lat": 51.519,
         "lng": -0.188
@@ -257,7 +249,6 @@
     },
     {
       "name": "Paddington",
-      "code": "PPD",
       "coordinates": {
         "lat": 51.5154,
         "lng": -0.1755
@@ -291,7 +282,6 @@
     },
     {
       "name": "Edgware Road",
-      "code": "ED1",
       "coordinates": {
         "lat": 51.5203,
         "lng": -0.1669
@@ -323,7 +313,6 @@
     },
     {
       "name": "Baker Street",
-      "code": "BST",
       "coordinates": {
         "lat": 51.5226,
         "lng": -0.1571
@@ -356,7 +345,6 @@
     },
     {
       "name": "Great Portland Street",
-      "code": "GPS",
       "coordinates": {
         "lat": 51.5236,
         "lng": -0.1439
@@ -387,7 +375,6 @@
     },
     {
       "name": "Euston Square",
-      "code": "ESQ",
       "coordinates": {
         "lat": 51.5258,
         "lng": -0.1356
@@ -418,7 +405,6 @@
     },
     {
       "name": "King's Cross St. Pancras",
-      "code": "KXX",
       "coordinates": {
         "lat": 51.5308,
         "lng": -0.1238
@@ -453,7 +439,6 @@
     },
     {
       "name": "Farringdon",
-      "code": "FAR",
       "coordinates": {
         "lat": 51.5203,
         "lng": -0.1053
@@ -486,7 +471,6 @@
     },
     {
       "name": "Barbican",
-      "code": "BAR",
       "coordinates": {
         "lat": 51.5204,
         "lng": -0.0979
@@ -517,7 +501,6 @@
     },
     {
       "name": "Moorgate",
-      "code": "MOG",
       "coordinates": {
         "lat": 51.5186,
         "lng": -0.0886
@@ -551,7 +534,6 @@
     },
     {
       "name": "Liverpool Street",
-      "code": "LST",
       "coordinates": {
         "lat": 51.5178,
         "lng": -0.0823
@@ -585,7 +567,6 @@
     },
     {
       "name": "Aldgate",
-      "code": "ALD",
       "coordinates": {
         "lat": 51.5143,
         "lng": -0.0755
@@ -615,7 +596,6 @@
     },
     {
       "name": "Tower Hill",
-      "code": "TWH",
       "coordinates": {
         "lat": 51.5098,
         "lng": -0.0766
@@ -645,7 +625,6 @@
     },
     {
       "name": "Monument",
-      "code": "MNT",
       "coordinates": {
         "lat": 51.5108,
         "lng": -0.0863
@@ -676,7 +655,6 @@
     },
     {
       "name": "Cannon Street",
-      "code": "CST",
       "coordinates": {
         "lat": 51.5113,
         "lng": -0.0904
@@ -707,7 +685,6 @@
     },
     {
       "name": "Mansion House",
-      "code": "MA1",
       "coordinates": {
         "lat": 51.5122,
         "lng": -0.0941
@@ -737,7 +714,6 @@
     },
     {
       "name": "Blackfriars",
-      "code": "BLF",
       "coordinates": {
         "lat": 51.512,
         "lng": -0.1037
@@ -768,7 +744,6 @@
     },
     {
       "name": "Temple",
-      "code": "TEM",
       "coordinates": {
         "lat": 51.511,
         "lng": -0.1141
@@ -798,7 +773,6 @@
     },
     {
       "name": "Embankment",
-      "code": "EMB",
       "coordinates": {
         "lat": 51.5074,
         "lng": -0.1223
@@ -830,7 +804,6 @@
     },
     {
       "name": "Westminster",
-      "code": "WSM",
       "coordinates": {
         "lat": 51.501,
         "lng": -0.1254
@@ -861,7 +834,6 @@
     },
     {
       "name": "St. James's Park",
-      "code": "SJP",
       "coordinates": {
         "lat": 51.4994,
         "lng": -0.1335
@@ -891,7 +863,6 @@
     },
     {
       "name": "Victoria",
-      "code": "VVC",
       "coordinates": {
         "lat": 51.4952,
         "lng": -0.1441
@@ -923,7 +894,6 @@
     },
     {
       "name": "Sloane Square",
-      "code": "SSQ",
       "coordinates": {
         "lat": 51.4924,
         "lng": -0.1565
@@ -953,7 +923,6 @@
     },
     {
       "name": "South Kensington",
-      "code": "SKN",
       "coordinates": {
         "lat": 51.4941,
         "lng": -0.1738
@@ -984,7 +953,6 @@
     },
     {
       "name": "Gloucester Road",
-      "code": "GRD",
       "coordinates": {
         "lat": 51.4945,
         "lng": -0.1829
@@ -1015,7 +983,6 @@
     },
     {
       "name": "High Street Kensington",
-      "code": "HHG",
       "coordinates": {
         "lat": 51.5009,
         "lng": -0.1925
@@ -1045,7 +1012,6 @@
     },
     {
       "name": "Notting Hill Gate",
-      "code": "NHG",
       "coordinates": {
         "lat": 51.5094,
         "lng": -0.1967
@@ -1076,7 +1042,6 @@
     },
     {
       "name": "Bayswater",
-      "code": "BYS",
       "coordinates": {
         "lat": 51.5121,
         "lng": -0.1879
@@ -1103,40 +1068,63 @@
         ],
         "night": []
       }
-    },
-    {
-      "name": "Paddington",
-      "code": "PPD",
-      "coordinates": {
-        "lat": 51.5154,
-        "lng": -0.1755
-      },
-      "zone": 1,
-      "interchange": [
-        "Bakerloo Line",
-        "District Line",
-        "Hammersmith & City Line",
-        "Elizabeth Line",
-        "National Rail"
-      ],
-      "times": {
-        "morning": [
-          "14:28",
-          "16:28",
-          "18:28"
-        ],
-        "afternoon": [
-          "20:28",
-          "22:28",
-          "00:28"
-        ],
-        "evening": [
-          "02:28",
-          "04:28",
-          "06:28"
-        ],
-        "night": []
-      }
     }
-  ]
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations"
+    },
+    "semi_fast": {
+      "stations": [
+        "HMM",
+        "GHR",
+        "WDL",
+        "LTR",
+        "WES",
+        "RYO",
+        "ED1",
+        "BST",
+        "ESQ",
+        "KXX",
+        "BAR",
+        "MOG",
+        "ALD",
+        "TWH",
+        "CST",
+        "MA1",
+        "TEM",
+        "EMB",
+        "SJP",
+        "VVC",
+        "SKN",
+        "GRD",
+        "NHG",
+        "BYS"
+      ],
+      "description": "Semi-fast service calling at major stations"
+    },
+    "fast": {
+      "stations": [
+        "HMM",
+        "SBM",
+        "LTR",
+        "WES",
+        "PPD",
+        "BST",
+        "KXX",
+        "BAR",
+        "LST",
+        "TWH",
+        "CST",
+        "TEM",
+        "WSM",
+        "VVC",
+        "SKN",
+        "HHG",
+        "BYS"
+      ],
+      "description": "Fast service calling at principal stations"
+    }
+  }
 }

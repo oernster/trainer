@@ -34,7 +34,6 @@
   "stations": [
     {
       "name": "London Kings Cross",
-      "code": "KGX",
       "coordinates": {
         "lat": 51.5308,
         "lng": -0.1238
@@ -67,7 +66,6 @@
     },
     {
       "name": "Stevenage",
-      "code": "ST5",
       "coordinates": {
         "lat": 51.9022,
         "lng": -0.2058
@@ -94,7 +92,6 @@
     },
     {
       "name": "Newcastle",
-      "code": "NCL",
       "coordinates": {
         "lat": 54.9686,
         "lng": -1.6174
@@ -123,7 +120,6 @@
     },
     {
       "name": "Morpeth",
-      "code": "MPT",
       "coordinates": {
         "lat": 55.1697,
         "lng": -1.6897
@@ -149,7 +145,6 @@
     },
     {
       "name": "Alnmouth",
-      "code": "ALM",
       "coordinates": {
         "lat": 55.3889,
         "lng": -1.6306
@@ -175,7 +170,6 @@
     },
     {
       "name": "Berwick-upon-Tweed",
-      "code": "BWK",
       "coordinates": {
         "lat": 55.7711,
         "lng": -2.0069
@@ -201,7 +195,6 @@
     },
     {
       "name": "Dunbar",
-      "code": "DUN",
       "coordinates": {
         "lat": 56.0019,
         "lng": -2.5158
@@ -227,7 +220,6 @@
     },
     {
       "name": "Edinburgh",
-      "code": "EDB",
       "coordinates": {
         "lat": 55.952,
         "lng": -3.1883

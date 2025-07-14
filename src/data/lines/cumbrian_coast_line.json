@@ -14,7 +14,6 @@
   "stations": [
     {
       "name": "Carlisle",
-      "code": "CAR",
       "coordinates": {
         "lat": 54.8881,
         "lng": -2.9331
@@ -45,7 +44,6 @@
     },
     {
       "name": "Dalston",
-      "code": "DLS",
       "coordinates": {
         "lat": 54.8031,
         "lng": -3.0181
@@ -72,7 +70,6 @@
     },
     {
       "name": "Wigton",
-      "code": "WGT",
       "coordinates": {
         "lat": 54.8281,
         "lng": -3.1631
@@ -99,7 +96,6 @@
     },
     {
       "name": "Aspatria",
-      "code": "ASP",
       "coordinates": {
         "lat": 54.7631,
         "lng": -3.3331
@@ -126,7 +122,6 @@
     },
     {
       "name": "Maryport",
-      "code": "MRY",
       "coordinates": {
         "lat": 54.7131,
         "lng": -3.4981
@@ -153,7 +148,6 @@
     },
     {
       "name": "Flimby",
-      "code": "FLM",
       "coordinates": {
         "lat": 54.6881,
         "lng": -3.5331
@@ -180,7 +174,6 @@
     },
     {
       "name": "Workington",
-      "code": "WOR",
       "coordinates": {
         "lat": 54.6431,
         "lng": -3.5531
@@ -207,7 +200,6 @@
     },
     {
       "name": "Harrington",
-      "code": "HRR",
       "coordinates": {
         "lat": 54.6131,
         "lng": -3.5681
@@ -234,7 +226,6 @@
     },
     {
       "name": "Parton",
-      "code": "PRN",
       "coordinates": {
         "lat": 54.5831,
         "lng": -3.5831
@@ -261,7 +252,6 @@
     },
     {
       "name": "Whitehaven",
-      "code": "WTH",
       "coordinates": {
         "lat": 54.5481,
         "lng": -3.5881
@@ -288,7 +278,6 @@
     },
     {
       "name": "Corkickle",
-      "code": "CKL",
       "coordinates": {
         "lat": 54.5331,
         "lng": -3.5931
@@ -315,7 +304,6 @@
     },
     {
       "name": "St Bees",
-      "code": "SBS",
       "coordinates": {
         "lat": 54.4931,
         "lng": -3.6031
@@ -342,7 +330,6 @@
     },
     {
       "name": "Nethertown",
-      "code": "NRT",
       "coordinates": {
         "lat": 54.4531,
         "lng": -3.5981
@@ -369,7 +356,6 @@
     },
     {
       "name": "Braystones",
-      "code": "BBR",
       "coordinates": {
         "lat": 54.4331,
         "lng": -3.5881
@@ -396,7 +382,6 @@
     },
     {
       "name": "Sellafield",
-      "code": "SEL",
       "coordinates": {
         "lat": 54.4181,
         "lng": -3.5031
@@ -423,7 +408,6 @@
     },
     {
       "name": "Seascale",
-      "code": "SSC",
       "coordinates": {
         "lat": 54.3981,
         "lng": -3.4831
@@ -450,7 +434,6 @@
     },
     {
       "name": "Drigg",
-      "code": "DRI",
       "coordinates": {
         "lat": 54.3781,
         "lng": -3.4331
@@ -477,7 +460,6 @@
     },
     {
       "name": "Ravenglass",
-      "code": "RVG",
       "coordinates": {
         "lat": 54.3531,
         "lng": -3.4081
@@ -506,7 +488,6 @@
     },
     {
       "name": "Bootle",
-      "code": "BOC",
       "coordinates": {
         "lat": 54.2931,
         "lng": -3.3731
@@ -533,7 +514,6 @@
     },
     {
       "name": "Silecroft",
-      "code": "SIC",
       "coordinates": {
         "lat": 54.2331,
         "lng": -3.3331
@@ -560,7 +540,6 @@
     },
     {
       "name": "Millom",
-      "code": "MLM",
       "coordinates": {
         "lat": 54.2131,
         "lng": -3.2731
@@ -587,7 +566,6 @@
     },
     {
       "name": "Green Road",
-      "code": "GNR",
       "coordinates": {
         "lat": 54.2431,
         "lng": -3.2231
@@ -614,7 +592,6 @@
     },
     {
       "name": "Foxfield",
-      "code": "FOX",
       "coordinates": {
         "lat": 54.2631,
         "lng": -3.1931
@@ -641,7 +618,6 @@
     },
     {
       "name": "Kirkby-in-Furness",
-      "code": "KBF",
       "coordinates": {
         "lat": 54.2431,
         "lng": -3.1631
@@ -668,7 +644,6 @@
     },
     {
       "name": "Askam",
-      "code": "ASK",
       "coordinates": {
         "lat": 54.1931,
         "lng": -3.2031
@@ -695,7 +670,6 @@
     },
     {
       "name": "Barrow-in-Furness",
-      "code": "BIF",
       "coordinates": {
         "lat": 54.1181,
         "lng": -3.2181
@@ -722,5 +696,43 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "express": {
+      "stations": [
+        "CAR",
+        "MRY",
+        "PRN",
+        "BBR",
+        "RVG",
+        "GNR",
+        "BIF"
+      ],
+      "description": "Express service calling at major stations only"
+    },
+    "fast": {
+      "stations": [
+        "CAR",
+        "DLS",
+        "ASP",
+        "FLM",
+        "HRR",
+        "WTH",
+        "SBS",
+        "BBR",
+        "SEL",
+        "DRI",
+        "BOC",
+        "MLM",
+        "FOX",
+        "ASK",
+        "BIF"
+      ],
+      "description": "Fast service with limited stops"
+    },
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations"
+    }
+  }
 }

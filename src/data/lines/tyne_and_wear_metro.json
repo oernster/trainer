@@ -3,7 +3,7 @@
     "line_name": "Tyne and Wear Metro",
     "description": "Newcastle and Sunderland metro system",
     "operator": "Nexus",
-    "total_stations": 60,
+    "total_stations": 57,
     "frequency": {
       "weekday_peak": "Every 12 minutes",
       "weekday_off_peak": "Every 15 minutes",
@@ -14,7 +14,6 @@
   "stations": [
     {
       "name": "Newcastle Airport",
-      "code": "NNW",
       "coordinates": {
         "lat": 55.0371,
         "lng": -1.6911
@@ -151,7 +150,6 @@
     },
     {
       "name": "Callerton Parkway",
-      "code": "CLP",
       "coordinates": {
         "lat": 55.0261,
         "lng": -1.6731
@@ -288,7 +286,6 @@
     },
     {
       "name": "Bank Foot",
-      "code": "BFT",
       "coordinates": {
         "lat": 55.0131,
         "lng": -1.6631
@@ -425,7 +422,6 @@
     },
     {
       "name": "Kingston Park",
-      "code": "KGP",
       "coordinates": {
         "lat": 55.0061,
         "lng": -1.6531
@@ -562,7 +558,6 @@
     },
     {
       "name": "Fawdon",
-      "code": "FWD",
       "coordinates": {
         "lat": 54.9981,
         "lng": -1.6431
@@ -699,7 +694,6 @@
     },
     {
       "name": "Wansbeck Road",
-      "code": "WBR",
       "coordinates": {
         "lat": 54.9931,
         "lng": -1.6331
@@ -836,7 +830,6 @@
     },
     {
       "name": "Regent Centre",
-      "code": "RGC",
       "coordinates": {
         "lat": 54.9881,
         "lng": -1.6231
@@ -973,7 +966,6 @@
     },
     {
       "name": "South Gosforth",
-      "code": "SGF",
       "coordinates": {
         "lat": 54.9781,
         "lng": -1.6131
@@ -1110,7 +1102,6 @@
     },
     {
       "name": "Ilford Road",
-      "code": "ILR",
       "coordinates": {
         "lat": 54.9731,
         "lng": -1.6031
@@ -1247,7 +1238,6 @@
     },
     {
       "name": "West Jesmond",
-      "code": "WJS",
       "coordinates": {
         "lat": 54.9881,
         "lng": -1.5931
@@ -1384,7 +1374,6 @@
     },
     {
       "name": "Jesmond",
-      "code": "JES",
       "coordinates": {
         "lat": 54.9831,
         "lng": -1.5831
@@ -1521,7 +1510,6 @@
     },
     {
       "name": "Haymarket",
-      "code": "HA1",
       "coordinates": {
         "lat": 54.9781,
         "lng": -1.6131
@@ -1658,7 +1646,6 @@
     },
     {
       "name": "Monument",
-      "code": "MNT",
       "coordinates": {
         "lat": 54.9731,
         "lng": -1.6131
@@ -1795,7 +1782,6 @@
     },
     {
       "name": "Central Station",
-      "code": "CTS",
       "coordinates": {
         "lat": 54.9681,
         "lng": -1.6181
@@ -1935,7 +1921,6 @@
     },
     {
       "name": "Gateshead",
-      "code": "GHD",
       "coordinates": {
         "lat": 54.9631,
         "lng": -1.6031
@@ -2072,7 +2057,6 @@
     },
     {
       "name": "Gateshead Stadium",
-      "code": "GHS",
       "coordinates": {
         "lat": 54.9581,
         "lng": -1.5931
@@ -2209,7 +2193,6 @@
     },
     {
       "name": "Felling",
-      "code": "FEL",
       "coordinates": {
         "lat": 54.9531,
         "lng": -1.5831
@@ -2346,7 +2329,6 @@
     },
     {
       "name": "Heworth",
-      "code": "HEW",
       "coordinates": {
         "lat": 54.9481,
         "lng": -1.5731
@@ -2483,7 +2465,6 @@
     },
     {
       "name": "Pelaw",
-      "code": "PEL",
       "coordinates": {
         "lat": 54.9431,
         "lng": -1.5631
@@ -2620,7 +2601,6 @@
     },
     {
       "name": "Hebburn",
-      "code": "HEB",
       "coordinates": {
         "lat": 54.9381,
         "lng": -1.5131
@@ -2757,7 +2737,6 @@
     },
     {
       "name": "Jarrow",
-      "code": "JAR",
       "coordinates": {
         "lat": 54.9831,
         "lng": -1.4931
@@ -2894,7 +2873,6 @@
     },
     {
       "name": "Bede",
-      "code": "BED",
       "coordinates": {
         "lat": 54.9731,
         "lng": -1.4831
@@ -3031,7 +3009,6 @@
     },
     {
       "name": "Simonside",
-      "code": "SIM",
       "coordinates": {
         "lat": 54.9681,
         "lng": -1.4731
@@ -3168,7 +3145,6 @@
     },
     {
       "name": "Tyne Dock",
-      "code": "TDK",
       "coordinates": {
         "lat": 54.9631,
         "lng": -1.4631
@@ -3305,7 +3281,6 @@
     },
     {
       "name": "Chichester",
-      "code": "CCR",
       "coordinates": {
         "lat": 54.9581,
         "lng": -1.4531
@@ -3442,7 +3417,6 @@
     },
     {
       "name": "South Shields",
-      "code": "SHS",
       "coordinates": {
         "lat": 54.9981,
         "lng": -1.4331
@@ -3579,7 +3553,6 @@
     },
     {
       "name": "Meadow Well",
-      "code": "MEA",
       "coordinates": {
         "lat": 55.0081,
         "lng": -1.4631
@@ -3716,7 +3689,6 @@
     },
     {
       "name": "Percy Main",
-      "code": "PMN",
       "coordinates": {
         "lat": 55.0031,
         "lng": -1.4731
@@ -3853,7 +3825,6 @@
     },
     {
       "name": "Howdon",
-      "code": "HOW",
       "coordinates": {
         "lat": 54.9981,
         "lng": -1.4931
@@ -3990,7 +3961,6 @@
     },
     {
       "name": "Hadrian Road",
-      "code": "HDR",
       "coordinates": {
         "lat": 54.9931,
         "lng": -1.5031
@@ -4127,7 +4097,6 @@
     },
     {
       "name": "Wallsend",
-      "code": "WSD",
       "coordinates": {
         "lat": 54.9881,
         "lng": -1.5331
@@ -4264,7 +4233,6 @@
     },
     {
       "name": "Walkergate",
-      "code": "WKG",
       "coordinates": {
         "lat": 54.9831,
         "lng": -1.5531
@@ -4401,7 +4369,6 @@
     },
     {
       "name": "Chillingham Road",
-      "code": "CHR",
       "coordinates": {
         "lat": 54.9781,
         "lng": -1.5731
@@ -4538,7 +4505,6 @@
     },
     {
       "name": "Byker",
-      "code": "BYK",
       "coordinates": {
         "lat": 54.9731,
         "lng": -1.5831
@@ -4675,7 +4641,6 @@
     },
     {
       "name": "Manors",
-      "code": "MMN",
       "coordinates": {
         "lat": 54.9731,
         "lng": -1.6031
@@ -4812,7 +4777,6 @@
     },
     {
       "name": "St James",
-      "code": "STJ",
       "coordinates": {
         "lat": 54.9731,
         "lng": -1.6231
@@ -4949,7 +4913,6 @@
     },
     {
       "name": "West Monkseaton",
-      "code": "WMS",
       "coordinates": {
         "lat": 55.0431,
         "lng": -1.5031
@@ -5086,7 +5049,6 @@
     },
     {
       "name": "Monkseaton",
-      "code": "MKS",
       "coordinates": {
         "lat": 55.0431,
         "lng": -1.4931
@@ -5223,7 +5185,6 @@
     },
     {
       "name": "Cullercoats",
-      "code": "CUL",
       "coordinates": {
         "lat": 55.0431,
         "lng": -1.4831
@@ -5360,7 +5321,6 @@
     },
     {
       "name": "Tynemouth",
-      "code": "TYM",
       "coordinates": {
         "lat": 55.0181,
         "lng": -1.4231
@@ -5497,7 +5457,6 @@
     },
     {
       "name": "North Shields",
-      "code": "NSH",
       "coordinates": {
         "lat": 55.0081,
         "lng": -1.4431
@@ -5633,145 +5592,7 @@
       }
     },
     {
-      "name": "Meadow Well",
-      "code": "MEA",
-      "coordinates": {
-        "lat": 55.0081,
-        "lng": -1.4631
-      },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "09:15",
-          "09:25",
-          "09:35",
-          "09:45",
-          "09:55",
-          "10:05",
-          "10:15",
-          "10:25",
-          "10:35",
-          "10:45",
-          "10:55",
-          "11:05",
-          "11:15",
-          "11:25",
-          "11:35",
-          "11:45",
-          "11:55",
-          "12:05",
-          "12:15",
-          "12:25",
-          "12:35",
-          "12:45",
-          "12:55",
-          "13:05",
-          "13:15",
-          "13:25",
-          "13:35",
-          "13:45",
-          "13:55",
-          "14:05",
-          "14:15",
-          "14:25",
-          "14:35",
-          "14:45",
-          "14:55",
-          "15:05",
-          "15:15",
-          "15:25",
-          "15:35",
-          "15:45",
-          "15:55",
-          "16:05"
-        ],
-        "afternoon": [
-          "16:15",
-          "16:25",
-          "16:35",
-          "16:45",
-          "16:55",
-          "17:05",
-          "17:15",
-          "17:25",
-          "17:35",
-          "17:45",
-          "17:55",
-          "18:05",
-          "18:15",
-          "18:25",
-          "18:35",
-          "18:45",
-          "18:55",
-          "19:05",
-          "19:15",
-          "19:25",
-          "19:35",
-          "19:45",
-          "19:55",
-          "20:05",
-          "20:15",
-          "20:25",
-          "20:35",
-          "20:45",
-          "20:55",
-          "21:05",
-          "21:15",
-          "21:25",
-          "21:35",
-          "21:45",
-          "21:55",
-          "22:05"
-        ],
-        "evening": [
-          "22:15",
-          "22:25",
-          "22:35",
-          "22:45",
-          "22:55",
-          "23:05",
-          "23:15",
-          "23:25",
-          "23:35",
-          "23:45",
-          "23:55",
-          "00:05",
-          "00:15",
-          "00:25",
-          "00:35",
-          "00:45",
-          "00:55",
-          "01:05",
-          "01:15",
-          "01:25",
-          "01:35",
-          "01:45",
-          "01:55",
-          "02:05",
-          "02:15",
-          "02:25",
-          "02:35",
-          "02:45",
-          "02:55",
-          "03:05",
-          "03:15",
-          "03:25",
-          "03:35",
-          "03:45",
-          "03:55",
-          "04:05"
-        ],
-        "night": [
-          "04:15",
-          "04:30",
-          "04:45",
-          "05:00"
-        ]
-      }
-    },
-    {
       "name": "Whitley Bay",
-      "code": "WLB",
       "coordinates": {
         "lat": 55.0431,
         "lng": -1.4431
@@ -5908,7 +5729,6 @@
     },
     {
       "name": "Benton",
-      "code": "BEN",
       "coordinates": {
         "lat": 55.0131,
         "lng": -1.5631
@@ -6045,7 +5865,6 @@
     },
     {
       "name": "Four Lane Ends",
-      "code": "FOU",
       "coordinates": {
         "lat": 55.0081,
         "lng": -1.5731
@@ -6182,7 +6001,6 @@
     },
     {
       "name": "Longbenton",
-      "code": "LLN",
       "coordinates": {
         "lat": 55.0031,
         "lng": -1.5831
@@ -6319,7 +6137,6 @@
     },
     {
       "name": "Northumberland Park",
-      "code": "NPK",
       "coordinates": {
         "lat": 55.0331,
         "lng": -1.5431
@@ -6456,7 +6273,6 @@
     },
     {
       "name": "Shiremoor",
-      "code": "SHM",
       "coordinates": {
         "lat": 55.0381,
         "lng": -1.5331
@@ -6593,7 +6409,6 @@
     },
     {
       "name": "Palmersville",
-      "code": "PAL",
       "coordinates": {
         "lat": 55.0281,
         "lng": -1.5431
@@ -6729,145 +6544,7 @@
       }
     },
     {
-      "name": "Pelaw",
-      "code": "PEL",
-      "coordinates": {
-        "lat": 54.9431,
-        "lng": -1.5631
-      },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "16:06",
-          "16:16",
-          "16:26",
-          "16:36",
-          "16:46",
-          "16:56",
-          "17:06",
-          "17:16",
-          "17:26",
-          "17:36",
-          "17:46",
-          "17:56",
-          "18:06",
-          "18:16",
-          "18:26",
-          "18:36",
-          "18:46",
-          "18:56",
-          "19:06",
-          "19:16",
-          "19:26",
-          "19:36",
-          "19:46",
-          "19:56",
-          "20:06",
-          "20:16",
-          "20:26",
-          "20:36",
-          "20:46",
-          "20:56",
-          "21:06",
-          "21:16",
-          "21:26",
-          "21:36",
-          "21:46",
-          "21:56",
-          "22:06",
-          "22:16",
-          "22:26",
-          "22:36",
-          "22:46",
-          "22:56"
-        ],
-        "afternoon": [
-          "23:06",
-          "23:16",
-          "23:26",
-          "23:36",
-          "23:46",
-          "23:56",
-          "00:06",
-          "00:16",
-          "00:26",
-          "00:36",
-          "00:46",
-          "00:56",
-          "01:06",
-          "01:16",
-          "01:26",
-          "01:36",
-          "01:46",
-          "01:56",
-          "02:06",
-          "02:16",
-          "02:26",
-          "02:36",
-          "02:46",
-          "02:56",
-          "03:06",
-          "03:16",
-          "03:26",
-          "03:36",
-          "03:46",
-          "03:56",
-          "04:06",
-          "04:16",
-          "04:26",
-          "04:36",
-          "04:46",
-          "04:56"
-        ],
-        "evening": [
-          "05:06",
-          "05:16",
-          "05:26",
-          "05:36",
-          "05:46",
-          "05:56",
-          "06:06",
-          "06:16",
-          "06:26",
-          "06:36",
-          "06:46",
-          "06:56",
-          "07:06",
-          "07:16",
-          "07:26",
-          "07:36",
-          "07:46",
-          "07:56",
-          "08:06",
-          "08:16",
-          "08:26",
-          "08:36",
-          "08:46",
-          "08:56",
-          "09:06",
-          "09:16",
-          "09:26",
-          "09:36",
-          "09:46",
-          "09:56",
-          "10:06",
-          "10:16",
-          "10:26",
-          "10:36",
-          "10:46",
-          "10:56"
-        ],
-        "night": [
-          "11:06",
-          "11:21",
-          "11:36",
-          "11:51"
-        ]
-      }
-    },
-    {
       "name": "Fellgate",
-      "code": "FLG",
       "coordinates": {
         "lat": 54.9331,
         "lng": -1.4931
@@ -7004,7 +6681,6 @@
     },
     {
       "name": "Brockley Whins",
-      "code": "BRW",
       "coordinates": {
         "lat": 54.9281,
         "lng": -1.4631
@@ -7141,7 +6817,6 @@
     },
     {
       "name": "East Boldon",
-      "code": "EBL",
       "coordinates": {
         "lat": 54.9231,
         "lng": -1.4331
@@ -7278,7 +6953,6 @@
     },
     {
       "name": "Seaburn",
-      "code": "SEB",
       "coordinates": {
         "lat": 54.9181,
         "lng": -1.3831
@@ -7415,7 +7089,6 @@
     },
     {
       "name": "Stadium of Light",
-      "code": "ST6",
       "coordinates": {
         "lat": 54.9131,
         "lng": -1.3931
@@ -7552,7 +7225,6 @@
     },
     {
       "name": "St Peter's",
-      "code": "ST2",
       "coordinates": {
         "lat": 54.9081,
         "lng": -1.3831
@@ -7689,7 +7361,6 @@
     },
     {
       "name": "Sunderland",
-      "code": "SUN",
       "coordinates": {
         "lat": 54.9031,
         "lng": -1.3831
@@ -7828,7 +7499,6 @@
     },
     {
       "name": "Park Lane",
-      "code": "PKL",
       "coordinates": {
         "lat": 54.9031,
         "lng": -1.3731
@@ -7965,7 +7635,6 @@
     },
     {
       "name": "South Hylton",
-      "code": "SHL",
       "coordinates": {
         "lat": 54.8931,
         "lng": -1.4231
@@ -8100,5 +7769,11 @@
         ]
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "all_stations": {
+      "stations": "all",
+      "description": "All stations service"
+    }
+  }
 }

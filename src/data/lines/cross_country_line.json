@@ -14,7 +14,6 @@
   "stations": [
     {
       "name": "Aberdeen",
-      "code": "ABE",
       "coordinates": {
         "lat": 57.1437,
         "lng": -2.0968
@@ -40,7 +39,6 @@
     },
     {
       "name": "Edinburgh",
-      "code": "EDB",
       "coordinates": {
         "lat": 55.9519,
         "lng": -3.1881
@@ -66,7 +64,6 @@
     },
     {
       "name": "Glasgow Central",
-      "code": "GLC",
       "coordinates": {
         "lat": 55.8581,
         "lng": -4.2581
@@ -92,7 +89,6 @@
     },
     {
       "name": "Motherwell",
-      "code": "MTH",
       "coordinates": {
         "lat": 55.7881,
         "lng": -3.9831
@@ -118,7 +114,6 @@
     },
     {
       "name": "Carstairs",
-      "code": "CRS",
       "coordinates": {
         "lat": 55.6881,
         "lng": -3.6081
@@ -144,7 +139,6 @@
     },
     {
       "name": "Lockerbie",
-      "code": "LOC",
       "coordinates": {
         "lat": 55.1181,
         "lng": -3.3581
@@ -170,7 +164,6 @@
     },
     {
       "name": "Carlisle",
-      "code": "CAR",
       "coordinates": {
         "lat": 54.8881,
         "lng": -2.9331
@@ -196,7 +189,6 @@
     },
     {
       "name": "Penrith",
-      "code": "PNR",
       "coordinates": {
         "lat": 54.6681,
         "lng": -2.7581
@@ -222,7 +214,6 @@
     },
     {
       "name": "Oxenholme Lake District",
-      "code": "OXN",
       "coordinates": {
         "lat": 54.3181,
         "lng": -2.7581
@@ -248,7 +239,6 @@
     },
     {
       "name": "Lancaster",
-      "code": "LAN",
       "coordinates": {
         "lat": 54.0481,
         "lng": -2.8081
@@ -274,7 +264,6 @@
     },
     {
       "name": "Preston",
-      "code": "PRE",
       "coordinates": {
         "lat": 53.7581,
         "lng": -2.7081
@@ -300,7 +289,6 @@
     },
     {
       "name": "Wigan North Western",
-      "code": "WGN",
       "coordinates": {
         "lat": 53.55,
         "lng": -2.6333
@@ -326,7 +314,6 @@
     },
     {
       "name": "Warrington Bank Quay",
-      "code": "WBQ",
       "coordinates": {
         "lat": 53.3881,
         "lng": -2.5831
@@ -352,7 +339,6 @@
     },
     {
       "name": "Crewe",
-      "code": "CRE",
       "coordinates": {
         "lat": 53.0881,
         "lng": -2.4331
@@ -378,7 +364,6 @@
     },
     {
       "name": "Stafford",
-      "code": "STA",
       "coordinates": {
         "lat": 52.8044,
         "lng": -2.1194
@@ -404,7 +389,6 @@
     },
     {
       "name": "Wolverhampton",
-      "code": "WVH",
       "coordinates": {
         "lat": 52.5881,
         "lng": -2.1194
@@ -430,7 +414,6 @@
     },
     {
       "name": "Birmingham New Street",
-      "code": "BIR",
       "coordinates": {
         "lat": 52.4775,
         "lng": -1.8994
@@ -456,7 +439,6 @@
     },
     {
       "name": "Birmingham International",
-      "code": "BHI",
       "coordinates": {
         "lat": 52.45,
         "lng": -1.7333
@@ -482,7 +464,6 @@
     },
     {
       "name": "Coventry",
-      "code": "CCV",
       "coordinates": {
         "lat": 52.4006,
         "lng": -1.5181
@@ -508,7 +489,6 @@
     },
     {
       "name": "Rugby",
-      "code": "RUG",
       "coordinates": {
         "lat": 52.3781,
         "lng": -1.2542
@@ -534,7 +514,6 @@
     },
     {
       "name": "Banbury",
-      "code": "BAN",
       "coordinates": {
         "lat": 52.0631,
         "lng": -1.33
@@ -560,7 +539,6 @@
     },
     {
       "name": "Oxford",
-      "code": "OXF",
       "coordinates": {
         "lat": 51.7531,
         "lng": -1.27
@@ -586,7 +564,6 @@
     },
     {
       "name": "Reading",
-      "code": "RDG",
       "coordinates": {
         "lat": 51.4581,
         "lng": -0.9719
@@ -612,7 +589,6 @@
     },
     {
       "name": "Basingstoke",
-      "code": "BSK",
       "coordinates": {
         "lat": 51.2667,
         "lng": -1.0833
@@ -638,7 +614,6 @@
     },
     {
       "name": "Winchester",
-      "code": "WIN",
       "coordinates": {
         "lat": 51.0667,
         "lng": -1.3167
@@ -664,7 +639,6 @@
     },
     {
       "name": "Southampton Central",
-      "code": "SOU",
       "coordinates": {
         "lat": 50.9083,
         "lng": -1.4167
@@ -690,7 +664,6 @@
     },
     {
       "name": "Bournemouth",
-      "code": "BMH",
       "coordinates": {
         "lat": 50.7281,
         "lng": -1.8781
@@ -716,7 +689,6 @@
     },
     {
       "name": "Bristol Temple Meads",
-      "code": "BRI",
       "coordinates": {
         "lat": 51.4494,
         "lng": -2.5819
@@ -742,7 +714,6 @@
     },
     {
       "name": "Weston-super-Mare",
-      "code": "WWS",
       "coordinates": {
         "lat": 51.3481,
         "lng": -2.9781
@@ -768,7 +739,6 @@
     },
     {
       "name": "Bridgwater",
-      "code": "BWT",
       "coordinates": {
         "lat": 51.1281,
         "lng": -2.9981
@@ -794,7 +764,6 @@
     },
     {
       "name": "Taunton",
-      "code": "TAU",
       "coordinates": {
         "lat": 51.0181,
         "lng": -3.1081
@@ -820,7 +789,6 @@
     },
     {
       "name": "Exeter St Davids",
-      "code": "EXD",
       "coordinates": {
         "lat": 50.7281,
         "lng": -3.5381
@@ -846,7 +814,6 @@
     },
     {
       "name": "Plymouth",
-      "code": "PLY",
       "coordinates": {
         "lat": 50.3781,
         "lng": -4.1381
@@ -872,7 +839,6 @@
     },
     {
       "name": "Truro",
-      "code": "TRU",
       "coordinates": {
         "lat": 50.2681,
         "lng": -5.0481
@@ -898,7 +864,6 @@
     },
     {
       "name": "Penzance",
-      "code": "PNZ",
       "coordinates": {
         "lat": 50.1181,
         "lng": -5.5381
@@ -932,7 +897,6 @@
       "stations": [
         "ABE",
         "EDB",
-        "BHM",
         "BRI",
         "PLY",
         "PNZ"
@@ -953,10 +917,8 @@
       "frequency": "Every 30 minutes",
       "stations": [
         "EDB",
-        "ABD",
         "PLY",
         "ABE",
-        "BHM",
         "PNZ",
         "BRI"
       ],

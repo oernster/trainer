@@ -3,7 +3,7 @@
     "line_name": "Cambrian Line",
     "description": "Shrewsbury to Aberystwyth/Pwllheli",
     "operator": "Transport for Wales",
-    "total_stations": 33,
+    "total_stations": 31,
     "frequency": {
       "weekday_peak": "Every 2 hours",
       "weekday_off_peak": "Every 2 hours",
@@ -14,7 +14,6 @@
   "stations": [
     {
       "name": "Shrewsbury",
-      "code": "SSH",
       "coordinates": {
         "lat": 52.7081,
         "lng": -2.7531
@@ -43,7 +42,6 @@
     },
     {
       "name": "Welshpool",
-      "code": "WLP",
       "coordinates": {
         "lat": 52.6631,
         "lng": -3.1431
@@ -69,7 +67,6 @@
     },
     {
       "name": "Newtown",
-      "code": "NWT",
       "coordinates": {
         "lat": 52.5131,
         "lng": -3.3231
@@ -95,7 +92,6 @@
     },
     {
       "name": "Caersws",
-      "code": "CSW",
       "coordinates": {
         "lat": 52.5131,
         "lng": -3.4281
@@ -121,7 +117,6 @@
     },
     {
       "name": "Machynlleth",
-      "code": "MCH",
       "coordinates": {
         "lat": 52.5931,
         "lng": -3.8531
@@ -147,7 +142,6 @@
     },
     {
       "name": "Dovey Junction",
-      "code": "DVY",
       "coordinates": {
         "lat": 52.5631,
         "lng": -3.9131
@@ -173,7 +167,6 @@
     },
     {
       "name": "Borth",
-      "code": "BRH",
       "coordinates": {
         "lat": 52.4881,
         "lng": -4.0531
@@ -199,7 +192,6 @@
     },
     {
       "name": "Aberystwyth",
-      "code": "AYW",
       "coordinates": {
         "lat": 52.4131,
         "lng": -4.0831
@@ -224,34 +216,7 @@
       }
     },
     {
-      "name": "Dovey Junction",
-      "code": "DVY",
-      "coordinates": {
-        "lat": 52.5631,
-        "lng": -3.9131
-      },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "07:40",
-          "09:40",
-          "11:40"
-        ],
-        "afternoon": [
-          "13:40",
-          "15:40",
-          "17:40"
-        ],
-        "evening": [
-          "19:40",
-          "21:40"
-        ],
-        "night": []
-      }
-    },
-    {
       "name": "Aberdovey",
-      "code": "AVY",
       "coordinates": {
         "lat": 52.5431,
         "lng": -4.0531
@@ -277,7 +242,6 @@
     },
     {
       "name": "Tywyn",
-      "code": "TYW",
       "coordinates": {
         "lat": 52.5831,
         "lng": -4.0931
@@ -305,7 +269,6 @@
     },
     {
       "name": "Tonfanau",
-      "code": "TNF",
       "coordinates": {
         "lat": 52.6031,
         "lng": -4.1231
@@ -331,7 +294,6 @@
     },
     {
       "name": "Llwyngwril",
-      "code": "LL1",
       "coordinates": {
         "lat": 52.6531,
         "lng": -4.0881
@@ -357,7 +319,6 @@
     },
     {
       "name": "Fairbourne",
-      "code": "FRB",
       "coordinates": {
         "lat": 52.6981,
         "lng": -4.0531
@@ -385,7 +346,6 @@
     },
     {
       "name": "Barmouth",
-      "code": "BMT",
       "coordinates": {
         "lat": 52.7231,
         "lng": -4.0531
@@ -411,7 +371,6 @@
     },
     {
       "name": "Llanaber",
-      "code": "LLA",
       "coordinates": {
         "lat": 52.7431,
         "lng": -4.0731
@@ -437,7 +396,6 @@
     },
     {
       "name": "Talybont",
-      "code": "TLB",
       "coordinates": {
         "lat": 52.7731,
         "lng": -4.0931
@@ -463,7 +421,6 @@
     },
     {
       "name": "Dyffryn Ardudwy",
-      "code": "DYF",
       "coordinates": {
         "lat": 52.7981,
         "lng": -4.1031
@@ -489,7 +446,6 @@
     },
     {
       "name": "Llanbedr",
-      "code": "LBR",
       "coordinates": {
         "lat": 52.8231,
         "lng": -4.1131
@@ -515,7 +471,6 @@
     },
     {
       "name": "Pensarn",
-      "code": "PES",
       "coordinates": {
         "lat": 52.8431,
         "lng": -4.1231
@@ -541,7 +496,6 @@
     },
     {
       "name": "Llandanwg",
-      "code": "LDN",
       "coordinates": {
         "lat": 52.8531,
         "lng": -4.1331
@@ -567,7 +521,6 @@
     },
     {
       "name": "Harlech",
-      "code": "HRL",
       "coordinates": {
         "lat": 52.8631,
         "lng": -4.1081
@@ -593,7 +546,6 @@
     },
     {
       "name": "Tygwyn",
-      "code": "TYG",
       "coordinates": {
         "lat": 52.8931,
         "lng": -4.1231
@@ -619,7 +571,6 @@
     },
     {
       "name": "Talsarnau",
-      "code": "TAL",
       "coordinates": {
         "lat": 52.9131,
         "lng": -4.1331
@@ -645,7 +596,6 @@
     },
     {
       "name": "Llandecwyn",
-      "code": "LLC",
       "coordinates": {
         "lat": 52.9331,
         "lng": -4.0731
@@ -671,7 +621,6 @@
     },
     {
       "name": "Penrhyndeudraeth",
-      "code": "PRH",
       "coordinates": {
         "lat": 52.9331,
         "lng": -4.0631
@@ -697,7 +646,6 @@
     },
     {
       "name": "Minffordd",
-      "code": "MFF",
       "coordinates": {
         "lat": 52.9331,
         "lng": -4.0531
@@ -725,7 +673,6 @@
     },
     {
       "name": "Porthmadog",
-      "code": "PTM",
       "coordinates": {
         "lat": 52.9331,
         "lng": -4.1331
@@ -754,7 +701,6 @@
     },
     {
       "name": "Criccieth",
-      "code": "CCC",
       "coordinates": {
         "lat": 52.9231,
         "lng": -4.2331
@@ -780,7 +726,6 @@
     },
     {
       "name": "Penychain",
-      "code": "PNC",
       "coordinates": {
         "lat": 52.9031,
         "lng": -4.3331
@@ -806,7 +751,6 @@
     },
     {
       "name": "Abererch",
-      "code": "ABH",
       "coordinates": {
         "lat": 52.8931,
         "lng": -4.3731
@@ -832,7 +776,6 @@
     },
     {
       "name": "Pwllheli",
-      "code": "PWL",
       "coordinates": {
         "lat": 52.8831,
         "lng": -4.4131
@@ -856,5 +799,57 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations"
+    },
+    "semi_fast": {
+      "stations": [
+        "SSH",
+        "WLP",
+        "CSW",
+        "MCH",
+        "BRH",
+        "AYW",
+        "TYW",
+        "TNF",
+        "FRB",
+        "BMT",
+        "TLB",
+        "LBR",
+        "PES",
+        "HRL",
+        "TYG",
+        "LLC",
+        "PRH",
+        "PTM",
+        "CCC",
+        "ABH",
+        "PWL"
+      ],
+      "description": "Semi-fast service calling at major stations"
+    },
+    "fast": {
+      "stations": [
+        "SSH",
+        "NWT",
+        "MCH",
+        "BRH",
+        "AVY",
+        "LL1",
+        "BMT",
+        "TLB",
+        "LBR",
+        "LDN",
+        "TAL",
+        "PRH",
+        "PTM",
+        "PNC",
+        "PWL"
+      ],
+      "description": "Fast service calling at principal stations"
+    }
+  }
 }

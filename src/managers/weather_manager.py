@@ -27,7 +27,6 @@ from ..api.weather_api_manager import (
 
 logger = logging.getLogger(__name__)
 
-
 class WeatherObserver(ABC):
     """
     Abstract observer for weather updates.
@@ -50,7 +49,6 @@ class WeatherObserver(ABC):
     def on_weather_loading(self, is_loading: bool) -> None:
         """Called when weather loading state changes."""
         pass
-
 
 class WeatherSubject:
     """
@@ -108,7 +106,6 @@ class WeatherSubject:
         """Get number of attached observers."""
         return len(self._observers)
 
-
 class WeatherCommand(ABC):
     """
     Abstract command for weather operations.
@@ -130,7 +127,6 @@ class WeatherCommand(ABC):
     def get_description(self) -> str:
         """Get command description."""
         pass
-
 
 class RefreshWeatherCommand(WeatherCommand):
     """Command to refresh weather data."""
@@ -157,7 +153,6 @@ class RefreshWeatherCommand(WeatherCommand):
         """Get command description."""
         location_name = self._location.name if self._location else "default location"
         return f"Refresh weather for {location_name}"
-
 
 class WeatherErrorHandler:
     """
@@ -211,7 +206,6 @@ class WeatherErrorHandler:
         """Handle generic errors."""
         self._logger.error(f"Unexpected weather error: {error}")
         return "An unexpected error occurred while fetching weather data."
-
 
 class WeatherManager(QObject, WeatherSubject):
     """
@@ -303,7 +297,7 @@ class WeatherManager(QObject, WeatherSubject):
             if len(self._command_history) > self._max_history_size:
                 self._command_history.pop(0)
 
-            logger.info(f"Executed command: {command.get_description()}")
+            logger.debug(f"Executed command: {command.get_description()}")
 
         except Exception as e:
             logger.error(f"Command execution failed: {e}")

@@ -20,12 +20,9 @@
     "BIR-LIC": 30,
     "BIR-RUG": 35,
     "BIR-NUN": 30,
-    "BIR-LEA": 15,
     "BIR-RDC": 10,
     "BIR-KID": 25,
-    "BIR-WOS": 15,
-    "BIR-SLR": 10,
-    "BIR-BSL": 15
+    "BIR-WOS": 15
   },
   "typical_services": {
     "peak_frequency": "Every 10-15 minutes",
@@ -38,7 +35,6 @@
   "stations": [
     {
       "name": "Birmingham New Street",
-      "code": "BIR",
       "coordinates": {
         "lat": 52.4775,
         "lng": -1.8994
@@ -70,7 +66,6 @@
     },
     {
       "name": "Birmingham Moor Street",
-      "code": "BMO",
       "coordinates": {
         "lat": 52.4789,
         "lng": -1.8931
@@ -99,7 +94,6 @@
     },
     {
       "name": "Birmingham Snow Hill",
-      "code": "BSW",
       "coordinates": {
         "lat": 52.4831,
         "lng": -1.8972
@@ -129,7 +123,6 @@
     },
     {
       "name": "Wolverhampton",
-      "code": "WVH",
       "coordinates": {
         "lat": 52.5881,
         "lng": -2.1194
@@ -161,7 +154,6 @@
     },
     {
       "name": "Shrewsbury",
-      "code": "SSH",
       "coordinates": {
         "lat": 52.7111,
         "lng": -2.75
@@ -191,7 +183,6 @@
     },
     {
       "name": "Coventry",
-      "code": "CCV",
       "coordinates": {
         "lat": 52.4006,
         "lng": -1.5181
@@ -221,7 +212,6 @@
     },
     {
       "name": "Leamington Spa",
-      "code": "LMS",
       "coordinates": {
         "lat": 52.2847,
         "lng": -1.5361
@@ -251,7 +241,6 @@
     },
     {
       "name": "Rugby",
-      "code": "RUG",
       "coordinates": {
         "lat": 52.3781,
         "lng": -1.2542
@@ -281,7 +270,6 @@
     },
     {
       "name": "Nuneaton",
-      "code": "NUN",
       "coordinates": {
         "lat": 52.525,
         "lng": -1.4639
@@ -311,7 +299,6 @@
     },
     {
       "name": "Lichfield Trent Valley",
-      "code": "LTV",
       "coordinates": {
         "lat": 52.6819,
         "lng": -1.8
@@ -341,7 +328,6 @@
     },
     {
       "name": "Lichfield City",
-      "code": "LIC",
       "coordinates": {
         "lat": 52.6833,
         "lng": -1.8278
@@ -370,7 +356,6 @@
     },
     {
       "name": "Tamworth",
-      "code": "TAM",
       "coordinates": {
         "lat": 52.6333,
         "lng": -1.6944
@@ -400,7 +385,6 @@
     },
     {
       "name": "Burton-on-Trent",
-      "code": "BUT",
       "coordinates": {
         "lat": 52.8,
         "lng": -1.6389
@@ -429,7 +413,6 @@
     },
     {
       "name": "Walsall",
-      "code": "WSL",
       "coordinates": {
         "lat": 52.5833,
         "lng": -1.9833
@@ -458,7 +441,6 @@
     },
     {
       "name": "Cannock",
-      "code": "CAO",
       "coordinates": {
         "lat": 52.6889,
         "lng": -2.0333
@@ -484,7 +466,6 @@
     },
     {
       "name": "Hednesford",
-      "code": "HNF",
       "coordinates": {
         "lat": 52.7111,
         "lng": -2.0
@@ -510,7 +491,6 @@
     },
     {
       "name": "Rugeley Trent Valley",
-      "code": "RGL",
       "coordinates": {
         "lat": 52.7667,
         "lng": -1.9333
@@ -539,7 +519,6 @@
     },
     {
       "name": "Rugeley Town",
-      "code": "RGT",
       "coordinates": {
         "lat": 52.7583,
         "lng": -1.9333
@@ -565,7 +544,6 @@
     },
     {
       "name": "Bromsgrove",
-      "code": "BMV",
       "coordinates": {
         "lat": 52.3333,
         "lng": -2.05
@@ -594,7 +572,6 @@
     },
     {
       "name": "Redditch",
-      "code": "RDC",
       "coordinates": {
         "lat": 52.3,
         "lng": -1.95
@@ -620,7 +597,6 @@
     },
     {
       "name": "Worcester Shrub Hill",
-      "code": "WOS",
       "coordinates": {
         "lat": 52.1944,
         "lng": -2.2167
@@ -650,7 +626,6 @@
     },
     {
       "name": "Worcester Foregate Street",
-      "code": "WOF",
       "coordinates": {
         "lat": 52.1944,
         "lng": -2.2222
@@ -679,7 +654,6 @@
     },
     {
       "name": "Great Malvern",
-      "code": "GMV",
       "coordinates": {
         "lat": 52.1111,
         "lng": -2.3333
@@ -708,7 +682,6 @@
     },
     {
       "name": "Hereford",
-      "code": "HFD",
       "coordinates": {
         "lat": 52.0556,
         "lng": -2.7167
@@ -738,7 +711,6 @@
     },
     {
       "name": "Kidderminster",
-      "code": "KID",
       "coordinates": {
         "lat": 52.3833,
         "lng": -2.25
@@ -767,7 +739,6 @@
     },
     {
       "name": "Stourbridge Junction",
-      "code": "SBJ",
       "coordinates": {
         "lat": 52.45,
         "lng": -2.1333
@@ -796,7 +767,6 @@
     },
     {
       "name": "Stourbridge Town",
-      "code": "SBT",
       "coordinates": {
         "lat": 52.4556,
         "lng": -2.1444
@@ -822,7 +792,6 @@
     },
     {
       "name": "Smethwick Galton Bridge",
-      "code": "SGB",
       "coordinates": {
         "lat": 52.5,
         "lng": -1.9833
@@ -851,7 +820,6 @@
     },
     {
       "name": "Smethwick Rolfe Street",
-      "code": "SMR",
       "coordinates": {
         "lat": 52.4972,
         "lng": -1.9778
@@ -877,7 +845,6 @@
     },
     {
       "name": "The Hawthorns",
-      "code": "THW",
       "coordinates": {
         "lat": 52.5056,
         "lng": -1.9639
@@ -906,7 +873,6 @@
     },
     {
       "name": "Jewellery Quarter",
-      "code": "JEQ",
       "coordinates": {
         "lat": 52.4889,
         "lng": -1.9139
@@ -935,7 +901,6 @@
     },
     {
       "name": "Five Ways",
-      "code": "FWY",
       "coordinates": {
         "lat": 52.4722,
         "lng": -1.9139
@@ -961,7 +926,6 @@
     },
     {
       "name": "University",
-      "code": "UNI",
       "coordinates": {
         "lat": 52.45,
         "lng": -1.9361
@@ -990,7 +954,6 @@
     },
     {
       "name": "Selly Oak",
-      "code": "SLY",
       "coordinates": {
         "lat": 52.4417,
         "lng": -1.9417
@@ -1016,7 +979,6 @@
     },
     {
       "name": "Bournville",
-      "code": "BRV",
       "coordinates": {
         "lat": 52.4278,
         "lng": -1.9361
@@ -1042,7 +1004,6 @@
     },
     {
       "name": "Kings Norton",
-      "code": "KNN",
       "coordinates": {
         "lat": 52.4111,
         "lng": -1.9333
@@ -1068,7 +1029,6 @@
     },
     {
       "name": "Northfield",
-      "code": "NFD",
       "coordinates": {
         "lat": 52.4,
         "lng": -1.9639
@@ -1094,7 +1054,6 @@
     },
     {
       "name": "Longbridge",
-      "code": "LOB",
       "coordinates": {
         "lat": 52.3917,
         "lng": -1.9833
@@ -1120,7 +1079,6 @@
     },
     {
       "name": "Barnt Green",
-      "code": "BTG",
       "coordinates": {
         "lat": 52.3667,
         "lng": -1.9917
@@ -1149,7 +1107,6 @@
     },
     {
       "name": "Alvechurch",
-      "code": "ALV",
       "coordinates": {
         "lat": 52.35,
         "lng": -1.9667
@@ -1181,9 +1138,7 @@
       "typical_journey_time": 48,
       "frequency": "Every 30 minutes",
       "stations": [
-        "SHR",
         "BIR",
-        "BHM",
         "WVH",
         "ALV"
       ],

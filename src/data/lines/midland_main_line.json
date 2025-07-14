@@ -14,7 +14,6 @@
   "stations": [
     {
       "name": "London St Pancras",
-      "code": "STP",
       "coordinates": {
         "lat": 51.5308,
         "lng": -0.1267
@@ -49,7 +48,6 @@
     },
     {
       "name": "Luton",
-      "code": "LUT",
       "coordinates": {
         "lat": 51.8833,
         "lng": -0.4167
@@ -78,7 +76,6 @@
     },
     {
       "name": "Bedford",
-      "code": "BDF",
       "coordinates": {
         "lat": 52.1333,
         "lng": -0.4833
@@ -104,7 +101,6 @@
     },
     {
       "name": "Wellingborough",
-      "code": "WEL",
       "coordinates": {
         "lat": 52.3,
         "lng": -0.6833
@@ -130,7 +126,6 @@
     },
     {
       "name": "Kettering",
-      "code": "KET",
       "coordinates": {
         "lat": 52.4,
         "lng": -0.7167
@@ -156,7 +151,6 @@
     },
     {
       "name": "Market Harborough",
-      "code": "MHR",
       "coordinates": {
         "lat": 52.4833,
         "lng": -0.9167
@@ -182,7 +176,6 @@
     },
     {
       "name": "Leicester",
-      "code": "LEI",
       "coordinates": {
         "lat": 52.6333,
         "lng": -1.1167
@@ -208,7 +201,6 @@
     },
     {
       "name": "Loughborough",
-      "code": "LBO",
       "coordinates": {
         "lat": 52.7667,
         "lng": -1.2
@@ -234,7 +226,6 @@
     },
     {
       "name": "East Midlands Parkway",
-      "code": "EMD",
       "coordinates": {
         "lat": 52.8833,
         "lng": -1.2833
@@ -260,7 +251,6 @@
     },
     {
       "name": "Nottingham",
-      "code": "NOT",
       "coordinates": {
         "lat": 52.95,
         "lng": -1.15
@@ -286,7 +276,6 @@
     },
     {
       "name": "Alfreton",
-      "code": "ALF",
       "coordinates": {
         "lat": 53.0967,
         "lng": -1.3833
@@ -312,7 +301,6 @@
     },
     {
       "name": "Chesterfield",
-      "code": "CHD",
       "coordinates": {
         "lat": 53.2333,
         "lng": -1.4333
@@ -338,7 +326,6 @@
     },
     {
       "name": "Sheffield",
-      "code": "SHF",
       "coordinates": {
         "lat": 53.3781,
         "lng": -1.4619
@@ -364,7 +351,6 @@
     },
     {
       "name": "Derby",
-      "code": "DBY",
       "coordinates": {
         "lat": 52.9167,
         "lng": -1.4667
@@ -393,7 +379,6 @@
     },
     {
       "name": "Long Eaton",
-      "code": "LGE",
       "coordinates": {
         "lat": 52.8833,
         "lng": -1.2833
@@ -419,7 +404,6 @@
     },
     {
       "name": "Beeston",
-      "code": "BEE",
       "coordinates": {
         "lat": 52.9167,
         "lng": -1.2167
@@ -445,7 +429,6 @@
     },
     {
       "name": "Attenborough",
-      "code": "ATB",
       "coordinates": {
         "lat": 52.9,
         "lng": -1.2333
@@ -478,7 +461,6 @@
       "frequency": "Every 60 minutes",
       "stations": [
         "STP",
-        "LTN",
         "BDF",
         "LEI",
         "NOT",
@@ -501,7 +483,6 @@
       "stations": [
         "BDF",
         "STP",
-        "LTN",
         "SHF",
         "ATB",
         "LEI",

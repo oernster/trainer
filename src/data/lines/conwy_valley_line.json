@@ -1,0 +1,73 @@
+{
+  "metadata": {
+    "line_name": "Conwy Valley Line",
+    "description": "Llandudno Junction to Blaenau Ffestiniog",
+    "operator": "Transport for Wales",
+    "total_stations": 7,
+    "line_color": "#D2001F"
+  },
+  "stations": [
+    {
+      "name": "Llandudno Junction",
+      "coordinates": {
+        "lat": 53.2906,
+        "lng": -3.8256
+      }
+    },
+    {
+      "name": "Llanrwst",
+      "coordinates": {
+        "lat": 53.1406,
+        "lng": -3.7956
+      }
+    },
+    {
+      "name": "Betws-y-Coed",
+      "coordinates": {
+        "lat": 53.0906,
+        "lng": -3.7756
+      }
+    },
+    {
+      "name": "Pont-y-Pant",
+      "coordinates": {
+        "lat": 53.0506,
+        "lng": -3.7556
+      }
+    },
+    {
+      "name": "Dolwyddelan",
+      "coordinates": {
+        "lat": 53.0306,
+        "lng": -3.7356
+      }
+    },
+    {
+      "name": "Roman Bridge",
+      "coordinates": {
+        "lat": 53.0106,
+        "lng": -3.7156
+      }
+    },
+    {
+      "name": "Blaenau Ffestiniog",
+      "coordinates": {
+        "lat": 52.9906,
+        "lng": -3.6956
+      }
+    }
+  ],
+  "service_patterns": {
+    "all_stations": {
+      "stations": "all",
+      "description": "Scenic service through Conwy Valley",
+      "service_type": "stopping",
+      "typical_journey_time": 30,
+      "frequency": "Every 30 minutes"
+    }
+  },
+  "typical_journey_times": {
+    "LLJ-BFF": 60,
+    "BFF-LLJ": 60
+  }
+}

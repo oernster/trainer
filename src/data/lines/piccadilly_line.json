@@ -3,7 +3,7 @@
     "line_name": "Piccadilly Line",
     "description": "Cockfosters to Heathrow/Uxbridge",
     "operator": "Transport for London",
-    "total_stations": 53,
+    "total_stations": 52,
     "line_color": "#003688",
     "frequency": {
       "weekday_peak": "Every hour",
@@ -15,7 +15,6 @@
   "stations": [
     {
       "name": "Cockfosters",
-      "code": "CFS",
       "coordinates": {
         "lat": 51.6517,
         "lng": -0.1496
@@ -43,7 +42,6 @@
     },
     {
       "name": "Oakwood",
-      "code": "OAK",
       "coordinates": {
         "lat": 51.6476,
         "lng": -0.1318
@@ -71,7 +69,6 @@
     },
     {
       "name": "Southgate",
-      "code": "SGT",
       "coordinates": {
         "lat": 51.6322,
         "lng": -0.128
@@ -99,7 +96,6 @@
     },
     {
       "name": "Arnos Grove",
-      "code": "AGR",
       "coordinates": {
         "lat": 51.6164,
         "lng": -0.1331
@@ -127,7 +123,6 @@
     },
     {
       "name": "Bounds Green",
-      "code": "BOU",
       "coordinates": {
         "lat": 51.6071,
         "lng": -0.1243
@@ -155,7 +150,6 @@
     },
     {
       "name": "Wood Green",
-      "code": "WOO",
       "coordinates": {
         "lat": 51.5975,
         "lng": -0.1097
@@ -183,7 +177,6 @@
     },
     {
       "name": "Turnpike Lane",
-      "code": "TPL",
       "coordinates": {
         "lat": 51.5904,
         "lng": -0.1028
@@ -211,7 +204,6 @@
     },
     {
       "name": "Manor House",
-      "code": "MNR",
       "coordinates": {
         "lat": 51.5712,
         "lng": -0.0958
@@ -239,7 +231,6 @@
     },
     {
       "name": "Finsbury Park",
-      "code": "FPK",
       "coordinates": {
         "lat": 51.5642,
         "lng": -0.1065
@@ -270,7 +261,6 @@
     },
     {
       "name": "Arsenal",
-      "code": "ARL",
       "coordinates": {
         "lat": 51.5586,
         "lng": -0.1059
@@ -298,7 +288,6 @@
     },
     {
       "name": "Holloway Road",
-      "code": "HRD",
       "coordinates": {
         "lat": 51.5526,
         "lng": -0.1132
@@ -326,7 +315,6 @@
     },
     {
       "name": "Caledonian Road",
-      "code": "CRD",
       "coordinates": {
         "lat": 51.5481,
         "lng": -0.1188
@@ -354,7 +342,6 @@
     },
     {
       "name": "King's Cross St. Pancras",
-      "code": "KXX",
       "coordinates": {
         "lat": 51.5308,
         "lng": -0.1238
@@ -389,7 +376,6 @@
     },
     {
       "name": "Russell Square",
-      "code": "RSQ",
       "coordinates": {
         "lat": 51.523,
         "lng": -0.1244
@@ -417,7 +403,6 @@
     },
     {
       "name": "Holborn",
-      "code": "HBN",
       "coordinates": {
         "lat": 51.5174,
         "lng": -0.1203
@@ -447,7 +432,6 @@
     },
     {
       "name": "Covent Garden",
-      "code": "COV",
       "coordinates": {
         "lat": 51.5129,
         "lng": -0.1243
@@ -475,7 +459,6 @@
     },
     {
       "name": "Leicester Square",
-      "code": "LSQ",
       "coordinates": {
         "lat": 51.5112,
         "lng": -0.1281
@@ -505,7 +488,6 @@
     },
     {
       "name": "Piccadilly Circus",
-      "code": "PCC",
       "coordinates": {
         "lat": 51.5098,
         "lng": -0.1342
@@ -535,7 +517,6 @@
     },
     {
       "name": "Green Park",
-      "code": "GPK",
       "coordinates": {
         "lat": 51.5067,
         "lng": -0.1428
@@ -566,7 +547,6 @@
     },
     {
       "name": "Hyde Park Corner",
-      "code": "HPC",
       "coordinates": {
         "lat": 51.5027,
         "lng": -0.1527
@@ -594,7 +574,6 @@
     },
     {
       "name": "Knightsbridge",
-      "code": "KNB",
       "coordinates": {
         "lat": 51.5015,
         "lng": -0.1607
@@ -622,7 +601,6 @@
     },
     {
       "name": "South Kensington",
-      "code": "SKN",
       "coordinates": {
         "lat": 51.4941,
         "lng": -0.1738
@@ -653,7 +631,6 @@
     },
     {
       "name": "Gloucester Road",
-      "code": "GRD",
       "coordinates": {
         "lat": 51.4945,
         "lng": -0.1829
@@ -684,7 +661,6 @@
     },
     {
       "name": "Earl's Court",
-      "code": "ECT",
       "coordinates": {
         "lat": 51.4915,
         "lng": -0.1932
@@ -714,7 +690,6 @@
     },
     {
       "name": "Barons Court",
-      "code": "BCT",
       "coordinates": {
         "lat": 51.4905,
         "lng": -0.2139
@@ -744,7 +719,6 @@
     },
     {
       "name": "Hammersmith",
-      "code": "HMM",
       "coordinates": {
         "lat": 51.4936,
         "lng": -0.2251
@@ -776,7 +750,6 @@
     },
     {
       "name": "Acton Town",
-      "code": "ACT",
       "coordinates": {
         "lat": 51.5031,
         "lng": -0.28
@@ -806,7 +779,6 @@
     },
     {
       "name": "South Ealing",
-      "code": "SO2",
       "coordinates": {
         "lat": 51.5011,
         "lng": -0.3072
@@ -834,7 +806,6 @@
     },
     {
       "name": "Northfields",
-      "code": "NO1",
       "coordinates": {
         "lat": 51.4994,
         "lng": -0.3144
@@ -862,7 +833,6 @@
     },
     {
       "name": "Boston Manor",
-      "code": "BOS",
       "coordinates": {
         "lat": 51.4956,
         "lng": -0.3248
@@ -890,7 +860,6 @@
     },
     {
       "name": "Osterley",
-      "code": "OST",
       "coordinates": {
         "lat": 51.4813,
         "lng": -0.3522
@@ -918,7 +887,6 @@
     },
     {
       "name": "Hounslow East",
-      "code": "HNE",
       "coordinates": {
         "lat": 51.4733,
         "lng": -0.3564
@@ -946,7 +914,6 @@
     },
     {
       "name": "Hounslow Central",
-      "code": "HNC",
       "coordinates": {
         "lat": 51.4713,
         "lng": -0.3665
@@ -974,7 +941,6 @@
     },
     {
       "name": "Hounslow West",
-      "code": "HNW",
       "coordinates": {
         "lat": 51.4734,
         "lng": -0.3855
@@ -1002,7 +968,6 @@
     },
     {
       "name": "Hatton Cross",
-      "code": "HTC",
       "coordinates": {
         "lat": 51.4669,
         "lng": -0.4227
@@ -1030,7 +995,6 @@
     },
     {
       "name": "Heathrow Terminals 2 & 3",
-      "code": "HXX",
       "coordinates": {
         "lat": 51.4713,
         "lng": -0.4524
@@ -1061,7 +1025,6 @@
     },
     {
       "name": "Heathrow Terminal 4",
-      "code": "HAF",
       "coordinates": {
         "lat": 51.4598,
         "lng": -0.4476
@@ -1089,7 +1052,6 @@
     },
     {
       "name": "Heathrow Terminal 5",
-      "code": "HT5",
       "coordinates": {
         "lat": 51.4712,
         "lng": -0.4887
@@ -1120,7 +1082,6 @@
     },
     {
       "name": "Ealing Common",
-      "code": "ECM",
       "coordinates": {
         "lat": 51.5101,
         "lng": -0.2882
@@ -1150,7 +1111,6 @@
     },
     {
       "name": "North Ealing",
-      "code": "NEL",
       "coordinates": {
         "lat": 51.5175,
         "lng": -0.2887
@@ -1178,7 +1138,6 @@
     },
     {
       "name": "Park Royal",
-      "code": "PRY",
       "coordinates": {
         "lat": 51.5274,
         "lng": -0.2841
@@ -1206,7 +1165,6 @@
     },
     {
       "name": "Alperton",
-      "code": "ALP",
       "coordinates": {
         "lat": 51.5407,
         "lng": -0.2997
@@ -1234,7 +1192,6 @@
     },
     {
       "name": "Sudbury Town",
-      "code": "SUT",
       "coordinates": {
         "lat": 51.5507,
         "lng": -0.3156
@@ -1262,7 +1219,6 @@
     },
     {
       "name": "Sudbury Hill",
-      "code": "SUH",
       "coordinates": {
         "lat": 51.5569,
         "lng": -0.3366
@@ -1292,7 +1248,6 @@
     },
     {
       "name": "South Harrow",
-      "code": "SO1",
       "coordinates": {
         "lat": 51.5646,
         "lng": -0.3521
@@ -1320,7 +1275,6 @@
     },
     {
       "name": "Rayners Lane",
-      "code": "RLN",
       "coordinates": {
         "lat": 51.5753,
         "lng": -0.3714
@@ -1350,7 +1304,6 @@
     },
     {
       "name": "Eastcote",
-      "code": "EAS",
       "coordinates": {
         "lat": 51.5765,
         "lng": -0.3971
@@ -1380,7 +1333,6 @@
     },
     {
       "name": "Ruislip Manor",
-      "code": "RUM",
       "coordinates": {
         "lat": 51.5732,
         "lng": -0.4125
@@ -1410,7 +1362,6 @@
     },
     {
       "name": "Ruislip",
-      "code": "RUI",
       "coordinates": {
         "lat": 51.5715,
         "lng": -0.4213
@@ -1440,7 +1391,6 @@
     },
     {
       "name": "Ickenham",
-      "code": "ICK",
       "coordinates": {
         "lat": 51.5619,
         "lng": -0.4421
@@ -1470,7 +1420,6 @@
     },
     {
       "name": "Hillingdon",
-      "code": "HHL",
       "coordinates": {
         "lat": 51.5538,
         "lng": -0.4499
@@ -1500,7 +1449,6 @@
     },
     {
       "name": "Uxbridge",
-      "code": "UXB",
       "coordinates": {
         "lat": 51.5463,
         "lng": -0.4786
@@ -1528,5 +1476,83 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations"
+    },
+    "semi_fast": {
+      "stations": [
+        "CFS",
+        "OAK",
+        "SGT",
+        "BOU",
+        "WOO",
+        "MNR",
+        "FPK",
+        "HRD",
+        "CRD",
+        "RSQ",
+        "HBN",
+        "LSQ",
+        "PCC",
+        "HPC",
+        "KNB",
+        "GRD",
+        "ECT",
+        "HMM",
+        "ACT",
+        "NO1",
+        "BOS",
+        "HNE",
+        "HNC",
+        "HTC",
+        "HXX",
+        "HT5",
+        "ECM",
+        "PRY",
+        "ALP",
+        "SUH",
+        "SO1",
+        "EAS",
+        "RUM",
+        "ICK",
+        "HHL",
+        "UXB"
+      ],
+      "description": "Semi-fast service calling at major stations"
+    },
+    "fast": {
+      "stations": [
+        "CFS",
+        "SGT",
+        "BOU",
+        "TPL",
+        "FPK",
+        "HRD",
+        "KXX",
+        "HBN",
+        "LSQ",
+        "GPK",
+        "KNB",
+        "GRD",
+        "BCT",
+        "SO2",
+        "BOS",
+        "HNE",
+        "HNW",
+        "HXX",
+        "HT5",
+        "NEL",
+        "ALP",
+        "SUH",
+        "RLN",
+        "RUM",
+        "ICK",
+        "UXB"
+      ],
+      "description": "Fast service calling at principal stations"
+    }
+  }
 }

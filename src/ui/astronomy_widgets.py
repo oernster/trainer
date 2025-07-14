@@ -38,7 +38,6 @@ from ..managers.astronomy_config import AstronomyConfig
 
 logger = logging.getLogger(__name__)
 
-
 class AstronomyEventIcon(QLabel):
     """
     Clickable astronomy event icon widget.
@@ -127,7 +126,6 @@ class AstronomyEventIcon(QLabel):
     def get_event(self) -> AstronomyEvent:
         """Get the associated astronomy event."""
         return self._event
-
 
 class DailyAstronomyPanel(QFrame):
     """
@@ -284,7 +282,6 @@ class DailyAstronomyPanel(QFrame):
             """
             )
 
-
 class AstronomyForecastPanel(QWidget):
     """
     Panel displaying 7-day astronomy forecast.
@@ -334,7 +331,6 @@ class AstronomyForecastPanel(QWidget):
         logger.debug(
             f"Updated astronomy forecast panel with {len(forecast_data.daily_astronomy)} days"
         )
-
 
 class AstronomyEventDetails(QFrame):
     """
@@ -585,7 +581,6 @@ class AstronomyEventDetails(QFrame):
         except Exception as e:
             logger.error(f"Failed to open NASA link {url}: {e}")
 
-
 class AstronomyExpandablePanel(QWidget):
     """
     Expandable panel for detailed astronomy information.
@@ -768,7 +763,6 @@ class AstronomyExpandablePanel(QWidget):
         """Check if panel is currently expanded."""
         return self._is_expanded
 
-
 class AstronomyWidget(QWidget):
     """
     Main astronomy widget container.
@@ -870,7 +864,7 @@ class AstronomyWidget(QWidget):
         self._community_button.clicked.connect(self._open_community_view)
         self._buttons_layout.addWidget(self._community_button)
         
-        # All buttons are now visible by default and added to layout
+        # All buttons are created and added to layout
         
         layout.addLayout(self._buttons_layout)
 
@@ -880,8 +874,8 @@ class AstronomyWidget(QWidget):
         min_height = int(320 * self._scale_factor)  # Reduced to proper size for forecast + buttons
         self.setMinimumHeight(min_height)
         
-        # Buttons are now always visible by default - no need for complex visibility logic
-        logger.info("Astronomy buttons initialized and visible by default")
+        # Initial button visibility will be set when config is updated
+        logger.info("Astronomy buttons initialized")
 
     def _connect_signals(self) -> None:
         """Connect internal signals."""
@@ -973,7 +967,6 @@ class AstronomyWidget(QWidget):
         else:
             # Fallback to NASA if no links available
             self._open_nasa_astronomy_page()
-
 
     def _open_educational_view(self) -> None:
         """Open educational resources page."""
@@ -1074,17 +1067,31 @@ class AstronomyWidget(QWidget):
         # based on whether it's properly added to the layout with data
         # self.setVisible(config.enabled and config.display.show_in_forecast)
         
-        # SIMPLIFIED: Don't update button visibility - keep all buttons always visible
-        # self._update_link_buttons_visibility()
+        # Update button visibility based on enabled link categories
+        self._update_link_buttons_visibility()
         
         # API-free mode - always ready for data when enabled
         if config.enabled:
-            logger.info("Astronomy widget ready for data (API-free mode)")
+            logger.debug("Astronomy widget enabled in config")
 
         logger.debug("Astronomy widget configuration updated")
     
-    # REMOVED: Complex visibility update methods that were hiding buttons
-    # All buttons are now always visible by default as created in _setup_ui()
+    def _update_link_buttons_visibility(self) -> None:
+        """Update visibility of link buttons based on enabled categories."""
+        if not self._config:
+            return
+            
+        enabled_categories = self._config.enabled_link_categories
+        
+        # Update button visibility based on enabled categories
+        self._sky_button.setVisible("tonight_sky" in enabled_categories)
+        self._observatories_button.setVisible("observatory" in enabled_categories)
+        self._agencies_button.setVisible("space_agency" in enabled_categories)
+        self._educational_button.setVisible("educational" in enabled_categories)
+        self._live_data_button.setVisible("live_data" in enabled_categories)
+        self._community_button.setVisible("community" in enabled_categories)
+        
+        logger.debug(f"Updated astronomy button visibility: {enabled_categories}")
 
     def apply_theme(self, theme_colors: Dict[str, str]) -> None:
         """Apply theme colors to astronomy widget."""

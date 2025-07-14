@@ -14,7 +14,6 @@
   "stations": [
     {
       "name": "London Bridge",
-      "code": "LO4",
       "coordinates": {
         "lat": 51.5049,
         "lng": -0.0863
@@ -45,7 +44,6 @@
     },
     {
       "name": "London Victoria",
-      "code": "VIC",
       "coordinates": {
         "lat": 51.4952,
         "lng": -0.1441
@@ -77,7 +75,6 @@
     },
     {
       "name": "London Waterloo East",
-      "code": "WAE",
       "coordinates": {
         "lat": 51.5044,
         "lng": -0.1119
@@ -104,7 +101,6 @@
     },
     {
       "name": "London Cannon Street",
-      "code": "LO5",
       "coordinates": {
         "lat": 51.5114,
         "lng": -0.0906
@@ -135,7 +131,6 @@
     },
     {
       "name": "London Charing Cross",
-      "code": "LON",
       "coordinates": {
         "lat": 51.5081,
         "lng": -0.1247
@@ -166,7 +161,6 @@
     },
     {
       "name": "East Croydon",
-      "code": "ECR",
       "coordinates": {
         "lat": 51.3756,
         "lng": -0.0928
@@ -193,7 +187,6 @@
     },
     {
       "name": "West Croydon",
-      "code": "WCR",
       "coordinates": {
         "lat": 51.3781,
         "lng": -0.1031
@@ -220,7 +213,6 @@
     },
     {
       "name": "Clapham Junction",
-      "code": "CLJ",
       "coordinates": {
         "lat": 51.4642,
         "lng": -0.1705
@@ -247,7 +239,6 @@
     },
     {
       "name": "Brighton",
-      "code": "BTN",
       "coordinates": {
         "lat": 50.8292,
         "lng": -0.1419
@@ -273,7 +264,6 @@
     },
     {
       "name": "Hove",
-      "code": "HOV",
       "coordinates": {
         "lat": 50.8281,
         "lng": -0.1719
@@ -299,7 +289,6 @@
     },
     {
       "name": "Worthing",
-      "code": "WRH",
       "coordinates": {
         "lat": 50.8181,
         "lng": -0.3719
@@ -325,7 +314,6 @@
     },
     {
       "name": "Littlehampton",
-      "code": "LIT",
       "coordinates": {
         "lat": 50.8081,
         "lng": -0.5419
@@ -351,7 +339,6 @@
     },
     {
       "name": "Bognor Regis",
-      "code": "BOG",
       "coordinates": {
         "lat": 50.7881,
         "lng": -0.6719
@@ -377,7 +364,6 @@
     },
     {
       "name": "Chichester",
-      "code": "CCR",
       "coordinates": {
         "lat": 50.8381,
         "lng": -0.7819
@@ -403,7 +389,6 @@
     },
     {
       "name": "Havant",
-      "code": "HAV",
       "coordinates": {
         "lat": 50.8581,
         "lng": -0.9819
@@ -429,7 +414,6 @@
     },
     {
       "name": "Portsmouth Harbour",
-      "code": "POR",
       "coordinates": {
         "lat": 50.7981,
         "lng": -1.0919
@@ -455,7 +439,6 @@
     },
     {
       "name": "Portsmouth & Southsea",
-      "code": "PMS",
       "coordinates": {
         "lat": 50.8081,
         "lng": -1.0819
@@ -481,7 +464,6 @@
     },
     {
       "name": "Eastbourne",
-      "code": "EBN",
       "coordinates": {
         "lat": 50.7681,
         "lng": 0.2781
@@ -507,7 +489,6 @@
     },
     {
       "name": "Hastings",
-      "code": "HGS",
       "coordinates": {
         "lat": 50.8581,
         "lng": 0.5781
@@ -533,7 +514,6 @@
     },
     {
       "name": "Bexhill",
-      "code": "BEX",
       "coordinates": {
         "lat": 50.8481,
         "lng": 0.4681
@@ -559,7 +539,6 @@
     },
     {
       "name": "Battle",
-      "code": "BAT",
       "coordinates": {
         "lat": 50.9181,
         "lng": 0.4881
@@ -585,7 +564,6 @@
     },
     {
       "name": "Tunbridge Wells",
-      "code": "TBW",
       "coordinates": {
         "lat": 51.1319,
         "lng": 0.2681
@@ -611,7 +589,6 @@
     },
     {
       "name": "Sevenoaks",
-      "code": "SEV",
       "coordinates": {
         "lat": 51.2781,
         "lng": 0.1881
@@ -637,7 +614,6 @@
     },
     {
       "name": "Orpington",
-      "code": "ORP",
       "coordinates": {
         "lat": 51.3731,
         "lng": 0.0981
@@ -663,7 +639,6 @@
     },
     {
       "name": "Bromley South",
-      "code": "BRO",
       "coordinates": {
         "lat": 51.4031,
         "lng": 0.0181
@@ -689,7 +664,6 @@
     },
     {
       "name": "Canterbury East",
-      "code": "CBE",
       "coordinates": {
         "lat": 51.2781,
         "lng": 1.0881
@@ -715,7 +689,6 @@
     },
     {
       "name": "Canterbury West",
-      "code": "CBW",
       "coordinates": {
         "lat": 51.2881,
         "lng": 1.0781
@@ -741,7 +714,6 @@
     },
     {
       "name": "Dover Priory",
-      "code": "DVP",
       "coordinates": {
         "lat": 51.1281,
         "lng": 1.3081
@@ -767,7 +739,6 @@
     },
     {
       "name": "Folkestone Central",
-      "code": "FKC",
       "coordinates": {
         "lat": 51.0881,
         "lng": 1.1681
@@ -793,7 +764,6 @@
     },
     {
       "name": "Ashford International",
-      "code": "AFK",
       "coordinates": {
         "lat": 51.142,
         "lng": 0.8747
@@ -819,7 +789,6 @@
     },
     {
       "name": "Maidstone East",
-      "code": "MDE",
       "coordinates": {
         "lat": 51.2681,
         "lng": 0.5181
@@ -845,7 +814,6 @@
     },
     {
       "name": "Maidstone West",
-      "code": "MDW",
       "coordinates": {
         "lat": 51.2781,
         "lng": 0.5081
@@ -871,7 +839,6 @@
     },
     {
       "name": "Tonbridge",
-      "code": "TON",
       "coordinates": {
         "lat": 51.1981,
         "lng": 0.2781
@@ -897,7 +864,6 @@
     },
     {
       "name": "Redhill",
-      "code": "RDH",
       "coordinates": {
         "lat": 51.2406,
         "lng": -0.1711
@@ -923,7 +889,6 @@
     },
     {
       "name": "Reigate",
-      "code": "REI",
       "coordinates": {
         "lat": 51.2381,
         "lng": -0.2081
@@ -949,7 +914,6 @@
     },
     {
       "name": "Dorking",
-      "code": "DOR",
       "coordinates": {
         "lat": 51.2281,
         "lng": -0.3381
@@ -975,7 +939,6 @@
     },
     {
       "name": "Horsham",
-      "code": "HRH",
       "coordinates": {
         "lat": 51.0631,
         "lng": -0.3281
@@ -1001,7 +964,6 @@
     },
     {
       "name": "Crawley",
-      "code": "CRW",
       "coordinates": {
         "lat": 51.1131,
         "lng": -0.1881
@@ -1027,7 +989,6 @@
     },
     {
       "name": "Three Bridges",
-      "code": "TBD",
       "coordinates": {
         "lat": 51.1167,
         "lng": -0.15
@@ -1053,7 +1014,6 @@
     },
     {
       "name": "Gatwick Airport",
-      "code": "GTW",
       "coordinates": {
         "lat": 51.1564,
         "lng": -0.1611
@@ -1079,7 +1039,6 @@
     },
     {
       "name": "Haywards Heath",
-      "code": "HHE",
       "coordinates": {
         "lat": 51.0,
         "lng": -0.1
@@ -1105,7 +1064,6 @@
     },
     {
       "name": "Burgess Hill",
-      "code": "BUG",
       "coordinates": {
         "lat": 50.9583,
         "lng": -0.1333
@@ -1131,7 +1089,6 @@
     },
     {
       "name": "Lewes",
-      "code": "LWS",
       "coordinates": {
         "lat": 50.8731,
         "lng": 0.0181
@@ -1157,7 +1114,6 @@
     },
     {
       "name": "Newhaven Harbour",
-      "code": "NVN",
       "coordinates": {
         "lat": 50.7931,
         "lng": 0.0581
@@ -1183,7 +1139,6 @@
     },
     {
       "name": "Seaford",
-      "code": "SEF",
       "coordinates": {
         "lat": 50.7731,
         "lng": 0.1081
@@ -1209,7 +1164,6 @@
     },
     {
       "name": "Polegate",
-      "code": "PLG",
       "coordinates": {
         "lat": 50.8181,
         "lng": 0.2481
@@ -1235,7 +1189,6 @@
     },
     {
       "name": "Berwick (Sussex)",
-      "code": "BRK",
       "coordinates": {
         "lat": 50.8281,
         "lng": 0.2681
@@ -1261,7 +1214,6 @@
     },
     {
       "name": "Glynde",
-      "code": "GLY",
       "coordinates": {
         "lat": 50.8681,
         "lng": 0.0381
@@ -1287,7 +1239,6 @@
     },
     {
       "name": "Plumpton",
-      "code": "PMP",
       "coordinates": {
         "lat": 50.9081,
         "lng": -0.0619
@@ -1313,7 +1264,6 @@
     },
     {
       "name": "Cooksbridge",
-      "code": "CBR",
       "coordinates": {
         "lat": 50.9181,
         "lng": -0.0319
@@ -1345,7 +1295,6 @@
       "typical_journey_time": 75,
       "frequency": "Every 30 minutes",
       "stations": [
-        "LBG",
         "VIC",
         "BTN",
         "DVP",

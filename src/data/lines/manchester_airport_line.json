@@ -16,15 +16,7 @@
   "typical_journey_times": {
     "MAN-MCO": 6,
     "MCO-MIA": 20,
-    "MAN-MIA": 26,
-    "MCO-MSO": 3,
-    "MSO-MRF": 4,
-    "MRF-EWR": 3,
-    "EWR-GTV": 3,
-    "GTV-HLD": 2,
-    "HLD-NAV": 3,
-    "NAV-HTC": 2,
-    "HTC-MIA": 4
+    "MAN-MIA": 26
   },
   "typical_services": {
     "peak_frequency": "Every 10 minutes",
@@ -37,7 +29,6 @@
   "stations": [
     {
       "name": "Manchester Piccadilly",
-      "code": "MAN",
       "coordinates": {
         "lat": 53.4775,
         "lng": -2.2306
@@ -69,7 +60,6 @@
     },
     {
       "name": "Manchester Oxford Road",
-      "code": "MCO",
       "coordinates": {
         "lat": 53.4742,
         "lng": -2.2426
@@ -99,7 +89,6 @@
     },
     {
       "name": "Manchester Deansgate",
-      "code": "MSD",
       "coordinates": {
         "lat": 53.4747,
         "lng": -2.2511
@@ -128,7 +117,6 @@
     },
     {
       "name": "Manchester United Football Ground",
-      "code": "MUF",
       "coordinates": {
         "lat": 53.4631,
         "lng": -2.2913
@@ -154,7 +142,6 @@
     },
     {
       "name": "Trafford Park",
-      "code": "TRA",
       "coordinates": {
         "lat": 53.4589,
         "lng": -2.3131
@@ -180,7 +167,6 @@
     },
     {
       "name": "Urmston",
-      "code": "URM",
       "coordinates": {
         "lat": 53.4489,
         "lng": -2.3481
@@ -206,7 +192,6 @@
     },
     {
       "name": "Chassen Road",
-      "code": "CSR",
       "coordinates": {
         "lat": 53.4431,
         "lng": -2.3731
@@ -232,7 +217,6 @@
     },
     {
       "name": "Flixton",
-      "code": "FLI",
       "coordinates": {
         "lat": 53.4389,
         "lng": -2.3981
@@ -258,7 +242,6 @@
     },
     {
       "name": "Irlam",
-      "code": "IRL",
       "coordinates": {
         "lat": 53.4331,
         "lng": -2.4231
@@ -284,7 +267,6 @@
     },
     {
       "name": "Birchwood",
-      "code": "BWD",
       "coordinates": {
         "lat": 53.4131,
         "lng": -2.5131
@@ -310,7 +292,6 @@
     },
     {
       "name": "Warrington Central",
-      "code": "WAC",
       "coordinates": {
         "lat": 53.3881,
         "lng": -2.5831
@@ -336,7 +317,6 @@
     },
     {
       "name": "Manchester Airport",
-      "code": "MIA",
       "coordinates": {
         "lat": 53.3631,
         "lng": -2.2731

@@ -15,7 +15,6 @@
   "stations": [
     {
       "name": "Stanmore",
-      "code": "SNM",
       "coordinates": {
         "lat": 51.6194,
         "lng": -0.3028
@@ -43,7 +42,6 @@
     },
     {
       "name": "Canons Park",
-      "code": "CPK",
       "coordinates": {
         "lat": 51.6078,
         "lng": -0.2947
@@ -71,7 +69,6 @@
     },
     {
       "name": "Queensbury",
-      "code": "QBY",
       "coordinates": {
         "lat": 51.5942,
         "lng": -0.2861
@@ -99,7 +96,6 @@
     },
     {
       "name": "Kingsbury",
-      "code": "KBY",
       "coordinates": {
         "lat": 51.5846,
         "lng": -0.2786
@@ -127,7 +123,6 @@
     },
     {
       "name": "Wembley Park",
-      "code": "WPK",
       "coordinates": {
         "lat": 51.5635,
         "lng": -0.2795
@@ -157,7 +152,6 @@
     },
     {
       "name": "Neasden",
-      "code": "NEA",
       "coordinates": {
         "lat": 51.5542,
         "lng": -0.2503
@@ -185,7 +179,6 @@
     },
     {
       "name": "Dollis Hill",
-      "code": "DLH",
       "coordinates": {
         "lat": 51.552,
         "lng": -0.2387
@@ -213,7 +206,6 @@
     },
     {
       "name": "Willesden Green",
-      "code": "WLG",
       "coordinates": {
         "lat": 51.5492,
         "lng": -0.2215
@@ -241,7 +233,6 @@
     },
     {
       "name": "Kilburn",
-      "code": "KIL",
       "coordinates": {
         "lat": 51.5471,
         "lng": -0.2047
@@ -269,7 +260,6 @@
     },
     {
       "name": "West Hampstead",
-      "code": "WHD",
       "coordinates": {
         "lat": 51.5472,
         "lng": -0.1921
@@ -300,7 +290,6 @@
     },
     {
       "name": "Finchley Road",
-      "code": "FRD",
       "coordinates": {
         "lat": 51.5472,
         "lng": -0.1803
@@ -330,7 +319,6 @@
     },
     {
       "name": "Swiss Cottage",
-      "code": "SWC",
       "coordinates": {
         "lat": 51.5432,
         "lng": -0.1738
@@ -358,7 +346,6 @@
     },
     {
       "name": "St. John's Wood",
-      "code": "SJW",
       "coordinates": {
         "lat": 51.5347,
         "lng": -0.174
@@ -386,7 +373,6 @@
     },
     {
       "name": "Baker Street",
-      "code": "BST",
       "coordinates": {
         "lat": 51.5226,
         "lng": -0.1571
@@ -419,7 +405,6 @@
     },
     {
       "name": "Bond Street",
-      "code": "BDS",
       "coordinates": {
         "lat": 51.5142,
         "lng": -0.1494
@@ -450,7 +435,6 @@
     },
     {
       "name": "Green Park",
-      "code": "GPK",
       "coordinates": {
         "lat": 51.5067,
         "lng": -0.1428
@@ -481,7 +465,6 @@
     },
     {
       "name": "Westminster",
-      "code": "WSM",
       "coordinates": {
         "lat": 51.501,
         "lng": -0.1254
@@ -512,7 +495,6 @@
     },
     {
       "name": "Waterloo",
-      "code": "WWT",
       "coordinates": {
         "lat": 51.5036,
         "lng": -0.1144
@@ -545,7 +527,6 @@
     },
     {
       "name": "Southwark",
-      "code": "SWK",
       "coordinates": {
         "lat": 51.5036,
         "lng": -0.1052
@@ -573,7 +554,6 @@
     },
     {
       "name": "London Bridge",
-      "code": "LO4",
       "coordinates": {
         "lat": 51.5049,
         "lng": -0.0863
@@ -604,7 +584,6 @@
     },
     {
       "name": "Bermondsey",
-      "code": "BMS",
       "coordinates": {
         "lat": 51.4979,
         "lng": -0.0637
@@ -632,7 +611,6 @@
     },
     {
       "name": "Canada Water",
-      "code": "CWR",
       "coordinates": {
         "lat": 51.4982,
         "lng": -0.0502
@@ -662,7 +640,6 @@
     },
     {
       "name": "Canary Wharf",
-      "code": "CWF",
       "coordinates": {
         "lat": 51.5051,
         "lng": -0.0209
@@ -693,7 +670,6 @@
     },
     {
       "name": "North Greenwich",
-      "code": "NGW",
       "coordinates": {
         "lat": 51.5005,
         "lng": 0.0039
@@ -721,7 +697,6 @@
     },
     {
       "name": "Canning Town",
-      "code": "CAT",
       "coordinates": {
         "lat": 51.5147,
         "lng": 0.0082
@@ -751,7 +726,6 @@
     },
     {
       "name": "West Ham",
-      "code": "WEH",
       "coordinates": {
         "lat": 51.528,
         "lng": 0.005
@@ -784,7 +758,6 @@
     },
     {
       "name": "Stratford",
-      "code": "SFD",
       "coordinates": {
         "lat": 51.5416,
         "lng": -0.0042
@@ -816,5 +789,52 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations"
+    },
+    "semi_fast": {
+      "stations": [
+        "SNM",
+        "CPK",
+        "KBY",
+        "WPK",
+        "DLH",
+        "WLG",
+        "WHD",
+        "SWC",
+        "SJW",
+        "BDS",
+        "GPK",
+        "WWT",
+        "LO4",
+        "BMS",
+        "CWF",
+        "NGW",
+        "WEH",
+        "SFD"
+      ],
+      "description": "Semi-fast service calling at major stations"
+    },
+    "fast": {
+      "stations": [
+        "SNM",
+        "QBY",
+        "WPK",
+        "DLH",
+        "WHD",
+        "SWC",
+        "BST",
+        "GPK",
+        "SWK",
+        "BMS",
+        "CWF",
+        "CAT",
+        "SFD"
+      ],
+      "description": "Fast service calling at principal stations"
+    }
+  }
 }

@@ -3,7 +3,7 @@
     "line_name": "Great Eastern Main Line",
     "description": "London Liverpool Street to Norwich via Ipswich",
     "operator": "Greater Anglia",
-    "total_stations": 12,
+    "total_stations": 13,
     "frequency": {
       "weekday_peak": "Every hour",
       "weekday_off_peak": "Every 2 hours",
@@ -14,7 +14,6 @@
   "stations": [
     {
       "name": "London Liverpool Street",
-      "code": "LO3",
       "coordinates": {
         "lat": 51.5178,
         "lng": -0.0823
@@ -46,7 +45,6 @@
     },
     {
       "name": "Stratford",
-      "code": "SFD",
       "coordinates": {
         "lat": 51.5419,
         "lng": -0.0031
@@ -79,7 +77,6 @@
     },
     {
       "name": "Romford",
-      "code": "RMF",
       "coordinates": {
         "lat": 51.5744,
         "lng": 0.1831
@@ -109,7 +106,6 @@
     },
     {
       "name": "Brentwood",
-      "code": "BRE",
       "coordinates": {
         "lat": 51.6119,
         "lng": 0.3031
@@ -135,7 +131,6 @@
     },
     {
       "name": "Shenfield",
-      "code": "SNF",
       "coordinates": {
         "lat": 51.6319,
         "lng": 0.3331
@@ -164,7 +159,6 @@
     },
     {
       "name": "Chelmsford",
-      "code": "CHM",
       "coordinates": {
         "lat": 51.7356,
         "lng": 0.4681
@@ -190,7 +184,6 @@
     },
     {
       "name": "Witham",
-      "code": "WTM",
       "coordinates": {
         "lat": 51.8019,
         "lng": 0.6431
@@ -219,7 +212,6 @@
     },
     {
       "name": "Colchester",
-      "code": "COL",
       "coordinates": {
         "lat": 51.9019,
         "lng": 0.8981
@@ -248,7 +240,6 @@
     },
     {
       "name": "Manningtree",
-      "code": "MNG",
       "coordinates": {
         "lat": 51.9419,
         "lng": 1.0681
@@ -277,7 +268,6 @@
     },
     {
       "name": "Ipswich",
-      "code": "IPS",
       "coordinates": {
         "lat": 52.0544,
         "lng": 1.1481
@@ -307,7 +297,6 @@
     },
     {
       "name": "Stowmarket",
-      "code": "SMK",
       "coordinates": {
         "lat": 52.1881,
         "lng": 0.9981
@@ -333,7 +322,6 @@
     },
     {
       "name": "Diss",
-      "code": "DIS",
       "coordinates": {
         "lat": 52.3781,
         "lng": 1.1181
@@ -359,7 +347,6 @@
     },
     {
       "name": "Norwich",
-      "code": "NRW",
       "coordinates": {
         "lat": 52.6281,
         "lng": 1.3081
@@ -396,7 +383,6 @@
       "frequency": "Every 60 minutes",
       "stations": [
         "LO3",
-        "SRA",
         "CHM",
         "COL",
         "IPS",
@@ -418,9 +404,7 @@
       "frequency": "Every 30 minutes",
       "stations": [
         "CHM",
-        "LST",
         "LO3",
-        "SRA",
         "COL",
         "NRW",
         "IPS"

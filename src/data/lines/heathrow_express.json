@@ -29,7 +29,6 @@
   "stations": [
     {
       "name": "London Paddington",
-      "code": "PAD",
       "coordinates": {
         "lat": 51.5173,
         "lng": -0.1769
@@ -64,7 +63,6 @@
     },
     {
       "name": "Heathrow Terminals 2 & 3",
-      "code": "HXX",
       "coordinates": {
         "lat": 51.4708,
         "lng": -0.4527
@@ -95,7 +93,6 @@
     },
     {
       "name": "Heathrow Terminal 5",
-      "code": "HT5",
       "coordinates": {
         "lat": 51.4722,
         "lng": -0.4889
@@ -126,7 +123,6 @@
     },
     {
       "name": "Heathrow Terminal 4",
-      "code": "HAF",
       "coordinates": {
         "lat": 51.4597,
         "lng": -0.4472

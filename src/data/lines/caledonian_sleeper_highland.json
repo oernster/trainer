@@ -33,7 +33,6 @@
   "stations": [
     {
       "name": "London Euston",
-      "code": "LO1",
       "coordinates": {
         "lat": 51.5282,
         "lng": -0.1337
@@ -65,7 +64,6 @@
     },
     {
       "name": "Watford Junction",
-      "code": "WFJ",
       "coordinates": {
         "lat": 51.6628,
         "lng": -0.3856
@@ -96,7 +94,6 @@
     },
     {
       "name": "Crewe",
-      "code": "CRE",
       "coordinates": {
         "lat": 53.0881,
         "lng": -2.4331
@@ -128,7 +125,6 @@
     },
     {
       "name": "Preston",
-      "code": "PRE",
       "coordinates": {
         "lat": 53.7581,
         "lng": -2.7081
@@ -159,7 +155,6 @@
     },
     {
       "name": "Edinburgh",
-      "code": "EDB",
       "coordinates": {
         "lat": 55.9519,
         "lng": -3.1875
@@ -191,7 +186,6 @@
     },
     {
       "name": "Stirling",
-      "code": "STG",
       "coordinates": {
         "lat": 56.1194,
         "lng": -3.9369
@@ -220,7 +214,6 @@
     },
     {
       "name": "Perth",
-      "code": "PTH",
       "coordinates": {
         "lat": 56.395,
         "lng": -3.4364
@@ -249,7 +242,6 @@
     },
     {
       "name": "Aviemore",
-      "code": "AVM",
       "coordinates": {
         "lat": 57.1953,
         "lng": -3.8281
@@ -278,7 +270,6 @@
     },
     {
       "name": "Inverness",
-      "code": "INV",
       "coordinates": {
         "lat": 57.48,
         "lng": -4.2242
@@ -307,7 +298,6 @@
     },
     {
       "name": "Dundee",
-      "code": "DEE",
       "coordinates": {
         "lat": 56.4564,
         "lng": -2.9706
@@ -338,7 +328,6 @@
     },
     {
       "name": "Aberdeen",
-      "code": "ABE",
       "coordinates": {
         "lat": 57.1436,
         "lng": -2.0981
@@ -369,7 +358,6 @@
     },
     {
       "name": "Glasgow Queen Street",
-      "code": "GLQ",
       "coordinates": {
         "lat": 55.8625,
         "lng": -4.2511
@@ -398,7 +386,6 @@
     },
     {
       "name": "Fort William",
-      "code": "FTW",
       "coordinates": {
         "lat": 56.8169,
         "lng": -5.1047
@@ -428,7 +415,6 @@
     },
     {
       "name": "Crianlarich",
-      "code": "CNR",
       "coordinates": {
         "lat": 56.3906,
         "lng": -4.6169
@@ -458,7 +444,6 @@
     },
     {
       "name": "Arrochar & Tarbet",
-      "code": "ART",
       "coordinates": {
         "lat": 56.2,
         "lng": -4.7167
@@ -494,10 +479,8 @@
       "typical_journey_time": 225,
       "frequency": "Daily",
       "stations": [
-        "EUS",
         "EDB",
         "INV",
-        "ABD",
         "FTW"
       ],
       "peak_frequency": null,

@@ -30,7 +30,6 @@
   "stations": [
     {
       "name": "London Victoria",
-      "code": "VIC",
       "coordinates": {
         "lat": 51.4952,
         "lng": -0.1441
@@ -66,7 +65,6 @@
     },
     {
       "name": "Clapham Junction",
-      "code": "CLJ",
       "coordinates": {
         "lat": 51.4642,
         "lng": -0.1705
@@ -99,7 +97,6 @@
     },
     {
       "name": "East Croydon",
-      "code": "ECR",
       "coordinates": {
         "lat": 51.3756,
         "lng": -0.0928
@@ -132,7 +129,6 @@
     },
     {
       "name": "Gatwick Airport",
-      "code": "GTW",
       "coordinates": {
         "lat": 51.1564,
         "lng": -0.1614

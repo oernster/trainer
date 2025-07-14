@@ -15,17 +15,10 @@
   },
   "typical_journey_times": {
     "RDG-PPD": 25,
-    "PPD-LVS": 10,
-    "LVS-ABW": 25,
     "PPD-SNF": 45,
     "HXX-PPD": 15,
-    "HXT5-PPD": 20,
-    "LVS-FGS": 5,
-    "FGS-TCR": 5,
     "TCR-CWF": 5,
-    "CWF-LST": 5,
-    "LST-STD": 10,
-    "STD-SNF": 20
+    "CWF-LST": 5
   },
   "typical_services": {
     "peak_frequency": "Every 5 minutes",
@@ -38,7 +31,6 @@
   "stations": [
     {
       "name": "Reading",
-      "code": "RDG",
       "coordinates": {
         "lat": 51.4587,
         "lng": -0.9711
@@ -69,7 +61,6 @@
     },
     {
       "name": "Twyford",
-      "code": "TWY",
       "coordinates": {
         "lat": 51.4762,
         "lng": -0.8636
@@ -95,7 +86,6 @@
     },
     {
       "name": "Maidenhead",
-      "code": "MAI",
       "coordinates": {
         "lat": 51.5225,
         "lng": -0.7236
@@ -121,7 +111,6 @@
     },
     {
       "name": "Taplow",
-      "code": "TAP",
       "coordinates": {
         "lat": 51.5225,
         "lng": -0.6825
@@ -147,7 +136,6 @@
     },
     {
       "name": "Burnham",
-      "code": "BNM",
       "coordinates": {
         "lat": 51.5225,
         "lng": -0.65
@@ -173,7 +161,6 @@
     },
     {
       "name": "Slough",
-      "code": "SSL",
       "coordinates": {
         "lat": 51.5125,
         "lng": -0.5911
@@ -199,7 +186,6 @@
     },
     {
       "name": "Langley",
-      "code": "LNY",
       "coordinates": {
         "lat": 51.5081,
         "lng": -0.55
@@ -225,7 +211,6 @@
     },
     {
       "name": "Iver",
-      "code": "IVR",
       "coordinates": {
         "lat": 51.5081,
         "lng": -0.5081
@@ -251,7 +236,6 @@
     },
     {
       "name": "West Drayton",
-      "code": "WDT",
       "coordinates": {
         "lat": 51.5081,
         "lng": -0.4711
@@ -277,7 +261,6 @@
     },
     {
       "name": "Hayes & Harlington",
-      "code": "HAY",
       "coordinates": {
         "lat": 51.5,
         "lng": -0.42
@@ -306,7 +289,6 @@
     },
     {
       "name": "Southall",
-      "code": "STL",
       "coordinates": {
         "lat": 51.5056,
         "lng": -0.38
@@ -332,7 +314,6 @@
     },
     {
       "name": "Hanwell",
-      "code": "HAN",
       "coordinates": {
         "lat": 51.5111,
         "lng": -0.34
@@ -358,7 +339,6 @@
     },
     {
       "name": "West Ealing",
-      "code": "WEA",
       "coordinates": {
         "lat": 51.5139,
         "lng": -0.32
@@ -384,7 +364,6 @@
     },
     {
       "name": "Ealing Broadway",
-      "code": "EAL",
       "coordinates": {
         "lat": 51.515,
         "lng": -0.3017
@@ -414,7 +393,6 @@
     },
     {
       "name": "Acton Main Line",
-      "code": "AML",
       "coordinates": {
         "lat": 51.5172,
         "lng": -0.2667
@@ -440,7 +418,6 @@
     },
     {
       "name": "Paddington",
-      "code": "PPD",
       "coordinates": {
         "lat": 51.5173,
         "lng": -0.1769
@@ -474,7 +451,6 @@
     },
     {
       "name": "Bond Street",
-      "code": "BDS",
       "coordinates": {
         "lat": 51.5142,
         "lng": -0.1494
@@ -504,7 +480,6 @@
     },
     {
       "name": "Tottenham Court Road",
-      "code": "TCR",
       "coordinates": {
         "lat": 51.5164,
         "lng": -0.1307
@@ -534,7 +509,6 @@
     },
     {
       "name": "Farringdon",
-      "code": "FAR",
       "coordinates": {
         "lat": 51.5203,
         "lng": -0.1053
@@ -566,7 +540,6 @@
     },
     {
       "name": "Liverpool Street",
-      "code": "LST",
       "coordinates": {
         "lat": 51.5181,
         "lng": -0.0814
@@ -600,7 +573,6 @@
     },
     {
       "name": "Whitechapel",
-      "code": "WCL",
       "coordinates": {
         "lat": 51.5195,
         "lng": -0.0592
@@ -631,7 +603,6 @@
     },
     {
       "name": "Canary Wharf",
-      "code": "CWF",
       "coordinates": {
         "lat": 51.5053,
         "lng": -0.0186
@@ -661,7 +632,6 @@
     },
     {
       "name": "Custom House",
-      "code": "CUH",
       "coordinates": {
         "lat": 51.5097,
         "lng": 0.0264
@@ -690,7 +660,6 @@
     },
     {
       "name": "Woolwich",
-      "code": "WWC",
       "coordinates": {
         "lat": 51.4906,
         "lng": 0.0694
@@ -716,7 +685,6 @@
     },
     {
       "name": "Abbey Wood",
-      "code": "ABW",
       "coordinates": {
         "lat": 51.4917,
         "lng": 0.1203
@@ -745,7 +713,6 @@
     },
     {
       "name": "Stratford",
-      "code": "SFD",
       "coordinates": {
         "lat": 51.5419,
         "lng": -0.0036
@@ -778,7 +745,6 @@
     },
     {
       "name": "Maryland",
-      "code": "MYL",
       "coordinates": {
         "lat": 51.5458,
         "lng": 0.0053
@@ -804,7 +770,6 @@
     },
     {
       "name": "Forest Gate",
-      "code": "FOG",
       "coordinates": {
         "lat": 51.5489,
         "lng": 0.025
@@ -830,7 +795,6 @@
     },
     {
       "name": "Manor Park",
-      "code": "MNP",
       "coordinates": {
         "lat": 51.5531,
         "lng": 0.0456
@@ -856,7 +820,6 @@
     },
     {
       "name": "Ilford",
-      "code": "IFD",
       "coordinates": {
         "lat": 51.5586,
         "lng": 0.0686
@@ -882,7 +845,6 @@
     },
     {
       "name": "Seven Kings",
-      "code": "SVK",
       "coordinates": {
         "lat": 51.5639,
         "lng": 0.0969
@@ -908,7 +870,6 @@
     },
     {
       "name": "Goodmayes",
-      "code": "GMY",
       "coordinates": {
         "lat": 51.5672,
         "lng": 0.1119
@@ -934,7 +895,6 @@
     },
     {
       "name": "Chadwell Heath",
-      "code": "CTH",
       "coordinates": {
         "lat": 51.5703,
         "lng": 0.1319
@@ -960,7 +920,6 @@
     },
     {
       "name": "Romford",
-      "code": "RMF",
       "coordinates": {
         "lat": 51.575,
         "lng": 0.1836
@@ -989,7 +948,6 @@
     },
     {
       "name": "Gidea Park",
-      "code": "GDP",
       "coordinates": {
         "lat": 51.5819,
         "lng": 0.2036
@@ -1015,7 +973,6 @@
     },
     {
       "name": "Harold Wood",
-      "code": "HRO",
       "coordinates": {
         "lat": 51.5931,
         "lng": 0.2336
@@ -1041,7 +998,6 @@
     },
     {
       "name": "Brentwood",
-      "code": "BRE",
       "coordinates": {
         "lat": 51.6131,
         "lng": 0.3036
@@ -1067,7 +1023,6 @@
     },
     {
       "name": "Shenfield",
-      "code": "SNF",
       "coordinates": {
         "lat": 51.6306,
         "lng": 0.3297
@@ -1096,7 +1051,6 @@
     },
     {
       "name": "Heathrow Terminal 4",
-      "code": "HAF",
       "coordinates": {
         "lat": 51.4597,
         "lng": -0.4472
@@ -1126,7 +1080,6 @@
     },
     {
       "name": "Heathrow Terminals 2 & 3",
-      "code": "HXX",
       "coordinates": {
         "lat": 51.4708,
         "lng": -0.4527
@@ -1157,7 +1110,6 @@
     },
     {
       "name": "Heathrow Terminal 5",
-      "code": "HT5",
       "coordinates": {
         "lat": 51.4722,
         "lng": -0.4889

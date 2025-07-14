@@ -14,7 +14,6 @@
   "stations": [
     {
       "name": "Edinburgh Waverley",
-      "code": "EDI",
       "coordinates": {
         "lat": 55.9519,
         "lng": -3.1881
@@ -81,7 +80,6 @@
     },
     {
       "name": "Brunstane",
-      "code": "BSU",
       "coordinates": {
         "lat": 55.9419,
         "lng": -3.1081
@@ -144,7 +142,6 @@
     },
     {
       "name": "Newcraighall",
-      "code": "NEW",
       "coordinates": {
         "lat": 55.9319,
         "lng": -3.0881
@@ -207,7 +204,6 @@
     },
     {
       "name": "Shawfair",
-      "code": "SFI",
       "coordinates": {
         "lat": 55.9119,
         "lng": -3.0681
@@ -270,7 +266,6 @@
     },
     {
       "name": "Eskbank",
-      "code": "EKB",
       "coordinates": {
         "lat": 55.8819,
         "lng": -3.0581
@@ -333,7 +328,6 @@
     },
     {
       "name": "Newtongrange",
-      "code": "NEG",
       "coordinates": {
         "lat": 55.8619,
         "lng": -3.0481
@@ -396,7 +390,6 @@
     },
     {
       "name": "Gorebridge",
-      "code": "GBG",
       "coordinates": {
         "lat": 55.8319,
         "lng": -3.0381
@@ -459,7 +452,6 @@
     },
     {
       "name": "Stow",
-      "code": "SOW",
       "coordinates": {
         "lat": 55.7019,
         "lng": -2.8781
@@ -522,7 +514,6 @@
     },
     {
       "name": "Galashiels",
-      "code": "GAL",
       "coordinates": {
         "lat": 55.6119,
         "lng": -2.8081
@@ -585,7 +576,6 @@
     },
     {
       "name": "Tweedbank",
-      "code": "TWB",
       "coordinates": {
         "lat": 55.5919,
         "lng": -2.7881
@@ -646,5 +636,22 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "fast": {
+      "stations": [
+        "EDI",
+        "NEW",
+        "EKB",
+        "GBG",
+        "GAL",
+        "TWB"
+      ],
+      "description": "Fast service calling at major stations"
+    },
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations"
+    }
+  }
 }

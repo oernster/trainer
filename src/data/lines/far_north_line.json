@@ -3,7 +3,7 @@
     "line_name": "Far North Line",
     "description": "Inverness to Thurso and Wick",
     "operator": "ScotRail",
-    "total_stations": 14,
+    "total_stations": 25,
     "frequency": {
       "weekday_peak": "Every 3 hours",
       "weekday_off_peak": "Every 4 hours",
@@ -14,7 +14,6 @@
   "stations": [
     {
       "name": "Inverness",
-      "code": "INV",
       "coordinates": {
         "lat": 57.4781,
         "lng": -4.2231
@@ -45,7 +44,6 @@
     },
     {
       "name": "Beauly",
-      "code": "BEL",
       "coordinates": {
         "lat": 57.4781,
         "lng": -4.4681
@@ -72,7 +70,6 @@
     },
     {
       "name": "Muir of Ord",
-      "code": "MOO",
       "coordinates": {
         "lat": 57.5131,
         "lng": -4.4581
@@ -99,7 +96,6 @@
     },
     {
       "name": "Dingwall",
-      "code": "DIN",
       "coordinates": {
         "lat": 57.5981,
         "lng": -4.4281
@@ -128,7 +124,6 @@
     },
     {
       "name": "Alness",
-      "code": "ASS",
       "coordinates": {
         "lat": 57.6981,
         "lng": -4.2581
@@ -155,7 +150,6 @@
     },
     {
       "name": "Invergordon",
-      "code": "IGD",
       "coordinates": {
         "lat": 57.6881,
         "lng": -4.1681
@@ -182,7 +176,6 @@
     },
     {
       "name": "Fearn",
-      "code": "FRN",
       "coordinates": {
         "lat": 57.7781,
         "lng": -3.9981
@@ -209,7 +202,6 @@
     },
     {
       "name": "Tain",
-      "code": "TAI",
       "coordinates": {
         "lat": 57.8131,
         "lng": -4.0581
@@ -236,7 +228,6 @@
     },
     {
       "name": "Ardgay",
-      "code": "ARD",
       "coordinates": {
         "lat": 57.8881,
         "lng": -4.3581
@@ -263,7 +254,6 @@
     },
     {
       "name": "Culrain",
-      "code": "CUA",
       "coordinates": {
         "lat": 57.9581,
         "lng": -4.4081
@@ -290,7 +280,6 @@
     },
     {
       "name": "Invershin",
-      "code": "INH",
       "coordinates": {
         "lat": 57.9681,
         "lng": -4.4181
@@ -317,7 +306,6 @@
     },
     {
       "name": "Lairg",
-      "code": "LRG",
       "coordinates": {
         "lat": 58.0231,
         "lng": -4.4031
@@ -344,7 +332,6 @@
     },
     {
       "name": "Rogart",
-      "code": "ROG",
       "coordinates": {
         "lat": 58.0081,
         "lng": -4.1681
@@ -371,7 +358,6 @@
     },
     {
       "name": "Golspie",
-      "code": "GOL",
       "coordinates": {
         "lat": 57.9781,
         "lng": -3.9781
@@ -398,7 +384,6 @@
     },
     {
       "name": "Dunrobin Castle",
-      "code": "DNO",
       "coordinates": {
         "lat": 57.9831,
         "lng": -3.9481
@@ -425,7 +410,6 @@
     },
     {
       "name": "Brora",
-      "code": "BRA",
       "coordinates": {
         "lat": 58.0131,
         "lng": -3.8531
@@ -452,7 +436,6 @@
     },
     {
       "name": "Helmsdale",
-      "code": "HEL",
       "coordinates": {
         "lat": 58.1181,
         "lng": -3.6481
@@ -479,7 +462,6 @@
     },
     {
       "name": "Kildonan",
-      "code": "KKL",
       "coordinates": {
         "lat": 58.1881,
         "lng": -3.8681
@@ -506,7 +488,6 @@
     },
     {
       "name": "Kinbrace",
-      "code": "KBC",
       "coordinates": {
         "lat": 58.2981,
         "lng": -3.9381
@@ -533,7 +514,6 @@
     },
     {
       "name": "Forsinard",
-      "code": "FRS",
       "coordinates": {
         "lat": 58.3581,
         "lng": -3.8981
@@ -560,7 +540,6 @@
     },
     {
       "name": "Altnabreac",
-      "code": "ABC",
       "coordinates": {
         "lat": 58.4081,
         "lng": -3.7581
@@ -587,7 +566,6 @@
     },
     {
       "name": "Scotscalder",
-      "code": "SCT",
       "coordinates": {
         "lat": 58.4881,
         "lng": -3.6081
@@ -614,7 +592,6 @@
     },
     {
       "name": "Georgemas Junction",
-      "code": "GMS",
       "coordinates": {
         "lat": 58.5181,
         "lng": -3.4381
@@ -641,7 +618,6 @@
     },
     {
       "name": "Thurso",
-      "code": "THS",
       "coordinates": {
         "lat": 58.5931,
         "lng": -3.5231
@@ -668,7 +644,6 @@
     },
     {
       "name": "Wick",
-      "code": "WCK",
       "coordinates": {
         "lat": 58.4431,
         "lng": -3.0931
@@ -693,5 +668,50 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations"
+    },
+    "semi_fast": {
+      "stations": [
+        "INV",
+        "BEL",
+        "DIN",
+        "ASS",
+        "FRN",
+        "TAI",
+        "CUA",
+        "INH",
+        "ROG",
+        "DNO",
+        "BRA",
+        "KKL",
+        "KBC",
+        "ABC",
+        "SCT",
+        "THS",
+        "WCK"
+      ],
+      "description": "Semi-fast service calling at major stations"
+    },
+    "fast": {
+      "stations": [
+        "INV",
+        "MOO",
+        "ASS",
+        "FRN",
+        "CUA",
+        "LRG",
+        "GOL",
+        "BRA",
+        "KBC",
+        "ABC",
+        "GMS",
+        "WCK"
+      ],
+      "description": "Fast service calling at principal stations"
+    }
+  }
 }

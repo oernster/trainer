@@ -26,7 +26,6 @@ from ..managers.config_manager import ConfigManager
 
 logger = logging.getLogger(__name__)
 
-
 class NASADataWorker(QThread):
     """
     Worker thread for parallel NASA data fetching.
@@ -50,8 +49,7 @@ class NASADataWorker(QThread):
         """Run the NASA data fetching in background thread."""
         try:
             self.fetch_started.emit()
-            logger.info("NASA data worker thread started")
-            
+
             # Check if we should stop before starting
             if self.should_stop:
                 return
@@ -69,7 +67,7 @@ class NASADataWorker(QThread):
                     
                     if not self.should_stop and forecast_data:
                         self.data_fetched.emit(forecast_data)
-                        logger.info("NASA data fetched successfully in background thread")
+                        
                     elif not self.should_stop:
                         self.fetch_error.emit("No astronomy data received")
                         
@@ -95,7 +93,6 @@ class NASADataWorker(QThread):
         """Stop the worker thread gracefully."""
         self.should_stop = True
         logger.debug("NASA data worker thread stop requested")
-
 
 class InitializationManager(QObject):
     """
@@ -154,8 +151,7 @@ class InitializationManager(QObject):
         
         try:
             self.initialization_started.emit()
-            logger.info("Starting optimized widget initialization sequence")
-            
+
             # Load configuration
             self.config = self.config_manager.load_config()
             
@@ -170,7 +166,7 @@ class InitializationManager(QObject):
             
             # Complete initialization
             elapsed_time = time.time() - self.initialization_start_time
-            logger.info(f"Widget initialization completed in {elapsed_time:.3f}s")
+            
             self.initialization_completed.emit()
             
         except Exception as e:
@@ -243,8 +239,7 @@ class InitializationManager(QObject):
                     if not hasattr(self, '_weather_fetch_started'):
                         QTimer.singleShot(100, self._fetch_weather_data)
                         self._weather_fetch_started = True
-                    
-                logger.info("Weather widgets initialized successfully")
+
             else:
                 logger.info("Weather widgets skipped (disabled or no config)")
                 # CRITICAL FIX: Don't override user's manual visibility preference
@@ -278,8 +273,7 @@ class InitializationManager(QObject):
                 
                 # Train manager will be created and connected in main.py
                 # This just ensures the widget is ready
-                
-            logger.info("Train widgets initialized successfully")
+
             self.train_initialized.emit()
             
         except Exception as e:
@@ -339,9 +333,8 @@ class InitializationManager(QObject):
                 if not hasattr(self, '_nasa_fetch_started'):
                     self._start_parallel_nasa_fetch()
                     self._nasa_fetch_started = True
-                    logger.info("NASA widget initialized (API-free mode)")
-                    
-                logger.info("NASA widgets initialized successfully")
+                    logger.debug("NASA data fetch started in parallel")
+
             else:
                 logger.info("NASA widgets skipped (disabled or no config)")
                 # CRITICAL FIX: Don't override user's manual visibility preference
@@ -363,9 +356,7 @@ class InitializationManager(QObject):
             if not self.astronomy_manager:
                 logger.warning("Cannot start NASA fetch: no astronomy manager")
                 return
-                
-            logger.info("Starting parallel NASA data fetch...")
-            
+
             # Create and configure worker thread
             self.nasa_worker = NASADataWorker(self.astronomy_manager)
             
@@ -426,7 +417,7 @@ class InitializationManager(QObject):
     
     def _on_nasa_data_fetched(self, forecast_data) -> None:
         """Handle NASA data fetch completion."""
-        logger.info("NASA data fetched successfully in parallel thread")
+        
         self.nasa_data_ready.emit()
         
         # Start auto-refresh for astronomy if enabled

@@ -3,7 +3,7 @@
     "line_name": "Docklands Light Railway",
     "description": "Light metro system serving the Docklands area of East London",
     "operator": "Transport for London",
-    "total_stations": 45,
+    "total_stations": 44,
     "line_color": "#00A4A7",
     "frequency": {
       "weekday_peak": "Every hour",
@@ -15,7 +15,6 @@
   "stations": [
     {
       "name": "Bank",
-      "code": "BNK",
       "coordinates": {
         "lat": 51.5133,
         "lng": -0.0886
@@ -47,7 +46,6 @@
     },
     {
       "name": "Tower Gateway",
-      "code": "TWG",
       "coordinates": {
         "lat": 51.5106,
         "lng": -0.0743
@@ -75,7 +73,6 @@
     },
     {
       "name": "Shadwell",
-      "code": "SDE",
       "coordinates": {
         "lat": 51.5117,
         "lng": -0.057
@@ -105,7 +102,6 @@
     },
     {
       "name": "Limehouse",
-      "code": "LHS",
       "coordinates": {
         "lat": 51.5125,
         "lng": -0.0394
@@ -135,7 +131,6 @@
     },
     {
       "name": "Westferry",
-      "code": "WFE",
       "coordinates": {
         "lat": 51.5097,
         "lng": -0.0265
@@ -163,7 +158,6 @@
     },
     {
       "name": "Poplar",
-      "code": "POP",
       "coordinates": {
         "lat": 51.5077,
         "lng": -0.0173
@@ -191,7 +185,6 @@
     },
     {
       "name": "Blackwall",
-      "code": "BLA",
       "coordinates": {
         "lat": 51.5079,
         "lng": -0.0066
@@ -219,7 +212,6 @@
     },
     {
       "name": "East India",
-      "code": "EAI",
       "coordinates": {
         "lat": 51.5093,
         "lng": 0.0021
@@ -247,7 +239,6 @@
     },
     {
       "name": "Canning Town",
-      "code": "CAT",
       "coordinates": {
         "lat": 51.5147,
         "lng": 0.0082
@@ -277,7 +268,6 @@
     },
     {
       "name": "Royal Victoria",
-      "code": "RVC",
       "coordinates": {
         "lat": 51.5091,
         "lng": 0.0177
@@ -305,7 +295,6 @@
     },
     {
       "name": "Custom House",
-      "code": "CUH",
       "coordinates": {
         "lat": 51.5095,
         "lng": 0.0276
@@ -335,7 +324,6 @@
     },
     {
       "name": "Prince Regent",
-      "code": "PRI",
       "coordinates": {
         "lat": 51.5107,
         "lng": 0.0333
@@ -363,7 +351,6 @@
     },
     {
       "name": "Royal Albert",
-      "code": "RAL",
       "coordinates": {
         "lat": 51.5084,
         "lng": 0.0465
@@ -391,7 +378,6 @@
     },
     {
       "name": "Beckton Park",
-      "code": "BEP",
       "coordinates": {
         "lat": 51.5087,
         "lng": 0.0554
@@ -419,7 +405,6 @@
     },
     {
       "name": "Cyprus",
-      "code": "CCY",
       "coordinates": {
         "lat": 51.5097,
         "lng": 0.0638
@@ -447,7 +432,6 @@
     },
     {
       "name": "Gallions Reach",
-      "code": "GAR",
       "coordinates": {
         "lat": 51.5096,
         "lng": 0.0723
@@ -475,7 +459,6 @@
     },
     {
       "name": "Beckton",
-      "code": "BEC",
       "coordinates": {
         "lat": 51.5148,
         "lng": 0.0613
@@ -503,7 +486,6 @@
     },
     {
       "name": "West India Quay",
-      "code": "WIQ",
       "coordinates": {
         "lat": 51.5067,
         "lng": -0.0203
@@ -531,7 +513,6 @@
     },
     {
       "name": "Canary Wharf DLR",
-      "code": "CCN",
       "coordinates": {
         "lat": 51.5051,
         "lng": -0.0209
@@ -562,7 +543,6 @@
     },
     {
       "name": "Heron Quays",
-      "code": "HRQ",
       "coordinates": {
         "lat": 51.5033,
         "lng": -0.0215
@@ -590,7 +570,6 @@
     },
     {
       "name": "South Quay",
-      "code": "SQE",
       "coordinates": {
         "lat": 51.5006,
         "lng": -0.0195
@@ -618,7 +597,6 @@
     },
     {
       "name": "Crossharbour",
-      "code": "CRO",
       "coordinates": {
         "lat": 51.4957,
         "lng": -0.0144
@@ -646,7 +624,6 @@
     },
     {
       "name": "Mudchute",
-      "code": "MUD",
       "coordinates": {
         "lat": 51.4902,
         "lng": -0.0145
@@ -674,7 +651,6 @@
     },
     {
       "name": "Island Gardens",
-      "code": "ISG",
       "coordinates": {
         "lat": 51.4871,
         "lng": -0.0103
@@ -702,7 +678,6 @@
     },
     {
       "name": "Cutty Sark",
-      "code": "CUS",
       "coordinates": {
         "lat": 51.4819,
         "lng": -0.0094
@@ -730,7 +705,6 @@
     },
     {
       "name": "Greenwich",
-      "code": "GRE",
       "coordinates": {
         "lat": 51.4781,
         "lng": -0.0149
@@ -760,7 +734,6 @@
     },
     {
       "name": "Deptford Bridge",
-      "code": "DEP",
       "coordinates": {
         "lat": 51.4741,
         "lng": -0.0216
@@ -788,7 +761,6 @@
     },
     {
       "name": "Elverson Road",
-      "code": "ELR",
       "coordinates": {
         "lat": 51.4693,
         "lng": -0.0174
@@ -816,7 +788,6 @@
     },
     {
       "name": "Lewisham",
-      "code": "LEW",
       "coordinates": {
         "lat": 51.4657,
         "lng": -0.0142
@@ -846,7 +817,6 @@
     },
     {
       "name": "All Saints",
-      "code": "ALS",
       "coordinates": {
         "lat": 51.5107,
         "lng": -0.013
@@ -874,7 +844,6 @@
     },
     {
       "name": "Langdon Park",
-      "code": "LGP",
       "coordinates": {
         "lat": 51.5152,
         "lng": -0.0083
@@ -902,7 +871,6 @@
     },
     {
       "name": "Devons Road",
-      "code": "DVR",
       "coordinates": {
         "lat": 51.5223,
         "lng": -0.0173
@@ -930,7 +898,6 @@
     },
     {
       "name": "Bow Church",
-      "code": "BOW",
       "coordinates": {
         "lat": 51.5269,
         "lng": -0.0208
@@ -958,7 +925,6 @@
     },
     {
       "name": "Pudding Mill Lane",
-      "code": "PML",
       "coordinates": {
         "lat": 51.5343,
         "lng": -0.0139
@@ -986,7 +952,6 @@
     },
     {
       "name": "Stratford",
-      "code": "SFD",
       "coordinates": {
         "lat": 51.5416,
         "lng": -0.0042
@@ -1020,7 +985,6 @@
     },
     {
       "name": "Stratford International",
-      "code": "SST",
       "coordinates": {
         "lat": 51.5456,
         "lng": -0.0089
@@ -1050,7 +1014,6 @@
     },
     {
       "name": "Abbey Road",
-      "code": "ABR",
       "coordinates": {
         "lat": 51.5322,
         "lng": 0.0051
@@ -1078,7 +1041,6 @@
     },
     {
       "name": "West Ham",
-      "code": "WEH",
       "coordinates": {
         "lat": 51.5282,
         "lng": 0.0055
@@ -1111,7 +1073,6 @@
     },
     {
       "name": "Star Lane",
-      "code": "SLN",
       "coordinates": {
         "lat": 51.5208,
         "lng": 0.0082
@@ -1138,38 +1099,7 @@
       }
     },
     {
-      "name": "Canning Town",
-      "code": "CAT",
-      "coordinates": {
-        "lat": 51.5147,
-        "lng": 0.0082
-      },
-      "zone": 3,
-      "interchange": [
-        "Jubilee Line"
-      ],
-      "times": {
-        "morning": [
-          "14:13",
-          "16:13",
-          "18:13"
-        ],
-        "afternoon": [
-          "20:13",
-          "22:13",
-          "00:13"
-        ],
-        "evening": [
-          "02:13",
-          "04:13",
-          "06:13"
-        ],
-        "night": []
-      }
-    },
-    {
       "name": "West Silvertown",
-      "code": "WST",
       "coordinates": {
         "lat": 51.5027,
         "lng": 0.0226
@@ -1197,7 +1127,6 @@
     },
     {
       "name": "Pontoon Dock",
-      "code": "POD",
       "coordinates": {
         "lat": 51.5025,
         "lng": 0.0308
@@ -1225,7 +1154,6 @@
     },
     {
       "name": "London City Airport",
-      "code": "LCA",
       "coordinates": {
         "lat": 51.5048,
         "lng": 0.0423
@@ -1253,7 +1181,6 @@
     },
     {
       "name": "King George V",
-      "code": "KGV",
       "coordinates": {
         "lat": 51.5016,
         "lng": 0.0628
@@ -1281,7 +1208,6 @@
     },
     {
       "name": "Woolwich Arsenal",
-      "code": "WWA",
       "coordinates": {
         "lat": 51.4905,
         "lng": 0.0695
@@ -1310,5 +1236,42 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "fast": {
+      "stations": [
+        "BNK",
+        "TWG",
+        "LHS",
+        "POP",
+        "EAI",
+        "CAT",
+        "CUH",
+        "RAL",
+        "CCY",
+        "GAR",
+        "WIQ",
+        "HRQ",
+        "CRO",
+        "MUD",
+        "CUS",
+        "DEP",
+        "LEW",
+        "ALS",
+        "DVR",
+        "PML",
+        "SST",
+        "ABR",
+        "SLN",
+        "POD",
+        "KGV",
+        "WWA"
+      ],
+      "description": "Fast service calling at major stations"
+    },
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations"
+    }
+  }
 }

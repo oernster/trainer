@@ -15,7 +15,6 @@
   "stations": [
     {
       "name": "Walthamstow Central",
-      "code": "WMW",
       "coordinates": {
         "lat": 51.5829,
         "lng": -0.0197
@@ -46,7 +45,6 @@
     },
     {
       "name": "Blackhorse Road",
-      "code": "BHO",
       "coordinates": {
         "lat": 51.5867,
         "lng": -0.041
@@ -77,7 +75,6 @@
     },
     {
       "name": "Tottenham Hale",
-      "code": "TOM",
       "coordinates": {
         "lat": 51.5882,
         "lng": -0.0594
@@ -107,7 +104,6 @@
     },
     {
       "name": "Seven Sisters",
-      "code": "SVS",
       "coordinates": {
         "lat": 51.5822,
         "lng": -0.0749
@@ -138,7 +134,6 @@
     },
     {
       "name": "Finsbury Park",
-      "code": "FPK",
       "coordinates": {
         "lat": 51.5642,
         "lng": -0.1065
@@ -169,7 +164,6 @@
     },
     {
       "name": "Highbury & Islington",
-      "code": "HHY",
       "coordinates": {
         "lat": 51.5464,
         "lng": -0.1031
@@ -200,7 +194,6 @@
     },
     {
       "name": "King's Cross St. Pancras",
-      "code": "KXX",
       "coordinates": {
         "lat": 51.5308,
         "lng": -0.1238
@@ -235,7 +228,6 @@
     },
     {
       "name": "Euston",
-      "code": "EUS",
       "coordinates": {
         "lat": 51.5282,
         "lng": -0.1337
@@ -266,7 +258,6 @@
     },
     {
       "name": "Warren Street",
-      "code": "WAR",
       "coordinates": {
         "lat": 51.5245,
         "lng": -0.1389
@@ -296,7 +287,6 @@
     },
     {
       "name": "Oxford Circus",
-      "code": "OXC",
       "coordinates": {
         "lat": 51.5154,
         "lng": -0.1419
@@ -327,7 +317,6 @@
     },
     {
       "name": "Green Park",
-      "code": "GPK",
       "coordinates": {
         "lat": 51.5067,
         "lng": -0.1428
@@ -358,7 +347,6 @@
     },
     {
       "name": "Victoria",
-      "code": "VVC",
       "coordinates": {
         "lat": 51.4952,
         "lng": -0.1441
@@ -390,7 +378,6 @@
     },
     {
       "name": "Pimlico",
-      "code": "PIM",
       "coordinates": {
         "lat": 51.4893,
         "lng": -0.1334
@@ -418,7 +405,6 @@
     },
     {
       "name": "Vauxhall",
-      "code": "VXH",
       "coordinates": {
         "lat": 51.4861,
         "lng": -0.1253
@@ -448,7 +434,6 @@
     },
     {
       "name": "Stockwell",
-      "code": "STK",
       "coordinates": {
         "lat": 51.4723,
         "lng": -0.123
@@ -478,7 +463,6 @@
     },
     {
       "name": "Brixton",
-      "code": "BRX",
       "coordinates": {
         "lat": 51.4627,
         "lng": -0.1145
@@ -506,5 +490,40 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations"
+    },
+    "semi_fast": {
+      "stations": [
+        "WMW",
+        "BHO",
+        "SVS",
+        "FPK",
+        "KXX",
+        "WAR",
+        "OXC",
+        "VVC",
+        "PIM",
+        "STK",
+        "BRX"
+      ],
+      "description": "Semi-fast service calling at major stations"
+    },
+    "fast": {
+      "stations": [
+        "WMW",
+        "TOM",
+        "FPK",
+        "KXX",
+        "OXC",
+        "VVC",
+        "VXH",
+        "BRX"
+      ],
+      "description": "Fast service calling at principal stations"
+    }
+  }
 }

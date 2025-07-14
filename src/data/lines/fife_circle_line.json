@@ -14,7 +14,6 @@
   "stations": [
     {
       "name": "Edinburgh Waverley",
-      "code": "EDI",
       "coordinates": {
         "lat": 55.9519,
         "lng": -3.1881
@@ -81,7 +80,6 @@
     },
     {
       "name": "Haymarket",
-      "code": "HA1",
       "coordinates": {
         "lat": 55.9459,
         "lng": -3.2181
@@ -146,7 +144,6 @@
     },
     {
       "name": "South Gyle",
-      "code": "SGL",
       "coordinates": {
         "lat": 55.9381,
         "lng": -3.2981
@@ -209,7 +206,6 @@
     },
     {
       "name": "Edinburgh Gateway",
-      "code": "EGY",
       "coordinates": {
         "lat": 55.9419,
         "lng": -3.3231
@@ -274,7 +270,6 @@
     },
     {
       "name": "Dalmeny",
-      "code": "DAM",
       "coordinates": {
         "lat": 55.9881,
         "lng": -3.3781
@@ -337,7 +332,6 @@
     },
     {
       "name": "North Queensferry",
-      "code": "NQU",
       "coordinates": {
         "lat": 56.0081,
         "lng": -3.3981
@@ -400,7 +394,6 @@
     },
     {
       "name": "Inverkeithing",
-      "code": "INK",
       "coordinates": {
         "lat": 56.0319,
         "lng": -3.3981
@@ -463,7 +456,6 @@
     },
     {
       "name": "Rosyth",
-      "code": "ROS",
       "coordinates": {
         "lat": 56.0419,
         "lng": -3.4381
@@ -526,7 +518,6 @@
     },
     {
       "name": "Dunfermline Town",
-      "code": "DDN",
       "coordinates": {
         "lat": 56.0719,
         "lng": -3.4581
@@ -589,7 +580,6 @@
     },
     {
       "name": "Dunfermline Queen Margaret",
-      "code": "DFL",
       "coordinates": {
         "lat": 56.0819,
         "lng": -3.4381
@@ -652,7 +642,6 @@
     },
     {
       "name": "Cowdenbeath",
-      "code": "CCW",
       "coordinates": {
         "lat": 56.1119,
         "lng": -3.3481
@@ -715,7 +704,6 @@
     },
     {
       "name": "Lochgelly",
-      "code": "LCG",
       "coordinates": {
         "lat": 56.1319,
         "lng": -3.3081
@@ -778,7 +766,6 @@
     },
     {
       "name": "Cardenden",
-      "code": "CDD",
       "coordinates": {
         "lat": 56.1419,
         "lng": -3.2581
@@ -841,7 +828,6 @@
     },
     {
       "name": "Glenrothes with Thornton",
-      "code": "GLT",
       "coordinates": {
         "lat": 56.1619,
         "lng": -3.1681
@@ -904,7 +890,6 @@
     },
     {
       "name": "Kirkcaldy",
-      "code": "KDY",
       "coordinates": {
         "lat": 56.1119,
         "lng": -3.1681
@@ -967,7 +952,6 @@
     },
     {
       "name": "Kinghorn",
-      "code": "KGH",
       "coordinates": {
         "lat": 56.0719,
         "lng": -3.1731
@@ -1030,7 +1014,6 @@
     },
     {
       "name": "Burntisland",
-      "code": "BTS",
       "coordinates": {
         "lat": 56.0581,
         "lng": -3.2331
@@ -1093,7 +1076,6 @@
     },
     {
       "name": "Aberdour",
-      "code": "ABO",
       "coordinates": {
         "lat": 56.0531,
         "lng": -3.2881
@@ -1156,7 +1138,6 @@
     },
     {
       "name": "Dalgety Bay",
-      "code": "DAG",
       "coordinates": {
         "lat": 56.0431,
         "lng": -3.3381
@@ -1216,69 +1197,44 @@
         ],
         "night": []
       }
-    },
-    {
-      "name": "Inverkeithing",
-      "code": "INK",
-      "coordinates": {
-        "lat": 56.0319,
-        "lng": -3.3981
-      },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "08:01",
-          "08:31",
-          "09:01",
-          "09:31",
-          "09:46",
-          "10:01",
-          "10:16",
-          "10:31",
-          "10:46",
-          "11:01",
-          "11:16",
-          "11:31",
-          "12:01",
-          "12:31",
-          "13:01",
-          "13:31",
-          "14:01"
-        ],
-        "afternoon": [
-          "14:31",
-          "15:01",
-          "15:31",
-          "16:01",
-          "16:31",
-          "17:01",
-          "17:31",
-          "18:01",
-          "18:31",
-          "18:46",
-          "19:01",
-          "19:16",
-          "19:31",
-          "19:46",
-          "20:01",
-          "20:16"
-        ],
-        "evening": [
-          "20:31",
-          "21:01",
-          "21:31",
-          "22:01",
-          "22:31",
-          "23:01",
-          "23:31",
-          "00:01",
-          "00:31",
-          "01:01",
-          "01:31",
-          "02:01"
-        ],
-        "night": []
-      }
     }
-  ]
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations"
+    },
+    "semi_fast": {
+      "stations": [
+        "EDI",
+        "HA1",
+        "EGY",
+        "DAM",
+        "INK",
+        "ROS",
+        "DFL",
+        "LCG",
+        "CDD",
+        "KDY",
+        "KGH",
+        "ABO",
+        "DAG"
+      ],
+      "description": "Semi-fast service calling at major stations"
+    },
+    "fast": {
+      "stations": [
+        "EDI",
+        "SGL",
+        "DAM",
+        "ROS",
+        "DFL",
+        "LCG",
+        "KDY",
+        "BTS",
+        "DAG"
+      ],
+      "description": "Fast service calling at principal stations"
+    }
+  }
 }

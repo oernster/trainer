@@ -14,7 +14,6 @@
   "stations": [
     {
       "name": "Bristol Temple Meads",
-      "code": "BRI",
       "coordinates": {
         "lat": 51.4491,
         "lng": -2.5831
@@ -81,7 +80,6 @@
     },
     {
       "name": "Lawrence Hill",
-      "code": "LWH",
       "coordinates": {
         "lat": 51.4631,
         "lng": -2.5631
@@ -144,7 +142,6 @@
     },
     {
       "name": "Stapleton Road",
-      "code": "SRD",
       "coordinates": {
         "lat": 51.4731,
         "lng": -2.5631
@@ -207,7 +204,6 @@
     },
     {
       "name": "Montpelier",
-      "code": "MTP",
       "coordinates": {
         "lat": 51.4731,
         "lng": -2.5831
@@ -270,7 +266,6 @@
     },
     {
       "name": "Redland",
-      "code": "RDA",
       "coordinates": {
         "lat": 51.4731,
         "lng": -2.6031
@@ -333,7 +328,6 @@
     },
     {
       "name": "Clifton Down",
-      "code": "CFN",
       "coordinates": {
         "lat": 51.4631,
         "lng": -2.6231
@@ -396,7 +390,6 @@
     },
     {
       "name": "Sea Mills",
-      "code": "SML",
       "coordinates": {
         "lat": 51.4731,
         "lng": -2.6631
@@ -459,7 +452,6 @@
     },
     {
       "name": "Shirehampton",
-      "code": "SHH",
       "coordinates": {
         "lat": 51.4831,
         "lng": -2.6831
@@ -522,7 +514,6 @@
     },
     {
       "name": "Avonmouth",
-      "code": "AVN",
       "coordinates": {
         "lat": 51.5031,
         "lng": -2.7131
@@ -585,7 +576,6 @@
     },
     {
       "name": "St Andrews Road",
-      "code": "SAR",
       "coordinates": {
         "lat": 51.5231,
         "lng": -2.7031
@@ -648,7 +638,6 @@
     },
     {
       "name": "Severn Beach",
-      "code": "SVB",
       "coordinates": {
         "lat": 51.5631,
         "lng": -2.6631
@@ -709,5 +698,23 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations"
+    },
+    "semi_fast": {
+      "stations": [
+        "BRI",
+        "LWH",
+        "MTP",
+        "CFN",
+        "SHH",
+        "SAR",
+        "SVB"
+      ],
+      "description": "Semi-fast service calling at major stations"
+    }
+  }
 }

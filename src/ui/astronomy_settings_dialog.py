@@ -571,6 +571,7 @@ class AstronomySettingsDialog(QDialog):
         try:
             self.config = self.config_manager.load_config()
             self.load_current_settings()
+            logger.debug(f"Astronomy settings dialog loaded config with categories: {self.config.astronomy.enabled_link_categories if self.config and self.config.astronomy else 'None'}")
         except ConfigurationError as e:
             logger.error(f"Failed to reload config in astronomy settings dialog: {e}")
         

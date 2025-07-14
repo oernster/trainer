@@ -28,7 +28,6 @@ from ..models.astronomy_data import MoonPhase
 
 logger = logging.getLogger(__name__)
 
-
 class AstronomyManager(QObject):
     """
     Business logic manager for astronomy data.
@@ -141,7 +140,7 @@ class AstronomyManager(QObject):
 
         # Check if we should skip refresh (unless forced)
         if not force_refresh and self._should_skip_refresh():
-            logger.info("Skipping astronomy refresh - recent data available")
+            
             return self._current_forecast
 
         self._set_loading_state(True)
@@ -428,7 +427,6 @@ class AstronomyManager(QObject):
         }
         return illumination_map.get(moon_phase, 0.5)
 
-
 class AstronomyManagerFactory:
     """
     Factory for creating astronomy managers.
@@ -457,5 +455,4 @@ class AstronomyManagerFactory:
             location_longitude=-0.1278,
         )
         return AstronomyManager(config)
-
 

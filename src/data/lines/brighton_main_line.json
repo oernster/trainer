@@ -14,7 +14,6 @@
   "stations": [
     {
       "name": "London Victoria",
-      "code": "VIC",
       "coordinates": {
         "lat": 51.4952,
         "lng": -0.1441
@@ -46,7 +45,6 @@
     },
     {
       "name": "Clapham Junction",
-      "code": "CLJ",
       "coordinates": {
         "lat": 51.4642,
         "lng": -0.1705
@@ -77,7 +75,6 @@
     },
     {
       "name": "East Croydon",
-      "code": "ECR",
       "coordinates": {
         "lat": 51.3756,
         "lng": -0.0928
@@ -108,7 +105,6 @@
     },
     {
       "name": "Redhill",
-      "code": "RDH",
       "coordinates": {
         "lat": 51.2406,
         "lng": -0.1711
@@ -138,7 +134,6 @@
     },
     {
       "name": "Gatwick Airport",
-      "code": "GTW",
       "coordinates": {
         "lat": 51.1564,
         "lng": -0.1611
@@ -167,7 +162,6 @@
     },
     {
       "name": "Three Bridges",
-      "code": "TBD",
       "coordinates": {
         "lat": 51.1167,
         "lng": -0.15
@@ -196,7 +190,6 @@
     },
     {
       "name": "Balcombe",
-      "code": "BAL",
       "coordinates": {
         "lat": 51.05,
         "lng": -0.1333
@@ -222,7 +215,6 @@
     },
     {
       "name": "Haywards Heath",
-      "code": "HHE",
       "coordinates": {
         "lat": 51.0,
         "lng": -0.1
@@ -251,7 +243,6 @@
     },
     {
       "name": "Wivelsfield",
-      "code": "WVF",
       "coordinates": {
         "lat": 50.9667,
         "lng": -0.0833
@@ -277,7 +268,6 @@
     },
     {
       "name": "Burgess Hill",
-      "code": "BUG",
       "coordinates": {
         "lat": 50.9583,
         "lng": -0.1333
@@ -303,7 +293,6 @@
     },
     {
       "name": "Hassocks",
-      "code": "HSK",
       "coordinates": {
         "lat": 50.9167,
         "lng": -0.15
@@ -329,7 +318,6 @@
     },
     {
       "name": "Preston Park",
-      "code": "PRP",
       "coordinates": {
         "lat": 50.85,
         "lng": -0.15
@@ -355,7 +343,6 @@
     },
     {
       "name": "Brighton",
-      "code": "BTN",
       "coordinates": {
         "lat": 50.8292,
         "lng": -0.1419

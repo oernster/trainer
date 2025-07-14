@@ -14,7 +14,6 @@
   "stations": [
     {
       "name": "Cardiff Central",
-      "code": "CDF",
       "coordinates": {
         "lat": 51.4756,
         "lng": -3.1781
@@ -40,7 +39,6 @@
     },
     {
       "name": "Cardiff Queen Street",
-      "code": "CDQ",
       "coordinates": {
         "lat": 51.4819,
         "lng": -3.1681
@@ -66,7 +64,6 @@
     },
     {
       "name": "Newport (South Wales)",
-      "code": "NWP",
       "coordinates": {
         "lat": 51.5881,
         "lng": -2.9981
@@ -92,7 +89,6 @@
     },
     {
       "name": "Swansea",
-      "code": "SWA",
       "coordinates": {
         "lat": 51.6219,
         "lng": -3.9381
@@ -118,7 +114,6 @@
     },
     {
       "name": "Llanelli",
-      "code": "LLE",
       "coordinates": {
         "lat": 51.6781,
         "lng": -4.1581
@@ -144,7 +139,6 @@
     },
     {
       "name": "Carmarthen",
-      "code": "CMN",
       "coordinates": {
         "lat": 51.8581,
         "lng": -4.3081
@@ -170,7 +164,6 @@
     },
     {
       "name": "Haverfordwest",
-      "code": "HVF",
       "coordinates": {
         "lat": 51.8031,
         "lng": -4.9681
@@ -196,7 +189,6 @@
     },
     {
       "name": "Milford Haven",
-      "code": "MFH",
       "coordinates": {
         "lat": 51.7131,
         "lng": -5.0381
@@ -222,7 +214,6 @@
     },
     {
       "name": "Tenby",
-      "code": "TEN",
       "coordinates": {
         "lat": 51.6731,
         "lng": -4.7031
@@ -248,7 +239,6 @@
     },
     {
       "name": "Pembroke",
-      "code": "PMB",
       "coordinates": {
         "lat": 51.6731,
         "lng": -4.9181
@@ -274,7 +264,6 @@
     },
     {
       "name": "Pembroke Dock",
-      "code": "PMD",
       "coordinates": {
         "lat": 51.6931,
         "lng": -4.9381
@@ -300,7 +289,6 @@
     },
     {
       "name": "Fishguard Harbour",
-      "code": "FGH",
       "coordinates": {
         "lat": 52.0131,
         "lng": -4.9881
@@ -326,7 +314,6 @@
     },
     {
       "name": "Aberystwyth",
-      "code": "AYW",
       "coordinates": {
         "lat": 52.4181,
         "lng": -4.0881
@@ -352,7 +339,6 @@
     },
     {
       "name": "Machynlleth",
-      "code": "MCH",
       "coordinates": {
         "lat": 52.5931,
         "lng": -3.8531
@@ -378,7 +364,6 @@
     },
     {
       "name": "Pwllheli",
-      "code": "PWL",
       "coordinates": {
         "lat": 52.8831,
         "lng": -4.4131
@@ -404,7 +389,6 @@
     },
     {
       "name": "Porthmadog",
-      "code": "PTM",
       "coordinates": {
         "lat": 52.9231,
         "lng": -4.1331
@@ -430,7 +414,6 @@
     },
     {
       "name": "Harlech",
-      "code": "HRL",
       "coordinates": {
         "lat": 52.8631,
         "lng": -4.1081
@@ -456,7 +439,6 @@
     },
     {
       "name": "Barmouth",
-      "code": "BMT",
       "coordinates": {
         "lat": 52.7231,
         "lng": -4.0481
@@ -482,7 +464,6 @@
     },
     {
       "name": "Dolgellau",
-      "code": "DLG",
       "coordinates": {
         "lat": 52.7431,
         "lng": -3.8881
@@ -508,7 +489,6 @@
     },
     {
       "name": "Bangor (Gwynedd)",
-      "code": "BNG",
       "coordinates": {
         "lat": 53.2281,
         "lng": -4.1281
@@ -534,7 +514,6 @@
     },
     {
       "name": "Llandudno",
-      "code": "LLD",
       "coordinates": {
         "lat": 53.3231,
         "lng": -3.8281
@@ -560,7 +539,6 @@
     },
     {
       "name": "Conwy",
-      "code": "CNW",
       "coordinates": {
         "lat": 53.2831,
         "lng": -3.8281
@@ -586,7 +564,6 @@
     },
     {
       "name": "Colwyn Bay",
-      "code": "CWB",
       "coordinates": {
         "lat": 53.2931,
         "lng": -3.7281
@@ -612,7 +589,6 @@
     },
     {
       "name": "Rhyl",
-      "code": "RHL",
       "coordinates": {
         "lat": 53.3181,
         "lng": -3.4881
@@ -638,7 +614,6 @@
     },
     {
       "name": "Prestatyn",
-      "code": "PRT",
       "coordinates": {
         "lat": 53.3381,
         "lng": -3.4081
@@ -664,7 +639,6 @@
     },
     {
       "name": "Flint",
-      "code": "FLN",
       "coordinates": {
         "lat": 53.2481,
         "lng": -3.1381
@@ -690,7 +664,6 @@
     },
     {
       "name": "Chester",
-      "code": "CTR",
       "coordinates": {
         "lat": 53.1931,
         "lng": -2.8731
@@ -716,7 +689,6 @@
     },
     {
       "name": "Wrexham General",
-      "code": "WRX",
       "coordinates": {
         "lat": 53.0431,
         "lng": -2.9981
@@ -742,7 +714,6 @@
     },
     {
       "name": "Shrewsbury",
-      "code": "SSH",
       "coordinates": {
         "lat": 52.7131,
         "lng": -2.7481
@@ -768,7 +739,6 @@
     },
     {
       "name": "Welshpool",
-      "code": "WLP",
       "coordinates": {
         "lat": 52.6581,
         "lng": -3.1481
@@ -794,7 +764,6 @@
     },
     {
       "name": "Newtown (Powys)",
-      "code": "NTN",
       "coordinates": {
         "lat": 52.5131,
         "lng": -3.3181
@@ -820,7 +789,6 @@
     },
     {
       "name": "Caersws",
-      "code": "CSW",
       "coordinates": {
         "lat": 52.5231,
         "lng": -3.4481
@@ -846,7 +814,6 @@
     },
     {
       "name": "Merthyr Tydfil",
-      "code": "MER",
       "coordinates": {
         "lat": 51.7481,
         "lng": -3.3781
@@ -872,7 +839,6 @@
     },
     {
       "name": "Aberdare",
-      "code": "ABD",
       "coordinates": {
         "lat": 51.7153,
         "lng": -3.4436
@@ -898,7 +864,6 @@
     },
     {
       "name": "Treherbert",
-      "code": "TRE",
       "coordinates": {
         "lat": 51.6981,
         "lng": -3.5681
@@ -933,7 +898,6 @@
         "CDF",
         "SWA",
         "BNG",
-        "SHR",
         "ABD",
         "MER"
       ],

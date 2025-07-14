@@ -1,0 +1,93 @@
+{
+  "metadata": {
+    "line_name": "North Wales Coast Line",
+    "description": "Chester to Holyhead via Bangor",
+    "operator": "Transport for Wales",
+    "total_stations": 8,
+    "line_color": "#D2001F"
+  },
+  "stations": [
+    {
+      "name": "Chester",
+      "coordinates": {
+        "lat": 53.1906,
+        "lng": -2.8756
+      }
+    },
+    {
+      "name": "Flint",
+      "coordinates": {
+        "lat": 53.2506,
+        "lng": -3.1356
+      }
+    },
+    {
+      "name": "Rhyl",
+      "coordinates": {
+        "lat": 53.3206,
+        "lng": -3.4856
+      }
+    },
+    {
+      "name": "Colwyn Bay",
+      "coordinates": {
+        "lat": 53.2906,
+        "lng": -3.7256
+      }
+    },
+    {
+      "name": "Llandudno Junction",
+      "coordinates": {
+        "lat": 53.2906,
+        "lng": -3.8256
+      }
+    },
+    {
+      "name": "Conwy",
+      "coordinates": {
+        "lat": 53.2806,
+        "lng": -3.8356
+      }
+    },
+    {
+      "name": "Bangor",
+      "coordinates": {
+        "lat": 53.2306,
+        "lng": -4.1256
+      }
+    },
+    {
+      "name": "Holyhead",
+      "coordinates": {
+        "lat": 53.3106,
+        "lng": -4.6356
+      }
+    }
+  ],
+  "service_patterns": {
+    "express": {
+      "stations": [
+        "CTR",
+        "RHL",
+        "LLJ",
+        "BNG",
+        "HHD"
+      ],
+      "description": "Express service with limited stops",
+      "service_type": "express",
+      "typical_journey_time": 30,
+      "frequency": "Every 60 minutes"
+    },
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations",
+      "service_type": "stopping",
+      "typical_journey_time": 30,
+      "frequency": "Every 30 minutes"
+    }
+  },
+  "typical_journey_times": {
+    "CTR-HHD": 120,
+    "HHD-CTR": 120
+  }
+}

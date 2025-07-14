@@ -25,8 +25,6 @@
     "STF-TIL": 6,
     "TIL-PFL": 5,
     "PFL-BLD": 4,
-    "BLD-LEI": 5,
-    "LEI-BEF": 4,
     "BEF-SRY": 6,
     "SRY-WNF": 4,
     "WNF-SOE": 5
@@ -42,7 +40,6 @@
   "stations": [
     {
       "name": "London Fenchurch Street",
-      "code": "FST",
       "coordinates": {
         "lat": 51.5111,
         "lng": -0.0781
@@ -74,7 +71,6 @@
     },
     {
       "name": "Limehouse",
-      "code": "LHS",
       "coordinates": {
         "lat": 51.5125,
         "lng": -0.0392
@@ -104,7 +100,6 @@
     },
     {
       "name": "West Ham",
-      "code": "WEH",
       "coordinates": {
         "lat": 51.5281,
         "lng": 0.0053
@@ -137,7 +132,6 @@
     },
     {
       "name": "Barking",
-      "code": "BAK",
       "coordinates": {
         "lat": 51.5394,
         "lng": 0.0811
@@ -170,7 +164,6 @@
     },
     {
       "name": "Upminster",
-      "code": "UPM",
       "coordinates": {
         "lat": 51.5589,
         "lng": 0.2514
@@ -200,7 +193,6 @@
     },
     {
       "name": "Grays",
-      "code": "GRY",
       "coordinates": {
         "lat": 51.4764,
         "lng": 0.3236
@@ -226,7 +218,6 @@
     },
     {
       "name": "Chafford Hundred",
-      "code": "CFB",
       "coordinates": {
         "lat": 51.4831,
         "lng": 0.2944
@@ -255,7 +246,6 @@
     },
     {
       "name": "Ockendon",
-      "code": "OCK",
       "coordinates": {
         "lat": 51.5167,
         "lng": 0.2833
@@ -281,7 +271,6 @@
     },
     {
       "name": "Stanford-le-Hope",
-      "code": "STF",
       "coordinates": {
         "lat": 51.5097,
         "lng": 0.4264
@@ -307,7 +296,6 @@
     },
     {
       "name": "Tilbury Town",
-      "code": "TIL",
       "coordinates": {
         "lat": 51.4625,
         "lng": 0.3611
@@ -336,7 +324,6 @@
     },
     {
       "name": "Purfleet",
-      "code": "PFL",
       "coordinates": {
         "lat": 51.4806,
         "lng": 0.2319
@@ -362,7 +349,6 @@
     },
     {
       "name": "Basildon",
-      "code": "BLD",
       "coordinates": {
         "lat": 51.5667,
         "lng": 0.45
@@ -388,7 +374,6 @@
     },
     {
       "name": "Laindon",
-      "code": "LAI",
       "coordinates": {
         "lat": 51.5667,
         "lng": 0.4167
@@ -414,7 +399,6 @@
     },
     {
       "name": "Pitsea",
-      "code": "PSE",
       "coordinates": {
         "lat": 51.55,
         "lng": 0.5
@@ -440,7 +424,6 @@
     },
     {
       "name": "Benfleet",
-      "code": "BEF",
       "coordinates": {
         "lat": 51.5444,
         "lng": 0.5556
@@ -466,7 +449,6 @@
     },
     {
       "name": "Leigh-on-Sea",
-      "code": "LES",
       "coordinates": {
         "lat": 51.5389,
         "lng": 0.6306
@@ -492,7 +474,6 @@
     },
     {
       "name": "Westcliff",
-      "code": "WCF",
       "coordinates": {
         "lat": 51.5361,
         "lng": 0.6889
@@ -518,7 +499,6 @@
     },
     {
       "name": "Southend Central",
-      "code": "SOC",
       "coordinates": {
         "lat": 51.5361,
         "lng": 0.7111
@@ -544,7 +524,6 @@
     },
     {
       "name": "Southend East",
-      "code": "SOE",
       "coordinates": {
         "lat": 51.5361,
         "lng": 0.7306
@@ -570,7 +549,6 @@
     },
     {
       "name": "Thorpe Bay",
-      "code": "TPB",
       "coordinates": {
         "lat": 51.5361,
         "lng": 0.7556
@@ -596,7 +574,6 @@
     },
     {
       "name": "Shoeburyness",
-      "code": "SRY",
       "coordinates": {
         "lat": 51.5306,
         "lng": 0.7889
@@ -622,7 +599,6 @@
     },
     {
       "name": "East Tilbury",
-      "code": "ETL",
       "coordinates": {
         "lat": 51.4806,
         "lng": 0.4167
@@ -648,7 +624,6 @@
     },
     {
       "name": "Dagenham Dock",
-      "code": "DDK",
       "coordinates": {
         "lat": 51.5292,
         "lng": 0.1472
@@ -674,7 +649,6 @@
     },
     {
       "name": "Rainham",
-      "code": "RHM",
       "coordinates": {
         "lat": 51.5208,
         "lng": 0.1944
@@ -700,7 +674,6 @@
     },
     {
       "name": "Upney",
-      "code": "UPY",
       "coordinates": {
         "lat": 51.5389,
         "lng": 0.1306
@@ -727,7 +700,6 @@
     },
     {
       "name": "West Horndon",
-      "code": "WNF",
       "coordinates": {
         "lat": 51.5667,
         "lng": 0.35
@@ -761,7 +733,6 @@
       "stations": [
         "FST",
         "BLD",
-        "TLB",
         "SRY",
         "SOE"
       ],

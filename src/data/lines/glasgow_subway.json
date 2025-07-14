@@ -14,7 +14,6 @@
   "stations": [
     {
       "name": "Hillhead",
-      "code": "HIL",
       "coordinates": {
         "lat": 55.8761,
         "lng": -4.2931
@@ -151,7 +150,6 @@
     },
     {
       "name": "Kelvinbridge",
-      "code": "KEL",
       "coordinates": {
         "lat": 55.8731,
         "lng": -4.2831
@@ -288,7 +286,6 @@
     },
     {
       "name": "St George's Cross",
-      "code": "SGX",
       "coordinates": {
         "lat": 55.8701,
         "lng": -4.2731
@@ -425,7 +422,6 @@
     },
     {
       "name": "Cowcaddens",
-      "code": "COW",
       "coordinates": {
         "lat": 55.8681,
         "lng": -4.2631
@@ -562,7 +558,6 @@
     },
     {
       "name": "Buchanan Street",
-      "code": "BUS",
       "coordinates": {
         "lat": 55.8631,
         "lng": -4.2531
@@ -701,7 +696,6 @@
     },
     {
       "name": "St Enoch",
-      "code": "STE",
       "coordinates": {
         "lat": 55.8581,
         "lng": -4.2581
@@ -840,7 +834,6 @@
     },
     {
       "name": "Bridge Street",
-      "code": "BRG",
       "coordinates": {
         "lat": 55.8531,
         "lng": -4.2631
@@ -977,7 +970,6 @@
     },
     {
       "name": "West Street",
-      "code": "WE1",
       "coordinates": {
         "lat": 55.8481,
         "lng": -4.2681
@@ -1114,7 +1106,6 @@
     },
     {
       "name": "Shields Road",
-      "code": "SHR",
       "coordinates": {
         "lat": 55.8431,
         "lng": -4.2731
@@ -1251,7 +1242,6 @@
     },
     {
       "name": "Kinning Park",
-      "code": "KIN",
       "coordinates": {
         "lat": 55.8481,
         "lng": -4.2781
@@ -1388,7 +1378,6 @@
     },
     {
       "name": "Cessnock",
-      "code": "CES",
       "coordinates": {
         "lat": 55.8531,
         "lng": -4.2831
@@ -1525,7 +1514,6 @@
     },
     {
       "name": "Ibrox",
-      "code": "IBR",
       "coordinates": {
         "lat": 55.8531,
         "lng": -4.3031
@@ -1662,7 +1650,6 @@
     },
     {
       "name": "Govan",
-      "code": "GOV",
       "coordinates": {
         "lat": 55.8631,
         "lng": -4.3131
@@ -1799,7 +1786,6 @@
     },
     {
       "name": "Partick",
-      "code": "PAR",
       "coordinates": {
         "lat": 55.8701,
         "lng": -4.3081
@@ -1938,7 +1924,6 @@
     },
     {
       "name": "Kelvinhall",
-      "code": "KEH",
       "coordinates": {
         "lat": 55.8731,
         "lng": -4.3031
@@ -2073,5 +2058,11 @@
         ]
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "all_stations": {
+      "stations": "all",
+      "description": "All stations service"
+    }
+  }
 }

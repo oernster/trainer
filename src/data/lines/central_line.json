@@ -15,7 +15,6 @@
   "stations": [
     {
       "name": "West Ruislip",
-      "code": "WRU",
       "coordinates": {
         "lat": 51.5696,
         "lng": -0.4376
@@ -45,7 +44,6 @@
     },
     {
       "name": "Ruislip Gardens",
-      "code": "RRS",
       "coordinates": {
         "lat": 51.5606,
         "lng": -0.4417
@@ -73,7 +71,6 @@
     },
     {
       "name": "South Ruislip",
-      "code": "SRU",
       "coordinates": {
         "lat": 51.5569,
         "lng": -0.3988
@@ -103,7 +100,6 @@
     },
     {
       "name": "Northolt",
-      "code": "NHT",
       "coordinates": {
         "lat": 51.5483,
         "lng": -0.3687
@@ -131,7 +127,6 @@
     },
     {
       "name": "Greenford",
-      "code": "GFD",
       "coordinates": {
         "lat": 51.5423,
         "lng": -0.3456
@@ -161,7 +156,6 @@
     },
     {
       "name": "Perivale",
-      "code": "PER",
       "coordinates": {
         "lat": 51.5366,
         "lng": -0.3236
@@ -189,7 +183,6 @@
     },
     {
       "name": "Hanger Lane",
-      "code": "HLN",
       "coordinates": {
         "lat": 51.5302,
         "lng": -0.2933
@@ -217,7 +210,6 @@
     },
     {
       "name": "Ealing Broadway",
-      "code": "EAL",
       "coordinates": {
         "lat": 51.5152,
         "lng": -0.3017
@@ -249,7 +241,6 @@
     },
     {
       "name": "West Acton",
-      "code": "WCT",
       "coordinates": {
         "lat": 51.5174,
         "lng": -0.281
@@ -277,7 +268,6 @@
     },
     {
       "name": "North Acton",
-      "code": "NAC",
       "coordinates": {
         "lat": 51.5237,
         "lng": -0.2597
@@ -305,7 +295,6 @@
     },
     {
       "name": "East Acton",
-      "code": "EAC",
       "coordinates": {
         "lat": 51.5168,
         "lng": -0.2474
@@ -333,7 +322,6 @@
     },
     {
       "name": "White City",
-      "code": "WHI",
       "coordinates": {
         "lat": 51.512,
         "lng": -0.2239
@@ -361,7 +349,6 @@
     },
     {
       "name": "Shepherd's Bush",
-      "code": "SBC",
       "coordinates": {
         "lat": 51.505,
         "lng": -0.2182
@@ -392,7 +379,6 @@
     },
     {
       "name": "Holland Park",
-      "code": "HPK",
       "coordinates": {
         "lat": 51.5075,
         "lng": -0.2065
@@ -420,7 +406,6 @@
     },
     {
       "name": "Notting Hill Gate",
-      "code": "NHG",
       "coordinates": {
         "lat": 51.5094,
         "lng": -0.1967
@@ -451,7 +436,6 @@
     },
     {
       "name": "Queensway",
-      "code": "QWY",
       "coordinates": {
         "lat": 51.5107,
         "lng": -0.1877
@@ -479,7 +463,6 @@
     },
     {
       "name": "Lancaster Gate",
-      "code": "LA1",
       "coordinates": {
         "lat": 51.5119,
         "lng": -0.1756
@@ -507,7 +490,6 @@
     },
     {
       "name": "Marble Arch",
-      "code": "MAA",
       "coordinates": {
         "lat": 51.5136,
         "lng": -0.1586
@@ -535,7 +517,6 @@
     },
     {
       "name": "Bond Street",
-      "code": "BDS",
       "coordinates": {
         "lat": 51.5142,
         "lng": -0.1494
@@ -566,7 +547,6 @@
     },
     {
       "name": "Oxford Circus",
-      "code": "OXC",
       "coordinates": {
         "lat": 51.5154,
         "lng": -0.1419
@@ -597,7 +577,6 @@
     },
     {
       "name": "Tottenham Court Road",
-      "code": "TCR",
       "coordinates": {
         "lat": 51.5165,
         "lng": -0.1308
@@ -628,7 +607,6 @@
     },
     {
       "name": "Holborn",
-      "code": "HBN",
       "coordinates": {
         "lat": 51.5174,
         "lng": -0.1203
@@ -658,7 +636,6 @@
     },
     {
       "name": "Chancery Lane",
-      "code": "CYL",
       "coordinates": {
         "lat": 51.5185,
         "lng": -0.1111
@@ -686,7 +663,6 @@
     },
     {
       "name": "St. Paul's",
-      "code": "ST3",
       "coordinates": {
         "lat": 51.515,
         "lng": -0.0983
@@ -714,7 +690,6 @@
     },
     {
       "name": "Bank",
-      "code": "BNK",
       "coordinates": {
         "lat": 51.5133,
         "lng": -0.0886
@@ -746,7 +721,6 @@
     },
     {
       "name": "Liverpool Street",
-      "code": "LST",
       "coordinates": {
         "lat": 51.5178,
         "lng": -0.0823
@@ -780,7 +754,6 @@
     },
     {
       "name": "Bethnal Green",
-      "code": "BET",
       "coordinates": {
         "lat": 51.5273,
         "lng": -0.0549
@@ -808,7 +781,6 @@
     },
     {
       "name": "Mile End",
-      "code": "MLE",
       "coordinates": {
         "lat": 51.525,
         "lng": -0.0332
@@ -839,7 +811,6 @@
     },
     {
       "name": "Stratford",
-      "code": "SFD",
       "coordinates": {
         "lat": 51.5416,
         "lng": -0.0042
@@ -873,7 +844,6 @@
     },
     {
       "name": "Leyton",
-      "code": "LTN",
       "coordinates": {
         "lat": 51.5566,
         "lng": -0.0053
@@ -901,7 +871,6 @@
     },
     {
       "name": "Leytonstone",
-      "code": "LYS",
       "coordinates": {
         "lat": 51.5683,
         "lng": 0.0083
@@ -929,7 +898,6 @@
     },
     {
       "name": "Snaresbrook",
-      "code": "SNB",
       "coordinates": {
         "lat": 51.5808,
         "lng": 0.0216
@@ -957,7 +925,6 @@
     },
     {
       "name": "South Woodford",
-      "code": "SWF",
       "coordinates": {
         "lat": 51.5917,
         "lng": 0.0275
@@ -985,7 +952,6 @@
     },
     {
       "name": "Woodford",
-      "code": "WWD",
       "coordinates": {
         "lat": 51.6067,
         "lng": 0.0336
@@ -1013,7 +979,6 @@
     },
     {
       "name": "Buckhurst Hill",
-      "code": "BHL",
       "coordinates": {
         "lat": 51.6266,
         "lng": 0.0471
@@ -1041,7 +1006,6 @@
     },
     {
       "name": "Loughton",
-      "code": "LOU",
       "coordinates": {
         "lat": 51.6417,
         "lng": 0.0558
@@ -1069,7 +1033,6 @@
     },
     {
       "name": "Debden",
-      "code": "DEB",
       "coordinates": {
         "lat": 51.6455,
         "lng": 0.0838
@@ -1097,7 +1060,6 @@
     },
     {
       "name": "Theydon Bois",
-      "code": "THB",
       "coordinates": {
         "lat": 51.6717,
         "lng": 0.1033
@@ -1125,7 +1087,6 @@
     },
     {
       "name": "Epping",
-      "code": "EPP",
       "coordinates": {
         "lat": 51.6937,
         "lng": 0.1139
@@ -1153,7 +1114,6 @@
     },
     {
       "name": "Roding Valley",
-      "code": "ROD",
       "coordinates": {
         "lat": 51.6172,
         "lng": 0.0436
@@ -1181,7 +1141,6 @@
     },
     {
       "name": "Chigwell",
-      "code": "CHG",
       "coordinates": {
         "lat": 51.6179,
         "lng": 0.0753
@@ -1209,7 +1168,6 @@
     },
     {
       "name": "Grange Hill",
-      "code": "GRH",
       "coordinates": {
         "lat": 51.6133,
         "lng": 0.0925
@@ -1237,7 +1195,6 @@
     },
     {
       "name": "Hainault",
-      "code": "HLT",
       "coordinates": {
         "lat": 51.6033,
         "lng": 0.0933
@@ -1265,7 +1222,6 @@
     },
     {
       "name": "Fairlop",
-      "code": "FLP",
       "coordinates": {
         "lat": 51.596,
         "lng": 0.0886
@@ -1293,7 +1249,6 @@
     },
     {
       "name": "Barkingside",
-      "code": "BKS",
       "coordinates": {
         "lat": 51.5856,
         "lng": 0.0887
@@ -1321,7 +1276,6 @@
     },
     {
       "name": "Newbury Park",
-      "code": "NEP",
       "coordinates": {
         "lat": 51.5756,
         "lng": 0.0899
@@ -1349,7 +1303,6 @@
     },
     {
       "name": "Gants Hill",
-      "code": "GHL",
       "coordinates": {
         "lat": 51.5765,
         "lng": 0.0663
@@ -1377,7 +1330,6 @@
     },
     {
       "name": "Redbridge",
-      "code": "REB",
       "coordinates": {
         "lat": 51.5763,
         "lng": 0.0454
@@ -1405,7 +1357,6 @@
     },
     {
       "name": "Wanstead",
-      "code": "WAN",
       "coordinates": {
         "lat": 51.5775,
         "lng": 0.0288
@@ -1431,5 +1382,79 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations"
+    },
+    "semi_fast": {
+      "stations": [
+        "WRU",
+        "RRS",
+        "SRU",
+        "GFD",
+        "PER",
+        "EAL",
+        "WCT",
+        "EAC",
+        "WHI",
+        "HPK",
+        "NHG",
+        "LA1",
+        "MAA",
+        "OXC",
+        "TCR",
+        "CYL",
+        "ST3",
+        "LST",
+        "BET",
+        "SFD",
+        "LTN",
+        "SNB",
+        "SWF",
+        "BHL",
+        "LOU",
+        "THB",
+        "EPP",
+        "CHG",
+        "GRH",
+        "FLP",
+        "BKS",
+        "GHL",
+        "REB",
+        "WAN"
+      ],
+      "description": "Semi-fast service calling at major stations"
+    },
+    "fast": {
+      "stations": [
+        "WRU",
+        "SRU",
+        "GFD",
+        "HLN",
+        "WCT",
+        "EAC",
+        "SBC",
+        "NHG",
+        "MAA",
+        "OXC",
+        "HBN",
+        "ST3",
+        "LST",
+        "MLE",
+        "LTN",
+        "SNB",
+        "BHL",
+        "DEB",
+        "EPP",
+        "CHG",
+        "HLT",
+        "BKS",
+        "GHL",
+        "WAN"
+      ],
+      "description": "Fast service calling at principal stations"
+    }
+  }
 }

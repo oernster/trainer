@@ -46,7 +46,6 @@
   "stations": [
     {
       "name": "London Euston",
-      "code": "LO1",
       "coordinates": {
         "lat": 51.5282,
         "lng": -0.1337
@@ -70,7 +69,6 @@
     },
     {
       "name": "Watford Junction",
-      "code": "WFJ",
       "coordinates": {
         "lat": 51.6625,
         "lng": -0.3958
@@ -91,7 +89,6 @@
     },
     {
       "name": "Milton Keynes Central",
-      "code": "MKC",
       "coordinates": {
         "lat": 52.0406,
         "lng": -0.7594
@@ -111,7 +108,6 @@
     },
     {
       "name": "Rugby",
-      "code": "RUG",
       "coordinates": {
         "lat": 52.3781,
         "lng": -1.2542
@@ -132,7 +128,6 @@
     },
     {
       "name": "Nuneaton",
-      "code": "NUN",
       "coordinates": {
         "lat": 52.5281,
         "lng": -1.4681
@@ -152,7 +147,6 @@
     },
     {
       "name": "Tamworth",
-      "code": "TAM",
       "coordinates": {
         "lat": 52.6339,
         "lng": -1.6958
@@ -172,7 +166,6 @@
     },
     {
       "name": "Lichfield Trent Valley",
-      "code": "LTV",
       "coordinates": {
         "lat": 52.6897,
         "lng": -1.8264
@@ -192,7 +185,6 @@
     },
     {
       "name": "Stafford",
-      "code": "STA",
       "coordinates": {
         "lat": 52.8042,
         "lng": -2.1219
@@ -213,7 +205,6 @@
     },
     {
       "name": "Crewe",
-      "code": "CRE",
       "coordinates": {
         "lat": 53.0897,
         "lng": -2.4372
@@ -235,7 +226,6 @@
     },
     {
       "name": "Warrington Bank Quay",
-      "code": "WBQ",
       "coordinates": {
         "lat": 53.3906,
         "lng": -2.5972
@@ -255,7 +245,6 @@
     },
     {
       "name": "Wigan North Western",
-      "code": "WGN",
       "coordinates": {
         "lat": 53.5522,
         "lng": -2.6331
@@ -275,7 +264,6 @@
     },
     {
       "name": "Preston",
-      "code": "PRE",
       "coordinates": {
         "lat": 53.7575,
         "lng": -2.7089
@@ -296,7 +284,6 @@
     },
     {
       "name": "Lancaster",
-      "code": "LAN",
       "coordinates": {
         "lat": 54.0486,
         "lng": -2.8081
@@ -316,7 +303,6 @@
     },
     {
       "name": "Oxenholme Lake District",
-      "code": "OXN",
       "coordinates": {
         "lat": 54.3181,
         "lng": -2.7306
@@ -336,7 +322,6 @@
     },
     {
       "name": "Penrith",
-      "code": "PNR",
       "coordinates": {
         "lat": 54.6642,
         "lng": -2.7575
@@ -355,7 +340,6 @@
     },
     {
       "name": "Carlisle",
-      "code": "CAR",
       "coordinates": {
         "lat": 54.8906,
         "lng": -2.9331
@@ -376,7 +360,6 @@
     },
     {
       "name": "Lockerbie",
-      "code": "LOC",
       "coordinates": {
         "lat": 55.1206,
         "lng": -3.3539
@@ -395,7 +378,6 @@
     },
     {
       "name": "Dumfries",
-      "code": "DMF",
       "coordinates": {
         "lat": 55.0706,
         "lng": -3.6089
@@ -414,7 +396,6 @@
     },
     {
       "name": "Kilmarnock",
-      "code": "KMK",
       "coordinates": {
         "lat": 55.6114,
         "lng": -4.4989
@@ -433,7 +414,6 @@
     },
     {
       "name": "Glasgow Central",
-      "code": "GLC",
       "coordinates": {
         "lat": 55.8583,
         "lng": -4.2572
@@ -459,9 +439,7 @@
       "typical_journey_time": 300,
       "frequency": "Daily",
       "stations": [
-        "EUS",
-        "GLC",
-        "EDB"
+        "GLC"
       ],
       "peak_frequency": null,
       "off_peak_frequency": null,

@@ -14,7 +14,6 @@
   "stations": [
     {
       "name": "Richmond",
-      "code": "RMD",
       "coordinates": {
         "lat": 51.4633,
         "lng": -0.3013
@@ -128,7 +127,6 @@
     },
     {
       "name": "Kew Gardens",
-      "code": "KWG",
       "coordinates": {
         "lat": 51.4772,
         "lng": -0.2852
@@ -241,7 +239,6 @@
     },
     {
       "name": "Gunnersbury",
-      "code": "GUN",
       "coordinates": {
         "lat": 51.4915,
         "lng": -0.2754
@@ -354,7 +351,6 @@
     },
     {
       "name": "South Acton",
-      "code": "SAT",
       "coordinates": {
         "lat": 51.4995,
         "lng": -0.2702
@@ -465,7 +461,6 @@
     },
     {
       "name": "Acton Central",
-      "code": "ACC",
       "coordinates": {
         "lat": 51.5087,
         "lng": -0.2626
@@ -576,7 +571,6 @@
     },
     {
       "name": "Willesden Junction",
-      "code": "WIJ",
       "coordinates": {
         "lat": 51.5326,
         "lng": -0.2478
@@ -691,7 +685,6 @@
     },
     {
       "name": "Kensal Rise",
-      "code": "KNR",
       "coordinates": {
         "lat": 51.5344,
         "lng": -0.2208
@@ -802,7 +795,6 @@
     },
     {
       "name": "Brondesbury Park",
-      "code": "BSP",
       "coordinates": {
         "lat": 51.5406,
         "lng": -0.2107
@@ -913,7 +905,6 @@
     },
     {
       "name": "Brondesbury",
-      "code": "BSY",
       "coordinates": {
         "lat": 51.5452,
         "lng": -0.2039
@@ -1026,7 +1017,6 @@
     },
     {
       "name": "West Hampstead",
-      "code": "WHD",
       "coordinates": {
         "lat": 51.5472,
         "lng": -0.1921
@@ -1140,7 +1130,6 @@
     },
     {
       "name": "Finchley Road & Frognal",
-      "code": "FNY",
       "coordinates": {
         "lat": 51.5504,
         "lng": -0.1836
@@ -1254,7 +1243,6 @@
     },
     {
       "name": "Hampstead Heath",
-      "code": "HDH",
       "coordinates": {
         "lat": 51.5553,
         "lng": -0.1644
@@ -1365,7 +1353,6 @@
     },
     {
       "name": "Gospel Oak",
-      "code": "GPO",
       "coordinates": {
         "lat": 51.5551,
         "lng": -0.1519
@@ -1478,7 +1465,6 @@
     },
     {
       "name": "Kentish Town West",
-      "code": "KTW",
       "coordinates": {
         "lat": 51.5471,
         "lng": -0.1425
@@ -1589,7 +1575,6 @@
     },
     {
       "name": "Camden Road",
-      "code": "CMD",
       "coordinates": {
         "lat": 51.5392,
         "lng": -0.1397
@@ -1702,7 +1687,6 @@
     },
     {
       "name": "Caledonian Road & Barnsbury",
-      "code": "CIR",
       "coordinates": {
         "lat": 51.5415,
         "lng": -0.1161
@@ -1813,7 +1797,6 @@
     },
     {
       "name": "Highbury & Islington",
-      "code": "HHY",
       "coordinates": {
         "lat": 51.5464,
         "lng": -0.1031
@@ -1927,7 +1910,6 @@
     },
     {
       "name": "Canonbury",
-      "code": "CNN",
       "coordinates": {
         "lat": 51.5482,
         "lng": -0.0923
@@ -2040,7 +2022,6 @@
     },
     {
       "name": "Dalston Kingsland",
-      "code": "DLK",
       "coordinates": {
         "lat": 51.5482,
         "lng": -0.0764
@@ -2153,7 +2134,6 @@
     },
     {
       "name": "Hackney Central",
-      "code": "HKC",
       "coordinates": {
         "lat": 51.5469,
         "lng": -0.0552
@@ -2264,7 +2244,6 @@
     },
     {
       "name": "Homerton",
-      "code": "HMN",
       "coordinates": {
         "lat": 51.5471,
         "lng": -0.0436
@@ -2375,7 +2354,6 @@
     },
     {
       "name": "Hackney Wick",
-      "code": "HKW",
       "coordinates": {
         "lat": 51.5434,
         "lng": -0.0247
@@ -2486,7 +2464,6 @@
     },
     {
       "name": "Stratford",
-      "code": "SFD",
       "coordinates": {
         "lat": 51.5416,
         "lng": -0.0042
@@ -2601,5 +2578,48 @@
         ]
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations"
+    },
+    "semi_fast": {
+      "stations": [
+        "RMD",
+        "KWG",
+        "SAT",
+        "ACC",
+        "KNR",
+        "BSP",
+        "WHD",
+        "FNY",
+        "GPO",
+        "KTW",
+        "CIR",
+        "HHY",
+        "DLK",
+        "HKC",
+        "HKW",
+        "SFD"
+      ],
+      "description": "Semi-fast service calling at major stations"
+    },
+    "fast": {
+      "stations": [
+        "RMD",
+        "GUN",
+        "ACC",
+        "KNR",
+        "WHD",
+        "HDH",
+        "KTW",
+        "HHY",
+        "DLK",
+        "HMN",
+        "SFD"
+      ],
+      "description": "Fast service calling at principal stations"
+    }
+  }
 }

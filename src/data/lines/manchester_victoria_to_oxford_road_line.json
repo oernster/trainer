@@ -29,7 +29,6 @@
   "stations": [
     {
       "name": "Manchester Victoria",
-      "code": "MCV",
       "coordinates": {
         "lat": 53.4881,
         "lng": -2.2431
@@ -60,7 +59,6 @@
     },
     {
       "name": "Manchester Deansgate",
-      "code": "MSD",
       "coordinates": {
         "lat": 53.4747,
         "lng": -2.2511
@@ -89,7 +87,6 @@
     },
     {
       "name": "Manchester Oxford Road",
-      "code": "MCO",
       "coordinates": {
         "lat": 53.4742,
         "lng": -2.2426

@@ -29,7 +29,6 @@
   "stations": [
     {
       "name": "London Liverpool Street",
-      "code": "LO3",
       "coordinates": {
         "lat": 51.5178,
         "lng": -0.0823
@@ -66,7 +65,6 @@
     },
     {
       "name": "Tottenham Hale",
-      "code": "TOM",
       "coordinates": {
         "lat": 51.5883,
         "lng": -0.0598
@@ -100,7 +98,6 @@
     },
     {
       "name": "Stansted Airport",
-      "code": "SSD",
       "coordinates": {
         "lat": 51.886,
         "lng": 0.2389

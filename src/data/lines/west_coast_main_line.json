@@ -3,7 +3,7 @@
     "line_name": "West Coast Main Line",
     "description": "London Euston to Glasgow Central via Birmingham and Manchester",
     "operator": "Avanti West Coast",
-    "total_stations": 21,
+    "total_stations": 23,
     "frequency": {
       "weekday_peak": "Every hour",
       "weekday_off_peak": "Every 2 hours",
@@ -14,7 +14,6 @@
   "stations": [
     {
       "name": "London Euston",
-      "code": "LO1",
       "coordinates": {
         "lat": 51.5282,
         "lng": -0.1337
@@ -45,7 +44,6 @@
     },
     {
       "name": "Watford Junction",
-      "code": "WFJ",
       "coordinates": {
         "lat": 51.6628,
         "lng": -0.3856
@@ -75,7 +73,6 @@
     },
     {
       "name": "Milton Keynes Central",
-      "code": "MKC",
       "coordinates": {
         "lat": 52.0406,
         "lng": -0.7594
@@ -101,7 +98,6 @@
     },
     {
       "name": "Rugby",
-      "code": "RUG",
       "coordinates": {
         "lat": 52.3781,
         "lng": -1.2542
@@ -127,7 +123,6 @@
     },
     {
       "name": "Coventry",
-      "code": "CCV",
       "coordinates": {
         "lat": 52.4006,
         "lng": -1.5181
@@ -153,7 +148,6 @@
     },
     {
       "name": "Birmingham International",
-      "code": "BHI",
       "coordinates": {
         "lat": 52.45,
         "lng": -1.7333
@@ -182,7 +176,6 @@
     },
     {
       "name": "Birmingham New Street",
-      "code": "BIR",
       "coordinates": {
         "lat": 52.4775,
         "lng": -1.8994
@@ -212,7 +205,6 @@
     },
     {
       "name": "Wolverhampton",
-      "code": "WVH",
       "coordinates": {
         "lat": 52.5881,
         "lng": -2.1194
@@ -238,7 +230,6 @@
     },
     {
       "name": "Stafford",
-      "code": "STA",
       "coordinates": {
         "lat": 52.8044,
         "lng": -2.1194
@@ -264,7 +255,6 @@
     },
     {
       "name": "Crewe",
-      "code": "CRE",
       "coordinates": {
         "lat": 53.0881,
         "lng": -2.4331
@@ -294,7 +284,6 @@
     },
     {
       "name": "Manchester Piccadilly",
-      "code": "MAN",
       "coordinates": {
         "lat": 53.4775,
         "lng": -2.2306
@@ -326,7 +315,6 @@
     },
     {
       "name": "Manchester Oxford Road",
-      "code": "MCO",
       "coordinates": {
         "lat": 53.4742,
         "lng": -2.2426
@@ -356,7 +344,6 @@
     },
     {
       "name": "Warrington Bank Quay",
-      "code": "WBQ",
       "coordinates": {
         "lat": 53.3881,
         "lng": -2.5831
@@ -382,7 +369,6 @@
     },
     {
       "name": "Wigan North Western",
-      "code": "WGN",
       "coordinates": {
         "lat": 53.55,
         "lng": -2.6333
@@ -408,7 +394,6 @@
     },
     {
       "name": "Preston",
-      "code": "PRE",
       "coordinates": {
         "lat": 53.7581,
         "lng": -2.7081
@@ -438,7 +423,6 @@
     },
     {
       "name": "Lancaster",
-      "code": "LAN",
       "coordinates": {
         "lat": 54.0481,
         "lng": -2.8081
@@ -464,7 +448,6 @@
     },
     {
       "name": "Oxenholme Lake District",
-      "code": "OXN",
       "coordinates": {
         "lat": 54.3181,
         "lng": -2.7581
@@ -493,7 +476,6 @@
     },
     {
       "name": "Penrith",
-      "code": "PNR",
       "coordinates": {
         "lat": 54.6681,
         "lng": -2.7581
@@ -519,7 +501,6 @@
     },
     {
       "name": "Carlisle",
-      "code": "CAR",
       "coordinates": {
         "lat": 54.8881,
         "lng": -2.9331
@@ -549,7 +530,6 @@
     },
     {
       "name": "Lockerbie",
-      "code": "LOC",
       "coordinates": {
         "lat": 55.1181,
         "lng": -3.3581
@@ -575,7 +555,6 @@
     },
     {
       "name": "Carstairs",
-      "code": "CRS",
       "coordinates": {
         "lat": 55.6881,
         "lng": -3.6081
@@ -604,7 +583,6 @@
     },
     {
       "name": "Motherwell",
-      "code": "MTH",
       "coordinates": {
         "lat": 55.7881,
         "lng": -3.9831
@@ -633,7 +611,6 @@
     },
     {
       "name": "Glasgow Central",
-      "code": "GLC",
       "coordinates": {
         "lat": 55.8581,
         "lng": -4.2581
@@ -671,7 +648,6 @@
       "stations": [
         "LO1",
         "MKC",
-        "BHM",
         "CRE",
         "PRE",
         "CAR",
@@ -693,13 +669,11 @@
       "frequency": "Every 30 minutes",
       "stations": [
         "CAR",
-        "EUS",
         "PRE",
         "GLC",
         "CRE",
         "MKC",
-        "LO1",
-        "BHM"
+        "LO1"
       ],
       "peak_frequency": "Every 20 minutes",
       "off_peak_frequency": "Every 30 minutes",

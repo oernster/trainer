@@ -14,7 +14,6 @@
   "stations": [
     {
       "name": "London Paddington",
-      "code": "PAD",
       "coordinates": {
         "lat": 51.5154,
         "lng": -0.1755
@@ -47,7 +46,6 @@
     },
     {
       "name": "Slough",
-      "code": "SSL",
       "coordinates": {
         "lat": 51.5119,
         "lng": -0.5919
@@ -76,7 +74,6 @@
     },
     {
       "name": "Maidenhead",
-      "code": "MAI",
       "coordinates": {
         "lat": 51.5219,
         "lng": -0.7219
@@ -105,7 +102,6 @@
     },
     {
       "name": "Twyford",
-      "code": "TWY",
       "coordinates": {
         "lat": 51.4719,
         "lng": -0.8619
@@ -134,7 +130,6 @@
     },
     {
       "name": "Reading",
-      "code": "RDG",
       "coordinates": {
         "lat": 51.4581,
         "lng": -0.9719
@@ -164,7 +159,6 @@
     },
     {
       "name": "Didcot Parkway",
-      "code": "DID",
       "coordinates": {
         "lat": 51.6119,
         "lng": -1.2419
@@ -193,7 +187,6 @@
     },
     {
       "name": "Swindon",
-      "code": "SWI",
       "coordinates": {
         "lat": 51.5681,
         "lng": -1.7881
@@ -222,7 +215,6 @@
     },
     {
       "name": "Chippenham",
-      "code": "CPM",
       "coordinates": {
         "lat": 51.4581,
         "lng": -2.1181
@@ -248,7 +240,6 @@
     },
     {
       "name": "Bath Spa",
-      "code": "BTH",
       "coordinates": {
         "lat": 51.3781,
         "lng": -2.3581
@@ -277,7 +268,6 @@
     },
     {
       "name": "Bristol Temple Meads",
-      "code": "BRI",
       "coordinates": {
         "lat": 51.4494,
         "lng": -2.5819
@@ -307,7 +297,6 @@
     },
     {
       "name": "Newport (South Wales)",
-      "code": "NWP",
       "coordinates": {
         "lat": 51.5881,
         "lng": -2.9981
@@ -333,7 +322,6 @@
     },
     {
       "name": "Cardiff Central",
-      "code": "CDF",
       "coordinates": {
         "lat": 51.4756,
         "lng": -3.1781
@@ -363,7 +351,6 @@
     },
     {
       "name": "Bridgend",
-      "code": "BGN",
       "coordinates": {
         "lat": 51.5044,
         "lng": -3.5781
@@ -389,7 +376,6 @@
     },
     {
       "name": "Port Talbot Parkway",
-      "code": "PTA",
       "coordinates": {
         "lat": 51.5881,
         "lng": -3.7781
@@ -415,7 +401,6 @@
     },
     {
       "name": "Neath",
-      "code": "NTH",
       "coordinates": {
         "lat": 51.6619,
         "lng": -3.8081
@@ -441,7 +426,6 @@
     },
     {
       "name": "Swansea",
-      "code": "SWA",
       "coordinates": {
         "lat": 51.6219,
         "lng": -3.9381
@@ -470,7 +454,6 @@
     },
     {
       "name": "Oxford",
-      "code": "OXF",
       "coordinates": {
         "lat": 51.7531,
         "lng": -1.27
@@ -500,7 +483,6 @@
     },
     {
       "name": "Banbury",
-      "code": "BAN",
       "coordinates": {
         "lat": 52.0631,
         "lng": -1.33
@@ -526,7 +508,6 @@
     },
     {
       "name": "Leamington Spa",
-      "code": "LMS",
       "coordinates": {
         "lat": 52.2881,
         "lng": -1.5381
@@ -552,7 +533,6 @@
     },
     {
       "name": "Warwick",
-      "code": "WRW",
       "coordinates": {
         "lat": 52.2881,
         "lng": -1.5881
@@ -578,7 +558,6 @@
     },
     {
       "name": "Warwick Parkway",
-      "code": "WRP",
       "coordinates": {
         "lat": 52.3181,
         "lng": -1.5681

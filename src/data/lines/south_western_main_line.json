@@ -3,7 +3,7 @@
     "line_name": "South Western Main Line",
     "description": "London Waterloo to Southampton Central and Portsmouth",
     "operator": "South Western Railway",
-    "total_stations": 26,
+    "total_stations": 27,
     "typical_frequency": "Every 15-30 minutes",
     "peak_hours": "07:00-09:30, 17:00-19:30",
     "frequency": {
@@ -40,7 +40,6 @@
   "stations": [
     {
       "name": "London Waterloo",
-      "code": "WAT",
       "coordinates": {
         "lat": 51.5036,
         "lng": -0.1144
@@ -73,7 +72,6 @@
     },
     {
       "name": "Clapham Junction",
-      "code": "CLJ",
       "coordinates": {
         "lat": 51.4642,
         "lng": -0.1705
@@ -104,7 +102,6 @@
     },
     {
       "name": "Wimbledon",
-      "code": "WIM",
       "coordinates": {
         "lat": 51.4214,
         "lng": -0.2064
@@ -135,7 +132,6 @@
     },
     {
       "name": "Raynes Park",
-      "code": "RAY",
       "coordinates": {
         "lat": 51.4089,
         "lng": -0.2297
@@ -162,7 +158,6 @@
     },
     {
       "name": "New Malden",
-      "code": "NEM",
       "coordinates": {
         "lat": 51.4011,
         "lng": -0.2547
@@ -189,7 +184,6 @@
     },
     {
       "name": "Berrylands",
-      "code": "BER",
       "coordinates": {
         "lat": 51.3958,
         "lng": -0.2714
@@ -216,7 +210,6 @@
     },
     {
       "name": "Surbiton",
-      "code": "SUR",
       "coordinates": {
         "lat": 51.3925,
         "lng": -0.2997
@@ -243,7 +236,6 @@
     },
     {
       "name": "Thames Ditton",
-      "code": "THD",
       "coordinates": {
         "lat": 51.3889,
         "lng": -0.3333
@@ -270,7 +262,6 @@
     },
     {
       "name": "Esher",
-      "code": "ESH",
       "coordinates": {
         "lat": 51.3681,
         "lng": -0.3667
@@ -297,7 +288,6 @@
     },
     {
       "name": "Hersham",
-      "code": "HER",
       "coordinates": {
         "lat": 51.3647,
         "lng": -0.3833
@@ -324,7 +314,6 @@
     },
     {
       "name": "Walton-on-Thames",
-      "code": "WAL",
       "coordinates": {
         "lat": 51.3833,
         "lng": -0.4167
@@ -351,7 +340,6 @@
     },
     {
       "name": "Weybridge",
-      "code": "WYB",
       "coordinates": {
         "lat": 51.3719,
         "lng": -0.4597
@@ -378,7 +366,6 @@
     },
     {
       "name": "Byfleet & New Haw",
-      "code": "BFN",
       "coordinates": {
         "lat": 51.35,
         "lng": -0.4833
@@ -405,7 +392,6 @@
     },
     {
       "name": "West Byfleet",
-      "code": "WBY",
       "coordinates": {
         "lat": 51.3389,
         "lng": -0.5
@@ -432,7 +418,6 @@
     },
     {
       "name": "Woking",
-      "code": "WOK",
       "coordinates": {
         "lat": 51.3189,
         "lng": -0.5583
@@ -462,7 +447,6 @@
     },
     {
       "name": "Brookwood",
-      "code": "BKW",
       "coordinates": {
         "lat": 51.3,
         "lng": -0.6333
@@ -488,7 +472,6 @@
     },
     {
       "name": "Farnborough (Main)",
-      "code": "FNB",
       "coordinates": {
         "lat": 51.2833,
         "lng": -0.75
@@ -514,7 +497,6 @@
     },
     {
       "name": "Fleet",
-      "code": "FLE",
       "coordinates": {
         "lat": 51.2833,
         "lng": -0.8333
@@ -543,7 +525,6 @@
     },
     {
       "name": "Winchfield",
-      "code": "WWN",
       "coordinates": {
         "lat": 51.2667,
         "lng": -0.9
@@ -569,7 +550,6 @@
     },
     {
       "name": "Hook",
-      "code": "HOK",
       "coordinates": {
         "lat": 51.25,
         "lng": -0.9167
@@ -595,7 +575,6 @@
     },
     {
       "name": "Basingstoke",
-      "code": "BSK",
       "coordinates": {
         "lat": 51.2667,
         "lng": -1.0833
@@ -624,7 +603,6 @@
     },
     {
       "name": "Micheldever",
-      "code": "MIC",
       "coordinates": {
         "lat": 51.2167,
         "lng": -1.2333
@@ -650,7 +628,6 @@
     },
     {
       "name": "Winchester",
-      "code": "WIN",
       "coordinates": {
         "lat": 51.0667,
         "lng": -1.3167
@@ -676,7 +653,6 @@
     },
     {
       "name": "Shawford",
-      "code": "SHW",
       "coordinates": {
         "lat": 51.0333,
         "lng": -1.35
@@ -702,7 +678,6 @@
     },
     {
       "name": "Eastleigh",
-      "code": "ESL",
       "coordinates": {
         "lat": 50.9667,
         "lng": -1.35
@@ -731,7 +706,6 @@
     },
     {
       "name": "Southampton Central",
-      "code": "SOU",
       "coordinates": {
         "lat": 50.9083,
         "lng": -1.4167
@@ -761,7 +735,6 @@
     },
     {
       "name": "Southampton Airport Parkway",
-      "code": "SOA",
       "coordinates": {
         "lat": 50.95,
         "lng": -1.3667

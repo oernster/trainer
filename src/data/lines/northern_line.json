@@ -15,7 +15,6 @@
   "stations": [
     {
       "name": "High Barnet",
-      "code": "HBT",
       "coordinates": {
         "lat": 51.6503,
         "lng": -0.1943
@@ -43,7 +42,6 @@
     },
     {
       "name": "Totteridge & Whetstone",
-      "code": "TOT",
       "coordinates": {
         "lat": 51.6302,
         "lng": -0.1791
@@ -71,7 +69,6 @@
     },
     {
       "name": "Woodside Park",
-      "code": "WSP",
       "coordinates": {
         "lat": 51.6179,
         "lng": -0.1856
@@ -99,7 +96,6 @@
     },
     {
       "name": "West Finchley",
-      "code": "WFY",
       "coordinates": {
         "lat": 51.6094,
         "lng": -0.1883
@@ -127,7 +123,6 @@
     },
     {
       "name": "Finchley Central",
-      "code": "FNC",
       "coordinates": {
         "lat": 51.601,
         "lng": -0.1932
@@ -155,7 +150,6 @@
     },
     {
       "name": "Mill Hill East",
-      "code": "MHE",
       "coordinates": {
         "lat": 51.6082,
         "lng": -0.2103
@@ -183,7 +177,6 @@
     },
     {
       "name": "East Finchley",
-      "code": "EFY",
       "coordinates": {
         "lat": 51.5873,
         "lng": -0.1655
@@ -211,7 +204,6 @@
     },
     {
       "name": "Highgate",
-      "code": "HIG",
       "coordinates": {
         "lat": 51.5777,
         "lng": -0.1458
@@ -239,7 +231,6 @@
     },
     {
       "name": "Archway",
-      "code": "ARC",
       "coordinates": {
         "lat": 51.5653,
         "lng": -0.1353
@@ -267,7 +258,6 @@
     },
     {
       "name": "Tufnell Park",
-      "code": "TUP",
       "coordinates": {
         "lat": 51.5567,
         "lng": -0.1374
@@ -295,7 +285,6 @@
     },
     {
       "name": "Kentish Town",
-      "code": "KTN",
       "coordinates": {
         "lat": 51.5507,
         "lng": -0.1402
@@ -325,7 +314,6 @@
     },
     {
       "name": "Camden Town",
-      "code": "CTN",
       "coordinates": {
         "lat": 51.5392,
         "lng": -0.1426
@@ -353,7 +341,6 @@
     },
     {
       "name": "Edgware",
-      "code": "EDG",
       "coordinates": {
         "lat": 51.6132,
         "lng": -0.2747
@@ -381,7 +368,6 @@
     },
     {
       "name": "Burnt Oak",
-      "code": "BUR",
       "coordinates": {
         "lat": 51.6028,
         "lng": -0.2641
@@ -409,7 +395,6 @@
     },
     {
       "name": "Colindale",
-      "code": "CCL",
       "coordinates": {
         "lat": 51.5955,
         "lng": -0.2498
@@ -437,7 +422,6 @@
     },
     {
       "name": "Hendon Central",
-      "code": "HEN",
       "coordinates": {
         "lat": 51.583,
         "lng": -0.2267
@@ -465,7 +449,6 @@
     },
     {
       "name": "Brent Cross",
-      "code": "BTC",
       "coordinates": {
         "lat": 51.5766,
         "lng": -0.2136
@@ -493,7 +476,6 @@
     },
     {
       "name": "Golders Green",
-      "code": "GGR",
       "coordinates": {
         "lat": 51.5724,
         "lng": -0.1941
@@ -521,7 +503,6 @@
     },
     {
       "name": "Hampstead",
-      "code": "HMP",
       "coordinates": {
         "lat": 51.5568,
         "lng": -0.1783
@@ -549,7 +530,6 @@
     },
     {
       "name": "Belsize Park",
-      "code": "BPK",
       "coordinates": {
         "lat": 51.5504,
         "lng": -0.1642
@@ -577,7 +557,6 @@
     },
     {
       "name": "Chalk Farm",
-      "code": "CFM",
       "coordinates": {
         "lat": 51.5441,
         "lng": -0.1538
@@ -605,7 +584,6 @@
     },
     {
       "name": "Mornington Crescent",
-      "code": "MRC",
       "coordinates": {
         "lat": 51.5342,
         "lng": -0.1387
@@ -633,7 +611,6 @@
     },
     {
       "name": "Euston",
-      "code": "EUS",
       "coordinates": {
         "lat": 51.5282,
         "lng": -0.1337
@@ -664,7 +641,6 @@
     },
     {
       "name": "King's Cross St. Pancras",
-      "code": "KXX",
       "coordinates": {
         "lat": 51.5308,
         "lng": -0.1238
@@ -699,7 +675,6 @@
     },
     {
       "name": "Angel",
-      "code": "AGL",
       "coordinates": {
         "lat": 51.5322,
         "lng": -0.1058
@@ -727,7 +702,6 @@
     },
     {
       "name": "Old Street",
-      "code": "OLD",
       "coordinates": {
         "lat": 51.5263,
         "lng": -0.0873
@@ -757,7 +731,6 @@
     },
     {
       "name": "Moorgate",
-      "code": "MOG",
       "coordinates": {
         "lat": 51.5186,
         "lng": -0.0886
@@ -791,7 +764,6 @@
     },
     {
       "name": "Bank",
-      "code": "BNK",
       "coordinates": {
         "lat": 51.5133,
         "lng": -0.0886
@@ -823,7 +795,6 @@
     },
     {
       "name": "London Bridge",
-      "code": "LO4",
       "coordinates": {
         "lat": 51.5049,
         "lng": -0.0863
@@ -854,7 +825,6 @@
     },
     {
       "name": "Borough",
-      "code": "BOR",
       "coordinates": {
         "lat": 51.5011,
         "lng": -0.0943
@@ -882,7 +852,6 @@
     },
     {
       "name": "Elephant & Castle",
-      "code": "ELE",
       "coordinates": {
         "lat": 51.4943,
         "lng": -0.1001
@@ -913,7 +882,6 @@
     },
     {
       "name": "Warren Street",
-      "code": "WAR",
       "coordinates": {
         "lat": 51.5245,
         "lng": -0.1389
@@ -943,7 +911,6 @@
     },
     {
       "name": "Goodge Street",
-      "code": "GDS",
       "coordinates": {
         "lat": 51.5205,
         "lng": -0.1347
@@ -971,7 +938,6 @@
     },
     {
       "name": "Tottenham Court Road",
-      "code": "TCR",
       "coordinates": {
         "lat": 51.5165,
         "lng": -0.1308
@@ -1002,7 +968,6 @@
     },
     {
       "name": "Leicester Square",
-      "code": "LSQ",
       "coordinates": {
         "lat": 51.5112,
         "lng": -0.1281
@@ -1032,7 +997,6 @@
     },
     {
       "name": "Charing Cross",
-      "code": "CHX",
       "coordinates": {
         "lat": 51.508,
         "lng": -0.1247
@@ -1063,7 +1027,6 @@
     },
     {
       "name": "Embankment",
-      "code": "EMB",
       "coordinates": {
         "lat": 51.5074,
         "lng": -0.1223
@@ -1095,7 +1058,6 @@
     },
     {
       "name": "Waterloo",
-      "code": "WWT",
       "coordinates": {
         "lat": 51.5036,
         "lng": -0.1144
@@ -1128,7 +1090,6 @@
     },
     {
       "name": "Kennington",
-      "code": "KEN",
       "coordinates": {
         "lat": 51.4884,
         "lng": -0.1053
@@ -1156,7 +1117,6 @@
     },
     {
       "name": "Oval",
-      "code": "OVL",
       "coordinates": {
         "lat": 51.4819,
         "lng": -0.1128
@@ -1184,7 +1144,6 @@
     },
     {
       "name": "Stockwell",
-      "code": "STK",
       "coordinates": {
         "lat": 51.4723,
         "lng": -0.123
@@ -1214,7 +1173,6 @@
     },
     {
       "name": "Clapham North",
-      "code": "CLA",
       "coordinates": {
         "lat": 51.4649,
         "lng": -0.1299
@@ -1242,7 +1200,6 @@
     },
     {
       "name": "Clapham Common",
-      "code": "CPC",
       "coordinates": {
         "lat": 51.4618,
         "lng": -0.1384
@@ -1270,7 +1227,6 @@
     },
     {
       "name": "Clapham South",
-      "code": "CPS",
       "coordinates": {
         "lat": 51.4527,
         "lng": -0.148
@@ -1298,7 +1254,6 @@
     },
     {
       "name": "Balham",
-      "code": "BBL",
       "coordinates": {
         "lat": 51.4431,
         "lng": -0.1525
@@ -1328,7 +1283,6 @@
     },
     {
       "name": "Tooting Bec",
-      "code": "TBC",
       "coordinates": {
         "lat": 51.4361,
         "lng": -0.1598
@@ -1356,7 +1310,6 @@
     },
     {
       "name": "Tooting Broadway",
-      "code": "TBY",
       "coordinates": {
         "lat": 51.4275,
         "lng": -0.168
@@ -1384,7 +1337,6 @@
     },
     {
       "name": "Colliers Wood",
-      "code": "CLW",
       "coordinates": {
         "lat": 51.4181,
         "lng": -0.178
@@ -1412,7 +1364,6 @@
     },
     {
       "name": "South Wimbledon",
-      "code": "SWM",
       "coordinates": {
         "lat": 51.4154,
         "lng": -0.192
@@ -1440,7 +1391,6 @@
     },
     {
       "name": "Morden",
-      "code": "MOR",
       "coordinates": {
         "lat": 51.4022,
         "lng": -0.1948
@@ -1466,5 +1416,81 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations"
+    },
+    "semi_fast": {
+      "stations": [
+        "HBT",
+        "TOT",
+        "WSP",
+        "FNC",
+        "MHE",
+        "HIG",
+        "ARC",
+        "KTN",
+        "CTN",
+        "BUR",
+        "CCL",
+        "BTC",
+        "GGR",
+        "BPK",
+        "CFM",
+        "EUS",
+        "KXX",
+        "OLD",
+        "MOG",
+        "BNK",
+        "BOR",
+        "ELE",
+        "GDS",
+        "TCR",
+        "CHX",
+        "EMB",
+        "KEN",
+        "OVL",
+        "CLA",
+        "CPC",
+        "BBL",
+        "TBC",
+        "CLW",
+        "SWM",
+        "MOR"
+      ],
+      "description": "Semi-fast service calling at major stations"
+    },
+    "fast": {
+      "stations": [
+        "HBT",
+        "WSP",
+        "FNC",
+        "EFY",
+        "ARC",
+        "KTN",
+        "EDG",
+        "CCL",
+        "BTC",
+        "HMP",
+        "CFM",
+        "EUS",
+        "OLD",
+        "BNK",
+        "BOR",
+        "WAR",
+        "TCR",
+        "CHX",
+        "WWT",
+        "OVL",
+        "CLA",
+        "CPS",
+        "TBC",
+        "CLW",
+        "MOR"
+      ],
+      "description": "Fast service calling at principal stations"
+    }
+  }
 }

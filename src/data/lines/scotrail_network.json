@@ -14,7 +14,6 @@
   "stations": [
     {
       "name": "Glasgow Central",
-      "code": "GLC",
       "coordinates": {
         "lat": 55.8581,
         "lng": -4.2581
@@ -40,7 +39,6 @@
     },
     {
       "name": "Glasgow Queen Street",
-      "code": "GLQ",
       "coordinates": {
         "lat": 55.8631,
         "lng": -4.2531
@@ -66,7 +64,6 @@
     },
     {
       "name": "Edinburgh",
-      "code": "EDB",
       "coordinates": {
         "lat": 55.9519,
         "lng": -3.1881
@@ -92,7 +89,6 @@
     },
     {
       "name": "Stirling",
-      "code": "STG",
       "coordinates": {
         "lat": 56.1181,
         "lng": -3.9381
@@ -118,7 +114,6 @@
     },
     {
       "name": "Perth",
-      "code": "PTH",
       "coordinates": {
         "lat": 56.3931,
         "lng": -3.4331
@@ -144,7 +139,6 @@
     },
     {
       "name": "Dundee",
-      "code": "DEE",
       "coordinates": {
         "lat": 56.4581,
         "lng": -2.9731
@@ -170,7 +164,6 @@
     },
     {
       "name": "Aberdeen",
-      "code": "ABE",
       "coordinates": {
         "lat": 57.1437,
         "lng": -2.0968
@@ -196,7 +189,6 @@
     },
     {
       "name": "Inverness",
-      "code": "INV",
       "coordinates": {
         "lat": 57.4781,
         "lng": -4.2231
@@ -222,7 +214,6 @@
     },
     {
       "name": "Kyle of Lochalsh",
-      "code": "KYL",
       "coordinates": {
         "lat": 57.2781,
         "lng": -5.7131
@@ -248,7 +239,6 @@
     },
     {
       "name": "Mallaig",
-      "code": "MLG",
       "coordinates": {
         "lat": 57.0081,
         "lng": -5.8281
@@ -274,7 +264,6 @@
     },
     {
       "name": "Fort William",
-      "code": "FTW",
       "coordinates": {
         "lat": 56.8181,
         "lng": -5.1081
@@ -300,7 +289,6 @@
     },
     {
       "name": "Oban",
-      "code": "OBN",
       "coordinates": {
         "lat": 56.4131,
         "lng": -5.4731
@@ -326,7 +314,6 @@
     },
     {
       "name": "Ayr",
-      "code": "AYR",
       "coordinates": {
         "lat": 55.4581,
         "lng": -4.6281
@@ -352,7 +339,6 @@
     },
     {
       "name": "Stranraer",
-      "code": "STR",
       "coordinates": {
         "lat": 54.9031,
         "lng": -5.0231
@@ -378,7 +364,6 @@
     },
     {
       "name": "Dumfries",
-      "code": "DMF",
       "coordinates": {
         "lat": 55.0681,
         "lng": -3.6081
@@ -404,7 +389,6 @@
     },
     {
       "name": "Kilmarnock",
-      "code": "KMK",
       "coordinates": {
         "lat": 55.6131,
         "lng": -4.4981
@@ -430,7 +414,6 @@
     },
     {
       "name": "Paisley Gilmour Street",
-      "code": "PYG",
       "coordinates": {
         "lat": 55.8431,
         "lng": -4.4231
@@ -456,7 +439,6 @@
     },
     {
       "name": "Motherwell",
-      "code": "MTH",
       "coordinates": {
         "lat": 55.7881,
         "lng": -3.9831
@@ -482,7 +464,6 @@
     },
     {
       "name": "Hamilton Central",
-      "code": "HNL",
       "coordinates": {
         "lat": 55.7781,
         "lng": -4.0431
@@ -508,7 +489,6 @@
     },
     {
       "name": "East Kilbride",
-      "code": "EKL",
       "coordinates": {
         "lat": 55.7631,
         "lng": -4.1681
@@ -534,7 +514,6 @@
     },
     {
       "name": "Lanark",
-      "code": "LNK",
       "coordinates": {
         "lat": 55.6731,
         "lng": -3.7831
@@ -560,7 +539,6 @@
     },
     {
       "name": "Carstairs",
-      "code": "CRS",
       "coordinates": {
         "lat": 55.6881,
         "lng": -3.6081
@@ -586,7 +564,6 @@
     },
     {
       "name": "Falkirk High",
-      "code": "FKK",
       "coordinates": {
         "lat": 55.9981,
         "lng": -3.7831
@@ -612,7 +589,6 @@
     },
     {
       "name": "Linlithgow",
-      "code": "LIN",
       "coordinates": {
         "lat": 55.9781,
         "lng": -3.6031
@@ -638,7 +614,6 @@
     },
     {
       "name": "Bathgate",
-      "code": "BHG",
       "coordinates": {
         "lat": 55.9031,
         "lng": -3.6431
@@ -664,7 +639,6 @@
     },
     {
       "name": "Livingston North",
-      "code": "LSN",
       "coordinates": {
         "lat": 55.8831,
         "lng": -3.5231
@@ -690,7 +664,6 @@
     },
     {
       "name": "Kirkcaldy",
-      "code": "KDY",
       "coordinates": {
         "lat": 56.1131,
         "lng": -3.1631
@@ -716,7 +689,6 @@
     },
     {
       "name": "Dunfermline Central",
-      "code": "DFE",
       "coordinates": {
         "lat": 56.0731,
         "lng": -3.4531
@@ -742,7 +714,6 @@
     },
     {
       "name": "Inverkeithing",
-      "code": "INK",
       "coordinates": {
         "lat": 56.0331,
         "lng": -3.3931
@@ -768,7 +739,6 @@
     },
     {
       "name": "Dalmeny",
-      "code": "DAM",
       "coordinates": {
         "lat": 55.9831,
         "lng": -3.3631
@@ -794,7 +764,6 @@
     },
     {
       "name": "North Berwick",
-      "code": "NBW",
       "coordinates": {
         "lat": 56.0531,
         "lng": -2.7231
@@ -820,7 +789,6 @@
     },
     {
       "name": "Dunbar",
-      "code": "DUN",
       "coordinates": {
         "lat": 55.9981,
         "lng": -2.5131
@@ -846,7 +814,6 @@
     },
     {
       "name": "Berwick-upon-Tweed",
-      "code": "BWK",
       "coordinates": {
         "lat": 55.7719,
         "lng": -2.0119
@@ -872,7 +839,6 @@
     },
     {
       "name": "Montrose",
-      "code": "MTS",
       "coordinates": {
         "lat": 56.7131,
         "lng": -2.4631
@@ -898,7 +864,6 @@
     },
     {
       "name": "Arbroath",
-      "code": "ARB",
       "coordinates": {
         "lat": 56.5631,
         "lng": -2.5831
@@ -924,7 +889,6 @@
     },
     {
       "name": "Carnoustie",
-      "code": "CAN",
       "coordinates": {
         "lat": 56.5031,
         "lng": -2.7131
@@ -950,7 +914,6 @@
     },
     {
       "name": "Leuchars",
-      "code": "LEU",
       "coordinates": {
         "lat": 56.3731,
         "lng": -2.8831
@@ -976,7 +939,6 @@
     },
     {
       "name": "Cupar",
-      "code": "CUP",
       "coordinates": {
         "lat": 56.3181,
         "lng": -3.0131
@@ -1002,7 +964,6 @@
     },
     {
       "name": "Ladybank",
-      "code": "LDY",
       "coordinates": {
         "lat": 56.2731,
         "lng": -3.1231
@@ -1028,7 +989,6 @@
     },
     {
       "name": "Markinch",
-      "code": "MKN",
       "coordinates": {
         "lat": 56.2031,
         "lng": -3.1331
@@ -1054,7 +1014,6 @@
     },
     {
       "name": "Glenrothes with Thornton",
-      "code": "GLT",
       "coordinates": {
         "lat": 56.1931,
         "lng": -3.1731
@@ -1080,7 +1039,6 @@
     },
     {
       "name": "Cardenden",
-      "code": "CDD",
       "coordinates": {
         "lat": 56.1431,
         "lng": -3.2631
@@ -1106,7 +1064,6 @@
     },
     {
       "name": "Lochgelly",
-      "code": "LCG",
       "coordinates": {
         "lat": 56.1331,
         "lng": -3.3131
@@ -1132,7 +1089,6 @@
     },
     {
       "name": "Cowdenbeath",
-      "code": "CCW",
       "coordinates": {
         "lat": 56.1131,
         "lng": -3.3431
@@ -1158,7 +1114,6 @@
     },
     {
       "name": "Rosyth",
-      "code": "ROS",
       "coordinates": {
         "lat": 56.0331,
         "lng": -3.4231
@@ -1194,7 +1149,6 @@
         "GLQ",
         "EDB",
         "STG",
-        "ABD",
         "INV"
       ],
       "peak_frequency": "Every 20 minutes",

@@ -3,7 +3,7 @@
     "line_name": "Heart of Wales Line",
     "description": "Shrewsbury to Swansea via Llandrindod Wells",
     "operator": "Transport for Wales",
-    "total_stations": 32,
+    "total_stations": 34,
     "frequency": {
       "weekday_peak": "Every 4 hours",
       "weekday_off_peak": "Every 4 hours",
@@ -14,7 +14,6 @@
   "stations": [
     {
       "name": "Shrewsbury",
-      "code": "SSH",
       "coordinates": {
         "lat": 52.7081,
         "lng": -2.7531
@@ -40,7 +39,6 @@
     },
     {
       "name": "Church Stretton",
-      "code": "CTT",
       "coordinates": {
         "lat": 52.5381,
         "lng": -2.8031
@@ -63,7 +61,6 @@
     },
     {
       "name": "Craven Arms",
-      "code": "CRV",
       "coordinates": {
         "lat": 52.4381,
         "lng": -2.8381
@@ -86,7 +83,6 @@
     },
     {
       "name": "Broome",
-      "code": "BME",
       "coordinates": {
         "lat": 52.3681,
         "lng": -2.8731
@@ -109,7 +105,6 @@
     },
     {
       "name": "Hopton Heath",
-      "code": "HPT",
       "coordinates": {
         "lat": 52.3481,
         "lng": -2.9231
@@ -132,7 +127,6 @@
     },
     {
       "name": "Bucknell",
-      "code": "BUK",
       "coordinates": {
         "lat": 52.3581,
         "lng": -2.9981
@@ -155,7 +149,6 @@
     },
     {
       "name": "Knighton",
-      "code": "KNI",
       "coordinates": {
         "lat": 52.3431,
         "lng": -3.0481
@@ -178,7 +171,6 @@
     },
     {
       "name": "Knucklas",
-      "code": "KNU",
       "coordinates": {
         "lat": 52.3231,
         "lng": -3.1231
@@ -201,7 +193,6 @@
     },
     {
       "name": "Llangunllo",
-      "code": "LGO",
       "coordinates": {
         "lat": 52.2981,
         "lng": -3.1681
@@ -224,7 +215,6 @@
     },
     {
       "name": "Llanbister Road",
-      "code": "LLT",
       "coordinates": {
         "lat": 52.2731,
         "lng": -3.2431
@@ -247,7 +237,6 @@
     },
     {
       "name": "Dolau",
-      "code": "DOL",
       "coordinates": {
         "lat": 52.2581,
         "lng": -3.3031
@@ -270,7 +259,6 @@
     },
     {
       "name": "Penybont",
-      "code": "PNY",
       "coordinates": {
         "lat": 52.2431,
         "lng": -3.3431
@@ -293,7 +281,6 @@
     },
     {
       "name": "Llandrindod Wells",
-      "code": "LLW",
       "coordinates": {
         "lat": 52.2431,
         "lng": -3.3831
@@ -316,7 +303,6 @@
     },
     {
       "name": "Builth Road",
-      "code": "BHR",
       "coordinates": {
         "lat": 52.1581,
         "lng": -3.4031
@@ -339,7 +325,6 @@
     },
     {
       "name": "Cilmeri",
-      "code": "CIM",
       "coordinates": {
         "lat": 52.1331,
         "lng": -3.4331
@@ -362,7 +347,6 @@
     },
     {
       "name": "Garth",
-      "code": "GTH",
       "coordinates": {
         "lat": 52.1081,
         "lng": -3.4781
@@ -385,7 +369,6 @@
     },
     {
       "name": "Llangammarch",
-      "code": "LLM",
       "coordinates": {
         "lat": 52.1131,
         "lng": -3.5531
@@ -408,7 +391,6 @@
     },
     {
       "name": "Llanwrtyd",
-      "code": "LNW",
       "coordinates": {
         "lat": 52.1031,
         "lng": -3.6331
@@ -431,7 +413,6 @@
     },
     {
       "name": "Sugar Loaf",
-      "code": "SUG",
       "coordinates": {
         "lat": 52.0581,
         "lng": -3.7231
@@ -454,7 +435,6 @@
     },
     {
       "name": "Cynghordy",
-      "code": "CYN",
       "coordinates": {
         "lat": 52.0231,
         "lng": -3.7981
@@ -477,7 +457,6 @@
     },
     {
       "name": "Llandovery",
-      "code": "LDV",
       "coordinates": {
         "lat": 51.9981,
         "lng": -3.8031
@@ -500,7 +479,6 @@
     },
     {
       "name": "Llanwrda",
-      "code": "LNR",
       "coordinates": {
         "lat": 51.9731,
         "lng": -3.8531
@@ -523,7 +501,6 @@
     },
     {
       "name": "Llangadog",
-      "code": "LLG",
       "coordinates": {
         "lat": 51.9481,
         "lng": -3.8981
@@ -546,7 +523,6 @@
     },
     {
       "name": "Llandeilo",
-      "code": "LLL",
       "coordinates": {
         "lat": 51.8831,
         "lng": -3.9881
@@ -569,7 +545,6 @@
     },
     {
       "name": "Ffairfach",
-      "code": "FFA",
       "coordinates": {
         "lat": 51.8731,
         "lng": -4.0031
@@ -592,7 +567,6 @@
     },
     {
       "name": "Llandybie",
-      "code": "LLI",
       "coordinates": {
         "lat": 51.8131,
         "lng": -4.0331
@@ -615,7 +589,6 @@
     },
     {
       "name": "Ammanford",
-      "code": "AMF",
       "coordinates": {
         "lat": 51.7931,
         "lng": -4.0031
@@ -638,7 +611,6 @@
     },
     {
       "name": "Pantyffynnon",
-      "code": "PTF",
       "coordinates": {
         "lat": 51.7731,
         "lng": -4.0331
@@ -661,7 +633,6 @@
     },
     {
       "name": "Pontarddulais",
-      "code": "PTD",
       "coordinates": {
         "lat": 51.7231,
         "lng": -4.0481
@@ -684,7 +655,6 @@
     },
     {
       "name": "Llangennech",
-      "code": "LLH",
       "coordinates": {
         "lat": 51.6831,
         "lng": -4.0881
@@ -707,7 +677,6 @@
     },
     {
       "name": "Bynea",
-      "code": "BYE",
       "coordinates": {
         "lat": 51.6631,
         "lng": -4.1231
@@ -730,7 +699,6 @@
     },
     {
       "name": "Llanelli",
-      "code": "LLE",
       "coordinates": {
         "lat": 51.6731,
         "lng": -4.1631
@@ -755,7 +723,6 @@
     },
     {
       "name": "Gowerton",
-      "code": "GWN",
       "coordinates": {
         "lat": 51.6431,
         "lng": -4.0431
@@ -778,7 +745,6 @@
     },
     {
       "name": "Swansea",
-      "code": "SWA",
       "coordinates": {
         "lat": 51.6231,
         "lng": -3.9431
@@ -802,5 +768,61 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations"
+    },
+    "semi_fast": {
+      "stations": [
+        "SSH",
+        "CTT",
+        "BME",
+        "HPT",
+        "KNI",
+        "KNU",
+        "LLT",
+        "DOL",
+        "LLW",
+        "BHR",
+        "GTH",
+        "LNW",
+        "SUG",
+        "LDV",
+        "LNR",
+        "LLL",
+        "FFA",
+        "AMF",
+        "PTF",
+        "LLH",
+        "BYE",
+        "GWN",
+        "SWA"
+      ],
+      "description": "Semi-fast service calling at major stations"
+    },
+    "fast": {
+      "stations": [
+        "SSH",
+        "CRV",
+        "HPT",
+        "KNI",
+        "LGO",
+        "DOL",
+        "LLW",
+        "CIM",
+        "LNW",
+        "CYN",
+        "LNR",
+        "LLL",
+        "LLI",
+        "PTF",
+        "LLH",
+        "LLE",
+        "SWA"
+      ],
+      "description": "Fast service calling at principal stations"
+    }
+  }
 }

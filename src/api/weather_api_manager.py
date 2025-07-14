@@ -31,30 +31,25 @@ from ..managers.weather_config import WeatherConfig
 
 logger = logging.getLogger(__name__)
 
-
 class WeatherAPIException(Exception):
     """Base exception for weather API-related errors."""
 
     pass
-
 
 class WeatherNetworkException(WeatherAPIException):
     """Exception for network-related errors."""
 
     pass
 
-
 class WeatherDataException(WeatherAPIException):
     """Exception for weather data processing errors."""
 
     pass
 
-
 class WeatherRateLimitException(WeatherAPIException):
     """Exception for rate limit exceeded errors."""
 
     pass
-
 
 @dataclass
 class WeatherAPIResponse:
@@ -64,7 +59,6 @@ class WeatherAPIResponse:
     data: Dict
     timestamp: datetime
     source: str
-
 
 class WeatherDataSource(ABC):
     """
@@ -98,7 +92,6 @@ class WeatherDataSource(ABC):
         """Shutdown the weather data source synchronously."""
         pass
 
-
 class HTTPClient(ABC):
     """Abstract HTTP client interface for dependency injection."""
 
@@ -116,7 +109,6 @@ class HTTPClient(ABC):
     def close_sync(self) -> None:
         """Close HTTP client synchronously."""
         pass
-
 
 class AioHttpClient(HTTPClient):
     """
@@ -188,7 +180,6 @@ class AioHttpClient(HTTPClient):
                 logger.warning(f"Error closing session: {e}")
                 # Fallback: just detach the session
                 self._session = None
-
 
 class OpenMeteoWeatherSource(WeatherDataSource):
     """
@@ -429,7 +420,6 @@ class OpenMeteoWeatherSource(WeatherDataSource):
             self._http_client.close_sync()
         logger.debug("OpenMeteoWeatherSource synchronous shutdown complete")
 
-
 class WeatherAPIManager:
     """
     High-level weather API manager.
@@ -543,7 +533,6 @@ class WeatherAPIManager:
         # Clear cache
         self.clear_cache()
         logger.debug("WeatherAPIManager synchronous shutdown complete")
-
 
 class WeatherAPIFactory:
     """
