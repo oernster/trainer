@@ -14,18 +14,18 @@
     }
   },
   "typical_journey_times": {
-    "BHM-WVH": 20,
-    "WVH-SHR": 35,
-    "BHM-COV": 25,
-    "BHM-LIC": 30,
-    "BHM-RUG": 35,
-    "BHM-NUN": 30,
-    "BHM-LEA": 15,
-    "BHM-RDC": 10,
-    "BHM-KID": 25,
-    "BHM-WOS": 15,
-    "BHM-SLR": 10,
-    "BHM-BSL": 15
+    "BIR-WVH": 20,
+    "WVH-SSH": 35,
+    "BIR-CCV": 25,
+    "BIR-LIC": 30,
+    "BIR-RUG": 35,
+    "BIR-NUN": 30,
+    "BIR-LEA": 15,
+    "BIR-RDC": 10,
+    "BIR-KID": 25,
+    "BIR-WOS": 15,
+    "BIR-SLR": 10,
+    "BIR-BSL": 15
   },
   "typical_services": {
     "peak_frequency": "Every 10-15 minutes",
@@ -38,7 +38,7 @@
   "stations": [
     {
       "name": "Birmingham New Street",
-      "code": "BHM",
+      "code": "BIR",
       "coordinates": {
         "lat": 52.4775,
         "lng": -1.8994
@@ -161,7 +161,7 @@
     },
     {
       "name": "Shrewsbury",
-      "code": "SHR",
+      "code": "SSH",
       "coordinates": {
         "lat": 52.7111,
         "lng": -2.75
@@ -191,7 +191,7 @@
     },
     {
       "name": "Coventry",
-      "code": "COV",
+      "code": "CCV",
       "coordinates": {
         "lat": 52.4006,
         "lng": -1.5181
@@ -1173,5 +1173,79 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "fast": {
+      "service_type": "fast",
+      "description": "Fast service - major stations and key interchanges",
+      "typical_journey_time": 48,
+      "frequency": "Every 30 minutes",
+      "stations": [
+        "SHR",
+        "BIR",
+        "BHM",
+        "WVH",
+        "ALV"
+      ],
+      "peak_frequency": "Every 20 minutes",
+      "off_peak_frequency": "Every 30 minutes",
+      "weekend_frequency": "Every 45 minutes",
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "semi_fast": {
+      "service_type": "semi_fast",
+      "description": "Semi-fast service - regional stations",
+      "typical_journey_time": 60,
+      "frequency": "Every 60 minutes",
+      "stations": [
+        "BIR",
+        "BSW",
+        "SSH",
+        "LMS",
+        "NUN",
+        "LIC",
+        "BUT",
+        "CAO",
+        "RGL",
+        "BMV",
+        "WOS",
+        "GMV",
+        "KID",
+        "SBT",
+        "SMR",
+        "JEQ",
+        "UNI",
+        "BRV",
+        "NFD",
+        "BTG"
+      ],
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "stopping": {
+      "service_type": "stopping",
+      "description": "Stopping service - all stations",
+      "typical_journey_time": 80,
+      "frequency": "Every 2 hours",
+      "stations": "all",
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    }
+  }
 }

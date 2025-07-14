@@ -452,7 +452,7 @@
     },
     {
       "name": "Helmsdale",
-      "code": "HMS",
+      "code": "HEL",
       "coordinates": {
         "lat": 58.1181,
         "lng": -3.6481
@@ -479,7 +479,7 @@
     },
     {
       "name": "Kildonan",
-      "code": "KIL",
+      "code": "KKL",
       "coordinates": {
         "lat": 58.1881,
         "lng": -3.8681

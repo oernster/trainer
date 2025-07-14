@@ -196,7 +196,7 @@
     },
     {
       "name": "Stockport",
-      "code": "SPT",
+      "code": "ST7",
       "coordinates": {
         "lat": 53.4081,
         "lng": -2.1581
@@ -662,5 +662,48 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "express": {
+      "service_type": "express",
+      "description": "Express service - limited stops",
+      "typical_journey_time": 75,
+      "frequency": "Every 15 minutes",
+      "stations": [
+        "LIV",
+        "WAC",
+        "NLW",
+        "ERL",
+        "MAN",
+        "MCO",
+        "MIA",
+        "ST7",
+        "GDB",
+        "SYB",
+        "HUD",
+        "DEW",
+        "LDS",
+        "YRK",
+        "MLT",
+        "SEM",
+        "SCA",
+        "HUL",
+        "SBY",
+        "DON",
+        "SHF",
+        "DAR",
+        "NCL",
+        "EDB",
+        "GLC"
+      ],
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": "05:00",
+      "last_service": "23:30",
+      "operates_on": [
+        "daily"
+      ]
+    }
+  }
 }

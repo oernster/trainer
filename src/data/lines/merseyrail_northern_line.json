@@ -17,16 +17,16 @@
     "LVC-MRF": 3,
     "MRF-SFX": 3,
     "SFX-BNP": 3,
-    "BNP-WAT": 3,
-    "WAT-SFD": 3,
+    "BNP-WWT": 3,
+    "WWT-SFD": 3,
     "SFD-BLN": 3,
     "BLN-AIN": 3,
     "AIN-FBY": 3,
     "FBY-HTO": 3,
     "HTO-HAW": 3,
     "HAW-BKP": 3,
-    "BKP-HIL": 3,
-    "HIL-SOP": 3,
+    "BKP-HI1": 3,
+    "HI1-SOP": 3,
     "MRF-KRK": 3,
     "KRK-RCE": 3,
     "RCE-AUG": 3,
@@ -237,7 +237,7 @@
     },
     {
       "name": "Waterloo",
-      "code": "WLO",
+      "code": "WWT",
       "coordinates": {
         "lat": 53.4708,
         "lng": -2.9917
@@ -419,7 +419,7 @@
     },
     {
       "name": "Hillside",
-      "code": "HIL",
+      "code": "HI1",
       "coordinates": {
         "lat": 53.5875,
         "lng": -2.9917
@@ -500,7 +500,7 @@
     },
     {
       "name": "Brunswick",
-      "code": "BRW",
+      "code": "BRU",
       "coordinates": {
         "lat": 53.3875,
         "lng": -2.9708
@@ -984,5 +984,76 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "fast": {
+      "service_type": "fast",
+      "description": "Fast service - major towns and interchanges",
+      "typical_journey_time": 52,
+      "frequency": "Every 30 minutes",
+      "stations": [
+        "LVC",
+        "SOP",
+        "OMS",
+        "KIR"
+      ],
+      "peak_frequency": "Every 20 minutes",
+      "off_peak_frequency": "Every 30 minutes",
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "semi_fast": {
+      "service_type": "semi_fast",
+      "description": "Semi-fast service - market towns",
+      "typical_journey_time": 63,
+      "frequency": "Every 60 minutes",
+      "stations": [
+        "LVC",
+        "SDL",
+        "BOT",
+        "SFL",
+        "BDC",
+        "HTO",
+        "FRE",
+        "HI1",
+        "SOP",
+        "STM",
+        "CSG",
+        "HNX",
+        "KIR",
+        "WAO",
+        "AIN",
+        "MAG",
+        "TWN",
+        "OMS"
+      ],
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "stopping": {
+      "service_type": "stopping",
+      "description": "Stopping service - all stations",
+      "typical_journey_time": 70,
+      "frequency": "Every 2 hours",
+      "stations": "all",
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    }
+  }
 }

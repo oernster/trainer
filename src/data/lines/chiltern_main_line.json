@@ -261,7 +261,7 @@
     },
     {
       "name": "Princes Risborough",
-      "code": "PRR",
+      "code": "PPR",
       "coordinates": {
         "lat": 51.7181,
         "lng": -0.8181
@@ -493,5 +493,91 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "express": {
+      "service_type": "express",
+      "description": "Express service - major cities only",
+      "typical_journey_time": 14,
+      "frequency": "Every 60 minutes",
+      "stations": [
+        "MYB",
+        "AMR",
+        "HWY",
+        "BAN",
+        "LMS",
+        "WRP"
+      ],
+      "peak_frequency": "Every 30 minutes",
+      "off_peak_frequency": "Every 60 minutes",
+      "weekend_frequency": "Every 90 minutes",
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "fast": {
+      "service_type": "fast",
+      "description": "Fast service - major stations and key interchanges",
+      "typical_journey_time": 21,
+      "frequency": "Every 30 minutes",
+      "stations": [
+        "WRP",
+        "LMS",
+        "HWY",
+        "MYB",
+        "AMR",
+        "BAN"
+      ],
+      "peak_frequency": "Every 20 minutes",
+      "off_peak_frequency": "Every 30 minutes",
+      "weekend_frequency": "Every 45 minutes",
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "semi_fast": {
+      "service_type": "semi_fast",
+      "description": "Semi-fast service - regional stations",
+      "typical_journey_time": 27,
+      "frequency": "Every 60 minutes",
+      "stations": [
+        "MYB",
+        "HOH",
+        "GMI",
+        "SMV",
+        "HDM",
+        "HWY",
+        "GER",
+        "BAN",
+        "WRW"
+      ],
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "stopping": {
+      "service_type": "stopping",
+      "description": "Stopping service - all stations",
+      "typical_journey_time": 36,
+      "frequency": "Every 2 hours",
+      "stations": "all",
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    }
+  }
 }

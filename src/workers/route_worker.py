@@ -23,6 +23,7 @@ class RouteRequest:
     max_changes: int = 3
     request_id: str = ""
     operation_type: str = "find_route"  # find_route, auto_fix, suggest_via
+    departure_time: Optional[str] = None  # Time in HH:MM format
 
 
 @dataclass
@@ -98,8 +99,11 @@ class RouteWorker(BaseWorker):
         
         try:
             with self.measure_operation("route_calculation"):
-                # Check cache
-                cache_key = CacheKey.route_key(request.from_station, request.to_station, request.max_changes)
+                # Check cache (include departure time in cache key for time-aware routing)
+                if request.departure_time:
+                    cache_key = f"route:{request.from_station.lower()}:{request.to_station.lower()}:{request.max_changes}:{request.departure_time}"
+                else:
+                    cache_key = CacheKey.route_key(request.from_station, request.to_station, request.max_changes)
                 cached_routes = self.route_cache.get(cache_key)
                 
                 if cached_routes is not None:
@@ -122,11 +126,12 @@ class RouteWorker(BaseWorker):
                     
                 self.emit_progress(30, "Building network graph...")
                 
-                # Perform route calculation
+                # Perform route calculation with time constraints
                 routes = self.db_manager.find_route_between_stations(
                     request.from_station,
                     request.to_station,
-                    request.max_changes
+                    request.max_changes,
+                    request.departure_time
                 )
                 
                 if self.is_cancelled():
@@ -180,7 +185,7 @@ class RouteWorker(BaseWorker):
                     
                 self.emit_progress(25, "Finding optimal path...")
                 
-                # Find routes with different strategies
+                # Find routes with different strategies (no time constraint for auto-fix)
                 routes = self.db_manager.find_route_between_stations(from_station, to_station, max_changes=3)
                 
                 if self.is_cancelled():

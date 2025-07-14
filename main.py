@@ -290,9 +290,14 @@ def main():
             train_manager = TrainManager(config)
 
             # Set the route from configuration for offline timetable generation
-            if config and config.stations:
+            # Only set route if we have valid station configuration
+            if (config and config.stations and
+                getattr(config.stations, 'from_code', None) and
+                getattr(config.stations, 'to_code', None)):
                 train_manager.set_route(config.stations.from_code, config.stations.to_code)
                 logger.info(f"Route configured: {config.stations.from_name} ({config.stations.from_code}) -> {config.stations.to_name} ({config.stations.to_code})")
+            else:
+                logger.info("No valid station configuration found - train list will be empty until stations are configured")
 
             # Connect signals between components
             splash.show_message("Connecting components...")
@@ -316,28 +321,43 @@ def main():
                 train_manager.fetch_trains()
                 logger.info("Train data fetched after widget initialization")
                 
-                # Wait a bit more for train data to load, then show window
-                def show_main_window():
+                # Connect to train data completion to show window
+                def on_train_data_ready():
                     splash.show_message("Ready!")
                     app.processEvents()
-                    # Small delay to show "Ready!" message, then show window and close splash
-                    QTimer.singleShot(300, lambda: [window.show(), splash.close()])
-                    logger.info("Main window shown after full initialization")
+                    # Show window immediately after train data is ready
+                    window.show()
+                    # Focus and activate the main window
+                    window.raise_()
+                    window.activateWindow()
+                    splash.close()
+                    logger.info("Main window shown and focused after full initialization")
+                    # Disconnect the signal to prevent multiple calls
+                    train_manager.trains_updated.disconnect(on_train_data_ready)
                 
-                # Give train data more time to load before showing window
-                QTimer.singleShot(1500, show_main_window)
+                # Connect to train data signal to show window when data is ready
+                train_manager.trains_updated.connect(on_train_data_ready)
             
-            # Schedule train data fetch and window display with single fallback
+            # Use proper signaling instead of timers
             if window.initialization_manager:
                 window.initialization_manager.initialization_completed.connect(on_widgets_ready)
                 logger.info("Train data fetch and window display scheduled with initialization manager")
             else:
-                # Fallback if initialization manager not available
+                # Fallback if initialization manager not available - still use signals
                 def fallback_startup():
                     train_manager.fetch_trains()
-                    QTimer.singleShot(1500, lambda: [window.show(), splash.close()])
+                    # Connect to train data signal for fallback too
+                    def on_fallback_train_data():
+                        window.show()
+                        # Focus and activate the main window
+                        window.raise_()
+                        window.activateWindow()
+                        splash.close()
+                        train_manager.trains_updated.disconnect(on_fallback_train_data)
+                    train_manager.trains_updated.connect(on_fallback_train_data)
+                
                 QTimer.singleShot(1000, fallback_startup)
-                logger.info("Train data fetch and window display scheduled with fallback timer")
+                logger.info("Train data fetch and window display scheduled with fallback signaling")
 
             # Don't show main window immediately - wait for initialization to complete
             # The window will be shown by the on_widgets_ready callback

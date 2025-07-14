@@ -85,7 +85,7 @@
     },
     {
       "name": "London Bridge",
-      "code": "LBG",
+      "code": "LO4",
       "coordinates": {
         "lat": 51.5049,
         "lng": -0.0863
@@ -224,7 +224,7 @@
     },
     {
       "name": "London Euston",
-      "code": "EUS",
+      "code": "LO1",
       "coordinates": {
         "lat": 51.5282,
         "lng": -0.1337
@@ -256,7 +256,7 @@
     },
     {
       "name": "London Liverpool Street",
-      "code": "LST",
+      "code": "LO3",
       "coordinates": {
         "lat": 51.5178,
         "lng": -0.0823
@@ -321,7 +321,7 @@
     },
     {
       "name": "London Charing Cross",
-      "code": "CHX",
+      "code": "LON",
       "coordinates": {
         "lat": 51.508,
         "lng": -0.1247
@@ -352,7 +352,7 @@
     },
     {
       "name": "London Cannon Street",
-      "code": "CST",
+      "code": "LO5",
       "coordinates": {
         "lat": 51.5113,
         "lng": -0.0904
@@ -666,7 +666,7 @@
     },
     {
       "name": "Stratford",
-      "code": "SRA",
+      "code": "SFD",
       "coordinates": {
         "lat": 51.5416,
         "lng": -0.0042
@@ -730,7 +730,7 @@
     },
     {
       "name": "Westminster",
-      "code": "WST",
+      "code": "WSM",
       "coordinates": {
         "lat": 51.501,
         "lng": -0.1254
@@ -828,7 +828,7 @@
     },
     {
       "name": "Monument",
-      "code": "MON",
+      "code": "MNT",
       "coordinates": {
         "lat": 51.5108,
         "lng": -0.0863
@@ -1259,7 +1259,7 @@
     },
     {
       "name": "Warren Street",
-      "code": "WST",
+      "code": "WAR",
       "coordinates": {
         "lat": 51.5245,
         "lng": -0.1389
@@ -1320,7 +1320,7 @@
     },
     {
       "name": "Edgware Road",
-      "code": "EDR",
+      "code": "ED1",
       "coordinates": {
         "lat": 51.5199,
         "lng": -0.17
@@ -1473,5 +1473,69 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "peak": {
+      "service_type": "peak",
+      "description": "Peak service - all stations, high frequency",
+      "typical_journey_time": 92,
+      "frequency": "Every 2-3 minutes",
+      "stations": "all",
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": "05:00",
+      "last_service": "00:30",
+      "operates_on": [
+        "weekdays"
+      ]
+    },
+    "off_peak": {
+      "service_type": "off_peak",
+      "description": "Off-peak service - all stations",
+      "typical_journey_time": 115,
+      "frequency": "Every 5-7 minutes",
+      "stations": "all",
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": "05:00",
+      "last_service": "00:30",
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "night": {
+      "service_type": "night",
+      "description": "Night service - limited stations",
+      "typical_journey_time": 138,
+      "frequency": "Every 10-15 minutes",
+      "stations": [
+        "WAT",
+        "PAD",
+        "LO1",
+        "LON",
+        "FST",
+        "GPK",
+        "BST",
+        "CWF",
+        "BNK",
+        "LBU",
+        "PCC",
+        "MOG",
+        "HHY",
+        "WAR",
+        "MAA",
+        "SKN"
+      ],
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": "00:30",
+      "last_service": "05:00",
+      "operates_on": [
+        "weekends"
+      ]
+    }
+  }
 }

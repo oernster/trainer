@@ -409,7 +409,7 @@
     },
     {
       "name": "Colindale",
-      "code": "COL",
+      "code": "CCL",
       "coordinates": {
         "lat": 51.5955,
         "lng": -0.2498
@@ -437,7 +437,7 @@
     },
     {
       "name": "Hendon Central",
-      "code": "HND",
+      "code": "HEN",
       "coordinates": {
         "lat": 51.583,
         "lng": -0.2267
@@ -605,7 +605,7 @@
     },
     {
       "name": "Mornington Crescent",
-      "code": "MTC",
+      "code": "MRC",
       "coordinates": {
         "lat": 51.5342,
         "lng": -0.1387
@@ -699,7 +699,7 @@
     },
     {
       "name": "Angel",
-      "code": "ANG",
+      "code": "AGL",
       "coordinates": {
         "lat": 51.5322,
         "lng": -0.1058
@@ -823,7 +823,7 @@
     },
     {
       "name": "London Bridge",
-      "code": "LBG",
+      "code": "LO4",
       "coordinates": {
         "lat": 51.5049,
         "lng": -0.0863
@@ -1095,7 +1095,7 @@
     },
     {
       "name": "Waterloo",
-      "code": "WAT",
+      "code": "WWT",
       "coordinates": {
         "lat": 51.5036,
         "lng": -0.1144
@@ -1214,7 +1214,7 @@
     },
     {
       "name": "Clapham North",
-      "code": "CPN",
+      "code": "CLA",
       "coordinates": {
         "lat": 51.4649,
         "lng": -0.1299
@@ -1298,7 +1298,7 @@
     },
     {
       "name": "Balham",
-      "code": "BAL",
+      "code": "BBL",
       "coordinates": {
         "lat": 51.4431,
         "lng": -0.1525

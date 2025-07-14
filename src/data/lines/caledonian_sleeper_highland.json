@@ -14,13 +14,13 @@
     }
   },
   "typical_journey_times": {
-    "EUS-EDB": 390,
+    "LO1-EDB": 390,
     "EDB-INV": 210,
-    "EDB-ABD": 150,
+    "EDB-ABE": 150,
     "EDB-FTW": 240,
-    "EUS-INV": 600,
-    "EUS-ABD": 540,
-    "EUS-FTW": 630
+    "LO1-INV": 600,
+    "LO1-ABE": 540,
+    "LO1-FTW": 630
   },
   "typical_services": {
     "peak_frequency": "Once daily",
@@ -33,7 +33,7 @@
   "stations": [
     {
       "name": "London Euston",
-      "code": "EUS",
+      "code": "LO1",
       "coordinates": {
         "lat": 51.5282,
         "lng": -0.1337
@@ -338,7 +338,7 @@
     },
     {
       "name": "Aberdeen",
-      "code": "ABD",
+      "code": "ABE",
       "coordinates": {
         "lat": 57.1436,
         "lng": -2.0981
@@ -486,5 +486,28 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "express": {
+      "service_type": "express",
+      "description": "Overnight sleeper service - major cities only",
+      "typical_journey_time": 225,
+      "frequency": "Daily",
+      "stations": [
+        "EUS",
+        "EDB",
+        "INV",
+        "ABD",
+        "FTW"
+      ],
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": "21:00",
+      "last_service": "08:00",
+      "operates_on": [
+        "daily"
+      ]
+    }
+  }
 }

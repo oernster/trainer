@@ -14,16 +14,16 @@
     }
   },
   "typical_journey_times": {
-    "FST-LIM": 7,
-    "LIM-WEH": 5,
+    "FST-LHS": 7,
+    "LHS-WEH": 5,
     "WEH-BAK": 6,
     "BAK-UPM": 5,
     "UPM-GRY": 4,
     "GRY-CFB": 5,
     "CFB-OCK": 4,
     "OCK-STF": 5,
-    "STF-TLB": 6,
-    "TLB-PFL": 5,
+    "STF-TIL": 6,
+    "TIL-PFL": 5,
     "PFL-BLD": 4,
     "BLD-LEI": 5,
     "LEI-BEF": 4,
@@ -74,7 +74,7 @@
     },
     {
       "name": "Limehouse",
-      "code": "LIM",
+      "code": "LHS",
       "coordinates": {
         "lat": 51.5125,
         "lng": -0.0392
@@ -307,7 +307,7 @@
     },
     {
       "name": "Tilbury Town",
-      "code": "TLB",
+      "code": "TIL",
       "coordinates": {
         "lat": 51.4625,
         "lng": 0.3611
@@ -751,5 +751,72 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "fast": {
+      "service_type": "fast",
+      "description": "Fast service - major towns and interchanges",
+      "typical_journey_time": 39,
+      "frequency": "Every 30 minutes",
+      "stations": [
+        "FST",
+        "BLD",
+        "TLB",
+        "SRY",
+        "SOE"
+      ],
+      "peak_frequency": "Every 20 minutes",
+      "off_peak_frequency": "Every 30 minutes",
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "semi_fast": {
+      "service_type": "semi_fast",
+      "description": "Semi-fast service - market towns",
+      "typical_journey_time": 46,
+      "frequency": "Every 60 minutes",
+      "stations": [
+        "FST",
+        "WEH",
+        "UPM",
+        "CFB",
+        "STF",
+        "PFL",
+        "LAI",
+        "BEF",
+        "WCF",
+        "SOE",
+        "SRY",
+        "DDK",
+        "UPY"
+      ],
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "stopping": {
+      "service_type": "stopping",
+      "description": "Stopping service - all stations",
+      "typical_journey_time": 52,
+      "frequency": "Every 2 hours",
+      "stations": "all",
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    }
+  }
 }

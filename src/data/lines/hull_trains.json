@@ -14,8 +14,8 @@
     }
   },
   "typical_journey_times": {
-    "KGX-STE": 25,
-    "STE-PBO": 45,
+    "KGX-ST5": 25,
+    "ST5-PBO": 45,
     "PBO-GRA": 30,
     "GRA-NNG": 20,
     "NNG-RET": 15,
@@ -69,7 +69,7 @@
     },
     {
       "name": "Stevenage",
-      "code": "STE",
+      "code": "ST5",
       "coordinates": {
         "lat": 51.9022,
         "lng": -0.2058
@@ -305,5 +305,62 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "fast": {
+      "service_type": "fast",
+      "description": "Fast service - major towns and interchanges",
+      "typical_journey_time": 15,
+      "frequency": "Every 30 minutes",
+      "stations": [
+        "KGX",
+        "DON",
+        "HUL"
+      ],
+      "peak_frequency": "Every 20 minutes",
+      "off_peak_frequency": "Every 30 minutes",
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "semi_fast": {
+      "service_type": "semi_fast",
+      "description": "Semi-fast service - market towns",
+      "typical_journey_time": 18,
+      "frequency": "Every 60 minutes",
+      "stations": [
+        "KGX",
+        "PBO",
+        "NNG",
+        "DON",
+        "BUH"
+      ],
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "stopping": {
+      "service_type": "stopping",
+      "description": "Stopping service - all stations",
+      "typical_journey_time": 20,
+      "frequency": "Every 2 hours",
+      "stations": "all",
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    }
+  }
 }

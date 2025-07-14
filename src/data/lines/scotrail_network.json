@@ -170,7 +170,7 @@
     },
     {
       "name": "Aberdeen",
-      "code": "ABD",
+      "code": "ABE",
       "coordinates": {
         "lat": 57.1437,
         "lng": -2.0968
@@ -1080,7 +1080,7 @@
     },
     {
       "name": "Cardenden",
-      "code": "CDN",
+      "code": "CDD",
       "coordinates": {
         "lat": 56.1431,
         "lng": -3.2631
@@ -1132,7 +1132,7 @@
     },
     {
       "name": "Cowdenbeath",
-      "code": "COW",
+      "code": "CCW",
       "coordinates": {
         "lat": 56.1131,
         "lng": -3.3431
@@ -1158,7 +1158,7 @@
     },
     {
       "name": "Rosyth",
-      "code": "RSY",
+      "code": "ROS",
       "coordinates": {
         "lat": 56.0331,
         "lng": -3.4231
@@ -1182,5 +1182,83 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "fast": {
+      "service_type": "fast",
+      "description": "Fast service - major towns and interchanges",
+      "typical_journey_time": 67,
+      "frequency": "Every 30 minutes",
+      "stations": [
+        "GLC",
+        "GLQ",
+        "EDB",
+        "STG",
+        "ABD",
+        "INV"
+      ],
+      "peak_frequency": "Every 20 minutes",
+      "off_peak_frequency": "Every 30 minutes",
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "semi_fast": {
+      "service_type": "semi_fast",
+      "description": "Semi-fast service - market towns",
+      "typical_journey_time": 81,
+      "frequency": "Every 60 minutes",
+      "stations": [
+        "GLC",
+        "EDB",
+        "PTH",
+        "ABE",
+        "KYL",
+        "FTW",
+        "AYR",
+        "DMF",
+        "PYG",
+        "HNL",
+        "LNK",
+        "FKK",
+        "BHG",
+        "KDY",
+        "INK",
+        "NBW",
+        "BWK",
+        "ARB",
+        "LEU",
+        "LDY",
+        "GLT",
+        "LCG",
+        "ROS"
+      ],
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "stopping": {
+      "service_type": "stopping",
+      "description": "Stopping service - all stations",
+      "typical_journey_time": 90,
+      "frequency": "Every 2 hours",
+      "stations": "all",
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    }
+  }
 }

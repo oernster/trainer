@@ -14,9 +14,9 @@
     }
   },
   "typical_journey_times": {
-    "LST-TTH": 35,
-    "TTH-SSD": 15,
-    "LST-SSD": 47
+    "LO3-TOM": 35,
+    "TOM-SSD": 15,
+    "LO3-SSD": 47
   },
   "typical_services": {
     "peak_frequency": "Every 15 minutes",
@@ -29,7 +29,7 @@
   "stations": [
     {
       "name": "London Liverpool Street",
-      "code": "LST",
+      "code": "LO3",
       "coordinates": {
         "lat": 51.5178,
         "lng": -0.0823
@@ -66,7 +66,7 @@
     },
     {
       "name": "Tottenham Hale",
-      "code": "TTH",
+      "code": "TOM",
       "coordinates": {
         "lat": 51.5883,
         "lng": -0.0598
@@ -102,7 +102,7 @@
       "name": "Stansted Airport",
       "code": "SSD",
       "coordinates": {
-        "lat": 51.8860,
+        "lat": 51.886,
         "lng": 0.2389
       },
       "interchange": [
@@ -129,5 +129,25 @@
         ]
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "express": {
+      "service_type": "express",
+      "description": "Non-stop express service",
+      "typical_journey_time": 15,
+      "frequency": "Every 15 minutes",
+      "stations": [
+        "LO3",
+        "SSD"
+      ],
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": "05:00",
+      "last_service": "23:30",
+      "operates_on": [
+        "daily"
+      ]
+    }
+  }
 }

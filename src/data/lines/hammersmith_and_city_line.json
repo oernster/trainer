@@ -197,7 +197,7 @@
     },
     {
       "name": "Westbourne Park",
-      "code": "WBP",
+      "code": "WES",
       "coordinates": {
         "lat": 51.521,
         "lng": -0.2011
@@ -257,7 +257,7 @@
     },
     {
       "name": "Paddington",
-      "code": "PAD",
+      "code": "PPD",
       "coordinates": {
         "lat": 51.5154,
         "lng": -0.1755
@@ -291,7 +291,7 @@
     },
     {
       "name": "Edgware Road",
-      "code": "EDG",
+      "code": "ED1",
       "coordinates": {
         "lat": 51.5203,
         "lng": -0.1669
@@ -891,7 +891,7 @@
     },
     {
       "name": "Barking",
-      "code": "BKG",
+      "code": "BAK",
       "coordinates": {
         "lat": 51.5396,
         "lng": 0.081

@@ -127,7 +127,7 @@
     },
     {
       "name": "Bounds Green",
-      "code": "BDS",
+      "code": "BOU",
       "coordinates": {
         "lat": 51.6071,
         "lng": -0.1243
@@ -155,7 +155,7 @@
     },
     {
       "name": "Wood Green",
-      "code": "WGN",
+      "code": "WOO",
       "coordinates": {
         "lat": 51.5975,
         "lng": -0.1097
@@ -417,7 +417,7 @@
     },
     {
       "name": "Holborn",
-      "code": "HOL",
+      "code": "HBN",
       "coordinates": {
         "lat": 51.5174,
         "lng": -0.1203
@@ -505,7 +505,7 @@
     },
     {
       "name": "Piccadilly Circus",
-      "code": "PIC",
+      "code": "PCC",
       "coordinates": {
         "lat": 51.5098,
         "lng": -0.1342
@@ -806,7 +806,7 @@
     },
     {
       "name": "South Ealing",
-      "code": "SEL",
+      "code": "SO2",
       "coordinates": {
         "lat": 51.5011,
         "lng": -0.3072
@@ -834,7 +834,7 @@
     },
     {
       "name": "Northfields",
-      "code": "NFD",
+      "code": "NO1",
       "coordinates": {
         "lat": 51.4994,
         "lng": -0.3144
@@ -1061,7 +1061,7 @@
     },
     {
       "name": "Heathrow Terminal 4",
-      "code": "HT4",
+      "code": "HAF",
       "coordinates": {
         "lat": 51.4598,
         "lng": -0.4476
@@ -1292,7 +1292,7 @@
     },
     {
       "name": "South Harrow",
-      "code": "SHR",
+      "code": "SO1",
       "coordinates": {
         "lat": 51.5646,
         "lng": -0.3521
@@ -1470,7 +1470,7 @@
     },
     {
       "name": "Hillingdon",
-      "code": "HIL",
+      "code": "HHL",
       "coordinates": {
         "lat": 51.5538,
         "lng": -0.4499

@@ -395,7 +395,7 @@
     },
     {
       "name": "Northwick Park",
-      "code": "NWP",
+      "code": "NOR",
       "coordinates": {
         "lat": 51.5784,
         "lng": -0.3182
@@ -683,7 +683,7 @@
     },
     {
       "name": "Chesham",
-      "code": "CHM",
+      "code": "CHE",
       "coordinates": {
         "lat": 51.7052,
         "lng": -0.6113
@@ -975,7 +975,7 @@
     },
     {
       "name": "Hillingdon",
-      "code": "HIL",
+      "code": "HHL",
       "coordinates": {
         "lat": 51.5538,
         "lng": -0.4499

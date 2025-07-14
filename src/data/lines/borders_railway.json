@@ -14,7 +14,7 @@
   "stations": [
     {
       "name": "Edinburgh Waverley",
-      "code": "EDB",
+      "code": "EDI",
       "coordinates": {
         "lat": 55.9519,
         "lng": -3.1881

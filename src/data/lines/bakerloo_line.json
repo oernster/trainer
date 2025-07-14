@@ -76,7 +76,7 @@
     },
     {
       "name": "South Kenton",
-      "code": "SKN",
+      "code": "SFK",
       "coordinates": {
         "lat": 51.5701,
         "lng": -0.3081
@@ -371,7 +371,7 @@
     },
     {
       "name": "Warwick Avenue",
-      "code": "WAR",
+      "code": "WWR",
       "coordinates": {
         "lat": 51.5235,
         "lng": -0.1835
@@ -399,7 +399,7 @@
     },
     {
       "name": "Paddington",
-      "code": "PAD",
+      "code": "PPD",
       "coordinates": {
         "lat": 51.5154,
         "lng": -0.1755
@@ -433,7 +433,7 @@
     },
     {
       "name": "Edgware Road",
-      "code": "EDG",
+      "code": "ED1",
       "coordinates": {
         "lat": 51.5203,
         "lng": -0.1669
@@ -461,7 +461,7 @@
     },
     {
       "name": "Marylebone",
-      "code": "MYB",
+      "code": "MAR",
       "coordinates": {
         "lat": 51.5226,
         "lng": -0.1631
@@ -583,7 +583,7 @@
     },
     {
       "name": "Piccadilly Circus",
-      "code": "PIC",
+      "code": "PCC",
       "coordinates": {
         "lat": 51.5098,
         "lng": -0.1342
@@ -676,7 +676,7 @@
     },
     {
       "name": "Waterloo",
-      "code": "WAT",
+      "code": "WWT",
       "coordinates": {
         "lat": 51.5036,
         "lng": -0.1144

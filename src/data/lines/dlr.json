@@ -305,7 +305,7 @@
     },
     {
       "name": "Custom House",
-      "code": "CUS",
+      "code": "CUH",
       "coordinates": {
         "lat": 51.5095,
         "lng": 0.0276
@@ -335,7 +335,7 @@
     },
     {
       "name": "Prince Regent",
-      "code": "PRR",
+      "code": "PRI",
       "coordinates": {
         "lat": 51.5107,
         "lng": 0.0333
@@ -419,7 +419,7 @@
     },
     {
       "name": "Cyprus",
-      "code": "CYP",
+      "code": "CCY",
       "coordinates": {
         "lat": 51.5097,
         "lng": 0.0638
@@ -531,7 +531,7 @@
     },
     {
       "name": "Canary Wharf DLR",
-      "code": "CWF",
+      "code": "CCN",
       "coordinates": {
         "lat": 51.5051,
         "lng": -0.0209
@@ -760,7 +760,7 @@
     },
     {
       "name": "Deptford Bridge",
-      "code": "DEB",
+      "code": "DEP",
       "coordinates": {
         "lat": 51.4741,
         "lng": -0.0216
@@ -930,7 +930,7 @@
     },
     {
       "name": "Bow Church",
-      "code": "BOC",
+      "code": "BOW",
       "coordinates": {
         "lat": 51.5269,
         "lng": -0.0208
@@ -986,7 +986,7 @@
     },
     {
       "name": "Stratford",
-      "code": "SRA",
+      "code": "SFD",
       "coordinates": {
         "lat": 51.5416,
         "lng": -0.0042
@@ -1020,7 +1020,7 @@
     },
     {
       "name": "Stratford International",
-      "code": "SFI",
+      "code": "SST",
       "coordinates": {
         "lat": 51.5456,
         "lng": -0.0089

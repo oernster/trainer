@@ -45,7 +45,7 @@
     },
     {
       "name": "Ruislip Gardens",
-      "code": "RUG",
+      "code": "RRS",
       "coordinates": {
         "lat": 51.5606,
         "lng": -0.4417
@@ -217,7 +217,7 @@
     },
     {
       "name": "Ealing Broadway",
-      "code": "EBY",
+      "code": "EAL",
       "coordinates": {
         "lat": 51.5152,
         "lng": -0.3017
@@ -333,7 +333,7 @@
     },
     {
       "name": "White City",
-      "code": "WCT",
+      "code": "WHI",
       "coordinates": {
         "lat": 51.512,
         "lng": -0.2239
@@ -479,7 +479,7 @@
     },
     {
       "name": "Lancaster Gate",
-      "code": "LAN",
+      "code": "LA1",
       "coordinates": {
         "lat": 51.5119,
         "lng": -0.1756
@@ -507,7 +507,7 @@
     },
     {
       "name": "Marble Arch",
-      "code": "MAR",
+      "code": "MAA",
       "coordinates": {
         "lat": 51.5136,
         "lng": -0.1586
@@ -628,7 +628,7 @@
     },
     {
       "name": "Holborn",
-      "code": "HOL",
+      "code": "HBN",
       "coordinates": {
         "lat": 51.5174,
         "lng": -0.1203
@@ -686,7 +686,7 @@
     },
     {
       "name": "St. Paul's",
-      "code": "STP",
+      "code": "ST3",
       "coordinates": {
         "lat": 51.515,
         "lng": -0.0983
@@ -780,7 +780,7 @@
     },
     {
       "name": "Bethnal Green",
-      "code": "BNG",
+      "code": "BET",
       "coordinates": {
         "lat": 51.5273,
         "lng": -0.0549
@@ -985,7 +985,7 @@
     },
     {
       "name": "Woodford",
-      "code": "WFD",
+      "code": "WWD",
       "coordinates": {
         "lat": 51.6067,
         "lng": 0.0336
@@ -1041,7 +1041,7 @@
     },
     {
       "name": "Loughton",
-      "code": "LTN",
+      "code": "LOU",
       "coordinates": {
         "lat": 51.6417,
         "lng": 0.0558

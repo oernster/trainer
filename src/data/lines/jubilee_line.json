@@ -512,7 +512,7 @@
     },
     {
       "name": "Waterloo",
-      "code": "WAT",
+      "code": "WWT",
       "coordinates": {
         "lat": 51.5036,
         "lng": -0.1144
@@ -573,7 +573,7 @@
     },
     {
       "name": "London Bridge",
-      "code": "LBG",
+      "code": "LO4",
       "coordinates": {
         "lat": 51.5049,
         "lng": -0.0863

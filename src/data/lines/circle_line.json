@@ -197,7 +197,7 @@
     },
     {
       "name": "Westbourne Park",
-      "code": "WBP",
+      "code": "WES",
       "coordinates": {
         "lat": 51.521,
         "lng": -0.2011
@@ -257,7 +257,7 @@
     },
     {
       "name": "Paddington",
-      "code": "PAD",
+      "code": "PPD",
       "coordinates": {
         "lat": 51.5154,
         "lng": -0.1755
@@ -291,7 +291,7 @@
     },
     {
       "name": "Edgware Road",
-      "code": "EDG",
+      "code": "ED1",
       "coordinates": {
         "lat": 51.5203,
         "lng": -0.1669
@@ -645,7 +645,7 @@
     },
     {
       "name": "Monument",
-      "code": "MON",
+      "code": "MNT",
       "coordinates": {
         "lat": 51.5108,
         "lng": -0.0863
@@ -707,7 +707,7 @@
     },
     {
       "name": "Mansion House",
-      "code": "MAN",
+      "code": "MA1",
       "coordinates": {
         "lat": 51.5122,
         "lng": -0.0941
@@ -891,7 +891,7 @@
     },
     {
       "name": "Victoria",
-      "code": "VIC",
+      "code": "VVC",
       "coordinates": {
         "lat": 51.4952,
         "lng": -0.1441
@@ -1015,7 +1015,7 @@
     },
     {
       "name": "High Street Kensington",
-      "code": "HSK",
+      "code": "HHG",
       "coordinates": {
         "lat": 51.5009,
         "lng": -0.1925
@@ -1106,7 +1106,7 @@
     },
     {
       "name": "Paddington",
-      "code": "PAD",
+      "code": "PPD",
       "coordinates": {
         "lat": 51.5154,
         "lng": -0.1755

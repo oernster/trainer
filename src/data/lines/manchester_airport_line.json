@@ -364,5 +364,35 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "express": {
+      "service_type": "express",
+      "description": "Express service - limited stops",
+      "typical_journey_time": 36,
+      "frequency": "Every 15 minutes",
+      "stations": [
+        "MAN",
+        "MCO",
+        "MSD",
+        "MUF",
+        "TRA",
+        "URM",
+        "CSR",
+        "FLI",
+        "IRL",
+        "BWD",
+        "WAC",
+        "MIA"
+      ],
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": "05:00",
+      "last_service": "23:30",
+      "operates_on": [
+        "daily"
+      ]
+    }
+  }
 }

@@ -14,8 +14,8 @@
     }
   },
   "typical_journey_times": {
-    "RDG-MOR": 10,
-    "MOR-FLE": 12,
+    "RDG-MMR": 10,
+    "MMR-FLE": 12,
     "FLE-HOK": 8,
     "HOK-BSK": 10,
     "RDG-BSK": 40
@@ -61,7 +61,7 @@
     },
     {
       "name": "Mortimer",
-      "code": "MOR",
+      "code": "MMR",
       "coordinates": {
         "lat": 51.3667,
         "lng": -1.0333
@@ -169,5 +169,62 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "fast": {
+      "service_type": "fast",
+      "description": "Fast service - major towns and interchanges",
+      "typical_journey_time": 7,
+      "frequency": "Every 30 minutes",
+      "stations": [
+        "RDG",
+        "FLE",
+        "BSK"
+      ],
+      "peak_frequency": "Every 20 minutes",
+      "off_peak_frequency": "Every 30 minutes",
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "semi_fast": {
+      "service_type": "semi_fast",
+      "description": "Semi-fast service - market towns",
+      "typical_journey_time": 9,
+      "frequency": "Every 60 minutes",
+      "stations": [
+        "RDG",
+        "MMR",
+        "FLE",
+        "HOK",
+        "BSK"
+      ],
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "stopping": {
+      "service_type": "stopping",
+      "description": "Stopping service - all stations",
+      "typical_journey_time": 10,
+      "frequency": "Every 2 hours",
+      "stations": "all",
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    }
+  }
 }

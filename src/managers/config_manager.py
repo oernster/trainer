@@ -45,6 +45,7 @@ class StationConfig(BaseModel):
     to_name: str = "London Waterloo"
     via_stations: List[str] = []
     route_auto_fixed: bool = False
+    departure_time: str = ""  # Optional departure time in HH:MM format
 
 
 class RefreshConfig(BaseModel):

@@ -14,409 +14,791 @@
   "stations": [
     {
       "name": "Shrewsbury",
-      "code": "SHR",
-      "coordinates": {"lat": 52.7081, "lng": -2.7531},
-      "interchange": ["Welsh Marches Line", "Cambrian Line"],
+      "code": "SSH",
+      "coordinates": {
+        "lat": 52.7081,
+        "lng": -2.7531
+      },
+      "interchange": [
+        "Welsh Marches Line",
+        "Cambrian Line"
+      ],
       "times": {
-        "morning": ["05:30", "09:30"],
-        "afternoon": ["13:30", "17:30"],
-        "evening": ["21:30"],
+        "morning": [
+          "05:30",
+          "09:30"
+        ],
+        "afternoon": [
+          "13:30",
+          "17:30"
+        ],
+        "evening": [
+          "21:30"
+        ],
         "night": []
       }
     },
     {
       "name": "Church Stretton",
       "code": "CTT",
-      "coordinates": {"lat": 52.5381, "lng": -2.8031},
+      "coordinates": {
+        "lat": 52.5381,
+        "lng": -2.8031
+      },
       "interchange": [],
       "times": {
-        "morning": ["05:45", "09:45"],
-        "afternoon": ["13:45", "17:45"],
-        "evening": ["21:45"],
+        "morning": [
+          "05:45",
+          "09:45"
+        ],
+        "afternoon": [
+          "13:45",
+          "17:45"
+        ],
+        "evening": [
+          "21:45"
+        ],
         "night": []
       }
     },
     {
       "name": "Craven Arms",
       "code": "CRV",
-      "coordinates": {"lat": 52.4381, "lng": -2.8381},
+      "coordinates": {
+        "lat": 52.4381,
+        "lng": -2.8381
+      },
       "interchange": [],
       "times": {
-        "morning": ["06:00", "10:00"],
-        "afternoon": ["14:00", "18:00"],
-        "evening": ["22:00"],
+        "morning": [
+          "06:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "14:00",
+          "18:00"
+        ],
+        "evening": [
+          "22:00"
+        ],
         "night": []
       }
     },
     {
       "name": "Broome",
       "code": "BME",
-      "coordinates": {"lat": 52.3681, "lng": -2.8731},
+      "coordinates": {
+        "lat": 52.3681,
+        "lng": -2.8731
+      },
       "interchange": [],
       "times": {
-        "morning": ["06:10", "10:10"],
-        "afternoon": ["14:10", "18:10"],
-        "evening": ["22:10"],
+        "morning": [
+          "06:10",
+          "10:10"
+        ],
+        "afternoon": [
+          "14:10",
+          "18:10"
+        ],
+        "evening": [
+          "22:10"
+        ],
         "night": []
       }
     },
     {
       "name": "Hopton Heath",
       "code": "HPT",
-      "coordinates": {"lat": 52.3481, "lng": -2.9231},
+      "coordinates": {
+        "lat": 52.3481,
+        "lng": -2.9231
+      },
       "interchange": [],
       "times": {
-        "morning": ["06:20", "10:20"],
-        "afternoon": ["14:20", "18:20"],
-        "evening": ["22:20"],
+        "morning": [
+          "06:20",
+          "10:20"
+        ],
+        "afternoon": [
+          "14:20",
+          "18:20"
+        ],
+        "evening": [
+          "22:20"
+        ],
         "night": []
       }
     },
     {
       "name": "Bucknell",
       "code": "BUK",
-      "coordinates": {"lat": 52.3581, "lng": -2.9981},
+      "coordinates": {
+        "lat": 52.3581,
+        "lng": -2.9981
+      },
       "interchange": [],
       "times": {
-        "morning": ["06:30", "10:30"],
-        "afternoon": ["14:30", "18:30"],
-        "evening": ["22:30"],
+        "morning": [
+          "06:30",
+          "10:30"
+        ],
+        "afternoon": [
+          "14:30",
+          "18:30"
+        ],
+        "evening": [
+          "22:30"
+        ],
         "night": []
       }
     },
     {
       "name": "Knighton",
       "code": "KNI",
-      "coordinates": {"lat": 52.3431, "lng": -3.0481},
+      "coordinates": {
+        "lat": 52.3431,
+        "lng": -3.0481
+      },
       "interchange": [],
       "times": {
-        "morning": ["06:40", "10:40"],
-        "afternoon": ["14:40", "18:40"],
-        "evening": ["22:40"],
+        "morning": [
+          "06:40",
+          "10:40"
+        ],
+        "afternoon": [
+          "14:40",
+          "18:40"
+        ],
+        "evening": [
+          "22:40"
+        ],
         "night": []
       }
     },
     {
       "name": "Knucklas",
       "code": "KNU",
-      "coordinates": {"lat": 52.3231, "lng": -3.1231},
+      "coordinates": {
+        "lat": 52.3231,
+        "lng": -3.1231
+      },
       "interchange": [],
       "times": {
-        "morning": ["06:50", "10:50"],
-        "afternoon": ["14:50", "18:50"],
-        "evening": ["22:50"],
+        "morning": [
+          "06:50",
+          "10:50"
+        ],
+        "afternoon": [
+          "14:50",
+          "18:50"
+        ],
+        "evening": [
+          "22:50"
+        ],
         "night": []
       }
     },
     {
       "name": "Llangunllo",
       "code": "LGO",
-      "coordinates": {"lat": 52.2981, "lng": -3.1681},
+      "coordinates": {
+        "lat": 52.2981,
+        "lng": -3.1681
+      },
       "interchange": [],
       "times": {
-        "morning": ["07:00", "11:00"],
-        "afternoon": ["15:00", "19:00"],
-        "evening": ["23:00"],
+        "morning": [
+          "07:00",
+          "11:00"
+        ],
+        "afternoon": [
+          "15:00",
+          "19:00"
+        ],
+        "evening": [
+          "23:00"
+        ],
         "night": []
       }
     },
     {
       "name": "Llanbister Road",
       "code": "LLT",
-      "coordinates": {"lat": 52.2731, "lng": -3.2431},
+      "coordinates": {
+        "lat": 52.2731,
+        "lng": -3.2431
+      },
       "interchange": [],
       "times": {
-        "morning": ["07:10", "11:10"],
-        "afternoon": ["15:10", "19:10"],
-        "evening": ["23:10"],
+        "morning": [
+          "07:10",
+          "11:10"
+        ],
+        "afternoon": [
+          "15:10",
+          "19:10"
+        ],
+        "evening": [
+          "23:10"
+        ],
         "night": []
       }
     },
     {
       "name": "Dolau",
       "code": "DOL",
-      "coordinates": {"lat": 52.2581, "lng": -3.3031},
+      "coordinates": {
+        "lat": 52.2581,
+        "lng": -3.3031
+      },
       "interchange": [],
       "times": {
-        "morning": ["07:20", "11:20"],
-        "afternoon": ["15:20", "19:20"],
-        "evening": ["23:20"],
+        "morning": [
+          "07:20",
+          "11:20"
+        ],
+        "afternoon": [
+          "15:20",
+          "19:20"
+        ],
+        "evening": [
+          "23:20"
+        ],
         "night": []
       }
     },
     {
       "name": "Penybont",
       "code": "PNY",
-      "coordinates": {"lat": 52.2431, "lng": -3.3431},
+      "coordinates": {
+        "lat": 52.2431,
+        "lng": -3.3431
+      },
       "interchange": [],
       "times": {
-        "morning": ["07:30", "11:30"],
-        "afternoon": ["15:30", "19:30"],
-        "evening": ["23:30"],
+        "morning": [
+          "07:30",
+          "11:30"
+        ],
+        "afternoon": [
+          "15:30",
+          "19:30"
+        ],
+        "evening": [
+          "23:30"
+        ],
         "night": []
       }
     },
     {
       "name": "Llandrindod Wells",
       "code": "LLW",
-      "coordinates": {"lat": 52.2431, "lng": -3.3831},
+      "coordinates": {
+        "lat": 52.2431,
+        "lng": -3.3831
+      },
       "interchange": [],
       "times": {
-        "morning": ["07:40", "11:40"],
-        "afternoon": ["15:40", "19:40"],
-        "evening": ["23:40"],
+        "morning": [
+          "07:40",
+          "11:40"
+        ],
+        "afternoon": [
+          "15:40",
+          "19:40"
+        ],
+        "evening": [
+          "23:40"
+        ],
         "night": []
       }
     },
     {
       "name": "Builth Road",
       "code": "BHR",
-      "coordinates": {"lat": 52.1581, "lng": -3.4031},
+      "coordinates": {
+        "lat": 52.1581,
+        "lng": -3.4031
+      },
       "interchange": [],
       "times": {
-        "morning": ["07:50", "11:50"],
-        "afternoon": ["15:50", "19:50"],
-        "evening": ["23:50"],
+        "morning": [
+          "07:50",
+          "11:50"
+        ],
+        "afternoon": [
+          "15:50",
+          "19:50"
+        ],
+        "evening": [
+          "23:50"
+        ],
         "night": []
       }
     },
     {
       "name": "Cilmeri",
       "code": "CIM",
-      "coordinates": {"lat": 52.1331, "lng": -3.4331},
+      "coordinates": {
+        "lat": 52.1331,
+        "lng": -3.4331
+      },
       "interchange": [],
       "times": {
-        "morning": ["08:00", "12:00"],
-        "afternoon": ["16:00", "20:00"],
-        "evening": ["00:00"],
+        "morning": [
+          "08:00",
+          "12:00"
+        ],
+        "afternoon": [
+          "16:00",
+          "20:00"
+        ],
+        "evening": [
+          "00:00"
+        ],
         "night": []
       }
     },
     {
       "name": "Garth",
       "code": "GTH",
-      "coordinates": {"lat": 52.1081, "lng": -3.4781},
+      "coordinates": {
+        "lat": 52.1081,
+        "lng": -3.4781
+      },
       "interchange": [],
       "times": {
-        "morning": ["08:10", "12:10"],
-        "afternoon": ["16:10", "20:10"],
-        "evening": ["00:10"],
+        "morning": [
+          "08:10",
+          "12:10"
+        ],
+        "afternoon": [
+          "16:10",
+          "20:10"
+        ],
+        "evening": [
+          "00:10"
+        ],
         "night": []
       }
     },
     {
       "name": "Llangammarch",
       "code": "LLM",
-      "coordinates": {"lat": 52.1131, "lng": -3.5531},
+      "coordinates": {
+        "lat": 52.1131,
+        "lng": -3.5531
+      },
       "interchange": [],
       "times": {
-        "morning": ["08:20", "12:20"],
-        "afternoon": ["16:20", "20:20"],
-        "evening": ["00:20"],
+        "morning": [
+          "08:20",
+          "12:20"
+        ],
+        "afternoon": [
+          "16:20",
+          "20:20"
+        ],
+        "evening": [
+          "00:20"
+        ],
         "night": []
       }
     },
     {
       "name": "Llanwrtyd",
       "code": "LNW",
-      "coordinates": {"lat": 52.1031, "lng": -3.6331},
+      "coordinates": {
+        "lat": 52.1031,
+        "lng": -3.6331
+      },
       "interchange": [],
       "times": {
-        "morning": ["08:30", "12:30"],
-        "afternoon": ["16:30", "20:30"],
-        "evening": ["00:30"],
+        "morning": [
+          "08:30",
+          "12:30"
+        ],
+        "afternoon": [
+          "16:30",
+          "20:30"
+        ],
+        "evening": [
+          "00:30"
+        ],
         "night": []
       }
     },
     {
       "name": "Sugar Loaf",
       "code": "SUG",
-      "coordinates": {"lat": 52.0581, "lng": -3.7231},
+      "coordinates": {
+        "lat": 52.0581,
+        "lng": -3.7231
+      },
       "interchange": [],
       "times": {
-        "morning": ["08:40", "12:40"],
-        "afternoon": ["16:40", "20:40"],
-        "evening": ["00:40"],
+        "morning": [
+          "08:40",
+          "12:40"
+        ],
+        "afternoon": [
+          "16:40",
+          "20:40"
+        ],
+        "evening": [
+          "00:40"
+        ],
         "night": []
       }
     },
     {
       "name": "Cynghordy",
       "code": "CYN",
-      "coordinates": {"lat": 52.0231, "lng": -3.7981},
+      "coordinates": {
+        "lat": 52.0231,
+        "lng": -3.7981
+      },
       "interchange": [],
       "times": {
-        "morning": ["08:50", "12:50"],
-        "afternoon": ["16:50", "20:50"],
-        "evening": ["00:50"],
+        "morning": [
+          "08:50",
+          "12:50"
+        ],
+        "afternoon": [
+          "16:50",
+          "20:50"
+        ],
+        "evening": [
+          "00:50"
+        ],
         "night": []
       }
     },
     {
       "name": "Llandovery",
       "code": "LDV",
-      "coordinates": {"lat": 51.9981, "lng": -3.8031},
+      "coordinates": {
+        "lat": 51.9981,
+        "lng": -3.8031
+      },
       "interchange": [],
       "times": {
-        "morning": ["09:00", "13:00"],
-        "afternoon": ["17:00", "21:00"],
-        "evening": ["01:00"],
+        "morning": [
+          "09:00",
+          "13:00"
+        ],
+        "afternoon": [
+          "17:00",
+          "21:00"
+        ],
+        "evening": [
+          "01:00"
+        ],
         "night": []
       }
     },
     {
       "name": "Llanwrda",
       "code": "LNR",
-      "coordinates": {"lat": 51.9731, "lng": -3.8531},
+      "coordinates": {
+        "lat": 51.9731,
+        "lng": -3.8531
+      },
       "interchange": [],
       "times": {
-        "morning": ["09:10", "13:10"],
-        "afternoon": ["17:10", "21:10"],
-        "evening": ["01:10"],
+        "morning": [
+          "09:10",
+          "13:10"
+        ],
+        "afternoon": [
+          "17:10",
+          "21:10"
+        ],
+        "evening": [
+          "01:10"
+        ],
         "night": []
       }
     },
     {
       "name": "Llangadog",
       "code": "LLG",
-      "coordinates": {"lat": 51.9481, "lng": -3.8981},
+      "coordinates": {
+        "lat": 51.9481,
+        "lng": -3.8981
+      },
       "interchange": [],
       "times": {
-        "morning": ["09:20", "13:20"],
-        "afternoon": ["17:20", "21:20"],
-        "evening": ["01:20"],
+        "morning": [
+          "09:20",
+          "13:20"
+        ],
+        "afternoon": [
+          "17:20",
+          "21:20"
+        ],
+        "evening": [
+          "01:20"
+        ],
         "night": []
       }
     },
     {
       "name": "Llandeilo",
       "code": "LLL",
-      "coordinates": {"lat": 51.8831, "lng": -3.9881},
+      "coordinates": {
+        "lat": 51.8831,
+        "lng": -3.9881
+      },
       "interchange": [],
       "times": {
-        "morning": ["09:30", "13:30"],
-        "afternoon": ["17:30", "21:30"],
-        "evening": ["01:30"],
+        "morning": [
+          "09:30",
+          "13:30"
+        ],
+        "afternoon": [
+          "17:30",
+          "21:30"
+        ],
+        "evening": [
+          "01:30"
+        ],
         "night": []
       }
     },
     {
       "name": "Ffairfach",
       "code": "FFA",
-      "coordinates": {"lat": 51.8731, "lng": -4.0031},
+      "coordinates": {
+        "lat": 51.8731,
+        "lng": -4.0031
+      },
       "interchange": [],
       "times": {
-        "morning": ["09:35", "13:35"],
-        "afternoon": ["17:35", "21:35"],
-        "evening": ["01:35"],
+        "morning": [
+          "09:35",
+          "13:35"
+        ],
+        "afternoon": [
+          "17:35",
+          "21:35"
+        ],
+        "evening": [
+          "01:35"
+        ],
         "night": []
       }
     },
     {
       "name": "Llandybie",
       "code": "LLI",
-      "coordinates": {"lat": 51.8131, "lng": -4.0331},
+      "coordinates": {
+        "lat": 51.8131,
+        "lng": -4.0331
+      },
       "interchange": [],
       "times": {
-        "morning": ["09:45", "13:45"],
-        "afternoon": ["17:45", "21:45"],
-        "evening": ["01:45"],
+        "morning": [
+          "09:45",
+          "13:45"
+        ],
+        "afternoon": [
+          "17:45",
+          "21:45"
+        ],
+        "evening": [
+          "01:45"
+        ],
         "night": []
       }
     },
     {
       "name": "Ammanford",
       "code": "AMF",
-      "coordinates": {"lat": 51.7931, "lng": -4.0031},
+      "coordinates": {
+        "lat": 51.7931,
+        "lng": -4.0031
+      },
       "interchange": [],
       "times": {
-        "morning": ["09:55", "13:55"],
-        "afternoon": ["17:55", "21:55"],
-        "evening": ["01:55"],
+        "morning": [
+          "09:55",
+          "13:55"
+        ],
+        "afternoon": [
+          "17:55",
+          "21:55"
+        ],
+        "evening": [
+          "01:55"
+        ],
         "night": []
       }
     },
     {
       "name": "Pantyffynnon",
       "code": "PTF",
-      "coordinates": {"lat": 51.7731, "lng": -4.0331},
+      "coordinates": {
+        "lat": 51.7731,
+        "lng": -4.0331
+      },
       "interchange": [],
       "times": {
-        "morning": ["10:00", "14:00"],
-        "afternoon": ["18:00", "22:00"],
-        "evening": ["02:00"],
+        "morning": [
+          "10:00",
+          "14:00"
+        ],
+        "afternoon": [
+          "18:00",
+          "22:00"
+        ],
+        "evening": [
+          "02:00"
+        ],
         "night": []
       }
     },
     {
       "name": "Pontarddulais",
       "code": "PTD",
-      "coordinates": {"lat": 51.7231, "lng": -4.0481},
+      "coordinates": {
+        "lat": 51.7231,
+        "lng": -4.0481
+      },
       "interchange": [],
       "times": {
-        "morning": ["10:10", "14:10"],
-        "afternoon": ["18:10", "22:10"],
-        "evening": ["02:10"],
+        "morning": [
+          "10:10",
+          "14:10"
+        ],
+        "afternoon": [
+          "18:10",
+          "22:10"
+        ],
+        "evening": [
+          "02:10"
+        ],
         "night": []
       }
     },
     {
       "name": "Llangennech",
       "code": "LLH",
-      "coordinates": {"lat": 51.6831, "lng": -4.0881},
+      "coordinates": {
+        "lat": 51.6831,
+        "lng": -4.0881
+      },
       "interchange": [],
       "times": {
-        "morning": ["10:20", "14:20"],
-        "afternoon": ["18:20", "22:20"],
-        "evening": ["02:20"],
+        "morning": [
+          "10:20",
+          "14:20"
+        ],
+        "afternoon": [
+          "18:20",
+          "22:20"
+        ],
+        "evening": [
+          "02:20"
+        ],
         "night": []
       }
     },
     {
       "name": "Bynea",
       "code": "BYE",
-      "coordinates": {"lat": 51.6631, "lng": -4.1231},
+      "coordinates": {
+        "lat": 51.6631,
+        "lng": -4.1231
+      },
       "interchange": [],
       "times": {
-        "morning": ["10:25", "14:25"],
-        "afternoon": ["18:25", "22:25"],
-        "evening": ["02:25"],
+        "morning": [
+          "10:25",
+          "14:25"
+        ],
+        "afternoon": [
+          "18:25",
+          "22:25"
+        ],
+        "evening": [
+          "02:25"
+        ],
         "night": []
       }
     },
     {
       "name": "Llanelli",
       "code": "LLE",
-      "coordinates": {"lat": 51.6731, "lng": -4.1631},
-      "interchange": ["West Wales Line"],
+      "coordinates": {
+        "lat": 51.6731,
+        "lng": -4.1631
+      },
+      "interchange": [
+        "West Wales Line"
+      ],
       "times": {
-        "morning": ["10:35", "14:35"],
-        "afternoon": ["18:35", "22:35"],
-        "evening": ["02:35"],
+        "morning": [
+          "10:35",
+          "14:35"
+        ],
+        "afternoon": [
+          "18:35",
+          "22:35"
+        ],
+        "evening": [
+          "02:35"
+        ],
         "night": []
       }
     },
     {
       "name": "Gowerton",
       "code": "GWN",
-      "coordinates": {"lat": 51.6431, "lng": -4.0431},
+      "coordinates": {
+        "lat": 51.6431,
+        "lng": -4.0431
+      },
       "interchange": [],
       "times": {
-        "morning": ["10:45", "14:45"],
-        "afternoon": ["18:45", "22:45"],
-        "evening": ["02:45"],
+        "morning": [
+          "10:45",
+          "14:45"
+        ],
+        "afternoon": [
+          "18:45",
+          "22:45"
+        ],
+        "evening": [
+          "02:45"
+        ],
         "night": []
       }
     },
     {
       "name": "Swansea",
       "code": "SWA",
-      "coordinates": {"lat": 51.6231, "lng": -3.9431},
-      "interchange": ["South Wales Main Line", "West Wales Line"],
+      "coordinates": {
+        "lat": 51.6231,
+        "lng": -3.9431
+      },
+      "interchange": [
+        "South Wales Main Line",
+        "West Wales Line"
+      ],
       "times": {
-        "morning": ["11:00", "15:00"],
-        "afternoon": ["19:00", "23:00"],
-        "evening": ["03:00"],
+        "morning": [
+          "11:00",
+          "15:00"
+        ],
+        "afternoon": [
+          "19:00",
+          "23:00"
+        ],
+        "evening": [
+          "03:00"
+        ],
         "night": []
       }
     }

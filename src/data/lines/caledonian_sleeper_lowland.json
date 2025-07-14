@@ -14,7 +14,7 @@
     }
   },
   "typical_journey_times": {
-    "EUS-WFJ": 20,
+    "LO1-WFJ": 20,
     "WFJ-MKC": 25,
     "MKC-RUG": 30,
     "RUG-NUN": 15,
@@ -30,10 +30,10 @@
     "OXN-PNR": 30,
     "PNR-CAR": 20,
     "CAR-LOC": 25,
-    "LOC-DUM": 30,
-    "DUM-KMK": 45,
+    "LOC-DMF": 30,
+    "DMF-KMK": 45,
     "KMK-GLC": 30,
-    "EUS-GLC": 480
+    "LO1-GLC": 480
   },
   "typical_services": {
     "peak_frequency": "1 service per night",
@@ -46,7 +46,7 @@
   "stations": [
     {
       "name": "London Euston",
-      "code": "EUS",
+      "code": "LO1",
       "coordinates": {
         "lat": 51.5282,
         "lng": -0.1337
@@ -395,7 +395,7 @@
     },
     {
       "name": "Dumfries",
-      "code": "DUM",
+      "code": "DMF",
       "coordinates": {
         "lat": 55.0706,
         "lng": -3.6089
@@ -451,5 +451,26 @@
         "night": []
       }
     }
-  ]
+  ],
+  "service_patterns": {
+    "express": {
+      "service_type": "express",
+      "description": "Overnight sleeper service - major cities only",
+      "typical_journey_time": 300,
+      "frequency": "Daily",
+      "stations": [
+        "EUS",
+        "GLC",
+        "EDB"
+      ],
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": "21:00",
+      "last_service": "08:00",
+      "operates_on": [
+        "daily"
+      ]
+    }
+  }
 }

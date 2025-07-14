@@ -14,7 +14,7 @@
   "stations": [
     {
       "name": "Newcastle Airport",
-      "code": "NCL",
+      "code": "NNW",
       "coordinates": {
         "lat": 55.0371,
         "lng": -1.6911
@@ -1521,7 +1521,7 @@
     },
     {
       "name": "Haymarket",
-      "code": "HAY",
+      "code": "HA1",
       "coordinates": {
         "lat": 54.9781,
         "lng": -1.6131
@@ -3305,7 +3305,7 @@
     },
     {
       "name": "Chichester",
-      "code": "CHI",
+      "code": "CCR",
       "coordinates": {
         "lat": 54.9581,
         "lng": -1.4531
@@ -3579,7 +3579,7 @@
     },
     {
       "name": "Meadow Well",
-      "code": "MDW",
+      "code": "MEA",
       "coordinates": {
         "lat": 55.0081,
         "lng": -1.4631
@@ -4675,7 +4675,7 @@
     },
     {
       "name": "Manors",
-      "code": "MAN",
+      "code": "MMN",
       "coordinates": {
         "lat": 54.9731,
         "lng": -1.6031
@@ -5634,7 +5634,7 @@
     },
     {
       "name": "Meadow Well",
-      "code": "MDW",
+      "code": "MEA",
       "coordinates": {
         "lat": 55.0081,
         "lng": -1.4631
@@ -6045,7 +6045,7 @@
     },
     {
       "name": "Four Lane Ends",
-      "code": "FLE",
+      "code": "FOU",
       "coordinates": {
         "lat": 55.0081,
         "lng": -1.5731
@@ -6182,7 +6182,7 @@
     },
     {
       "name": "Longbenton",
-      "code": "LBN",
+      "code": "LLN",
       "coordinates": {
         "lat": 55.0031,
         "lng": -1.5831
@@ -7415,7 +7415,7 @@
     },
     {
       "name": "Stadium of Light",
-      "code": "STL",
+      "code": "ST6",
       "coordinates": {
         "lat": 54.9131,
         "lng": -1.3931
@@ -7552,7 +7552,7 @@
     },
     {
       "name": "St Peter's",
-      "code": "STP",
+      "code": "ST2",
       "coordinates": {
         "lat": 54.9081,
         "lng": -1.3831

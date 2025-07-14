@@ -14,7 +14,7 @@
   "stations": [
     {
       "name": "Edinburgh Waverley",
-      "code": "EDB",
+      "code": "EDI",
       "coordinates": {
         "lat": 55.9519,
         "lng": -3.1881
@@ -81,7 +81,7 @@
     },
     {
       "name": "Haymarket",
-      "code": "HYM",
+      "code": "HA1",
       "coordinates": {
         "lat": 55.9459,
         "lng": -3.2181
@@ -526,7 +526,7 @@
     },
     {
       "name": "Dunfermline Town",
-      "code": "DFE",
+      "code": "DDN",
       "coordinates": {
         "lat": 56.0719,
         "lng": -3.4581
@@ -652,7 +652,7 @@
     },
     {
       "name": "Cowdenbeath",
-      "code": "COW",
+      "code": "CCW",
       "coordinates": {
         "lat": 56.1119,
         "lng": -3.3481

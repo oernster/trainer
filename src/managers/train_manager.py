@@ -201,7 +201,16 @@ class TrainManager(QObject):
         # Get current route
         if not self.from_station or not self.to_station:
             # If no route configured, return empty list
-            logger.warning("No route configured for timetable lookup")
+            logger.info("No route configured - showing empty train list")
+            return []
+        
+        # Additional check: if config doesn't have proper station data, don't show demo data
+        if (not self.config or
+            not hasattr(self.config, 'stations') or
+            not self.config.stations or
+            not getattr(self.config.stations, 'from_code', None) or
+            not getattr(self.config.stations, 'to_code', None)):
+            logger.info("No valid station configuration - showing empty train list")
             return []
 
         # Generate train services using timetable manager

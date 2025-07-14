@@ -15,7 +15,7 @@
   "stations": [
     {
       "name": "Waterloo",
-      "code": "WAT",
+      "code": "WWT",
       "coordinates": {
         "lat": 51.5036,
         "lng": -0.1144
