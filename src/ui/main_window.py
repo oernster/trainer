@@ -101,6 +101,7 @@ class MainWindow(QMainWindow):
         self.astronomy_widget: Optional[AstronomyWidget] = None
         self.theme_button: Optional[QPushButton] = None
         self.astronomy_button: Optional[QPushButton] = None
+        self.train_button: Optional[QPushButton] = None
 
         # Managers
         self.weather_manager: Optional[WeatherManager] = None
@@ -352,20 +353,26 @@ class MainWindow(QMainWindow):
         self.apply_menu_bar_styling(menubar)
 
     def setup_header_buttons(self):
-        """Setup header buttons (theme and astronomy toggle) in top-right corner."""
+        """Setup header buttons (theme, astronomy toggle, and train settings) in top-right corner."""
         # Create theme button
         self.theme_button = QPushButton(self.theme_manager.get_theme_icon(), self)
         self.theme_button.clicked.connect(self.toggle_theme)
         self.theme_button.setToolTip(self.theme_manager.get_theme_tooltip())
         self.theme_button.setFixedSize(32, 32)
         
-        # Create astronomy toggle button
-        self.astronomy_button = QPushButton(self.get_astronomy_icon(), self)
-        self.astronomy_button.clicked.connect(self.toggle_astronomy)
-        self.astronomy_button.setToolTip(self.get_astronomy_tooltip())
+        # Create astronomy settings button
+        self.astronomy_button = QPushButton("🔭", self)
+        self.astronomy_button.clicked.connect(self.show_astronomy_settings_dialog)
+        self.astronomy_button.setToolTip("Astronomy Settings")
         self.astronomy_button.setFixedSize(32, 32)
         
-        # Apply styling to both buttons
+        # Create train settings button
+        self.train_button = QPushButton("🚋", self)
+        self.train_button.clicked.connect(self.show_stations_settings_dialog)
+        self.train_button.setToolTip("Train Settings")
+        self.train_button.setFixedSize(32, 32)
+        
+        # Apply styling to all buttons
         self.apply_header_button_styling()
         
         # Position the buttons in the top-right corner
@@ -374,31 +381,21 @@ class MainWindow(QMainWindow):
         # Make sure the buttons stay on top
         self.theme_button.raise_()
         self.astronomy_button.raise_()
+        self.train_button.raise_()
         self.theme_button.show()
         self.astronomy_button.show()
+        self.train_button.show()
 
     def get_astronomy_icon(self):
-        """Get astronomy button icon based on current state."""
-        if (self.config and
-            hasattr(self.config, 'astronomy') and
-            self.config.astronomy and
-            self.config.astronomy.enabled):
-            return "🌏"  # Earth/space when enabled
-        else:
-            return "🔭"  # Telescope when disabled (to enable)
+        """Get astronomy button icon (always telescope for settings)."""
+        return "🔭"
 
     def get_astronomy_tooltip(self):
-        """Get astronomy button tooltip based on current state."""
-        if (self.config and
-            hasattr(self.config, 'astronomy') and
-            self.config.astronomy and
-            self.config.astronomy.enabled):
-            return "Astronomy enabled - click to disable"
-        else:
-            return "Astronomy disabled - click to enable"
+        """Get astronomy button tooltip (always settings)."""
+        return "Astronomy Settings"
 
     def apply_header_button_styling(self):
-        """Apply styling to header buttons (theme and astronomy)."""
+        """Apply styling to header buttons (theme, astronomy, and train)."""
         # Get current theme colors
         if self.theme_manager.current_theme == "dark":
             button_style = """
@@ -440,6 +437,8 @@ class MainWindow(QMainWindow):
             self.theme_button.setStyleSheet(button_style)
         if self.astronomy_button:
             self.astronomy_button.setStyleSheet(button_style)
+        if self.train_button:
+            self.train_button.setStyleSheet(button_style)
 
     def apply_theme_button_styling(self):
         """Apply styling to the standalone theme button (legacy method)."""
@@ -447,7 +446,7 @@ class MainWindow(QMainWindow):
         self.apply_header_button_styling()
 
     def position_header_buttons(self):
-        """Position header buttons (theme and astronomy) in the top-right corner."""
+        """Position header buttons (theme, astronomy, and train) in the top-right corner."""
         button_width = 32
         button_spacing = 8
         right_margin = 8
@@ -458,9 +457,14 @@ class MainWindow(QMainWindow):
             astro_x = self.width() - button_width - right_margin
             self.astronomy_button.move(astro_x, top_margin)
         
+        if self.train_button:
+            # Train button (middle - left of astronomy button)
+            train_x = self.width() - (button_width * 2) - button_spacing - right_margin
+            self.train_button.move(train_x, top_margin)
+        
         if self.theme_button:
-            # Theme button (left of astronomy button)
-            theme_x = self.width() - (button_width * 2) - button_spacing - right_margin
+            # Theme button (leftmost - left of train button)
+            theme_x = self.width() - (button_width * 3) - (button_spacing * 2) - right_margin
             self.theme_button.move(theme_x, top_margin)
 
     def position_theme_button(self):
@@ -723,48 +727,11 @@ class MainWindow(QMainWindow):
                 logger.error(f"Failed to save theme setting: {e}")
 
     def toggle_astronomy(self):
-        """Toggle astronomy integration with smart API key detection."""
-        if not self.config:
-            logger.warning("Cannot toggle astronomy: no configuration available")
-            return
-            
-        # Check if astronomy config exists
-        if not hasattr(self.config, 'astronomy') or not self.config.astronomy:
-            logger.warning("Cannot toggle astronomy: no astronomy configuration available")
-            return
-            
-        # Smart toggle logic: check for API key if trying to enable
-        current_enabled = self.config.astronomy.enabled
-        
-        # Direct toggle - astronomy is API-free now
-        # No need to check for API key since we use static content
-            
-        # Direct toggle - API key is available or user is disabling
-        self.config.astronomy.enabled = not current_enabled
-        
-        try:
-            self.config_manager.save_config(self.config)
-            logger.info(f"Astronomy {'enabled' if self.config.astronomy.enabled else 'disabled'}")
-            
-            # Update button appearance
-            if self.astronomy_button:
-                self.astronomy_button.setText(self.get_astronomy_icon())
-                self.astronomy_button.setToolTip(self.get_astronomy_tooltip())
-            
-            # Handle layout and window resize directly for immediate toggle
-            if self.config.astronomy.enabled:
-                # Enabling astronomy - add widget and resize window
-                self._ensure_astronomy_widget_in_layout()
-                self._update_window_size_for_widgets()
-            else:
-                # Disabling astronomy - remove widget and resize window
-                self._remove_astronomy_widget_from_layout()
-                self._update_window_size_for_widgets()
-            
-        except ConfigurationError as e:
-            logger.error(f"Failed to save astronomy setting: {e}")
-            # Revert the change
-            self.config.astronomy.enabled = current_enabled
+        """Toggle astronomy integration with smart API key detection (legacy method - now unused)."""
+        # This method is no longer used since astronomy button now opens settings dialog
+        # Keeping for compatibility but functionality moved to settings dialog
+        logger.info("Astronomy toggle called - redirecting to settings dialog")
+        self.show_astronomy_settings_dialog()
 
     def on_theme_changed(self, theme_name: str):
         """Handle theme change."""
@@ -775,8 +742,11 @@ class MainWindow(QMainWindow):
             self.theme_button.setText(self.theme_manager.get_theme_icon())
             self.theme_button.setToolTip(self.theme_manager.get_theme_tooltip())
         if self.astronomy_button:
-            self.astronomy_button.setText(self.get_astronomy_icon())
-            self.astronomy_button.setToolTip(self.get_astronomy_tooltip())
+            self.astronomy_button.setText("🔭")
+            self.astronomy_button.setToolTip("Astronomy Settings")
+        if self.train_button:
+            self.train_button.setText("🚋")
+            self.train_button.setToolTip("Train Settings")
         self.apply_header_button_styling()
 
         # Update menu bar styling
