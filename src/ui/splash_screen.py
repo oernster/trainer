@@ -75,22 +75,22 @@ class TrainerSplashScreen(QSplashScreen):
         emoji_font = QFont()
         emoji_font.setPointSize(48)
         painter.setFont(emoji_font)
-        emoji_rect = self.rect().adjusted(0, center_y - 80, 0, center_y - 30)
+        emoji_rect = self.rect().adjusted(0, center_y - 90, 0, center_y - 40)
         painter.drawText(emoji_rect, Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop, "🚂")
         
-        # Draw title below emoji
+        # Draw title below emoji with more spacing
         title_font = QFont()
         title_font.setPointSize(24)
         title_font.setBold(True)
         painter.setFont(title_font)
-        title_rect = self.rect().adjusted(0, center_y - 20, 0, center_y + 10)
+        title_rect = self.rect().adjusted(0, center_y - 10, 0, center_y + 20)
         painter.drawText(title_rect, Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop, "Trainer")
         
         # Draw subtitle below title
         subtitle_font = QFont()
         subtitle_font.setPointSize(12)
         painter.setFont(subtitle_font)
-        subtitle_rect = self.rect().adjusted(0, center_y + 20, 0, center_y + 50)
+        subtitle_rect = self.rect().adjusted(0, center_y + 30, 0, center_y + 60)
         painter.drawText(subtitle_rect, Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop, "Train Times Application")
         
         # Draw loading message at bottom
