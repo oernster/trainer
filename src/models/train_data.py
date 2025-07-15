@@ -91,6 +91,7 @@ class TrainData:
     train_uid: str
     service_id: str
     calling_points: List[CallingPoint]
+    route_segments: Optional[List] = None  # Route segments for interchange detection
 
     @property
     def is_delayed(self) -> bool:

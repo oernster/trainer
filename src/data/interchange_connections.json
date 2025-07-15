@@ -194,6 +194,44 @@
       }
     },
     {
+      "from_station": "Guildford",
+      "to_station": "Farnborough North",
+      "connection_type": "North Downs Line",
+      "time_minutes": 26,
+      "description": "Direct train on North Downs Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "London Waterloo",
+      "to_station": "Farnborough North",
+      "connection_type": "INTERCHANGE",
+      "time_minutes": 71,
+      "description": "London Waterloo to Guildford (Portsmouth Direct Line), then Guildford to Farnborough North (North Downs Line)",
+      "lines_used": ["Portsmouth Direct Line", "North Downs Line"],
+      "walking_distance_m": 100,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Farnborough North",
+      "to_station": "London Waterloo",
+      "connection_type": "INTERCHANGE",
+      "time_minutes": 71,
+      "description": "Farnborough North to Guildford (North Downs Line), then Guildford to London Waterloo (Portsmouth Direct Line)",
+      "lines_used": ["North Downs Line", "Portsmouth Direct Line"],
+      "walking_distance_m": 100,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Reading",
+      "to_station": "Farnborough North",
+      "connection_type": "North Downs Line",
+      "time_minutes": 26,
+      "description": "Direct train on North Downs Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
       "from_station": "Edinburgh",
       "to_station": "Edinburgh Waverley",
       "connection_type": "INTERCHANGE",
@@ -236,6 +274,123 @@
       "time_minutes": 12,
       "description": "Walk through Birmingham city center",
       "walking_distance_m": 900,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Shipley",
+      "to_station": "Leeds",
+      "connection_type": "Airedale Line",
+      "time_minutes": 15,
+      "description": "Direct train on Airedale Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Harrogate",
+      "to_station": "Leeds",
+      "connection_type": "Harrogate Line",
+      "time_minutes": 35,
+      "description": "Direct train on Harrogate Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Knaresborough",
+      "to_station": "Harrogate",
+      "connection_type": "Harrogate Line",
+      "time_minutes": 8,
+      "description": "Direct train on Harrogate Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Guiseley",
+      "to_station": "Shipley",
+      "connection_type": "Wharfedale Line",
+      "time_minutes": 8,
+      "description": "Direct train on Wharfedale Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Penryn",
+      "to_station": "Truro",
+      "connection_type": "Falmouth Branch Line",
+      "time_minutes": 18,
+      "description": "Direct train on Falmouth Branch Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Lelant",
+      "to_station": "St Erth",
+      "connection_type": "St Ives Bay Line",
+      "time_minutes": 3,
+      "description": "Direct train on St Ives Bay Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "St Keyne Wishing Well Halt",
+      "to_station": "Liskeard",
+      "connection_type": "Looe Valley Line",
+      "time_minutes": 8,
+      "description": "Direct train on Looe Valley Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Trimley",
+      "to_station": "Ipswich",
+      "connection_type": "Felixstowe Branch Line",
+      "time_minutes": 17,
+      "description": "Direct train on Felixstowe Branch Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Hoveton & Wroxham",
+      "to_station": "Norwich",
+      "connection_type": "Bittern Line",
+      "time_minutes": 15,
+      "description": "Direct train on Bittern Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Brundall",
+      "to_station": "Norwich",
+      "connection_type": "Wherry Lines",
+      "time_minutes": 8,
+      "description": "Direct train on Wherry Lines",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Acle",
+      "to_station": "Norwich",
+      "connection_type": "Wherry Lines",
+      "time_minutes": 20,
+      "description": "Direct train on Wherry Lines",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Worksop",
+      "to_station": "Sheffield",
+      "connection_type": "Gainsborough Line",
+      "time_minutes": 30,
+      "description": "Direct train on Gainsborough Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Retford",
+      "to_station": "Sheffield",
+      "connection_type": "Gainsborough Line",
+      "time_minutes": 45,
+      "description": "Direct train on Gainsborough Line",
+      "walking_distance_m": 0,
       "accessibility": "step_free_access"
     },
     {
@@ -495,6 +650,195 @@
       "connection_type": "Tyne Valley Line",
       "time_minutes": 90,
       "description": "Direct train on Tyne Valley Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Liskeard",
+      "to_station": "Looe",
+      "connection_type": "Looe Valley Line",
+      "time_minutes": 23,
+      "description": "Direct train on Looe Valley Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "St Erth",
+      "to_station": "St Ives",
+      "connection_type": "St Ives Bay Line",
+      "time_minutes": 11,
+      "description": "Direct train on St Ives Bay Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Truro",
+      "to_station": "Falmouth Docks",
+      "connection_type": "Falmouth Branch Line",
+      "time_minutes": 28,
+      "description": "Direct train on Falmouth Branch Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Norwich",
+      "to_station": "Sheringham",
+      "connection_type": "Bittern Line",
+      "time_minutes": 65,
+      "description": "Direct train on Bittern Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Norwich",
+      "to_station": "Great Yarmouth",
+      "connection_type": "Wherry Lines",
+      "time_minutes": 45,
+      "description": "Direct train on Wherry Lines",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Norwich",
+      "to_station": "Lowestoft",
+      "connection_type": "Wherry Lines",
+      "time_minutes": 55,
+      "description": "Direct train on Wherry Lines via Reedham",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Ipswich",
+      "to_station": "Felixstowe",
+      "connection_type": "Felixstowe Branch Line",
+      "time_minutes": 25,
+      "description": "Direct train on Felixstowe Branch Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Sheffield",
+      "to_station": "Cleethorpes",
+      "connection_type": "Gainsborough Line",
+      "time_minutes": 120,
+      "description": "Direct train on Gainsborough Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Leeds",
+      "to_station": "York",
+      "connection_type": "Harrogate Line",
+      "time_minutes": 75,
+      "description": "Direct train on Harrogate Line via Harrogate",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Leeds",
+      "to_station": "Harrogate",
+      "connection_type": "Harrogate Line",
+      "time_minutes": 35,
+      "description": "Direct train on Harrogate Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Leeds",
+      "to_station": "Skipton",
+      "connection_type": "Airedale Line",
+      "time_minutes": 55,
+      "description": "Direct train on Airedale Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Shipley",
+      "to_station": "Keighley",
+      "connection_type": "Airedale Line",
+      "time_minutes": 20,
+      "description": "Direct train on Airedale Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Shipley",
+      "to_station": "Ilkley",
+      "connection_type": "Wharfedale Line",
+      "time_minutes": 25,
+      "description": "Direct train on Wharfedale Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Keighley",
+      "to_station": "Skipton",
+      "connection_type": "Airedale Line",
+      "time_minutes": 20,
+      "description": "Direct train on Airedale Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Harrogate",
+      "to_station": "York",
+      "connection_type": "Harrogate Line",
+      "time_minutes": 40,
+      "description": "Direct train on Harrogate Line via Knaresborough",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Gainsborough Central",
+      "to_station": "Grimsby Town",
+      "connection_type": "Gainsborough Line",
+      "time_minutes": 45,
+      "description": "Direct train on Gainsborough Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Reedham",
+      "to_station": "Great Yarmouth",
+      "connection_type": "Wherry Lines",
+      "time_minutes": 20,
+      "description": "Direct train on Wherry Lines",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Reedham",
+      "to_station": "Lowestoft",
+      "connection_type": "Wherry Lines",
+      "time_minutes": 30,
+      "description": "Direct train on Wherry Lines",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Saxmundham",
+      "to_station": "Aldeburgh",
+      "connection_type": "East Suffolk Line",
+      "time_minutes": 15,
+      "description": "Branch line connection on East Suffolk Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "North Walsham",
+      "to_station": "Cromer",
+      "connection_type": "Bittern Line",
+      "time_minutes": 15,
+      "description": "Direct train on Bittern Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Cromer",
+      "to_station": "Sheringham",
+      "connection_type": "Bittern Line",
+      "time_minutes": 15,
+      "description": "Direct train on Bittern Line",
       "walking_distance_m": 0,
       "accessibility": "step_free_access"
     }

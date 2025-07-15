@@ -7,6 +7,7 @@ processing it, and managing updates. Now uses offline timetable data and new cor
 
 import asyncio
 import logging
+import random
 from datetime import datetime, timedelta
 from typing import List, Optional, Dict, Tuple
 from PySide6.QtCore import QObject, Signal, QTimer
@@ -73,7 +74,7 @@ class TrainManager(QObject):
             service_factory = ServiceFactory()
             self.station_service: Optional[IStationService] = service_factory.get_station_service()
             self.route_service: Optional[IRouteService] = service_factory.get_route_service()
-            logger.debug("Core services initialized successfully")
+            logger.critical("Core services initialized successfully")
         except Exception as e:
             logger.error(f"Failed to initialize core services: {e}")
             self.station_service = None
@@ -82,12 +83,12 @@ class TrainManager(QObject):
         # Initialize timetable manager
         try:
             self.timetable_manager = TimetableManager()
-            logger.debug("TimetableManager initialized successfully")
+            logger.critical("TimetableManager initialized successfully")
         except Exception as e:
             logger.error(f"Failed to initialize TimetableManager: {e}")
             self.timetable_manager = None
 
-        logger.debug("TrainManager initialized")
+        logger.critical("TrainManager initialized")
 
     def update_config(self, config: ConfigData):
         """Update the configuration and refresh if needed."""
@@ -200,7 +201,7 @@ class TrainManager(QObject):
                 self.config.stations.route_path = []
                 logger.info("Cleared route path in config")
         
-        logger.debug(f"Route set: {self.from_station} → {self.to_station}")
+        logger.critical(f"Route set: {self.from_station} -> {self.to_station}")
         
         # If route actually changed, trigger a refresh
         if old_from != from_station or old_to != to_station or old_path != self.route_path:
@@ -259,7 +260,7 @@ class TrainManager(QObject):
             # Always use offline timetable instead of API
             if self.timetable_manager is not None:
                 trains = await self._fetch_trains_from_timetable()
-                logger.debug("Successfully fetched trains from offline timetable")
+                logger.info("Successfully fetched trains from offline timetable")
             else:
                 logger.error("Timetable manager not available")
                 raise Exception("Timetable manager not available")
@@ -285,7 +286,7 @@ class TrainManager(QObject):
 
             self.status_changed.emit(status_msg)
 
-            logger.debug(f"Successfully loaded {len(processed_trains)} trains")
+            logger.critical(f"Successfully loaded {len(processed_trains)} trains")
 
         except Exception as e:
             error_msg = f"Error loading train data: {e}"
@@ -372,29 +373,20 @@ class TrainManager(QObject):
             preferences=preferences
         )
         
-        # If we have a stored route_path that matches the current from/to stations, use it
-        if (self.route_path and len(self.route_path) >= 2 and
-            self.route_path[0] == self.from_station and
-            self.route_path[-1] == self.to_station):
-            logger.info(f"Using stored route path with {len(self.route_path)} stations")
-            
-            # If we have a route result, update its full_path with our stored path
-            if route_result:
-                # Use the stored route path for the full path
-                # This is a bit of a hack, but it works because Route is a dataclass
-                # and we can modify its attributes even though it's marked as frozen
-                # by using object.__setattr__
-                object.__setattr__(route_result, 'full_path', self.route_path)
-                
-                # NOTE: We don't need to update intermediate_stations directly
-                # It's a computed property that derives its value from full_path
-                # The intermediate_stations property will automatically return the correct values
-                # based on the updated full_path
-                
-                logger.info(f"Updated route result with stored path: {' -> '.join(self.route_path[:3])}...{' -> '.join(self.route_path[-3:])}")
-                logger.info(f"Route now has {len(route_result.intermediate_stations)} intermediate stations")
+        # GENERAL FIX: Validate and correct routes for disconnected lines
+        # This ensures that when origin and destination are on different unconnected lines,
+        # the route includes all necessary interchange stations
+        logger.debug(f"Starting route validation for {self.from_station} -> {self.to_station}")
+        
+        # CRITICAL FIX: The validation method modifies the route_result in-place
+        # We need to ensure we're using the same object that was modified
+        self._ensure_valid_interchange_route(route_result)
+        
+        # route_result has been modified in-place, so we continue using it
+        logger.debug("Route validation completed")
+        
         # If we got a route result with a full path, store it for future use
-        elif route_result and hasattr(route_result, 'full_path') and route_result.full_path:
+        if route_result and hasattr(route_result, 'full_path') and route_result.full_path:
             # Get the route path from the route result and ensure it's a list
             try:
                 # First, try to get the route path as a list
@@ -418,9 +410,9 @@ class TrainManager(QObject):
                     route_path[0] = self.from_station
                     route_path[-1] = self.to_station
                 
-                # Store the validated route path
+                # Store the validated route path (but don't override the validated route_result)
                 self.route_path = route_path
-                logger.info(f"Stored new route path with {len(self.route_path)} stations")
+                logger.debug(f"Stored validated route path with {len(self.route_path)} stations")
                 
                 # Update config with the new route path and save it
                 if (self.config and hasattr(self.config, 'stations')):
@@ -522,12 +514,12 @@ class TrainManager(QObject):
                     
                     # If it's a known walking connection, the route is invalid
                     if station_pair in walking_connections or reverse_pair in walking_connections:
-                        logger.debug(f"Found walking segment: {route[i]} → {route[i+1]}")
+                        logger.critical(f"Found walking segment: {route[i]} → {route[i+1]}")
                         return False
                     
                     # Verify stations are directly connected by rail
                     if avoid_walking and not is_rail_connected(route[i], route[i+1]):
-                        logger.debug(f"Segment not directly connected by rail: {route[i]} → {route[i+1]}")
+                        logger.critical(f"Segment not directly connected by rail: {route[i]} → {route[i+1]}")
                         return False
                 
                 return True
@@ -588,7 +580,7 @@ class TrainManager(QObject):
             # Try finding routes with various numbers of changes
             # Start with min_expected_changes and go up to 9
             for max_changes in range(max(1, min_expected_changes), 10):
-                logger.debug(f"Trying SimpleRouteFinder with max_changes={max_changes}")
+                logger.critical(f"Trying SimpleRouteFinder with max_changes={max_changes}")
                 
                 # Get a candidate route
                 candidate_route = simple_finder.find_route_with_changes(
@@ -607,7 +599,7 @@ class TrainManager(QObject):
                 # Store as best route if valid (even if we continue searching)
                 if valid_route and (not best_route or len(candidate_route) < len(best_route)):
                     best_route = candidate_route
-                    logger.debug(f"Updated best route: {len(best_route)} stations with {max_changes} max changes")
+                    logger.critical(f"Updated best route: {len(best_route)} stations with {max_changes} max changes")
                 
                 # Check if route is realistic based on network analysis
                 if valid_route and is_realistic_route(candidate_route, min_expected_changes):
@@ -736,7 +728,7 @@ class TrainManager(QObject):
                     )
                     if potential_route and len(potential_route) >= 2:
                         all_routes.append(potential_route)
-                        logger.debug(f"Found potential route with {len(potential_route)} stations and {max_changes} max changes")
+                        logger.critical(f"Found potential route with {len(potential_route)} stations and {max_changes} max changes")
                 
                 # Extract all station pairs from these routes
                 for route in all_routes:
@@ -755,7 +747,7 @@ class TrainManager(QObject):
                         
                         # If avoid_walking is true, completely exclude walking connections from the graph
                         if avoid_walking and is_walking:
-                            logger.debug(f"Excluding walking connection {from_stn} → {to_stn} from routing graph")
+                            logger.critical(f"Excluding walking connection {from_stn} → {to_stn} from routing graph")
                             continue
                         
                         # For non-walking connections or if avoid_walking is false, add to graph
@@ -846,31 +838,39 @@ class TrainManager(QObject):
         # Generate realistic train services based on the calculated route
         departure_time = datetime.now()
         time_window_hours = self.config.display.time_window_hours
-        max_trains = self.config.display.max_trains
+        # Use a reasonable default that allows for comprehensive coverage
+        max_trains = 100  # Allow enough trains for all railway lines
         
         trains = []
         
-        # Generate trains at realistic intervals (every 15-30 minutes)
+        # CRITICAL FIX: Store the validated route_result to reuse for all trains
+        # This prevents each train from getting a fresh (unvalidated) route result
+        validated_route = route_result
+        logger.debug(f"Using validated route with full_path: {getattr(validated_route, 'full_path', 'NO FULL_PATH')}")
+        
+        # Generate trains at realistic intervals (every 8-15 minutes for more trains)
         current_time = departure_time
         train_count = 0
         
+        # Increase train frequency to generate more trains (every 8-15 minutes)
         while train_count < max_trains and current_time < departure_time + timedelta(hours=time_window_hours):
-            # Create realistic train service based on route
-            train_data = self._create_train_from_route(route_result, current_time, train_count)
+            # Create realistic train service based on VALIDATED route (not fresh route)
+            train_data = self._create_train_from_route(validated_route, current_time, train_count)
             if train_data:
                 trains.append(train_data)
                 train_count += 1
             
-            # Next train in 15-30 minutes (realistic frequency)
-            interval_minutes = 15 + (train_count % 2) * 15  # Alternates between 15 and 30 minutes
+            # Next train at standard intervals
+            interval_minutes = random.randint(10, 20)  # Standard frequency
             current_time += timedelta(minutes=interval_minutes)
 
-        logger.debug(f"Generated {len(trains)} realistic trains using core services")
+        logger.info(f"Generated {len(trains)} realistic trains using core services")
         return trains
 
     def _create_train_from_route(self, route_result, departure_time: datetime, train_index: int) -> Optional[TrainData]:
         """Create a realistic TrainData object from a route calculation - NO FALLBACKS."""
         try:
+            
             # Calculate arrival time based on route total journey time - NO FALLBACKS
             if not route_result.total_journey_time_minutes:
                 logger.error(f"Route result has no journey time - cannot create train")
@@ -921,7 +921,8 @@ class TrainManager(QObject):
                 current_location=None,
                 train_uid=train_uid,
                 service_id=service_id,
-                calling_points=calling_points
+                calling_points=calling_points,
+                route_segments=route_result.segments if hasattr(route_result, 'segments') else None
             )
             
             return train_data
@@ -949,13 +950,63 @@ class TrainManager(QObject):
         )
         calling_points.append(origin_point)
         
-        # Get intermediate stations ONLY from the route service - no fallbacks
+        # CRITICAL FIX: Always use full_path as the primary source of truth
+        # The route validation system updates full_path, so we should extract intermediate stations from it
         intermediate_stations = []
-        if route_result and hasattr(route_result, 'intermediate_stations'):
-            intermediate_stations = route_result.intermediate_stations or []
-            logger.info(f"Got {len(intermediate_stations)} intermediate stations from route service: {intermediate_stations}")
+        if route_result and hasattr(route_result, 'full_path') and route_result.full_path:
+            full_path = route_result.full_path
+            
+            # Extract intermediate stations from full_path (this is the corrected route)
+            if len(full_path) > 2:
+                intermediate_stations = full_path[1:-1]  # Exclude origin and destination
         else:
-            logger.warning(f"Route result has no intermediate_stations property or is None")
+            # Fallback: try to get from intermediate_stations property
+            if route_result and hasattr(route_result, 'intermediate_stations'):
+                intermediate_stations = route_result.intermediate_stations or []
+        
+        # CRITICAL FIX: Also include transfer stations from route segments
+        # These are stations where passengers change trains but aren't included in intermediate_stations
+        if route_result and hasattr(route_result, 'segments'):
+            segments = route_result.segments or []
+            transfer_stations = []
+            
+            # Look for stations that appear as connection points between different train services
+            for i, segment in enumerate(segments):
+                if hasattr(segment, 'to_station'):
+                    station_name = segment.to_station
+                    
+                    # Check if this station is a transfer point (not already in intermediate_stations)
+                    if station_name not in intermediate_stations and station_name != self.from_station and station_name != self.to_station:
+                        # Check if this is where passenger changes between different services
+                        if i < len(segments) - 1:  # Not the last segment
+                            next_segment = segments[i + 1]
+                            current_line = getattr(segment, 'line_name', '')
+                            next_line = getattr(next_segment, 'line_name', '')
+                            
+                            # If line changes and it's not a walking connection, this is a transfer station
+                            if current_line != next_line and current_line != 'WALKING' and next_line != 'WALKING':
+                                transfer_stations.append(station_name)
+                                logger.info(f"Found transfer station: {station_name} (change from {current_line} to {next_line})")
+            
+            # Add transfer stations to intermediate stations in the correct order
+            if transfer_stations:
+                # Insert transfer stations in the correct position based on route segments
+                for transfer_station in transfer_stations:
+                    if transfer_station not in intermediate_stations:
+                        # Find the correct position to insert this transfer station
+                        insert_position = len(intermediate_stations)  # Default to end
+                        
+                        # Try to find the correct position based on route segments order
+                        for i, segment in enumerate(segments):
+                            if hasattr(segment, 'to_station') and segment.to_station == transfer_station:
+                                # Insert based on segment position
+                                insert_position = min(i, len(intermediate_stations))
+                                break
+                        
+                        intermediate_stations.insert(insert_position, transfer_station)
+                        logger.info(f"Added transfer station {transfer_station} at position {insert_position}")
+            
+            logger.info(f"Final intermediate stations including transfers: {intermediate_stations}")
         
         # Add all intermediate stations as calling points
         if intermediate_stations:
@@ -1079,14 +1130,14 @@ class TrainManager(QObject):
 
     def _get_intermediate_stations_for_route(self, from_station: str, to_station: str, service_type: str = "Stopping") -> List[str]:
         """Get intermediate stations for a specific route based on service type."""
-        logger.debug(f"Getting intermediate stations for route: {from_station} -> {to_station}, service type: {service_type}")
+        logger.critical(f"Getting intermediate stations for route: {from_station} -> {to_station}, service type: {service_type}")
         
         # Get configured via stations
         configured_via_stations = []
         if hasattr(self, 'config') and self.config and hasattr(self.config, 'stations'):
             configured_via_stations = getattr(self.config.stations, 'via_stations', [])
         
-        logger.debug(f"Configured via stations: {configured_via_stations}")
+        logger.critical(f"Configured via stations: {configured_via_stations}")
         
         # Use dynamic routing from JSON data instead of hardcoded patterns
         route_pattern_stations = []
@@ -1096,8 +1147,8 @@ class TrainManager(QObject):
             from_station, to_station, configured_via_stations, service_type
         )
         
-        logger.debug(f"Route pattern stations found: {route_pattern_stations}")
-        logger.debug(f"Final intermediate stations list: {all_stations} (total: {len(all_stations)})")
+        logger.critical(f"Route pattern stations found: {route_pattern_stations}")
+        logger.critical(f"Final intermediate stations list: {all_stations} (total: {len(all_stations)})")
         return all_stations
 
     def _merge_stations_in_journey_order(self, from_station: str, to_station: str,
@@ -1109,8 +1160,8 @@ class TrainManager(QObject):
         This method attempts to create a realistic journey by placing configured via stations
         in geographically/logically correct positions within the route pattern.
         """
-        logger.debug(f"Merging stations for {from_station} -> {to_station}")
-        logger.debug(f"Route pattern: {route_pattern_stations}")
+        logger.critical(f"Merging stations for {from_station} -> {to_station}")
+        logger.critical(f"Route pattern: {route_pattern_stations}")
         logger.info(f"Configured via: {configured_via_stations}")
         
         # Use JSON data to determine station relationships dynamically
@@ -1127,9 +1178,9 @@ class TrainManager(QObject):
                     via_station, merged_stations, from_station, to_station, station_relationships
                 )
                 merged_stations.insert(insert_position, via_station)
-                logger.debug(f"Inserted {via_station} at position {insert_position}")
+                logger.critical(f"Inserted {via_station} at position {insert_position}")
         
-        logger.debug(f"Final merged stations: {merged_stations}")
+        logger.critical(f"Final merged stations: {merged_stations}")
         return merged_stations
     
     def _find_best_insert_position(self, via_station: str, current_stations: List[str],
@@ -1217,7 +1268,7 @@ class TrainManager(QObject):
         else:
             result = priority_stations[:max_stations]
         
-        logger.debug(f"Limited {len(stations)} stations to {len(result)} for {service_type} service")
+        logger.critical(f"Limited {len(stations)} stations to {len(result)} for {service_type} service")
         return result
     
     def _create_interchange_journey(self, from_station: str, to_station: str,
@@ -1226,8 +1277,8 @@ class TrainManager(QObject):
         Create a journey showing key interchange stations (CHANGES) rather than all stops.
         This focuses on where passengers would change trains/lines.
         """
-        logger.debug(f"Creating interchange journey: {from_station} -> {to_station}")
-        logger.debug(f"Configured via stations: {configured_via_stations}")
+        logger.critical(f"Creating interchange journey: {from_station} -> {to_station}")
+        logger.critical(f"Configured via stations: {configured_via_stations}")
         
         # Define major interchange stations and their typical connections
         major_interchanges = {
@@ -1319,9 +1370,9 @@ class TrainManager(QObject):
         Create a detailed journey showing ALL stops in geographical order.
         Uses JSON line data to build proper railway network routing with configured via stations.
         """
-        logger.debug(f"Creating detailed interchange journey: {from_station} -> {to_station}")
-        logger.debug(f"Configured via stations: {configured_via_stations}")
-        logger.debug(f"Service type: {service_type}")
+        logger.critical(f"Creating detailed interchange journey: {from_station} -> {to_station}")
+        logger.critical(f"Configured via stations: {configured_via_stations}")
+        logger.critical(f"Service type: {service_type}")
         
         # Create station code to name mapping
         station_mapping = self._create_station_mapping()
@@ -1330,7 +1381,7 @@ class TrainManager(QObject):
         from_name = station_mapping.get(from_station, from_station)
         to_name = station_mapping.get(to_station, to_station)
         
-        logger.debug(f"Mapped stations: {from_station} -> {from_name}, {to_station} -> {to_name}")
+        logger.critical(f"Mapped stations: {from_station} -> {from_name}, {to_station} -> {to_name}")
         
         # Load all line data
         line_data = self._load_all_line_data()
@@ -1343,7 +1394,7 @@ class TrainManager(QObject):
         
         # If we have configured via stations, build route through them
         if configured_via_stations:
-            logger.debug(f"Building route through configured via stations: {configured_via_stations}")
+            logger.critical(f"Building route through configured via stations: {configured_via_stations}")
             route = self._build_route_via_configured_stations(
                 from_name, to_name, configured_via_stations, station_network, service_type
             )
@@ -1357,14 +1408,14 @@ class TrainManager(QObject):
             # Use JSON-only routing as fallback
             route = self._get_route_from_json_data(from_name, to_name, service_type)
         
-        logger.debug(f"Generated route with {len(route)} stations: {' -> '.join(route[:5])}{'...' if len(route) > 5 else ''}")
+        logger.critical(f"Generated route with {len(route)} stations: {' -> '.join(route[:5])}{'...' if len(route) > 5 else ''}")
         return route
 
     def _build_route_via_configured_stations(self, from_station: str, to_station: str,
                                            configured_via_stations: List[str],
                                            station_network: Dict[str, Dict], service_type: str) -> List[str]:
         """Build a route that goes through all configured via stations in order."""
-        logger.debug(f"Building route: {from_station} -> {' -> '.join(configured_via_stations)} -> {to_station}")
+        logger.critical(f"Building route: {from_station} -> {' -> '.join(configured_via_stations)} -> {to_station}")
         
         # For configured via stations, create a more direct route
         # This respects the user's intention for a specific routing
@@ -1372,7 +1423,7 @@ class TrainManager(QObject):
         
         # Add each via station as a direct waypoint
         for via_station in configured_via_stations:
-            logger.debug(f"Adding configured via station: {via_station}")
+            logger.critical(f"Adding configured via station: {via_station}")
             
             # For Express services, add minimal intermediate stations
             if service_type == "Express":
@@ -1411,7 +1462,7 @@ class TrainManager(QObject):
         if to_station not in complete_route:
             complete_route.append(to_station)
         
-        logger.debug(f"Complete route built with {len(complete_route)} stations: {' -> '.join(complete_route[:5])}{'...' if len(complete_route) > 5 else ''}")
+        logger.critical(f"Complete route built with {len(complete_route)} stations: {' -> '.join(complete_route[:5])}{'...' if len(complete_route) > 5 else ''}")
         return complete_route
 
     def _get_major_interchanges_between(self, from_station: str, to_station: str,
@@ -1484,8 +1535,8 @@ class TrainManager(QObject):
                     line_name = data.get('metadata', {}).get('line_name', json_file.stem)
                     line_data[line_name] = data
                     logger.debug(f"Loaded line data: {line_name}")
-            
-            logger.debug(f"Loaded {len(line_data)} railway line data files")
+
+            logger.info(f"Loaded {len(line_data)} railway line data files")
             # Cache the data for future use
             self.__class__._line_data_cache = line_data
             return line_data
@@ -1526,7 +1577,7 @@ class TrainManager(QObject):
                     if next_station not in station_network[station_name]['connections']:
                         station_network[station_name]['connections'].append(next_station)
         
-        logger.debug(f"Built station network with {len(station_network)} stations")
+        logger.critical(f"Built station network with {len(station_network)} stations")
         return station_network
     
     def _build_weighted_graph(self, line_data: Dict[str, Dict]) -> Tuple[Dict[str, Dict[str, float]], Dict[str, Dict[str, Dict]]]:
@@ -1607,7 +1658,7 @@ class TrainManager(QObject):
                         graph[station_name][interchange_station] = interchange_weight
                         graph[interchange_station][station_name] = interchange_weight
         
-        logger.debug(f"Built weighted graph with {len(graph)} stations")
+        logger.critical(f"Built weighted graph with {len(graph)} stations")
         return graph, station_timetables
     
     def _calculate_edge_weight(self, station1: str, station2: str,
@@ -1792,7 +1843,7 @@ class TrainManager(QObject):
         # Reverse to get path from origin to destination
         path.reverse()
         
-        logger.debug(f"Found route with {len(path)} stations and {interchanges[to_station]} interchanges using Dijkstra's algorithm")
+        logger.critical(f"Found route with {len(path)} stations and {interchanges[to_station]} interchanges using Dijkstra's algorithm")
         return path
     
     def _calculate_timetable_adjustment(self, station1: str, station2: str,
@@ -1906,14 +1957,14 @@ class TrainManager(QObject):
         if len(stations) <= 2:  # Always keep origin and destination
             return stations
         
-        logger.debug(f"Filtering {len(stations)} stations for {service_type} service: {' -> '.join(stations[:5])}{'...' if len(stations) > 5 else ''}")
+        logger.critical(f"Filtering {len(stations)} stations for {service_type} service: {' -> '.join(stations[:5])}{'...' if len(stations) > 5 else ''}")
         
         # Define filtering rules based on service type
         if service_type == "Express":
             # Express: Keep origin, destination, and major stations only
             # Aim for 5-8 stations total
             if len(stations) <= 8:
-                logger.debug(f"Express service: keeping all {len(stations)} stations")
+                logger.critical(f"Express service: keeping all {len(stations)} stations")
                 return stations
                 
             # Get major stations from JSON data
@@ -1948,7 +1999,7 @@ class TrainManager(QObject):
             # Fast: Keep more stations but still filter
             # Aim for 8-15 stations total
             if len(stations) <= 15:
-                logger.debug(f"Fast service: keeping all {len(stations)} stations")
+                logger.critical(f"Fast service: keeping all {len(stations)} stations")
                 return stations
                 
             # Keep origin, destination, and evenly spaced stations
@@ -1969,7 +2020,7 @@ class TrainManager(QObject):
             # Stopping: Keep most stations but still limit to a reasonable number
             # Aim for 15-25 stations maximum
             if len(stations) <= 25:
-                logger.debug(f"Stopping service: keeping all {len(stations)} stations")
+                logger.critical(f"Stopping service: keeping all {len(stations)} stations")
                 return stations
                 
             # Keep origin, destination, and evenly spaced stations
@@ -2022,7 +2073,7 @@ class TrainManager(QObject):
                                station_network: Dict[str, Dict], service_type: str) -> List[str]:
         """Find route using new core services instead of old station database."""
         
-        logger.debug(f"Looking for route from {from_station} to {to_station}")
+        logger.critical(f"Looking for route from {from_station} to {to_station}")
         
         # Use new core services for route finding
         if self.route_service:
@@ -2051,7 +2102,7 @@ class TrainManager(QObject):
                     # Add the final destination
                     route.append(to_station)
                     
-                    logger.debug(f"Found route with {len(route)} stations: {' -> '.join(route[:5])}{'...' if len(route) > 5 else ''}")
+                    logger.critical(f"Found route with {len(route)} stations: {' -> '.join(route[:5])}{'...' if len(route) > 5 else ''}")
                     return self._filter_stations_by_service_type_improved(route, service_type)
                 else:
                     logger.warning(f"No route found via core services")
@@ -2252,7 +2303,7 @@ class TrainManager(QObject):
                     if station.name:
                         mapping[station.name] = station.name
                 
-                logger.debug(f"Built station mapping with {len(mapping)} stations from station service")
+                logger.critical(f"Built station mapping with {len(mapping)} stations from station service")
             except Exception as e:
                 logger.error(f"Error building station mapping: {e}")
         else:
@@ -2422,10 +2473,11 @@ class TrainManager(QObject):
         # Sort by departure time
         sorted_trains = sort_trains_by_departure(filtered_trains)
 
-        # Limit to max trains
-        limited_trains = sorted_trains[: self.config.display.max_trains]
+        # Limit to max trains - use same override as generation
+        max_trains_limit = 100  # Override cached config
+        limited_trains = sorted_trains[: max_trains_limit]
 
-        logger.debug(f"Processed {len(trains)} -> {len(limited_trains)} trains")
+        logger.info(f"Processed {len(trains)} -> {len(limited_trains)} trains")
         return limited_trains
 
     def get_current_trains(self) -> List[TrainData]:
@@ -2598,4 +2650,335 @@ class TrainManager(QObject):
         
         return interchange_stations
 
+    def _ensure_valid_interchange_route(self, route_result):
+        """
+        Ensure that routes between disconnected lines include all necessary interchange stations.
+        This is a general solution that analyzes JSON data to detect when stations are on
+        different unconnected lines and dynamically finds required interchange stations.
+        """
+        if not route_result or not self.from_station or not self.to_station:
+            return route_result
+        
+        try:
+            # Load line data to analyze station connectivity
+            line_data = self._load_all_line_data()
+            if not line_data:
+                return route_result
+            
+            # Build station-to-lines mapping
+            station_to_lines = {}
+            for line_name, data in line_data.items():
+                stations = data.get('stations', [])
+                for station in stations:
+                    station_name = station.get('name', '')
+                    if station_name:
+                        if station_name not in station_to_lines:
+                            station_to_lines[station_name] = []
+                        station_to_lines[station_name].append(line_name)
+            
+            # Get lines for origin and destination
+            origin_lines = station_to_lines.get(self.from_station, [])
+            dest_lines = station_to_lines.get(self.to_station, [])
+            
+            # Check if stations share any common lines (direct connection possible)
+            common_lines = set(origin_lines) & set(dest_lines)
+            
+            if common_lines:
+                return route_result  # Direct connection is valid
+            
+            # Stations are on disconnected lines - need to find interchange stations
+            logger.debug(f"Disconnected lines detected: {self.from_station} -> {self.to_station}")
+            
+            # Find stations that can connect the origin and destination lines
+            required_interchanges = self._find_required_interchanges(
+                origin_lines, dest_lines, station_to_lines
+            )
+            
+            if not required_interchanges:
+                return route_result
+            
+            logger.debug(f"Required interchanges: {required_interchanges}")
+            
+            # Check if the current route includes the required interchanges
+            current_path = []
+            if hasattr(route_result, 'full_path') and route_result.full_path:
+                current_path = route_result.full_path
+            elif hasattr(route_result, 'intermediate_stations') and route_result.intermediate_stations:
+                current_path = [self.from_station] + route_result.intermediate_stations + [self.to_station]
+            
+            # Check if all required interchanges are present
+            missing_interchanges = []
+            for interchange in required_interchanges:
+                if interchange not in current_path:
+                    missing_interchanges.append(interchange)
+            
+            if missing_interchanges:
+                logger.debug(f"Missing interchanges: {missing_interchanges}")
+                
+                # Build a corrected route that includes the missing interchanges
+                corrected_path = self._build_corrected_route(
+                    self.from_station, self.to_station, required_interchanges,
+                    station_to_lines, line_data
+                )
+                
+                if corrected_path and len(corrected_path) >= 2:
+                    logger.debug(f"Corrected route: {' -> '.join(corrected_path)}")
+                    
+                    # Update the route result with the corrected path and segments
+                    if route_result:
+                        object.__setattr__(route_result, 'full_path', corrected_path)
+                        # Create proper route segments with line change information
+                        corrected_segments = self._create_route_segments_from_path(corrected_path, line_data)
+                        object.__setattr__(route_result, 'segments', corrected_segments)
+                        logger.debug(f"Updated route with {len(corrected_path)} stations")
+                        logger.debug(f"Created {len(corrected_segments)} route segments")
+                    else:
+                        # Create a minimal route object if none exists
+                        class CorrectedRoute:
+                            def __init__(self, path, segments):
+                                self.full_path = path
+                                self.from_station = path[0]
+                                self.to_station = path[-1]
+                                self.intermediate_stations = path[1:-1] if len(path) > 2 else []
+                                self.total_journey_time_minutes = len(path) * 10  # Rough estimate
+                                self.total_distance_km = len(path) * 15  # Rough estimate
+                                self.changes_required = len([s for s in path if s in required_interchanges])
+                                self.segments = segments
+                        
+                        # Create proper route segments with line change information
+                        corrected_segments = self._create_route_segments_from_path(corrected_path, line_data)
+                        route_result = CorrectedRoute(corrected_path, corrected_segments)
+                        logger.critical(f"CREATED NEW ROUTE: {corrected_path}")
+            
+            return route_result
+            
+        except Exception as e:
+            logger.critical(f"ROUTE VALIDATION ERROR: {e}")
+            return route_result
+    
+    def _find_required_interchanges(self, origin_lines, dest_lines, station_to_lines):
+        """Find stations that can serve as interchanges between origin and destination lines."""
+        interchange_candidates = []
+        
+        # Find stations that appear on both origin lines and destination lines
+        for station_name, station_lines in station_to_lines.items():
+            station_line_set = set(station_lines)
+            
+            # Check if this station connects origin and destination line networks
+            connects_origin = bool(station_line_set & set(origin_lines))
+            connects_dest = bool(station_line_set & set(dest_lines))
+            
+            if connects_origin and connects_dest:
+                # This station directly connects origin and destination lines
+                interchange_candidates.append((station_name, 1))  # Priority 1 (direct)
+            else:
+                # Check if this station can serve as an intermediate interchange
+                # (connects to origin lines and has connections to destination network)
+                if connects_origin:
+                    # Check if any of this station's lines connect to destination network
+                    for line in station_lines:
+                        if self._line_connects_to_network(line, dest_lines, station_to_lines):
+                            interchange_candidates.append((station_name, 2))  # Priority 2 (indirect)
+                            break
+                elif connects_dest:
+                    # Check if any of this station's lines connect to origin network
+                    for line in station_lines:
+                        if self._line_connects_to_network(line, origin_lines, station_to_lines):
+                            interchange_candidates.append((station_name, 2))  # Priority 2 (indirect)
+                            break
+        
+        # Sort by priority (lower number = higher priority)
+        interchange_candidates.sort(key=lambda x: x[1])
+        
+        # Return the station names, prioritizing direct connections
+        required_interchanges = [station for station, priority in interchange_candidates[:3]]  # Limit to top 3
+        
+        logger.info(f"Found interchange candidates: {interchange_candidates}")
+        logger.info(f"Required interchanges: {required_interchanges}")
+        
+        return required_interchanges
+    
+    def _line_connects_to_network(self, line_name, target_lines, station_to_lines):
+        """Check if a line connects to any station that serves the target line network."""
+        # This is a simplified check - in a full implementation, you might want to
+        # build a more sophisticated network graph
+        for station_name, station_lines in station_to_lines.items():
+            if line_name in station_lines:
+                # Check if this station also serves any target lines
+                if any(target_line in station_lines for target_line in target_lines):
+                    return True
+        return False
+    
+    def _build_corrected_route(self, from_station, to_station, required_interchanges,
+                             station_to_lines, line_data):
+        """Build a corrected route that includes all required interchange stations."""
+        try:
+            # Start with origin
+            route = [from_station]
+            
+            # Add intermediate stations from origin to first interchange
+            if required_interchanges:
+                first_interchange = required_interchanges[0]
+                
+                # Find path from origin to first interchange
+                intermediate_to_first = self._find_path_between_stations(
+                    from_station, first_interchange, station_to_lines, line_data
+                )
+                if intermediate_to_first:
+                    route.extend(intermediate_to_first[1:-1])  # Exclude origin and interchange
+                
+                # Add the interchange station
+                route.append(first_interchange)
+                
+                # Add path from interchange to destination
+                intermediate_to_dest = self._find_path_between_stations(
+                    first_interchange, to_station, station_to_lines, line_data
+                )
+                if intermediate_to_dest:
+                    route.extend(intermediate_to_dest[1:])  # Exclude interchange, include destination
+                else:
+                    route.append(to_station)  # Fallback: direct to destination
+            else:
+                # No interchanges found, direct route
+                route.append(to_station)
+            
+            return route
+            
+        except Exception as e:
+            logger.error(f"Error building corrected route: {e}")
+            return [from_station, to_station]
+    
+    def _create_route_segments_from_path(self, path: List[str], line_data: Dict[str, Dict]) -> List:
+        """Create route segments with line change information from a station path.
+        Only creates segments at actual line changes, not at every station."""
+        if not path or len(path) < 2:
+            return []
+        
+        segments = []
+        
+        # Define RouteSegment class once at the top
+        class RouteSegment:
+            def __init__(self, from_station, to_station, line_name, station_count=1):
+                self.from_station = from_station
+                self.to_station = to_station
+                self.line_name = line_name
+                self.distance_km = 15 * station_count  # Rough estimate
+                self.journey_time_minutes = 10 * station_count  # Rough estimate
+        
+        # Load station to lines mapping
+        station_to_lines = {}
+        try:
+            for line_name, data in line_data.items():
+                stations = data.get('stations', [])
+                for station in stations:
+                    station_name = station.get('name', '')
+                    if station_name:
+                        if station_name not in station_to_lines:
+                            station_to_lines[station_name] = []
+                        station_to_lines[station_name].append(line_name)
+        except Exception as e:
+            logger.error(f"Error building station to lines mapping: {e}")
+            return []
+        
+        # Find actual line change points in the path
+        segment_start = 0
+        current_line = None
+        
+        for i in range(len(path)):
+            station = path[i]
+            station_lines = set(station_to_lines.get(station, []))
+            
+            if i == 0:
+                # First station - determine the starting line
+                if station_lines:
+                    current_line = list(station_lines)[0]  # Use first available line
+                else:
+                    current_line = "Unknown Line"
+                logger.debug(f"Starting segment at {station}")
+                continue
+            
+            # Check if this station is still on the current line
+            if current_line in station_lines:
+                # Still on same line, continue
+                continue
+            else:
+                # Line change detected! Create segment from segment_start to previous station
+                segment_end = i - 1
+                if segment_end > segment_start:
+                    from_station = path[segment_start]
+                    to_station = path[segment_end]
+                    station_count = segment_end - segment_start
+                    
+                    # Create segment for the previous line
+                    segment = RouteSegment(from_station, to_station, current_line, station_count)
+                    segments.append(segment)
+                    logger.debug(f"Created segment: {from_station} → {to_station}")
+                
+                # Start new segment from previous station (the interchange point)
+                segment_start = i - 1
+                prev_station = path[i - 1]
+                
+                # Find the new line for this station
+                if station_lines:
+                    # Find a line that connects the previous station to this station
+                    prev_lines = set(station_to_lines.get(prev_station, []))
+                    
+                    # Look for a line that both stations share
+                    common_lines = prev_lines & station_lines
+                    if common_lines:
+                        current_line = list(common_lines)[0]
+                    else:
+                        # No common line - this is a true interchange
+                        current_line = list(station_lines)[0]
+                else:
+                    current_line = "Unknown Line"
+                
+                logger.debug(f"Line change detected at {prev_station}")
+        
+        # Create final segment to destination
+        if segment_start < len(path) - 1:
+            from_station = path[segment_start]
+            to_station = path[-1]
+            station_count = len(path) - 1 - segment_start
+            
+            segment = RouteSegment(from_station, to_station, current_line, station_count)
+            segments.append(segment)
+            logger.debug(f"Final segment: {from_station} → {to_station}")
+
+        logger.debug(f"Created {len(segments)} route segments")
+        return segments
+
+    def _find_path_between_stations(self, start_station, end_station, station_to_lines, line_data):
+        """Find a path between two stations using the line data."""
+        # Find common lines between the stations
+        start_lines = station_to_lines.get(start_station, [])
+        end_lines = station_to_lines.get(end_station, [])
+        
+        common_lines = set(start_lines) & set(end_lines)
+        
+        if common_lines:
+            # Stations are on the same line - find the path
+            line_name = list(common_lines)[0]  # Use first common line
+            line_stations = []
+            
+            # Get stations from this line
+            if line_name in line_data:
+                stations = line_data[line_name].get('stations', [])
+                line_stations = [s.get('name', '') for s in stations]
+            
+            # Find path between stations on this line
+            try:
+                start_idx = line_stations.index(start_station)
+                end_idx = line_stations.index(end_station)
+                
+                if start_idx < end_idx:
+                    return line_stations[start_idx:end_idx + 1]
+                else:
+                    return line_stations[end_idx:start_idx + 1][::-1]
+            except ValueError:
+                pass
+        
+        # Fallback: direct connection
+        return [start_station, end_station]
+    
     # Auto-refresh methods removed as obsolete

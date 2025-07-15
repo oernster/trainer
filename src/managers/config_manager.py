@@ -60,7 +60,7 @@ class RefreshConfig(BaseModel):
 class DisplayConfig(BaseModel):
     """Configuration for display settings."""
 
-    max_trains: int = 50
+    max_trains: int = 100  # Increased to accommodate all railway lines
     time_window_hours: int = 16
     theme: str = "dark"  # Default to dark theme - "dark" or "light"
 

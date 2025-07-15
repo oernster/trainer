@@ -250,6 +250,7 @@ class StationsSettingsDialog(QDialog):
         
         # Dialog state signals
         self.dialog_state.route_data_changed.connect(self._on_route_data_changed)
+        self.dialog_state.preferences_changed.connect(self._on_preferences_changed)
         
         # Button signals
         if self.save_button:
@@ -418,6 +419,21 @@ class StationsSettingsDialog(QDialog):
         """Handle route data change."""
         if self.route_details_widget:
             self.route_details_widget.update_route_data(route_data)
+    
+    def _on_preferences_changed(self, preferences: Dict[str, Any]):
+        """Handle preferences change - automatically recalculate route if stations are set."""
+        logger.info(f"Preferences changed: {preferences}")
+        
+        # Only recalculate if we have both stations set
+        if self.station_selection_widget:
+            from_station = self.station_selection_widget.get_from_station()
+            to_station = self.station_selection_widget.get_to_station()
+            
+            if from_station and to_station and from_station != to_station:
+                logger.info(f"Auto-recalculating route due to preference change: {from_station} → {to_station}")
+                self._find_route()
+            else:
+                logger.debug("Skipping route recalculation - stations not properly set")
     
     def _save_settings(self):
         """Save settings and close dialog."""

@@ -190,8 +190,8 @@ def setup_logging():
 
     # Set specific log levels for different modules to suppress all warnings and errors
     logging.getLogger("src.api").setLevel(logging.CRITICAL)
-    logging.getLogger("src.ui").setLevel(logging.CRITICAL)
-    logging.getLogger("src.managers").setLevel(logging.CRITICAL)
+    logging.getLogger("src.ui").setLevel(logging.CRITICAL)  # Set to CRITICAL to see only route validation messages
+    logging.getLogger("src.managers").setLevel(logging.CRITICAL)  # Set to CRITICAL to see only route validation messages
     logging.getLogger("src.core").setLevel(logging.CRITICAL)
     logging.getLogger("asyncio").setLevel(logging.CRITICAL)
     logging.getLogger("aiohttp").setLevel(logging.CRITICAL)
@@ -388,6 +388,10 @@ def main():
 
             # Attach train manager to window for access by dialogs
             window.train_manager = train_manager
+            
+            # Set train manager on train list widget for interchange detection
+            if window.train_list_widget:
+                window.train_list_widget.set_train_manager(train_manager)
 
             connect_signals(window, train_manager)
 

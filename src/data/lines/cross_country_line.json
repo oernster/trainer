@@ -3,7 +3,7 @@
     "line_name": "Cross Country Line",
     "description": "Aberdeen to Penzance via Birmingham and Bristol",
     "operator": "CrossCountry",
-    "total_stations": 35,
+    "total_stations": 36,
     "frequency": {
       "weekday_peak": "Every hour",
       "weekday_off_peak": "Every 2 hours",
@@ -533,6 +533,31 @@
           "22:31",
           "00:31",
           "02:31"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Leamington Spa",
+      "coordinates": {
+        "lat": 52.2881,
+        "lng": -1.5381
+      },
+      "times": {
+        "morning": [
+          "10:16",
+          "12:16",
+          "14:16"
+        ],
+        "afternoon": [
+          "16:16",
+          "18:16",
+          "20:16"
+        ],
+        "evening": [
+          "22:16",
+          "00:16",
+          "02:16"
         ],
         "night": []
       }
