@@ -31,7 +31,8 @@ from ..managers.theme_manager import ThemeManager
 from ..managers.weather_manager import WeatherManager
 from ..managers.astronomy_manager import AstronomyManager
 from ..managers.initialization_manager import InitializationManager
-from .train_widgets import TrainListWidget, RouteDisplayDialog
+from .widgets.train_list_widget import TrainListWidget
+from .widgets.route_display_dialog import RouteDisplayDialog
 from .weather_widgets import WeatherWidget
 from .astronomy_widgets import AstronomyWidget
 from .stations_settings_dialog import StationsSettingsDialog

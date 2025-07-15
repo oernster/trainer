@@ -6,6 +6,7 @@ train display widgets, and theme styling.
 """
 
 from .main_window import MainWindow
-from .train_widgets import TrainListWidget, TrainItemWidget
+from .widgets.train_list_widget import TrainListWidget
+from .widgets.train_item_widget import TrainItemWidget
 
 __all__ = ["MainWindow", "TrainListWidget", "TrainItemWidget"]
