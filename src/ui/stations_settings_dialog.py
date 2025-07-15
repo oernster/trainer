@@ -242,7 +242,6 @@ class StationsSettingsDialog(QDialog):
         # Route action button signals
         if self.route_action_buttons:
             self.route_action_buttons.find_route_clicked.connect(self._find_route)
-            self.route_action_buttons.auto_fix_route_clicked.connect(self._auto_fix_route)
             self.route_action_buttons.clear_route_clicked.connect(self._clear_route)
         
         # Route details signals
@@ -377,15 +376,6 @@ class StationsSettingsDialog(QDialog):
         
         self.route_calculation_handler.calculate_route(from_station, to_station, via_stations)
     
-    def _auto_fix_route(self):
-        """Auto-fix the current route."""
-        if not self.station_selection_widget:
-            return
-        
-        from_station = self.station_selection_widget.get_from_station()
-        to_station = self.station_selection_widget.get_to_station()
-        
-        self.route_calculation_handler.auto_fix_route(from_station, to_station)
     
     def _clear_route(self):
         """Clear the current route."""

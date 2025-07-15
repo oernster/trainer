@@ -17,7 +17,6 @@ class RouteActionButtons(QWidget):
     
     # Signals
     find_route_clicked = Signal()
-    auto_fix_route_clicked = Signal()
     clear_route_clicked = Signal()
     
     def __init__(self, parent=None, theme_manager=None):
@@ -33,7 +32,6 @@ class RouteActionButtons(QWidget):
         
         # UI elements
         self.find_route_button = None
-        self.auto_fix_route_button = None
         self.clear_route_button = None
         
         self._setup_ui()
@@ -52,11 +50,6 @@ class RouteActionButtons(QWidget):
         self.find_route_button.setToolTip("Find the best route between selected stations")
         layout.addWidget(self.find_route_button)
         
-        # Auto-fix route button
-        self.auto_fix_route_button = QPushButton("Auto-Fix Route")
-        self.auto_fix_route_button.setObjectName("autoFixRouteButton")
-        self.auto_fix_route_button.setToolTip("Automatically fix route issues")
-        layout.addWidget(self.auto_fix_route_button)
         
         # Clear route button
         self.clear_route_button = QPushButton("Clear Route")
@@ -72,8 +65,6 @@ class RouteActionButtons(QWidget):
         """Connect signals and slots."""
         if self.find_route_button:
             self.find_route_button.clicked.connect(self.find_route_clicked.emit)
-        if self.auto_fix_route_button:
-            self.auto_fix_route_button.clicked.connect(self.auto_fix_route_clicked.emit)
         if self.clear_route_button:
             self.clear_route_button.clicked.connect(self.clear_route_clicked.emit)
     
@@ -82,10 +73,6 @@ class RouteActionButtons(QWidget):
         if self.find_route_button:
             self.find_route_button.setEnabled(enabled)
     
-    def set_auto_fix_enabled(self, enabled: bool):
-        """Enable or disable the auto-fix route button."""
-        if self.auto_fix_route_button:
-            self.auto_fix_route_button.setEnabled(enabled)
     
     def set_clear_route_enabled(self, enabled: bool):
         """Enable or disable the clear route button."""
@@ -95,7 +82,6 @@ class RouteActionButtons(QWidget):
     def set_all_enabled(self, enabled: bool):
         """Enable or disable all buttons."""
         self.set_find_route_enabled(enabled)
-        self.set_auto_fix_enabled(enabled)
         self.set_clear_route_enabled(enabled)
     
     def set_find_route_text(self, text: str):
@@ -103,15 +89,10 @@ class RouteActionButtons(QWidget):
         if self.find_route_button:
             self.find_route_button.setText(text)
     
-    def set_auto_fix_text(self, text: str):
-        """Set the text of the auto-fix button."""
-        if self.auto_fix_route_button:
-            self.auto_fix_route_button.setText(text)
     
     def reset_button_texts(self):
         """Reset all button texts to their defaults."""
         self.set_find_route_text("Find Route")
-        self.set_auto_fix_text("Auto-Fix Route")
     
     def show_progress(self, button_type: str, progress_text: str):
         """
@@ -124,9 +105,6 @@ class RouteActionButtons(QWidget):
         if button_type == 'find':
             self.set_find_route_text(progress_text)
             self.set_find_route_enabled(False)
-        elif button_type == 'auto_fix':
-            self.set_auto_fix_text(progress_text)
-            self.set_auto_fix_enabled(False)
         elif button_type == 'clear':
             # Clear doesn't typically show progress, but handle it
             self.set_clear_route_enabled(False)
@@ -141,9 +119,6 @@ class RouteActionButtons(QWidget):
         if button_type == 'find':
             self.set_find_route_text("Find Route")
             self.set_find_route_enabled(True)
-        elif button_type == 'auto_fix':
-            self.set_auto_fix_text("Auto-Fix Route")
-            self.set_auto_fix_enabled(True)
         elif button_type == 'clear':
             self.set_clear_route_enabled(True)
     

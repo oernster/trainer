@@ -367,7 +367,7 @@ class MainWindow(QMainWindow):
         self.astronomy_button.setFixedSize(32, 32)
         
         # Create train settings button
-        self.train_button = QPushButton("🚋", self)
+        self.train_button = QPushButton("🚅", self)
         self.train_button.clicked.connect(self.show_stations_settings_dialog)
         self.train_button.setToolTip("Train Settings")
         self.train_button.setFixedSize(32, 32)
@@ -745,7 +745,7 @@ class MainWindow(QMainWindow):
             self.astronomy_button.setText("🔭")
             self.astronomy_button.setToolTip("Astronomy Settings")
         if self.train_button:
-            self.train_button.setText("🚋")
+            self.train_button.setText("🚅")
             self.train_button.setToolTip("Train Settings")
         self.apply_header_button_styling()
 
