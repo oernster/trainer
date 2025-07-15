@@ -308,14 +308,6 @@ class MainWindow(QMainWindow):
         # File menu
         file_menu = menubar.addMenu("&File")
 
-        refresh_action = QAction("&Refresh", self)
-        refresh_action.setShortcut(QKeySequence("F5"))
-        refresh_action.setStatusTip("Refresh train data")
-        refresh_action.triggered.connect(self.manual_refresh)
-        file_menu.addAction(refresh_action)
-
-        file_menu.addSeparator()
-
         exit_action = QAction("E&xit", self)
         exit_action.setShortcut(QKeySequence("Ctrl+Q"))
         exit_action.setStatusTip("Exit the application")
@@ -326,12 +318,13 @@ class MainWindow(QMainWindow):
         settings_menu = menubar.addMenu("&Settings")
 
         stations_action = QAction("&Stations...", self)
-        stations_action.setShortcut(QKeySequence("Ctrl+,"))
+        stations_action.setShortcut(QKeySequence("Ctrl+S"))
         stations_action.setStatusTip("Configure station settings, display, and refresh options")
         stations_action.triggered.connect(self.show_stations_settings_dialog)
         settings_menu.addAction(stations_action)
 
         astronomy_action = QAction("&Astronomy...", self)
+        astronomy_action.setShortcut(QKeySequence("Ctrl+A"))
         astronomy_action.setStatusTip("Configure astronomy settings and link preferences")
         astronomy_action.triggered.connect(self.show_astronomy_settings_dialog)
         settings_menu.addAction(astronomy_action)

@@ -280,9 +280,8 @@ class TrainItemWidget(QFrame):
         self.setup_ui()
         self.apply_theme()
 
-        # Make widget clickable
+        # Set frame style but don't make entire widget clickable
         self.setFrameStyle(QFrame.Shape.Box)
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
 
     def setup_ui(self):
         """Setup the train item UI layout."""
@@ -702,11 +701,9 @@ class TrainItemWidget(QFrame):
     def mousePressEvent(self, event):
         """Handle mouse press event."""
         if event.button() == Qt.MouseButton.LeftButton:
-            # Check if the click was on the Route button
+            # Only handle clicks on the Route button - remove general widget click functionality
             if hasattr(self, 'details_button') and self.details_button.geometry().contains(event.pos()):
                 self.route_clicked.emit(self.train_data)
-            else:
-                self.train_clicked.emit(self.train_data)
         super().mousePressEvent(event)
 
     def _is_major_interchange(self, station_name: str) -> bool:
