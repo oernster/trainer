@@ -14,7 +14,7 @@
     }
   },
   "typical_journey_times": {
-    "FST-LHS": 7,
+    "London Fenchurch Street-LHS": 7,
     "LHS-WEH": 5,
     "WEH-BAK": 6,
     "BAK-UPM": 5,
@@ -24,10 +24,10 @@
     "OCK-STF": 5,
     "STF-TIL": 6,
     "TIL-PFL": 5,
-    "PFL-BLD": 4,
-    "BEF-SRY": 6,
-    "SRY-WNF": 4,
-    "WNF-SOE": 5
+    "PFL-Basildon": 4,
+    "BEF-Stanford-le-Hope": 6,
+    "Stanford-le-Hope-WNF": 4,
+    "WNF-Shoeburyness": 5
   },
   "typical_services": {
     "peak_frequency": "Every 5-10 minutes",
@@ -731,10 +731,10 @@
       "typical_journey_time": 39,
       "frequency": "Every 30 minutes",
       "stations": [
-        "FST",
-        "BLD",
-        "SRY",
-        "SOE"
+        "London Fenchurch Street",
+        "Basildon",
+        "Stanford-le-Hope",
+        "Shoeburyness"
       ],
       "peak_frequency": "Every 20 minutes",
       "off_peak_frequency": "Every 30 minutes",
@@ -751,7 +751,7 @@
       "typical_journey_time": 46,
       "frequency": "Every 60 minutes",
       "stations": [
-        "FST",
+        "London Fenchurch Street",
         "WEH",
         "UPM",
         "CFB",
@@ -760,8 +760,8 @@
         "LAI",
         "BEF",
         "WCF",
-        "SOE",
-        "SRY",
+        "Shoeburyness",
+        "Stanford-le-Hope",
         "DDK",
         "UPY"
       ],

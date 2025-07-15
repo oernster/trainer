@@ -14,12 +14,12 @@
     }
   },
   "typical_journey_times": {
-    "LVC-MRF": 3,
+    "Liverpool Central-MRF": 3,
     "AIN-FBY": 3,
     "FBY-HTO": 3,
-    "HI1-SOP": 3,
+    "HI1-Southport": 3,
     "RCE-AUG": 3,
-    "AUG-OMS": 3
+    "AUG-Ormskirk": 3
   },
   "typical_services": {
     "peak_frequency": "Every 7.5 minutes",
@@ -944,10 +944,10 @@
       "typical_journey_time": 52,
       "frequency": "Every 30 minutes",
       "stations": [
-        "LVC",
-        "SOP",
-        "OMS",
-        "KIR"
+        "Liverpool Central",
+        "Southport",
+        "Ormskirk",
+        "Kirkby"
       ],
       "peak_frequency": "Every 20 minutes",
       "off_peak_frequency": "Every 30 minutes",
@@ -964,24 +964,24 @@
       "typical_journey_time": 63,
       "frequency": "Every 60 minutes",
       "stations": [
-        "LVC",
+        "Liverpool Central",
         "SDL",
-        "BOT",
+        "Botley",
         "SFL",
         "BDC",
         "HTO",
-        "FRE",
+        "Fareham",
         "HI1",
-        "SOP",
-        "STM",
+        "Southport",
+        "St Margarets",
         "CSG",
         "HNX",
-        "KIR",
+        "Kirkby",
         "WAO",
         "AIN",
         "MAG",
         "TWN",
-        "OMS"
+        "Ormskirk"
       ],
       "peak_frequency": null,
       "off_peak_frequency": null,

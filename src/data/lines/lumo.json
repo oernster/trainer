@@ -14,14 +14,14 @@
     }
   },
   "typical_journey_times": {
-    "KGX-ST5": 25,
-    "ST5-NCL": 240,
-    "NCL-MPT": 20,
+    "London Kings Cross-ST5": 25,
+    "ST5-Newcastle": 240,
+    "Newcastle-MPT": 20,
     "MPT-ALM": 25,
     "ALM-BWK": 30,
     "BWK-DUN": 25,
-    "DUN-EDB": 30,
-    "KGX-EDB": 270
+    "DUN-Edinburgh Waverley": 30,
+    "London Kings Cross-Edinburgh Waverley": 270
   },
   "typical_services": {
     "peak_frequency": "2-3 services per day",
@@ -253,9 +253,9 @@
       "typical_journey_time": 12,
       "frequency": "Every 30 minutes",
       "stations": [
-        "KGX",
-        "NCL",
-        "EDB"
+        "London Kings Cross",
+        "Newcastle",
+        "Edinburgh Waverley"
       ],
       "peak_frequency": "Every 20 minutes",
       "off_peak_frequency": "Every 30 minutes",
@@ -272,14 +272,14 @@
       "typical_journey_time": 14,
       "frequency": "Every 60 minutes",
       "stations": [
-        "KGX",
+        "London Kings Cross",
         "ST5",
-        "NCL",
+        "Newcastle",
         "MPT",
         "ALM",
         "BWK",
         "DUN",
-        "EDB"
+        "Edinburgh Waverley"
       ],
       "peak_frequency": null,
       "off_peak_frequency": null,

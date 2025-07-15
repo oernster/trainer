@@ -14,11 +14,11 @@
     }
   },
   "typical_journey_times": {
-    "RDG-PPD": 25,
-    "PPD-SNF": 45,
-    "HXX-PPD": 15,
-    "TCR-CWF": 5,
-    "CWF-LST": 5
+    "Reading-PPD": 25,
+    "PPD-Shenfield": 45,
+    "Heathrow Central-PPD": 15,
+    "Tottenham Court Road-CWF": 5,
+    "CWF-London Liverpool Street": 5
   },
   "typical_services": {
     "peak_frequency": "Every 5 minutes",
@@ -1176,20 +1176,20 @@
       "typical_journey_time": 123,
       "frequency": "Every 10-15 minutes",
       "stations": [
-        "RDG",
-        "TAP",
+        "Reading",
+        "Taplow",
         "LNY",
-        "HAY",
-        "WEA",
+        "Hayes & Harlington",
+        "West Ealing",
         "PPD",
-        "FAR",
+        "Farnham",
         "CWF",
-        "ABW",
+        "Abbey Wood",
         "FOG",
         "SVK",
         "RMF",
         "BRE",
-        "HXX"
+        "Heathrow Central"
       ],
       "peak_frequency": null,
       "off_peak_frequency": null,

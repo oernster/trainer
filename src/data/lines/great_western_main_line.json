@@ -589,12 +589,12 @@
       "typical_journey_time": 16,
       "frequency": "Every 60 minutes",
       "stations": [
-        "PAD",
-        "RDG",
-        "SWI",
-        "BRI",
-        "CDF",
-        "WRP"
+        "London Paddington",
+        "Reading",
+        "Swindon",
+        "Bristol Temple Meads",
+        "Cardiff Central",
+        "Warwick Parkway"
       ],
       "peak_frequency": "Every 30 minutes",
       "off_peak_frequency": "Every 60 minutes",
@@ -611,13 +611,13 @@
       "typical_journey_time": 25,
       "frequency": "Every 30 minutes",
       "stations": [
-        "PAD",
-        "WRP",
-        "SWI",
-        "SWA",
-        "RDG",
-        "CDF",
-        "BRI"
+        "London Paddington",
+        "Warwick Parkway",
+        "Swindon",
+        "Swanwick",
+        "Reading",
+        "Cardiff Central",
+        "Bristol Temple Meads"
       ],
       "peak_frequency": "Every 20 minutes",
       "off_peak_frequency": "Every 30 minutes",
@@ -634,17 +634,17 @@
       "typical_journey_time": 31,
       "frequency": "Every 60 minutes",
       "stations": [
-        "PAD",
-        "MAI",
-        "RDG",
-        "SWI",
+        "London Paddington",
+        "Maidenhead",
+        "Reading",
+        "Swindon",
         "BTH",
         "NWP",
         "BGN",
         "NTH",
         "OXF",
-        "LMS",
-        "WRP"
+        "Leamington Spa",
+        "Warwick Parkway"
       ],
       "peak_frequency": null,
       "off_peak_frequency": null,

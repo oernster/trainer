@@ -461,13 +461,13 @@
       "typical_journey_time": 12,
       "frequency": "Every 60 minutes",
       "stations": [
-        "KGX",
-        "PBO",
-        "DON",
-        "LDS",
-        "YRK",
-        "NCL",
-        "EDB"
+        "London Kings Cross",
+        "Peterborough",
+        "Doncaster",
+        "Leeds",
+        "York",
+        "Newcastle",
+        "Edinburgh Waverley"
       ],
       "peak_frequency": "Every 30 minutes",
       "off_peak_frequency": "Every 60 minutes",
@@ -484,13 +484,13 @@
       "typical_journey_time": 19,
       "frequency": "Every 30 minutes",
       "stations": [
-        "YRK",
-        "PBO",
-        "EDB",
-        "NCL",
-        "LDS",
-        "DON",
-        "KGX"
+        "York",
+        "Peterborough",
+        "Edinburgh Waverley",
+        "Newcastle",
+        "Leeds",
+        "Doncaster",
+        "London Kings Cross"
       ],
       "peak_frequency": "Every 20 minutes",
       "off_peak_frequency": "Every 30 minutes",
@@ -507,12 +507,12 @@
       "typical_journey_time": 24,
       "frequency": "Every 60 minutes",
       "stations": [
-        "KGX",
+        "London Kings Cross",
         "ST5",
         "GRA",
         "RET",
         "WKF",
-        "YRK",
+        "York",
         "DHM",
         "BWK"
       ],

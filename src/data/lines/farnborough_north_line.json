@@ -236,7 +236,7 @@
     }
   },
   "typical_journey_times": {
-    "FNB-FNN": 5,
-    "FNN-FNB": 5
+    "Farnborough (Main)-FNN": 5,
+    "FNN-Farnborough (Main)": 5
   }
 }

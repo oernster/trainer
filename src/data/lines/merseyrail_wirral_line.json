@@ -14,9 +14,9 @@
     }
   },
   "typical_journey_times": {
-    "LVC-HMS": 8,
-    "HMS-BHM": 3,
-    "BHM-GNL": 2,
+    "Liverpool Central-HMS": 8,
+    "HMS-Birmingham New Street": 3,
+    "Birmingham New Street-GNL": 2,
     "GNL-RFY": 3,
     "RFY-PSL": 2,
     "PSL-SPT": 2,
@@ -28,8 +28,8 @@
     "CVP-BHN": 3,
     "BHN-WGR": 2,
     "WGR-WLV": 2,
-    "WLV-NBN": 3,
-    "LVC-NBN": 45
+    "WLV-New Brighton": 3,
+    "Liverpool Central-New Brighton": 45
   },
   "typical_services": {
     "peak_frequency": "Every 15 minutes",
@@ -497,8 +497,8 @@
       "typical_journey_time": 24,
       "frequency": "Every 30 minutes",
       "stations": [
-        "LVC",
-        "NBN"
+        "Liverpool Central",
+        "New Brighton"
       ],
       "peak_frequency": "Every 20 minutes",
       "off_peak_frequency": "Every 30 minutes",
@@ -515,8 +515,8 @@
       "typical_journey_time": 28,
       "frequency": "Every 60 minutes",
       "stations": [
-        "LVC",
-        "BHM",
+        "Liverpool Central",
+        "Birmingham New Street",
         "RFY",
         "SPT",
         "EHR",

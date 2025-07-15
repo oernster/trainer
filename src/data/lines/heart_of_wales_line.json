@@ -798,7 +798,7 @@
         "LLH",
         "BYE",
         "GWN",
-        "SWA"
+        "Swanwick"
       ],
       "description": "Semi-fast service calling at major stations"
     },
@@ -820,7 +820,7 @@
         "PTF",
         "LLH",
         "LLE",
-        "SWA"
+        "Swanwick"
       ],
       "description": "Fast service calling at principal stations"
     }

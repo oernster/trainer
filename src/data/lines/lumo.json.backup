@@ -1,0 +1,309 @@
+{
+  "metadata": {
+    "line_name": "Lumo",
+    "description": "Low-cost long-distance service between London Kings Cross and Edinburgh",
+    "operator": "Lumo",
+    "total_stations": 8,
+    "typical_frequency": "5 services per day",
+    "peak_hours": "07:00-09:00, 17:00-19:00",
+    "frequency": {
+      "weekday_peak": "2-3 services",
+      "weekday_off_peak": "2-3 services",
+      "weekend": "2-3 services",
+      "night": "No service"
+    }
+  },
+  "typical_journey_times": {
+    "KGX-ST5": 25,
+    "ST5-NCL": 240,
+    "NCL-MPT": 20,
+    "MPT-ALM": 25,
+    "ALM-BWK": 30,
+    "BWK-DUN": 25,
+    "DUN-EDB": 30,
+    "KGX-EDB": 270
+  },
+  "typical_services": {
+    "peak_frequency": "2-3 services per day",
+    "off_peak_frequency": "2-3 services per day",
+    "evening_frequency": "1-2 services per day",
+    "weekend_frequency": "2-3 services per day",
+    "first_train": "07:30",
+    "last_train": "17:30"
+  },
+  "stations": [
+    {
+      "name": "London Kings Cross",
+      "coordinates": {
+        "lat": 51.5308,
+        "lng": -0.1238
+      },
+      "zone": 1,
+      "interchange": [
+        "Circle Line",
+        "Hammersmith & City Line",
+        "Metropolitan Line",
+        "Northern Line",
+        "Piccadilly Line",
+        "Victoria Line",
+        "LNER",
+        "Thameslink"
+      ],
+      "times": {
+        "morning": [
+          "07:30",
+          "09:30"
+        ],
+        "afternoon": [
+          "13:30",
+          "15:30"
+        ],
+        "evening": [
+          "17:30"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Stevenage",
+      "coordinates": {
+        "lat": 51.9022,
+        "lng": -0.2058
+      },
+      "interchange": [
+        "LNER",
+        "Thameslink",
+        "Great Northern"
+      ],
+      "times": {
+        "morning": [
+          "07:55",
+          "09:55"
+        ],
+        "afternoon": [
+          "13:55",
+          "15:55"
+        ],
+        "evening": [
+          "17:55"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Newcastle",
+      "coordinates": {
+        "lat": 54.9686,
+        "lng": -1.6174
+      },
+      "interchange": [
+        "LNER",
+        "CrossCountry",
+        "Northern Rail",
+        "TransPennine Express",
+        "Tyne and Wear Metro"
+      ],
+      "times": {
+        "morning": [
+          "11:55",
+          "13:55"
+        ],
+        "afternoon": [
+          "17:55",
+          "19:55"
+        ],
+        "evening": [
+          "21:55"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Morpeth",
+      "coordinates": {
+        "lat": 55.1697,
+        "lng": -1.6897
+      },
+      "interchange": [
+        "LNER",
+        "Northern Rail"
+      ],
+      "times": {
+        "morning": [
+          "12:15",
+          "14:15"
+        ],
+        "afternoon": [
+          "18:15",
+          "20:15"
+        ],
+        "evening": [
+          "22:15"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Alnmouth",
+      "coordinates": {
+        "lat": 55.3889,
+        "lng": -1.6306
+      },
+      "interchange": [
+        "LNER",
+        "Northern Rail"
+      ],
+      "times": {
+        "morning": [
+          "12:40",
+          "14:40"
+        ],
+        "afternoon": [
+          "18:40",
+          "20:40"
+        ],
+        "evening": [
+          "22:40"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Berwick-upon-Tweed",
+      "coordinates": {
+        "lat": 55.7711,
+        "lng": -2.0069
+      },
+      "interchange": [
+        "LNER",
+        "ScotRail"
+      ],
+      "times": {
+        "morning": [
+          "13:10",
+          "15:10"
+        ],
+        "afternoon": [
+          "19:10",
+          "21:10"
+        ],
+        "evening": [
+          "23:10"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Dunbar",
+      "coordinates": {
+        "lat": 56.0019,
+        "lng": -2.5158
+      },
+      "interchange": [
+        "LNER",
+        "ScotRail"
+      ],
+      "times": {
+        "morning": [
+          "13:35",
+          "15:35"
+        ],
+        "afternoon": [
+          "19:35",
+          "21:35"
+        ],
+        "evening": [
+          "23:35"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Edinburgh",
+      "coordinates": {
+        "lat": 55.952,
+        "lng": -3.1883
+      },
+      "interchange": [
+        "LNER",
+        "ScotRail",
+        "CrossCountry",
+        "Caledonian Sleeper"
+      ],
+      "times": {
+        "morning": [
+          "14:05",
+          "16:05"
+        ],
+        "afternoon": [
+          "20:05",
+          "22:05"
+        ],
+        "evening": [
+          "00:05"
+        ],
+        "night": []
+      }
+    }
+  ],
+  "service_patterns": {
+    "fast": {
+      "service_type": "fast",
+      "description": "Fast service - major towns and interchanges",
+      "typical_journey_time": 12,
+      "frequency": "Every 30 minutes",
+      "stations": [
+        "KGX",
+        "NCL",
+        "EDB"
+      ],
+      "peak_frequency": "Every 20 minutes",
+      "off_peak_frequency": "Every 30 minutes",
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "semi_fast": {
+      "service_type": "semi_fast",
+      "description": "Semi-fast service - market towns",
+      "typical_journey_time": 14,
+      "frequency": "Every 60 minutes",
+      "stations": [
+        "KGX",
+        "ST5",
+        "NCL",
+        "MPT",
+        "ALM",
+        "BWK",
+        "DUN",
+        "EDB"
+      ],
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "stopping": {
+      "service_type": "stopping",
+      "description": "Stopping service - all stations",
+      "typical_journey_time": 16,
+      "frequency": "Every 2 hours",
+      "stations": "all",
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    }
+  }
+}

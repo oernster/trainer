@@ -896,10 +896,10 @@
       "frequency": "Every 60 minutes",
       "stations": [
         "ABE",
-        "EDB",
-        "BRI",
-        "PLY",
-        "PNZ"
+        "Edinburgh Waverley",
+        "Bristol Temple Meads",
+        "Plymouth",
+        "Penzance"
       ],
       "peak_frequency": "Every 30 minutes",
       "off_peak_frequency": "Every 60 minutes",
@@ -916,11 +916,11 @@
       "typical_journey_time": 42,
       "frequency": "Every 30 minutes",
       "stations": [
-        "EDB",
-        "PLY",
+        "Edinburgh Waverley",
+        "Plymouth",
         "ABE",
-        "PNZ",
-        "BRI"
+        "Penzance",
+        "Bristol Temple Meads"
       ],
       "peak_frequency": "Every 20 minutes",
       "off_peak_frequency": "Every 30 minutes",
@@ -938,23 +938,23 @@
       "frequency": "Every 60 minutes",
       "stations": [
         "ABE",
-        "GLC",
+        "Glasgow Central",
         "CRS",
-        "CAR",
+        "Carlisle",
         "OXN",
-        "PRE",
+        "Preston",
         "WBQ",
         "STA",
-        "BIR",
+        "Birmingham International",
         "CCV",
-        "BAN",
-        "RDG",
-        "WIN",
+        "Banbury",
+        "Reading",
+        "Winchester",
         "BMH",
         "WWS",
         "TAU",
-        "PLY",
-        "PNZ"
+        "Plymouth",
+        "Penzance"
       ],
       "peak_frequency": null,
       "off_peak_frequency": null,

@@ -397,24 +397,53 @@ class TrainItemWidget(QFrame):
         calling_points_main_layout.setContentsMargins(0, 0, 0, 0)
         calling_points_main_layout.setSpacing(2)
         
-        # Get intermediate stations
-        intermediate_stations = self.train_data.get_intermediate_stations()
-        if intermediate_stations:
-            # Show "Via:" prefix on first line
+        # Get all calling points to show complete journey, removing duplicates
+        all_calling_points = self.train_data.calling_points
+        
+        # Debug logging to understand what calling points we have
+        logger.debug(f"Train {self.train_data.service_id} has {len(all_calling_points)} calling points")
+        for i, cp in enumerate(all_calling_points):
+            logger.debug(f"  {i}: {cp.station_name} (origin={cp.is_origin}, dest={cp.is_destination})")
+        
+        # Remove duplicate stations while preserving order and keeping the most important one
+        seen_stations = set()
+        filtered_calling_points = []
+        
+        for calling_point in all_calling_points:
+            station_name = calling_point.station_name
+            if station_name not in seen_stations:
+                seen_stations.add(station_name)
+                filtered_calling_points.append(calling_point)
+            else:
+                # If we've seen this station before, check if this one is more important
+                # Find the existing one and replace if this one is better (origin/destination preferred)
+                for j, existing_cp in enumerate(filtered_calling_points):
+                    if existing_cp.station_name == station_name:
+                        # Prefer origin/destination over intermediate, or one with platform info
+                        if (calling_point.is_origin or calling_point.is_destination or
+                            (calling_point.platform and not existing_cp.platform)):
+                            filtered_calling_points[j] = calling_point
+                        break
+        
+        logger.debug(f"After filtering: {len(filtered_calling_points)} unique calling points")
+        
+        if filtered_calling_points and len(filtered_calling_points) >= 2:  # Show even if just origin and destination
+            # Show "Stops:" prefix on first line to indicate all stops
             first_line_layout = QHBoxLayout()
-            via_label = QLabel("Via:")
-            via_font = QFont()
-            via_font.setPointSize(9)
-            via_font.setBold(True)
-            via_label.setFont(via_font)
-            first_line_layout.addWidget(via_label)
+            stops_label = QLabel("Stops:")
+            stops_font = QFont()
+            stops_font.setPointSize(9)
+            stops_font.setBold(True)
+            stops_label.setFont(stops_font)
+            first_line_layout.addWidget(stops_label)
             
             # Limit stations per line to avoid overcrowding
-            max_stations_per_line = 4
+            max_stations_per_line = 3  # Reduced to 3 since we're showing more stations
             current_line_layout = first_line_layout
             stations_in_current_line = 0
             
-            for i, station in enumerate(intermediate_stations):
+            for i, calling_point in enumerate(filtered_calling_points):
+                station_name = calling_point.station_name
                 # Check if we need a new line
                 if stations_in_current_line >= max_stations_per_line:
                     # Finish current line and start new one
@@ -461,16 +490,22 @@ class TrainItemWidget(QFrame):
                     """)
                     current_line_layout.addWidget(arrow_label)
                 
-                station_label = QLabel(station.station_name)
+                station_label = QLabel(station_name)
                 station_font = QFont()
                 station_font.setPointSize(9)
-                station_font.setItalic(True)
+                
+                # Special formatting for origin and destination
+                if calling_point.is_origin or calling_point.is_destination:
+                    station_font.setBold(True)
+                else:
+                    station_font.setItalic(True)
+                    
                 station_label.setFont(station_font)
                 
                 # Check if this is a major interchange station for colored text
-                if self._is_major_interchange(station.station_name):
-                    # Theme-aware color for interchange stations
-                    interchange_color = "#4caf50" if self.current_theme == "light" else "#ffeb3b"
+                if self._is_major_interchange(station_name):
+                    # Use orange/yellow for interchange stations as requested
+                    interchange_color = "#ff9800" if self.current_theme == "light" else "#ffc107"
                     station_label.setStyleSheet(f"""
                         QLabel {{
                             background-color: transparent;
@@ -480,8 +515,20 @@ class TrainItemWidget(QFrame):
                             padding: 0px;
                         }}
                     """)
+                elif calling_point.is_origin or calling_point.is_destination:
+                    # Origin and destination in white/black (normal text color)
+                    text_color = "#ffffff" if self.current_theme == "dark" else "#000000"
+                    station_label.setStyleSheet(f"""
+                        QLabel {{
+                            background-color: transparent;
+                            color: {text_color};
+                            border: none;
+                            margin: 0px;
+                            padding: 0px;
+                        }}
+                    """)
                 else:
-                    # Regular light blue text for normal stations
+                    # Regular light blue text for normal intermediate stations
                     station_label.setStyleSheet("""
                         QLabel {
                             background-color: transparent;
@@ -629,8 +676,8 @@ class TrainItemWidget(QFrame):
             # Skip non-station labels
             if station_name not in ["Via:", "→", "    ", "Direct service"] and station_name:
                 if self._is_major_interchange(station_name):
-                    # Update interchange station color based on theme
-                    interchange_color = "#4caf50" if self.current_theme == "light" else "#ffeb3b"
+                    # Update interchange station color based on theme - use orange/yellow as requested
+                    interchange_color = "#ff9800" if self.current_theme == "light" else "#ffc107"
                     label.setStyleSheet(f"""
                         QLabel {{
                             background-color: transparent;

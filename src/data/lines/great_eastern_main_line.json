@@ -383,10 +383,10 @@
       "frequency": "Every 60 minutes",
       "stations": [
         "LO3",
-        "CHM",
-        "COL",
-        "IPS",
-        "NRW"
+        "Chelmsford",
+        "Colchester",
+        "Ipswich",
+        "Norwich"
       ],
       "peak_frequency": "Every 30 minutes",
       "off_peak_frequency": "Every 60 minutes",
@@ -403,11 +403,11 @@
       "typical_journey_time": 15,
       "frequency": "Every 30 minutes",
       "stations": [
-        "CHM",
+        "Chelmsford",
         "LO3",
-        "COL",
-        "NRW",
-        "IPS"
+        "Colchester",
+        "Norwich",
+        "Ipswich"
       ],
       "peak_frequency": "Every 20 minutes",
       "off_peak_frequency": "Every 30 minutes",
@@ -426,11 +426,11 @@
       "stations": [
         "LO3",
         "RMF",
-        "SNF",
+        "Shenfield",
         "WTM",
         "MNG",
         "SMK",
-        "NRW"
+        "Norwich"
       ],
       "peak_frequency": null,
       "off_peak_frequency": null,

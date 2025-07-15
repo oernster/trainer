@@ -1,0 +1,356 @@
+{
+  "metadata": {
+    "line_name": "Hull Trains",
+    "description": "Direct service between London Kings Cross and Hull via the East Coast Main Line",
+    "operator": "Hull Trains",
+    "total_stations": 10,
+    "typical_frequency": "5 services per day",
+    "peak_hours": "07:00-09:00, 17:00-19:00",
+    "frequency": {
+      "weekday_peak": "2-3 services",
+      "weekday_off_peak": "2-3 services",
+      "weekend": "2-3 services",
+      "night": "No service"
+    }
+  },
+  "typical_journey_times": {
+    "KGX-ST5": 25,
+    "ST5-PBO": 45,
+    "PBO-GRA": 30,
+    "GRA-NNG": 20,
+    "NNG-RET": 15,
+    "RET-DON": 20,
+    "DON-SBY": 25,
+    "SBY-BUH": 15,
+    "BUH-HUL": 10,
+    "KGX-HUL": 205
+  },
+  "typical_services": {
+    "peak_frequency": "2-3 services per day",
+    "off_peak_frequency": "2-3 services per day",
+    "evening_frequency": "1-2 services per day",
+    "weekend_frequency": "2-3 services per day",
+    "first_train": "07:30",
+    "last_train": "17:48"
+  },
+  "stations": [
+    {
+      "name": "London Kings Cross",
+      "coordinates": {
+        "lat": 51.5308,
+        "lng": -0.1238
+      },
+      "zone": 1,
+      "interchange": [
+        "Circle Line",
+        "Hammersmith & City Line",
+        "Metropolitan Line",
+        "Northern Line",
+        "Piccadilly Line",
+        "Victoria Line",
+        "LNER",
+        "Thameslink"
+      ],
+      "times": {
+        "morning": [
+          "07:30",
+          "09:30"
+        ],
+        "afternoon": [
+          "13:48",
+          "15:48"
+        ],
+        "evening": [
+          "17:48"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Stevenage",
+      "coordinates": {
+        "lat": 51.9022,
+        "lng": -0.2058
+      },
+      "interchange": [
+        "LNER",
+        "Thameslink",
+        "Great Northern"
+      ],
+      "times": {
+        "morning": [
+          "07:55",
+          "09:55"
+        ],
+        "afternoon": [
+          "14:13",
+          "16:13"
+        ],
+        "evening": [
+          "18:13"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Peterborough",
+      "coordinates": {
+        "lat": 52.5742,
+        "lng": -0.2506
+      },
+      "interchange": [
+        "LNER",
+        "CrossCountry",
+        "East Midlands Railway"
+      ],
+      "times": {
+        "morning": [
+          "08:40",
+          "10:40"
+        ],
+        "afternoon": [
+          "14:58",
+          "16:58"
+        ],
+        "evening": [
+          "18:58"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Grantham",
+      "coordinates": {
+        "lat": 52.9111,
+        "lng": -0.6417
+      },
+      "interchange": [
+        "LNER",
+        "CrossCountry",
+        "East Midlands Railway"
+      ],
+      "times": {
+        "morning": [
+          "09:10",
+          "11:10"
+        ],
+        "afternoon": [
+          "15:28",
+          "17:28"
+        ],
+        "evening": [
+          "19:28"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Newark North Gate",
+      "coordinates": {
+        "lat": 53.0783,
+        "lng": -0.8139
+      },
+      "interchange": [
+        "LNER",
+        "CrossCountry",
+        "East Midlands Railway"
+      ],
+      "times": {
+        "morning": [
+          "09:30",
+          "11:30"
+        ],
+        "afternoon": [
+          "15:48",
+          "17:48"
+        ],
+        "evening": [
+          "19:48"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Retford",
+      "coordinates": {
+        "lat": 53.3222,
+        "lng": -0.9472
+      },
+      "interchange": [
+        "LNER",
+        "Northern Rail"
+      ],
+      "times": {
+        "morning": [
+          "09:45",
+          "11:45"
+        ],
+        "afternoon": [
+          "16:03",
+          "18:03"
+        ],
+        "evening": [
+          "20:03"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Doncaster",
+      "coordinates": {
+        "lat": 53.5222,
+        "lng": -1.1403
+      },
+      "interchange": [
+        "LNER",
+        "CrossCountry",
+        "Northern Rail",
+        "TransPennine Express"
+      ],
+      "times": {
+        "morning": [
+          "10:05",
+          "12:05"
+        ],
+        "afternoon": [
+          "16:23",
+          "18:23"
+        ],
+        "evening": [
+          "20:23"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Selby",
+      "coordinates": {
+        "lat": 53.7833,
+        "lng": -1.0667
+      },
+      "interchange": [
+        "LNER",
+        "Northern Rail"
+      ],
+      "times": {
+        "morning": [
+          "10:30",
+          "12:30"
+        ],
+        "afternoon": [
+          "16:48",
+          "18:48"
+        ],
+        "evening": [
+          "20:48"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Brough",
+      "coordinates": {
+        "lat": 53.7278,
+        "lng": -0.5944
+      },
+      "interchange": [
+        "Northern Rail"
+      ],
+      "times": {
+        "morning": [
+          "10:45",
+          "12:45"
+        ],
+        "afternoon": [
+          "17:03",
+          "19:03"
+        ],
+        "evening": [
+          "21:03"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Hull",
+      "coordinates": {
+        "lat": 53.7444,
+        "lng": -0.3525
+      },
+      "interchange": [
+        "Northern Rail"
+      ],
+      "times": {
+        "morning": [
+          "10:55",
+          "12:55"
+        ],
+        "afternoon": [
+          "17:13",
+          "19:13"
+        ],
+        "evening": [
+          "21:13"
+        ],
+        "night": []
+      }
+    }
+  ],
+  "service_patterns": {
+    "fast": {
+      "service_type": "fast",
+      "description": "Fast service - major towns and interchanges",
+      "typical_journey_time": 15,
+      "frequency": "Every 30 minutes",
+      "stations": [
+        "KGX",
+        "DON",
+        "HUL"
+      ],
+      "peak_frequency": "Every 20 minutes",
+      "off_peak_frequency": "Every 30 minutes",
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "semi_fast": {
+      "service_type": "semi_fast",
+      "description": "Semi-fast service - market towns",
+      "typical_journey_time": 18,
+      "frequency": "Every 60 minutes",
+      "stations": [
+        "KGX",
+        "PBO",
+        "NNG",
+        "DON",
+        "BUH"
+      ],
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "stopping": {
+      "service_type": "stopping",
+      "description": "Stopping service - all stations",
+      "typical_journey_time": 20,
+      "frequency": "Every 2 hours",
+      "stations": "all",
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    }
+  }
+}

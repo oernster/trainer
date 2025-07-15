@@ -14,10 +14,10 @@
     }
   },
   "typical_journey_times": {
-    "RDG-MMR": 10,
+    "Reading-MMR": 10,
     "MMR-HOK": 20,
-    "HOK-BSK": 10,
-    "RDG-BSK": 40
+    "HOK-Basingstoke": 10,
+    "Reading-Basingstoke": 40
   },
   "typical_services": {
     "peak_frequency": "Every 20 minutes",
@@ -143,8 +143,8 @@
       "typical_journey_time": 7,
       "frequency": "Every 30 minutes",
       "stations": [
-        "RDG",
-        "BSK"
+        "Reading",
+        "Basingstoke"
       ],
       "peak_frequency": "Every 20 minutes",
       "off_peak_frequency": "Every 30 minutes",
@@ -161,10 +161,10 @@
       "typical_journey_time": 9,
       "frequency": "Every 60 minutes",
       "stations": [
-        "RDG",
+        "Reading",
         "MMR",
         "HOK",
-        "BSK"
+        "Basingstoke"
       ],
       "peak_frequency": null,
       "off_peak_frequency": null,

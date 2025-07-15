@@ -35,7 +35,6 @@ class CallingPoint:
     Represents a station that the train calls at.
     """
     station_name: str
-    station_code: str
     scheduled_arrival: Optional[datetime]
     scheduled_departure: Optional[datetime]
     expected_arrival: Optional[datetime]

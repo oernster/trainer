@@ -1,0 +1,80 @@
+{
+  "metadata": {
+    "line_name": "Isle of Wight Line",
+    "description": "Ryde Pier Head to Shanklin via Newport",
+    "operator": "South Western Railway",
+    "total_stations": 8,
+    "line_color": "#0019A8"
+  },
+  "stations": [
+    {
+      "name": "Ryde Pier Head",
+      "coordinates": {
+        "lat": 50.7297,
+        "lng": -1.1597
+      }
+    },
+    {
+      "name": "Ryde Esplanade",
+      "coordinates": {
+        "lat": 50.7281,
+        "lng": -1.162
+      }
+    },
+    {
+      "name": "Ryde St John's Road",
+      "coordinates": {
+        "lat": 50.7234,
+        "lng": -1.1658
+      }
+    },
+    {
+      "name": "Smallbrook Junction",
+      "coordinates": {
+        "lat": 50.6889,
+        "lng": -1.2156
+      }
+    },
+    {
+      "name": "Brading",
+      "coordinates": {
+        "lat": 50.6856,
+        "lng": -1.1406
+      }
+    },
+    {
+      "name": "Sandown",
+      "coordinates": {
+        "lat": 50.6542,
+        "lng": -1.1606
+      }
+    },
+    {
+      "name": "Lake",
+      "coordinates": {
+        "lat": 50.6389,
+        "lng": -1.1789
+      }
+    },
+    {
+      "name": "Shanklin",
+      "coordinates": {
+        "lat": 50.6306,
+        "lng": -1.1806
+      }
+    }
+  ],
+  "service_patterns": {
+    "all_stations": {
+      "stations": "all",
+      "description": "Island Line service calling at all stations",
+      "service_type": "stopping",
+      "typical_journey_time": 30,
+      "frequency": "Every 30 minutes"
+    }
+  },
+  "typical_journey_times": {
+    "RYP-SHN": 30,
+    "SHN-RYP": 30
+  }
+}

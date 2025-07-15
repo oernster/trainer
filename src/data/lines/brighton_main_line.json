@@ -378,11 +378,11 @@
       "typical_journey_time": 10,
       "frequency": "Every 60 minutes",
       "stations": [
-        "VIC",
-        "CLJ",
-        "ECR",
-        "GTW",
-        "BTN"
+        "London Victoria",
+        "Clapham Junction",
+        "East Croydon",
+        "Gatwick Airport",
+        "Brighton"
       ],
       "peak_frequency": "Every 30 minutes",
       "off_peak_frequency": "Every 60 minutes",
@@ -399,11 +399,11 @@
       "typical_journey_time": 15,
       "frequency": "Every 30 minutes",
       "stations": [
-        "CLJ",
-        "BTN",
-        "ECR",
-        "VIC",
-        "GTW"
+        "Clapham Junction",
+        "Brighton",
+        "East Croydon",
+        "London Victoria",
+        "Gatwick Airport"
       ],
       "peak_frequency": "Every 20 minutes",
       "off_peak_frequency": "Every 30 minutes",
@@ -420,13 +420,13 @@
       "typical_journey_time": 19,
       "frequency": "Every 60 minutes",
       "stations": [
-        "VIC",
-        "ECR",
-        "GTW",
+        "London Victoria",
+        "East Croydon",
+        "Gatwick Airport",
         "BAL",
         "WVF",
         "HSK",
-        "BTN"
+        "Brighton"
       ],
       "peak_frequency": null,
       "off_peak_frequency": null,

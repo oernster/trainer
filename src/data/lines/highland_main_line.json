@@ -338,7 +338,7 @@
       "stations": [
         "PTH",
         "KGS",
-        "INV"
+        "Inverness"
       ],
       "description": "Express service calling at major stations only"
     },
@@ -349,8 +349,8 @@
         "DLW",
         "KGS",
         "CAG",
-        "SLO",
-        "INV"
+        "Slough",
+        "Inverness"
       ],
       "description": "Fast service with limited stops"
     },

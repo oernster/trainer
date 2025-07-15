@@ -15,8 +15,8 @@
   },
   "typical_journey_times": {
     "LO3-TOM": 35,
-    "TOM-SSD": 15,
-    "LO3-SSD": 47
+    "TOM-Stansted Airport": 15,
+    "LO3-Stansted Airport": 47
   },
   "typical_services": {
     "peak_frequency": "Every 15 minutes",
@@ -135,7 +135,7 @@
       "frequency": "Every 15 minutes",
       "stations": [
         "LO3",
-        "SSD"
+        "Stansted Airport"
       ],
       "peak_frequency": null,
       "off_peak_frequency": null,

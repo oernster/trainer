@@ -472,7 +472,7 @@
     },
     "semi_fast": {
       "stations": [
-        "INV",
+        "Inverness",
         "BEL",
         "DIN",
         "GVE",
@@ -488,7 +488,7 @@
     },
     "fast": {
       "stations": [
-        "INV",
+        "Inverness",
         "MOO",
         "CBD",
         "AAT",

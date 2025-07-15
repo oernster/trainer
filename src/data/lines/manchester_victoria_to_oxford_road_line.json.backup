@@ -1,0 +1,174 @@
+{
+  "metadata": {
+    "line_name": "Manchester Victoria to Oxford Road Line",
+    "description": "Manchester Victoria to Manchester Oxford Road via Deansgate",
+    "operator": "Northern",
+    "total_stations": 3,
+    "typical_frequency": "Every 15 minutes",
+    "peak_hours": "07:00-09:30, 16:30-19:00",
+    "frequency": {
+      "weekday_peak": "Every hour",
+      "weekday_off_peak": "Every 2 hours",
+      "weekend": "Every 2 hours",
+      "night": "No service"
+    }
+  },
+  "typical_journey_times": {
+    "MCV-MSD": 5,
+    "MSD-MCO": 3,
+    "MCV-MCO": 8
+  },
+  "typical_services": {
+    "peak_frequency": "Every 10 minutes",
+    "off_peak_frequency": "Every 15 minutes",
+    "evening_frequency": "Every 20 minutes",
+    "weekend_frequency": "Every 15 minutes",
+    "first_train": "05:30",
+    "last_train": "23:45"
+  },
+  "stations": [
+    {
+      "name": "Manchester Victoria",
+      "coordinates": {
+        "lat": 53.4881,
+        "lng": -2.2431
+      },
+      "interchange": [
+        "Metrolink",
+        "Northern",
+        "TransPennine Express"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Manchester Deansgate",
+      "coordinates": {
+        "lat": 53.4747,
+        "lng": -2.2511
+      },
+      "interchange": [
+        "Metrolink"
+      ],
+      "times": {
+        "morning": [
+          "06:06",
+          "08:06",
+          "10:06"
+        ],
+        "afternoon": [
+          "12:06",
+          "14:06",
+          "16:06"
+        ],
+        "evening": [
+          "18:06",
+          "20:06",
+          "22:06"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Manchester Oxford Road",
+      "coordinates": {
+        "lat": 53.4742,
+        "lng": -2.2426
+      },
+      "interchange": [
+        "TransPennine Express",
+        "Northern",
+        "Manchester Airport Line"
+      ],
+      "times": {
+        "morning": [
+          "06:26",
+          "08:26",
+          "10:26"
+        ],
+        "afternoon": [
+          "12:26",
+          "14:26",
+          "16:26"
+        ],
+        "evening": [
+          "18:26",
+          "20:26",
+          "22:26"
+        ],
+        "night": []
+      }
+    }
+  ],
+  "service_patterns": {
+    "fast": {
+      "service_type": "fast",
+      "description": "Fast service - major towns and interchanges",
+      "typical_journey_time": 4,
+      "frequency": "Every 30 minutes",
+      "stations": [
+        "MCV",
+        "MSD",
+        "MCO"
+      ],
+      "peak_frequency": "Every 20 minutes",
+      "off_peak_frequency": "Every 30 minutes",
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "semi_fast": {
+      "service_type": "semi_fast",
+      "description": "Semi-fast service - market towns",
+      "typical_journey_time": 5,
+      "frequency": "Every 60 minutes",
+      "stations": [
+        "MCV",
+        "MSD",
+        "MCO"
+      ],
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "stopping": {
+      "service_type": "stopping",
+      "description": "Stopping service - all stations",
+      "typical_journey_time": 6,
+      "frequency": "Every 2 hours",
+      "stations": "all",
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    }
+  }
+}

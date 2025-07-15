@@ -515,7 +515,7 @@
     },
     "semi_fast": {
       "stations": [
-        "NCL",
+        "Newcastle",
         "MCE",
         "WYM",
         "SKS",
@@ -523,7 +523,7 @@
         "HEX",
         "BLL",
         "BMP",
-        "CAR"
+        "Carlisle"
       ],
       "description": "Semi-fast service calling at major stations"
     }

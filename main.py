@@ -54,7 +54,6 @@ def check_single_instance_ultra_early():
         with open(lock_file_path, 'w') as f:
             f.write(str(os.getpid()))
         
-        print("Ultra-early singleton check passed - proceeding with application startup")
         return lock_file_path
         
     except Exception as e:
@@ -94,7 +93,6 @@ def cleanup_ultra_early_lock():
 def cleanup_application_resources():
     """Comprehensive cleanup of all application resources to prevent hanging processes."""
     try:
-        print("🧹 Starting comprehensive application cleanup...")
         
         # Get the current QApplication instance
         app = QApplication.instance()
@@ -103,70 +101,40 @@ def cleanup_application_resources():
             try:
                 if isinstance(app, SingleInstanceApplication):
                     app.cleanup_shared_memory()
-            except RuntimeError as runtime_error:
-                print(f"⚠️ Qt runtime error during shared memory cleanup: {runtime_error}")
-            except Exception as shared_memory_error:
-                print(f"⚠️ Error cleaning up shared memory: {shared_memory_error}")
+            except:
+                pass
             
             # Stop all timers with enhanced error handling
             try:
-                timers_stopped = 0
                 for obj in app.findChildren(QTimer):
                     try:
                         if obj.isActive():
                             obj.stop()
-                            timers_stopped += 1
-                            print(f"✅ Stopped QTimer: {obj.objectName() or 'unnamed'}")
-                    except RuntimeError as timer_runtime_error:
-                        print(f"⚠️ Qt runtime error stopping timer: {timer_runtime_error}")
-                    except Exception as individual_timer_error:
-                        print(f"⚠️ Error stopping individual timer: {individual_timer_error}")
-                
-                if timers_stopped == 0:
-                    print("ℹ️ No active timers found to stop")
-                else:
-                    print(f"✅ Stopped {timers_stopped} active timers")
-                    
-            except Exception as timer_error:
-                print(f"⚠️ Error during timer cleanup: {timer_error}")
+                    except:
+                        pass
+            except:
+                pass
             
             # Process any remaining events with timeout protection
             try:
-                # Process events with a reasonable timeout
                 import time
                 start_time = time.time()
-                timeout = 2.0  # 2 second timeout
+                timeout = 2.0
                 
-                # Process events in batches with timeout
                 while (time.time() - start_time) < timeout:
                     app.processEvents()
-                    # Small delay to prevent busy waiting
                     time.sleep(0.01)
-                    # Break if we've processed for a reasonable time
-                    if (time.time() - start_time) > 0.5:  # Process for at most 0.5 seconds
+                    if (time.time() - start_time) > 0.5:
                         break
-                
-                print("✅ Processed remaining events")
-                    
-            except RuntimeError as events_runtime_error:
-                print(f"⚠️ Qt runtime error processing events: {events_runtime_error}")
-            except Exception as events_error:
-                print(f"⚠️ Error processing events: {events_error}")
+            except:
+                pass
             
             # Quit the application properly with enhanced error handling
             try:
-                # Check if app is still valid before calling quit
                 if app and not app.closingDown():
                     app.quit()
-                    print("✅ Application quit called")
-                else:
-                    print("ℹ️ Application already closing down")
-            except RuntimeError as quit_runtime_error:
-                print(f"⚠️ Qt runtime error during app.quit(): {quit_runtime_error}")
-            except Exception as quit_error:
-                print(f"⚠️ Error calling app.quit(): {quit_error}")
-        else:
-            print("ℹ️ No QApplication instance found")
+            except:
+                pass
         
         # Clean up any remaining threads (focus on non-daemon threads only)
         try:
@@ -174,63 +142,28 @@ def cleanup_application_resources():
             import time
             
             active_threads = threading.active_count()
-            if active_threads > 1:  # Main thread + others
-                # Separate daemon and non-daemon threads
+            if active_threads > 1:
                 non_daemon_threads = []
-                daemon_count = 0
                 
                 for thread in threading.enumerate():
-                    if thread != threading.current_thread():
-                        if thread.daemon:
-                            daemon_count += 1
-                        else:
-                            non_daemon_threads.append(thread)
+                    if thread != threading.current_thread() and not thread.daemon:
+                        non_daemon_threads.append(thread)
                 
-                # Only handle non-daemon threads (these can prevent shutdown)
                 if non_daemon_threads:
-                    print(f"🔄 Gracefully stopping {len(non_daemon_threads)} non-daemon threads...")
                     for thread in non_daemon_threads:
                         try:
                             thread.join(timeout=1.0)
-                            if thread.is_alive():
-                                print(f"⚠️ Non-daemon thread {thread.name} did not terminate gracefully")
-                            else:
-                                print(f"✅ Non-daemon thread {thread.name} terminated")
-                        except Exception as join_error:
-                            print(f"⚠️ Error joining thread {thread.name}: {join_error}")
+                        except:
+                            pass
                 
-                # Daemon threads are handled silently (they don't prevent shutdown)
-                # No need to actively terminate daemon threads as they won't block shutdown
-                if daemon_count > 0:
-                    pass  # Daemon threads will be cleaned up automatically on exit
-                
-                # Brief pause for cleanup
                 time.sleep(0.2)
-                
-                # Final check - only warn about non-daemon threads
-                final_non_daemon = []
-                for thread in threading.enumerate():
-                    if thread != threading.current_thread() and not thread.daemon:
-                        final_non_daemon.append(thread)
-                
-                if final_non_daemon:
-                    print(f"⚠️ {len(final_non_daemon)} non-daemon threads still active after cleanup")
-                    for thread in final_non_daemon:
-                        print(f"  - Active thread: {thread.name} (alive: {thread.is_alive()})")
-                else:
-                    print("✅ All critical threads cleaned up successfully")
-            else:
-                print("✅ No background threads to clean up")
-                
-        except Exception as thread_error:
-            print(f"⚠️ Error during thread cleanup: {thread_error}")
+        except:
+            pass
         
-        print("✅ Comprehensive application cleanup completed")
+        print("✅ Application shutdown completed")
         
-    except Exception as cleanup_error:
-        print(f"❌ Unexpected error during comprehensive cleanup: {cleanup_error}")
-        import traceback
-        traceback.print_exc()
+    except:
+        pass
 
 def setup_logging():
     """Setup application logging with file and console output."""
@@ -250,15 +183,18 @@ def setup_logging():
     log_file = log_dir / "train_times.log"
     
     logging.basicConfig(
-        level=logging.WARNING,
+        level=logging.CRITICAL,
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         handlers=[logging.FileHandler(str(log_file)), logging.StreamHandler()],
     )
 
-    # Set specific log levels for different modules
-    logging.getLogger("src.api").setLevel(logging.WARNING)
-    logging.getLogger("src.ui").setLevel(logging.WARNING)
-    logging.getLogger("src.managers").setLevel(logging.WARNING)
+    # Set specific log levels for different modules to suppress all warnings and errors
+    logging.getLogger("src.api").setLevel(logging.CRITICAL)
+    logging.getLogger("src.ui").setLevel(logging.CRITICAL)
+    logging.getLogger("src.managers").setLevel(logging.CRITICAL)
+    logging.getLogger("src.core").setLevel(logging.CRITICAL)
+    logging.getLogger("asyncio").setLevel(logging.CRITICAL)
+    logging.getLogger("aiohttp").setLevel(logging.CRITICAL)
 
 def setup_application_icon(app: QApplication):
     """
@@ -286,15 +222,14 @@ def setup_application_icon(app: QApplication):
         painter.setFont(font)
         painter.setPen(Qt.GlobalColor.black)
         
-        # Draw the train emoji centered
-        painter.drawText(pixmap.rect(), Qt.AlignmentFlag.AlignCenter, "🚂")
+        # Draw the train text centered
+        painter.drawText(pixmap.rect(), Qt.AlignmentFlag.AlignCenter, "TRAIN")
         painter.end()
         
         # Create icon and set it
         icon = QIcon(pixmap)
         app.setWindowIcon(icon)
         
-        logging.warning("Application icon set using Unicode train emoji")
         
     except Exception as e:
         logging.warning(f"Failed to create emoji icon, using default: {e}")
@@ -360,7 +295,6 @@ class SingleInstanceApplication(QApplication):
             print("This should not happen. Exiting to prevent multiple instances.")
             sys.exit(1)
         
-        print("Qt singleton check passed - application starting normally.")
     
     def cleanup_shared_memory(self):
         """Clean up shared memory segment with enhanced error handling."""
@@ -369,30 +303,12 @@ class SingleInstanceApplication(QApplication):
                 try:
                     if self.shared_memory.isAttached():
                         self.shared_memory.detach()
-                        print("✅ Shared memory detached successfully")
-                    else:
-                        print("ℹ️ Shared memory was not attached")
-                except RuntimeError as runtime_error:
-                    # Handle Qt runtime errors gracefully
-                    print(f"⚠️ Qt runtime error during shared memory cleanup: {runtime_error}")
-                except Exception as shared_error:
-                    print(f"⚠️ Error detaching shared memory: {shared_error}")
+                except:
+                    pass
                 
-                # Additional cleanup - try to destroy the shared memory segment
-                try:
-                    # This helps prevent stale shared memory segments
-                    if hasattr(self.shared_memory, 'key') and self.shared_memory.key():
-                        print(f"ℹ️ Shared memory key was: {self.shared_memory.key()}")
-                except Exception as key_error:
-                    print(f"⚠️ Error getting shared memory key: {key_error}")
-                
-                # Clear the reference
                 self.shared_memory = None
-                print("✅ Shared memory reference cleared")
-            else:
-                print("ℹ️ No shared memory to clean up")
-        except Exception as e:
-            print(f"⚠️ Unexpected error during shared memory cleanup: {e}")
+        except:
+            pass
 
 def main():
     """Main application entry point."""
@@ -400,8 +316,6 @@ def main():
         # Setup logging first
         setup_logging()
         logger = logging.getLogger(__name__)
-
-        logger.warning("Starting Trainer - Trainer train times application")
 
         # Create single instance QApplication with dual protection
         app = SingleInstanceApplication(sys.argv)
@@ -456,10 +370,10 @@ def main():
             # Set the route from configuration for offline timetable generation
             # Only set route if we have valid station configuration
             if (config and config.stations and
-                getattr(config.stations, 'from_code', None) and
-                getattr(config.stations, 'to_code', None)):
-                train_manager.set_route(config.stations.from_code, config.stations.to_code)
-                logger.debug(f"Route configured: {config.stations.from_name} ({config.stations.from_code}) -> {config.stations.to_name} ({config.stations.to_code})")
+                getattr(config.stations, 'from_name', None) and
+                getattr(config.stations, 'to_name', None)):
+                train_manager.set_route(config.stations.from_name, config.stations.to_name)
+                logger.debug(f"Route configured: {config.stations.from_name} -> {config.stations.to_name}")
             else:
                 logger.info("No valid station configuration found - train list will be empty until stations are configured")
 

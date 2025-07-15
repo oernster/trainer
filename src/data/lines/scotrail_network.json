@@ -1145,11 +1145,11 @@
       "typical_journey_time": 67,
       "frequency": "Every 30 minutes",
       "stations": [
-        "GLC",
-        "GLQ",
-        "EDB",
-        "STG",
-        "INV"
+        "Glasgow Central",
+        "Glasgow Queen Street",
+        "Edinburgh Waverley",
+        "Stirling",
+        "Inverness"
       ],
       "peak_frequency": "Every 20 minutes",
       "off_peak_frequency": "Every 30 minutes",
@@ -1166,12 +1166,12 @@
       "typical_journey_time": 81,
       "frequency": "Every 60 minutes",
       "stations": [
-        "GLC",
-        "EDB",
+        "Glasgow Central",
+        "Edinburgh Waverley",
         "PTH",
         "ABE",
         "KYL",
-        "FTW",
+        "Fort William",
         "AYR",
         "DMF",
         "PYG",

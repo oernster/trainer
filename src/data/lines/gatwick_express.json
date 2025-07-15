@@ -14,10 +14,10 @@
     }
   },
   "typical_journey_times": {
-    "VIC-CLJ": 8,
-    "CLJ-ECR": 12,
-    "ECR-GTW": 15,
-    "VIC-GTW": 30
+    "London Victoria-Clapham Junction": 8,
+    "Clapham Junction-East Croydon": 12,
+    "East Croydon-Gatwick Airport": 15,
+    "London Victoria-Gatwick Airport": 30
   },
   "typical_services": {
     "peak_frequency": "Every 15 minutes",
@@ -167,10 +167,10 @@
       "typical_journey_time": 12,
       "frequency": "Every 15 minutes",
       "stations": [
-        "VIC",
-        "CLJ",
-        "ECR",
-        "GTW"
+        "London Victoria",
+        "Clapham Junction",
+        "East Croydon",
+        "Gatwick Airport"
       ],
       "peak_frequency": null,
       "off_peak_frequency": null,

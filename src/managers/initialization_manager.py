@@ -376,19 +376,17 @@ class InitializationManager(QObject):
         """Fetch initial weather data (non-blocking)."""
         if self.weather_manager:
             try:
-                # Use QTimer to run async operation without blocking
-                loop = asyncio.get_event_loop()
-                if loop.is_running():
-                    asyncio.create_task(self.weather_manager.refresh_weather())
-                else:
-                    # Run in new thread to avoid blocking
-                    def run_weather_fetch():
-                        if self.weather_manager:  # Additional null check
+                # Always run in new thread to avoid blocking and event loop issues
+                def run_weather_fetch():
+                    if self.weather_manager:  # Additional null check
+                        try:
                             asyncio.run(self.weather_manager.refresh_weather())
-                    
-                    threading.Thread(target=run_weather_fetch, daemon=True).start()
-                    
-                logger.debug("Initial weather fetch started")
+                            logger.debug("Initial weather fetch completed successfully")
+                        except Exception as e:
+                            logger.error(f"Weather fetch failed in thread: {e}")
+                
+                threading.Thread(target=run_weather_fetch, daemon=True).start()
+                logger.debug("Initial weather fetch started in background thread")
             except Exception as e:
                 logger.warning(f"Failed to start initial weather fetch: {e}")
     

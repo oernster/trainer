@@ -1,0 +1,855 @@
+{
+  "metadata": {
+    "line_name": "Cambrian Line",
+    "description": "Shrewsbury to Aberystwyth/Pwllheli",
+    "operator": "Transport for Wales",
+    "total_stations": 31,
+    "frequency": {
+      "weekday_peak": "Every 2 hours",
+      "weekday_off_peak": "Every 2 hours",
+      "weekend": "Every 3 hours",
+      "night": "No service"
+    }
+  },
+  "stations": [
+    {
+      "name": "Shrewsbury",
+      "coordinates": {
+        "lat": 52.7081,
+        "lng": -2.7531
+      },
+      "interchange": [
+        "Welsh Marches Line",
+        "Heart of Wales Line"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Welshpool",
+      "coordinates": {
+        "lat": 52.6631,
+        "lng": -3.1431
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:25",
+          "08:25",
+          "10:25"
+        ],
+        "afternoon": [
+          "12:25",
+          "14:25",
+          "16:25"
+        ],
+        "evening": [
+          "18:25",
+          "20:25"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Newtown",
+      "coordinates": {
+        "lat": 52.5131,
+        "lng": -3.3231
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:45",
+          "08:45",
+          "10:45"
+        ],
+        "afternoon": [
+          "12:45",
+          "14:45",
+          "16:45"
+        ],
+        "evening": [
+          "18:45",
+          "20:45"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Caersws",
+      "coordinates": {
+        "lat": 52.5131,
+        "lng": -3.4281
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:55",
+          "08:55",
+          "10:55"
+        ],
+        "afternoon": [
+          "12:55",
+          "14:55",
+          "16:55"
+        ],
+        "evening": [
+          "18:55",
+          "20:55"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Machynlleth",
+      "coordinates": {
+        "lat": 52.5931,
+        "lng": -3.8531
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:30",
+          "09:30",
+          "11:30"
+        ],
+        "afternoon": [
+          "13:30",
+          "15:30",
+          "17:30"
+        ],
+        "evening": [
+          "19:30",
+          "21:30"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Dovey Junction",
+      "coordinates": {
+        "lat": 52.5631,
+        "lng": -3.9131
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:40",
+          "09:40",
+          "11:40"
+        ],
+        "afternoon": [
+          "13:40",
+          "15:40",
+          "17:40"
+        ],
+        "evening": [
+          "19:40",
+          "21:40"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Borth",
+      "coordinates": {
+        "lat": 52.4881,
+        "lng": -4.0531
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:55",
+          "09:55",
+          "11:55"
+        ],
+        "afternoon": [
+          "13:55",
+          "15:55",
+          "17:55"
+        ],
+        "evening": [
+          "19:55",
+          "21:55"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Aberystwyth",
+      "coordinates": {
+        "lat": 52.4131,
+        "lng": -4.0831
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:10",
+          "10:10",
+          "12:10"
+        ],
+        "afternoon": [
+          "14:10",
+          "16:10",
+          "18:10"
+        ],
+        "evening": [
+          "20:10",
+          "22:10"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Aberdovey",
+      "coordinates": {
+        "lat": 52.5431,
+        "lng": -4.0531
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:55",
+          "09:55",
+          "11:55"
+        ],
+        "afternoon": [
+          "13:55",
+          "15:55",
+          "17:55"
+        ],
+        "evening": [
+          "19:55",
+          "21:55"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Tywyn",
+      "coordinates": {
+        "lat": 52.5831,
+        "lng": -4.0931
+      },
+      "interchange": [
+        "Talyllyn Railway"
+      ],
+      "times": {
+        "morning": [
+          "08:05",
+          "10:05",
+          "12:05"
+        ],
+        "afternoon": [
+          "14:05",
+          "16:05",
+          "18:05"
+        ],
+        "evening": [
+          "20:05",
+          "22:05"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Tonfanau",
+      "coordinates": {
+        "lat": 52.6031,
+        "lng": -4.1231
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:10",
+          "10:10",
+          "12:10"
+        ],
+        "afternoon": [
+          "14:10",
+          "16:10",
+          "18:10"
+        ],
+        "evening": [
+          "20:10",
+          "22:10"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Llwyngwril",
+      "coordinates": {
+        "lat": 52.6531,
+        "lng": -4.0881
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:20",
+          "10:20",
+          "12:20"
+        ],
+        "afternoon": [
+          "14:20",
+          "16:20",
+          "18:20"
+        ],
+        "evening": [
+          "20:20",
+          "22:20"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Fairbourne",
+      "coordinates": {
+        "lat": 52.6981,
+        "lng": -4.0531
+      },
+      "interchange": [
+        "Fairbourne Railway"
+      ],
+      "times": {
+        "morning": [
+          "08:25",
+          "10:25",
+          "12:25"
+        ],
+        "afternoon": [
+          "14:25",
+          "16:25",
+          "18:25"
+        ],
+        "evening": [
+          "20:25",
+          "22:25"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Barmouth",
+      "coordinates": {
+        "lat": 52.7231,
+        "lng": -4.0531
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:35",
+          "10:35",
+          "12:35"
+        ],
+        "afternoon": [
+          "14:35",
+          "16:35",
+          "18:35"
+        ],
+        "evening": [
+          "20:35",
+          "22:35"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Llanaber",
+      "coordinates": {
+        "lat": 52.7431,
+        "lng": -4.0731
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:40",
+          "10:40",
+          "12:40"
+        ],
+        "afternoon": [
+          "14:40",
+          "16:40",
+          "18:40"
+        ],
+        "evening": [
+          "20:40",
+          "22:40"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Talybont",
+      "coordinates": {
+        "lat": 52.7731,
+        "lng": -4.0931
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:45",
+          "10:45",
+          "12:45"
+        ],
+        "afternoon": [
+          "14:45",
+          "16:45",
+          "18:45"
+        ],
+        "evening": [
+          "20:45",
+          "22:45"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Dyffryn Ardudwy",
+      "coordinates": {
+        "lat": 52.7981,
+        "lng": -4.1031
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:50",
+          "10:50",
+          "12:50"
+        ],
+        "afternoon": [
+          "14:50",
+          "16:50",
+          "18:50"
+        ],
+        "evening": [
+          "20:50",
+          "22:50"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Llanbedr",
+      "coordinates": {
+        "lat": 52.8231,
+        "lng": -4.1131
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:55",
+          "10:55",
+          "12:55"
+        ],
+        "afternoon": [
+          "14:55",
+          "16:55",
+          "18:55"
+        ],
+        "evening": [
+          "20:55",
+          "22:55"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Pensarn",
+      "coordinates": {
+        "lat": 52.8431,
+        "lng": -4.1231
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "09:00",
+          "11:00",
+          "13:00"
+        ],
+        "afternoon": [
+          "15:00",
+          "17:00",
+          "19:00"
+        ],
+        "evening": [
+          "21:00",
+          "23:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Llandanwg",
+      "coordinates": {
+        "lat": 52.8531,
+        "lng": -4.1331
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "09:05",
+          "11:05",
+          "13:05"
+        ],
+        "afternoon": [
+          "15:05",
+          "17:05",
+          "19:05"
+        ],
+        "evening": [
+          "21:05",
+          "23:05"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Harlech",
+      "coordinates": {
+        "lat": 52.8631,
+        "lng": -4.1081
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "09:10",
+          "11:10",
+          "13:10"
+        ],
+        "afternoon": [
+          "15:10",
+          "17:10",
+          "19:10"
+        ],
+        "evening": [
+          "21:10",
+          "23:10"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Tygwyn",
+      "coordinates": {
+        "lat": 52.8931,
+        "lng": -4.1231
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "09:15",
+          "11:15",
+          "13:15"
+        ],
+        "afternoon": [
+          "15:15",
+          "17:15",
+          "19:15"
+        ],
+        "evening": [
+          "21:15",
+          "23:15"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Talsarnau",
+      "coordinates": {
+        "lat": 52.9131,
+        "lng": -4.1331
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "09:20",
+          "11:20",
+          "13:20"
+        ],
+        "afternoon": [
+          "15:20",
+          "17:20",
+          "19:20"
+        ],
+        "evening": [
+          "21:20",
+          "23:20"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Llandecwyn",
+      "coordinates": {
+        "lat": 52.9331,
+        "lng": -4.0731
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "09:25",
+          "11:25",
+          "13:25"
+        ],
+        "afternoon": [
+          "15:25",
+          "17:25",
+          "19:25"
+        ],
+        "evening": [
+          "21:25",
+          "23:25"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Penrhyndeudraeth",
+      "coordinates": {
+        "lat": 52.9331,
+        "lng": -4.0631
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "09:30",
+          "11:30",
+          "13:30"
+        ],
+        "afternoon": [
+          "15:30",
+          "17:30",
+          "19:30"
+        ],
+        "evening": [
+          "21:30",
+          "23:30"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Minffordd",
+      "coordinates": {
+        "lat": 52.9331,
+        "lng": -4.0531
+      },
+      "interchange": [
+        "Ffestiniog Railway"
+      ],
+      "times": {
+        "morning": [
+          "09:35",
+          "11:35",
+          "13:35"
+        ],
+        "afternoon": [
+          "15:35",
+          "17:35",
+          "19:35"
+        ],
+        "evening": [
+          "21:35",
+          "23:35"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Porthmadog",
+      "coordinates": {
+        "lat": 52.9331,
+        "lng": -4.1331
+      },
+      "interchange": [
+        "Ffestiniog Railway",
+        "Welsh Highland Railway"
+      ],
+      "times": {
+        "morning": [
+          "09:45",
+          "11:45",
+          "13:45"
+        ],
+        "afternoon": [
+          "15:45",
+          "17:45",
+          "19:45"
+        ],
+        "evening": [
+          "21:45",
+          "23:45"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Criccieth",
+      "coordinates": {
+        "lat": 52.9231,
+        "lng": -4.2331
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "09:55",
+          "11:55",
+          "13:55"
+        ],
+        "afternoon": [
+          "15:55",
+          "17:55",
+          "19:55"
+        ],
+        "evening": [
+          "21:55",
+          "23:55"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Penychain",
+      "coordinates": {
+        "lat": 52.9031,
+        "lng": -4.3331
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "10:05",
+          "12:05",
+          "14:05"
+        ],
+        "afternoon": [
+          "16:05",
+          "18:05",
+          "20:05"
+        ],
+        "evening": [
+          "22:05",
+          "00:05"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Abererch",
+      "coordinates": {
+        "lat": 52.8931,
+        "lng": -4.3731
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "10:10",
+          "12:10",
+          "14:10"
+        ],
+        "afternoon": [
+          "16:10",
+          "18:10",
+          "20:10"
+        ],
+        "evening": [
+          "22:10",
+          "00:10"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Pwllheli",
+      "coordinates": {
+        "lat": 52.8831,
+        "lng": -4.4131
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "10:20",
+          "12:20",
+          "14:20"
+        ],
+        "afternoon": [
+          "16:20",
+          "18:20",
+          "20:20"
+        ],
+        "evening": [
+          "22:20",
+          "00:20"
+        ],
+        "night": []
+      }
+    }
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations"
+    },
+    "semi_fast": {
+      "stations": [
+        "SSH",
+        "WLP",
+        "CSW",
+        "MCH",
+        "BRH",
+        "AYW",
+        "TYW",
+        "TNF",
+        "FRB",
+        "BMT",
+        "TLB",
+        "LBR",
+        "PES",
+        "HRL",
+        "TYG",
+        "LLC",
+        "PRH",
+        "PTM",
+        "CCC",
+        "ABH",
+        "PWL"
+      ],
+      "description": "Semi-fast service calling at major stations"
+    },
+    "fast": {
+      "stations": [
+        "SSH",
+        "NWT",
+        "MCH",
+        "BRH",
+        "AVY",
+        "LL1",
+        "BMT",
+        "TLB",
+        "LBR",
+        "LDN",
+        "TAL",
+        "PRH",
+        "PTM",
+        "PNC",
+        "PWL"
+      ],
+      "description": "Fast service calling at principal stations"
+    }
+  }
+}

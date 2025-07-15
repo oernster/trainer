@@ -1,0 +1,1011 @@
+{
+  "metadata": {
+    "line_name": "Merseyrail Northern Line",
+    "description": "Liverpool Central to Southport, Ormskirk and Kirkby",
+    "operator": "Merseyrail",
+    "total_stations": 35,
+    "typical_frequency": "Every 15 minutes",
+    "peak_hours": "07:00-09:30, 16:30-19:00",
+    "frequency": {
+      "weekday_peak": "Every hour",
+      "weekday_off_peak": "Every 2 hours",
+      "weekend": "Every 2 hours",
+      "night": "No service"
+    }
+  },
+  "typical_journey_times": {
+    "LVC-MRF": 3,
+    "AIN-FBY": 3,
+    "FBY-HTO": 3,
+    "HI1-SOP": 3,
+    "RCE-AUG": 3,
+    "AUG-OMS": 3
+  },
+  "typical_services": {
+    "peak_frequency": "Every 7.5 minutes",
+    "off_peak_frequency": "Every 15 minutes",
+    "evening_frequency": "Every 30 minutes",
+    "weekend_frequency": "Every 15 minutes",
+    "first_train": "05:30",
+    "last_train": "00:00"
+  },
+  "stations": [
+    {
+      "name": "Liverpool Central",
+      "coordinates": {
+        "lat": 53.4053,
+        "lng": -2.9797
+      },
+      "interchange": [
+        "Merseyrail Wirral Line",
+        "Northern Line"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Moorfields",
+      "coordinates": {
+        "lat": 53.4097,
+        "lng": -2.9889
+      },
+      "interchange": [
+        "Merseyrail Wirral Line"
+      ],
+      "times": {
+        "morning": [
+          "06:11",
+          "08:11",
+          "10:11"
+        ],
+        "afternoon": [
+          "12:11",
+          "14:11",
+          "16:11"
+        ],
+        "evening": [
+          "18:11",
+          "20:11",
+          "22:11"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Sandhills",
+      "coordinates": {
+        "lat": 53.4294,
+        "lng": -2.9917
+      },
+      "interchange": [
+        "Exchange Branch"
+      ],
+      "times": {
+        "morning": [
+          "06:12",
+          "08:12",
+          "10:12"
+        ],
+        "afternoon": [
+          "12:12",
+          "14:12",
+          "16:12"
+        ],
+        "evening": [
+          "18:12",
+          "20:12",
+          "22:12"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Bank Hall",
+      "coordinates": {
+        "lat": 53.4375,
+        "lng": -2.9917
+      },
+      "times": {
+        "morning": [
+          "06:32",
+          "08:32",
+          "10:32"
+        ],
+        "afternoon": [
+          "12:32",
+          "14:32",
+          "16:32"
+        ],
+        "evening": [
+          "18:32",
+          "20:32",
+          "22:32"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Bootle Oriel Road",
+      "coordinates": {
+        "lat": 53.4458,
+        "lng": -2.9917
+      },
+      "times": {
+        "morning": [
+          "06:38",
+          "08:38",
+          "10:38"
+        ],
+        "afternoon": [
+          "12:38",
+          "14:38",
+          "16:38"
+        ],
+        "evening": [
+          "18:38",
+          "20:38",
+          "22:38"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Bootle New Strand",
+      "coordinates": {
+        "lat": 53.4542,
+        "lng": -2.9917
+      },
+      "times": {
+        "morning": [
+          "07:05",
+          "09:05",
+          "11:05"
+        ],
+        "afternoon": [
+          "13:05",
+          "15:05",
+          "17:05"
+        ],
+        "evening": [
+          "19:05",
+          "21:05",
+          "23:05"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Seaforth & Litherland",
+      "coordinates": {
+        "lat": 53.4625,
+        "lng": -2.9917
+      },
+      "times": {
+        "morning": [
+          "07:17",
+          "09:17",
+          "11:17"
+        ],
+        "afternoon": [
+          "13:17",
+          "15:17",
+          "17:17"
+        ],
+        "evening": [
+          "19:17",
+          "21:17",
+          "23:17"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Waterloo",
+      "coordinates": {
+        "lat": 53.4708,
+        "lng": -2.9917
+      },
+      "times": {
+        "morning": [
+          "07:45",
+          "09:45",
+          "11:45"
+        ],
+        "afternoon": [
+          "13:45",
+          "15:45",
+          "17:45"
+        ],
+        "evening": [
+          "19:45",
+          "21:45",
+          "23:45"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Blundellsands & Crosby",
+      "coordinates": {
+        "lat": 53.4792,
+        "lng": -2.9917
+      },
+      "times": {
+        "morning": [
+          "06:51",
+          "08:51",
+          "10:51"
+        ],
+        "afternoon": [
+          "12:51",
+          "14:51",
+          "16:51"
+        ],
+        "evening": [
+          "18:51",
+          "20:51",
+          "22:51"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Hall Road",
+      "coordinates": {
+        "lat": 53.4875,
+        "lng": -2.9917
+      },
+      "times": {
+        "morning": [
+          "08:13",
+          "10:13",
+          "12:13"
+        ],
+        "afternoon": [
+          "14:13",
+          "16:13",
+          "18:13"
+        ],
+        "evening": [
+          "20:13",
+          "22:13",
+          "00:13"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Hightown",
+      "coordinates": {
+        "lat": 53.5208,
+        "lng": -2.9917
+      },
+      "times": {
+        "morning": [
+          "06:50",
+          "08:50",
+          "10:50"
+        ],
+        "afternoon": [
+          "12:50",
+          "14:50",
+          "16:50"
+        ],
+        "evening": [
+          "18:50",
+          "20:50",
+          "22:50"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Formby",
+      "coordinates": {
+        "lat": 53.5542,
+        "lng": -2.9917
+      },
+      "times": {
+        "morning": [
+          "07:54",
+          "09:54",
+          "11:54"
+        ],
+        "afternoon": [
+          "13:54",
+          "15:54",
+          "17:54"
+        ],
+        "evening": [
+          "19:54",
+          "21:54",
+          "23:54"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Freshfield",
+      "coordinates": {
+        "lat": 53.5625,
+        "lng": -2.9917
+      },
+      "times": {
+        "morning": [
+          "08:26",
+          "10:26",
+          "12:26"
+        ],
+        "afternoon": [
+          "14:26",
+          "16:26",
+          "18:26"
+        ],
+        "evening": [
+          "20:26",
+          "22:26",
+          "00:26"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Ainsdale",
+      "coordinates": {
+        "lat": 53.5792,
+        "lng": -2.9917
+      },
+      "times": {
+        "morning": [
+          "08:18",
+          "10:18",
+          "12:18"
+        ],
+        "afternoon": [
+          "14:18",
+          "16:18",
+          "18:18"
+        ],
+        "evening": [
+          "20:18",
+          "22:18",
+          "00:18"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Hillside",
+      "coordinates": {
+        "lat": 53.5875,
+        "lng": -2.9917
+      },
+      "times": {
+        "morning": [
+          "09:10",
+          "11:10",
+          "13:10"
+        ],
+        "afternoon": [
+          "15:10",
+          "17:10",
+          "19:10"
+        ],
+        "evening": [
+          "21:10",
+          "23:10",
+          "01:10"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Birkdale",
+      "coordinates": {
+        "lat": 53.5958,
+        "lng": -2.9917
+      },
+      "times": {
+        "morning": [
+          "08:28",
+          "10:28",
+          "12:28"
+        ],
+        "afternoon": [
+          "14:28",
+          "16:28",
+          "18:28"
+        ],
+        "evening": [
+          "20:28",
+          "22:28",
+          "00:28"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Southport",
+      "coordinates": {
+        "lat": 53.6458,
+        "lng": -2.9917
+      },
+      "interchange": [
+        "Northern Rail"
+      ],
+      "times": {
+        "morning": [
+          "08:58",
+          "10:58",
+          "12:58"
+        ],
+        "afternoon": [
+          "14:58",
+          "16:58",
+          "18:58"
+        ],
+        "evening": [
+          "20:58",
+          "22:58",
+          "00:58"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Brunswick",
+      "coordinates": {
+        "lat": 53.3875,
+        "lng": -2.9708
+      },
+      "times": {
+        "morning": [
+          "09:29",
+          "11:29",
+          "13:29"
+        ],
+        "afternoon": [
+          "15:29",
+          "17:29",
+          "19:29"
+        ],
+        "evening": [
+          "21:29",
+          "23:29",
+          "01:29"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "St Michaels",
+      "coordinates": {
+        "lat": 53.3792,
+        "lng": -2.9542
+      },
+      "times": {
+        "morning": [
+          "08:10",
+          "10:10",
+          "12:10"
+        ],
+        "afternoon": [
+          "14:10",
+          "16:10",
+          "18:10"
+        ],
+        "evening": [
+          "20:10",
+          "22:10",
+          "00:10"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Aigburth",
+      "coordinates": {
+        "lat": 53.3708,
+        "lng": -2.9375
+      },
+      "times": {
+        "morning": [
+          "09:07",
+          "11:07",
+          "13:07"
+        ],
+        "afternoon": [
+          "15:07",
+          "17:07",
+          "19:07"
+        ],
+        "evening": [
+          "21:07",
+          "23:07",
+          "01:07"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Cressington",
+      "coordinates": {
+        "lat": 53.3625,
+        "lng": -2.9208
+      },
+      "times": {
+        "morning": [
+          "07:59",
+          "09:59",
+          "11:59"
+        ],
+        "afternoon": [
+          "13:59",
+          "15:59",
+          "17:59"
+        ],
+        "evening": [
+          "19:59",
+          "21:59",
+          "23:59"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Liverpool South Parkway",
+      "coordinates": {
+        "lat": 53.3542,
+        "lng": -2.9042
+      },
+      "interchange": [
+        "Northern Rail",
+        "East Midlands Railway",
+        "TransPennine Express",
+        "Liverpool John Lennon Airport"
+      ],
+      "times": {
+        "morning": [
+          "10:20",
+          "12:20",
+          "14:20"
+        ],
+        "afternoon": [
+          "16:20",
+          "18:20",
+          "20:20"
+        ],
+        "evening": [
+          "22:20",
+          "00:20",
+          "02:20"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Hunts Cross",
+      "coordinates": {
+        "lat": 53.3458,
+        "lng": -2.8875
+      },
+      "interchange": [
+        "Northern Rail"
+      ],
+      "times": {
+        "morning": [
+          "09:20",
+          "11:20",
+          "13:20"
+        ],
+        "afternoon": [
+          "15:20",
+          "17:20",
+          "19:20"
+        ],
+        "evening": [
+          "21:20",
+          "23:20",
+          "01:20"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Rice Lane",
+      "coordinates": {
+        "lat": 53.4458,
+        "lng": -2.9708
+      },
+      "times": {
+        "morning": [
+          "10:25",
+          "12:25",
+          "14:25"
+        ],
+        "afternoon": [
+          "16:25",
+          "18:25",
+          "20:25"
+        ],
+        "evening": [
+          "22:25",
+          "00:25",
+          "02:25"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Kirkby",
+      "coordinates": {
+        "lat": 53.4792,
+        "lng": -2.9042
+      },
+      "interchange": [
+        "Northern Rail"
+      ],
+      "times": {
+        "morning": [
+          "11:05",
+          "13:05",
+          "15:05"
+        ],
+        "afternoon": [
+          "17:05",
+          "19:05",
+          "21:05"
+        ],
+        "evening": [
+          "23:05",
+          "01:05",
+          "03:05"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Fazakerley",
+      "coordinates": {
+        "lat": 53.4625,
+        "lng": -2.9375
+      },
+      "times": {
+        "morning": [
+          "11:36",
+          "13:36",
+          "15:36"
+        ],
+        "afternoon": [
+          "17:36",
+          "19:36",
+          "21:36"
+        ],
+        "evening": [
+          "23:36",
+          "01:36",
+          "03:36"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Walton",
+      "coordinates": {
+        "lat": 53.4542,
+        "lng": -2.9542
+      },
+      "times": {
+        "morning": [
+          "08:58",
+          "10:58",
+          "12:58"
+        ],
+        "afternoon": [
+          "14:58",
+          "16:58",
+          "18:58"
+        ],
+        "evening": [
+          "20:58",
+          "22:58",
+          "00:58"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Orrell Park",
+      "coordinates": {
+        "lat": 53.4458,
+        "lng": -2.9625
+      },
+      "times": {
+        "morning": [
+          "11:50",
+          "13:50",
+          "15:50"
+        ],
+        "afternoon": [
+          "17:50",
+          "19:50",
+          "21:50"
+        ],
+        "evening": [
+          "23:50",
+          "01:50",
+          "03:50"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Aintree",
+      "coordinates": {
+        "lat": 53.4708,
+        "lng": -2.9375
+      },
+      "interchange": [
+        "Aintree Racecourse"
+      ],
+      "times": {
+        "morning": [
+          "12:05",
+          "14:05",
+          "16:05"
+        ],
+        "afternoon": [
+          "18:05",
+          "20:05",
+          "22:05"
+        ],
+        "evening": [
+          "00:05",
+          "02:05",
+          "04:05"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Old Roan",
+      "coordinates": {
+        "lat": 53.4792,
+        "lng": -2.9375
+      },
+      "times": {
+        "morning": [
+          "11:44",
+          "13:44",
+          "15:44"
+        ],
+        "afternoon": [
+          "17:44",
+          "19:44",
+          "21:44"
+        ],
+        "evening": [
+          "23:44",
+          "01:44",
+          "03:44"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Maghull",
+      "coordinates": {
+        "lat": 53.5042,
+        "lng": -2.9375
+      },
+      "times": {
+        "morning": [
+          "13:03",
+          "15:03",
+          "17:03"
+        ],
+        "afternoon": [
+          "19:03",
+          "21:03",
+          "23:03"
+        ],
+        "evening": [
+          "01:03",
+          "03:03",
+          "05:03"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Maghull North",
+      "coordinates": {
+        "lat": 53.5125,
+        "lng": -2.9375
+      },
+      "times": {
+        "morning": [
+          "09:18",
+          "11:18",
+          "13:18"
+        ],
+        "afternoon": [
+          "15:18",
+          "17:18",
+          "19:18"
+        ],
+        "evening": [
+          "21:18",
+          "23:18",
+          "01:18"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Town Green",
+      "coordinates": {
+        "lat": 53.5375,
+        "lng": -2.9208
+      },
+      "times": {
+        "morning": [
+          "09:21",
+          "11:21",
+          "13:21"
+        ],
+        "afternoon": [
+          "15:21",
+          "17:21",
+          "19:21"
+        ],
+        "evening": [
+          "21:21",
+          "23:21",
+          "01:21"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Aughton Park",
+      "coordinates": {
+        "lat": 53.5458,
+        "lng": -2.9125
+      },
+      "times": {
+        "morning": [
+          "10:49",
+          "12:49",
+          "14:49"
+        ],
+        "afternoon": [
+          "16:49",
+          "18:49",
+          "20:49"
+        ],
+        "evening": [
+          "22:49",
+          "00:49",
+          "02:49"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Ormskirk",
+      "coordinates": {
+        "lat": 53.5708,
+        "lng": -2.8875
+      },
+      "interchange": [
+        "Northern Rail"
+      ],
+      "times": {
+        "morning": [
+          "10:05",
+          "12:05",
+          "14:05"
+        ],
+        "afternoon": [
+          "16:05",
+          "18:05",
+          "20:05"
+        ],
+        "evening": [
+          "22:05",
+          "00:05",
+          "02:05"
+        ],
+        "night": []
+      }
+    }
+  ],
+  "service_patterns": {
+    "fast": {
+      "service_type": "fast",
+      "description": "Fast service - major towns and interchanges",
+      "typical_journey_time": 52,
+      "frequency": "Every 30 minutes",
+      "stations": [
+        "LVC",
+        "SOP",
+        "OMS",
+        "KIR"
+      ],
+      "peak_frequency": "Every 20 minutes",
+      "off_peak_frequency": "Every 30 minutes",
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "semi_fast": {
+      "service_type": "semi_fast",
+      "description": "Semi-fast service - market towns",
+      "typical_journey_time": 63,
+      "frequency": "Every 60 minutes",
+      "stations": [
+        "LVC",
+        "SDL",
+        "BOT",
+        "SFL",
+        "BDC",
+        "HTO",
+        "FRE",
+        "HI1",
+        "SOP",
+        "STM",
+        "CSG",
+        "HNX",
+        "KIR",
+        "WAO",
+        "AIN",
+        "MAG",
+        "TWN",
+        "OMS"
+      ],
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "stopping": {
+      "service_type": "stopping",
+      "description": "Stopping service - all stations",
+      "typical_journey_time": 70,
+      "frequency": "Every 2 hours",
+      "stations": "all",
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    }
+  }
+}

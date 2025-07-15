@@ -123,7 +123,7 @@
     }
   },
   "typical_journey_times": {
-    "CDF-RHY": 50,
-    "RHY-CDF": 50
+    "Cardiff Central-RHY": 50,
+    "RHY-Cardiff Central": 50
   }
 }

@@ -14,8 +14,8 @@
     }
   },
   "typical_journey_times": {
-    "BIR-WVH": 20,
-    "WVH-SSH": 35,
+    "BIR-Wolverhampton": 20,
+    "Wolverhampton-SSH": 35,
     "BIR-CCV": 25,
     "BIR-LIC": 30,
     "BIR-RUG": 35,
@@ -1138,8 +1138,8 @@
       "typical_journey_time": 48,
       "frequency": "Every 30 minutes",
       "stations": [
-        "BIR",
-        "WVH",
+        "Birmingham International",
+        "Wolverhampton",
         "ALV"
       ],
       "peak_frequency": "Every 20 minutes",
@@ -1157,10 +1157,10 @@
       "typical_journey_time": 60,
       "frequency": "Every 60 minutes",
       "stations": [
-        "BIR",
+        "Birmingham International",
         "BSW",
         "SSH",
-        "LMS",
+        "Leamington Spa",
         "NUN",
         "LIC",
         "BUT",

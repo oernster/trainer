@@ -1,0 +1,129 @@
+{
+  "metadata": {
+    "line_name": "Rhymney Line",
+    "description": "Cardiff Central to Rhymney via Caerphilly",
+    "operator": "Transport for Wales",
+    "total_stations": 15,
+    "line_color": "#D2001F"
+  },
+  "stations": [
+    {
+      "name": "Cardiff Central",
+      "coordinates": {
+        "lat": 51.4756,
+        "lng": -3.1756
+      }
+    },
+    {
+      "name": "Cardiff Queen Street",
+      "coordinates": {
+        "lat": 51.4806,
+        "lng": -3.1656
+      }
+    },
+    {
+      "name": "Heath High Level",
+      "coordinates": {
+        "lat": 51.5006,
+        "lng": -3.1856
+      }
+    },
+    {
+      "name": "Birchgrove",
+      "coordinates": {
+        "lat": 51.5206,
+        "lng": -3.2056
+      }
+    },
+    {
+      "name": "Caerphilly",
+      "coordinates": {
+        "lat": 51.5756,
+        "lng": -3.2156
+      }
+    },
+    {
+      "name": "Energlyn & Churchill Park",
+      "coordinates": {
+        "lat": 51.5956,
+        "lng": -3.2356
+      }
+    },
+    {
+      "name": "Llanbradach",
+      "coordinates": {
+        "lat": 51.6156,
+        "lng": -3.2556
+      }
+    },
+    {
+      "name": "Ystrad Mynach",
+      "coordinates": {
+        "lat": 51.6356,
+        "lng": -3.2756
+      }
+    },
+    {
+      "name": "Hengoed",
+      "coordinates": {
+        "lat": 51.6556,
+        "lng": -3.2956
+      }
+    },
+    {
+      "name": "Pengam",
+      "coordinates": {
+        "lat": 51.6756,
+        "lng": -3.3156
+      }
+    },
+    {
+      "name": "Gilfach Fargoed",
+      "coordinates": {
+        "lat": 51.6956,
+        "lng": -3.3356
+      }
+    },
+    {
+      "name": "Bargoed",
+      "coordinates": {
+        "lat": 51.7156,
+        "lng": -3.3556
+      }
+    },
+    {
+      "name": "Brithdir",
+      "coordinates": {
+        "lat": 51.7356,
+        "lng": -3.3756
+      }
+    },
+    {
+      "name": "Tir-Phil",
+      "coordinates": {
+        "lat": 51.7556,
+        "lng": -3.3956
+      }
+    },
+    {
+      "name": "Rhymney",
+      "coordinates": {
+        "lat": 51.7756,
+        "lng": -3.4156
+      }
+    }
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Local service to Rhymney Valley",
+      "service_type": "stopping",
+      "typical_journey_time": 60,
+      "frequency": "Every 30 minutes"
+    }
+  },
+  "typical_journey_times": {
+    "CDF-RHY": 50,
+    "RHY-CDF": 50
+  }
+}

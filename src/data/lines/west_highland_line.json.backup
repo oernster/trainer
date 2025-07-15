@@ -1,0 +1,129 @@
+{
+  "metadata": {
+    "line_name": "West Highland Line",
+    "description": "Glasgow Queen Street to Mallaig via Fort William",
+    "operator": "ScotRail",
+    "total_stations": 15,
+    "line_color": "#0065BD"
+  },
+  "stations": [
+    {
+      "name": "Glasgow Queen Street",
+      "coordinates": {
+        "lat": 55.8606,
+        "lng": -4.2506
+      }
+    },
+    {
+      "name": "Helensburgh Central",
+      "coordinates": {
+        "lat": 56.0106,
+        "lng": -4.6906
+      }
+    },
+    {
+      "name": "Garelochhead",
+      "coordinates": {
+        "lat": 56.0706,
+        "lng": -4.8206
+      }
+    },
+    {
+      "name": "Arrochar & Tarbet",
+      "coordinates": {
+        "lat": 56.2006,
+        "lng": -4.7306
+      }
+    },
+    {
+      "name": "Ardlui",
+      "coordinates": {
+        "lat": 56.3006,
+        "lng": -4.7206
+      }
+    },
+    {
+      "name": "Crianlarich",
+      "coordinates": {
+        "lat": 56.3906,
+        "lng": -4.6206
+      }
+    },
+    {
+      "name": "Tyndrum Lower",
+      "coordinates": {
+        "lat": 56.4306,
+        "lng": -4.7306
+      }
+    },
+    {
+      "name": "Bridge of Orchy",
+      "coordinates": {
+        "lat": 56.5206,
+        "lng": -4.7606
+      }
+    },
+    {
+      "name": "Rannoch",
+      "coordinates": {
+        "lat": 56.6906,
+        "lng": -4.2306
+      }
+    },
+    {
+      "name": "Corrour",
+      "coordinates": {
+        "lat": 56.7706,
+        "lng": -4.4106
+      }
+    },
+    {
+      "name": "Tulloch",
+      "coordinates": {
+        "lat": 56.8306,
+        "lng": -4.7006
+      }
+    },
+    {
+      "name": "Roy Bridge",
+      "coordinates": {
+        "lat": 56.8906,
+        "lng": -4.8306
+      }
+    },
+    {
+      "name": "Spean Bridge",
+      "coordinates": {
+        "lat": 56.9006,
+        "lng": -4.9506
+      }
+    },
+    {
+      "name": "Fort William",
+      "coordinates": {
+        "lat": 56.8206,
+        "lng": -5.1056
+      }
+    },
+    {
+      "name": "Mallaig",
+      "coordinates": {
+        "lat": 57.0056,
+        "lng": -5.8306
+      }
+    }
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Scenic service through the Scottish Highlands",
+      "service_type": "stopping",
+      "typical_journey_time": 60,
+      "frequency": "Every 30 minutes"
+    }
+  },
+  "typical_journey_times": {
+    "GLQ-MLG": 240,
+    "MLG-GLQ": 240
+  }
+}

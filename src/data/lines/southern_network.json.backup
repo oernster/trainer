@@ -1,0 +1,1370 @@
+{
+  "metadata": {
+    "line_name": "Southern Network",
+    "description": "Southern England railway services including South Coast and Kent lines",
+    "operator": "Southern/Southeastern",
+    "total_stations": 50,
+    "frequency": {
+      "weekday_peak": "Every hour",
+      "weekday_off_peak": "Every 2 hours",
+      "weekend": "Every 2 hours",
+      "night": "No service"
+    }
+  },
+  "stations": [
+    {
+      "name": "London Bridge",
+      "coordinates": {
+        "lat": 51.5049,
+        "lng": -0.0863
+      },
+      "zone": 1,
+      "interchange": [
+        "Jubilee Line",
+        "Northern Line"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "London Victoria",
+      "coordinates": {
+        "lat": 51.4952,
+        "lng": -0.1441
+      },
+      "zone": 1,
+      "interchange": [
+        "Circle Line",
+        "District Line",
+        "Victoria Line"
+      ],
+      "times": {
+        "morning": [
+          "06:07",
+          "08:07",
+          "10:07"
+        ],
+        "afternoon": [
+          "12:07",
+          "14:07",
+          "16:07"
+        ],
+        "evening": [
+          "18:07",
+          "20:07",
+          "22:07"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "London Waterloo East",
+      "coordinates": {
+        "lat": 51.5044,
+        "lng": -0.1119
+      },
+      "zone": 1,
+      "times": {
+        "morning": [
+          "06:15",
+          "08:15",
+          "10:15"
+        ],
+        "afternoon": [
+          "12:15",
+          "14:15",
+          "16:15"
+        ],
+        "evening": [
+          "18:15",
+          "20:15",
+          "22:15"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "London Cannon Street",
+      "coordinates": {
+        "lat": 51.5114,
+        "lng": -0.0906
+      },
+      "zone": 1,
+      "interchange": [
+        "Circle Line",
+        "District Line"
+      ],
+      "times": {
+        "morning": [
+          "06:45",
+          "08:45",
+          "10:45"
+        ],
+        "afternoon": [
+          "12:45",
+          "14:45",
+          "16:45"
+        ],
+        "evening": [
+          "18:45",
+          "20:45",
+          "22:45"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "London Charing Cross",
+      "coordinates": {
+        "lat": 51.5081,
+        "lng": -0.1247
+      },
+      "zone": 1,
+      "interchange": [
+        "Bakerloo Line",
+        "Northern Line"
+      ],
+      "times": {
+        "morning": [
+          "06:59",
+          "08:59",
+          "10:59"
+        ],
+        "afternoon": [
+          "12:59",
+          "14:59",
+          "16:59"
+        ],
+        "evening": [
+          "18:59",
+          "20:59",
+          "22:59"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "East Croydon",
+      "coordinates": {
+        "lat": 51.3756,
+        "lng": -0.0928
+      },
+      "zone": 5,
+      "times": {
+        "morning": [
+          "07:15",
+          "09:15",
+          "11:15"
+        ],
+        "afternoon": [
+          "13:15",
+          "15:15",
+          "17:15"
+        ],
+        "evening": [
+          "19:15",
+          "21:15",
+          "23:15"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "West Croydon",
+      "coordinates": {
+        "lat": 51.3781,
+        "lng": -0.1031
+      },
+      "zone": 5,
+      "times": {
+        "morning": [
+          "07:07",
+          "09:07",
+          "11:07"
+        ],
+        "afternoon": [
+          "13:07",
+          "15:07",
+          "17:07"
+        ],
+        "evening": [
+          "19:07",
+          "21:07",
+          "23:07"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Clapham Junction",
+      "coordinates": {
+        "lat": 51.4642,
+        "lng": -0.1705
+      },
+      "zone": 2,
+      "times": {
+        "morning": [
+          "06:38",
+          "08:38",
+          "10:38"
+        ],
+        "afternoon": [
+          "12:38",
+          "14:38",
+          "16:38"
+        ],
+        "evening": [
+          "18:38",
+          "20:38",
+          "22:38"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Brighton",
+      "coordinates": {
+        "lat": 50.8292,
+        "lng": -0.1419
+      },
+      "times": {
+        "morning": [
+          "07:46",
+          "09:46",
+          "11:46"
+        ],
+        "afternoon": [
+          "13:46",
+          "15:46",
+          "17:46"
+        ],
+        "evening": [
+          "19:46",
+          "21:46",
+          "23:46"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Hove",
+      "coordinates": {
+        "lat": 50.8281,
+        "lng": -0.1719
+      },
+      "times": {
+        "morning": [
+          "07:52",
+          "09:52",
+          "11:52"
+        ],
+        "afternoon": [
+          "13:52",
+          "15:52",
+          "17:52"
+        ],
+        "evening": [
+          "19:52",
+          "21:52",
+          "23:52"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Worthing",
+      "coordinates": {
+        "lat": 50.8181,
+        "lng": -0.3719
+      },
+      "times": {
+        "morning": [
+          "07:41",
+          "09:41",
+          "11:41"
+        ],
+        "afternoon": [
+          "13:41",
+          "15:41",
+          "17:41"
+        ],
+        "evening": [
+          "19:41",
+          "21:41",
+          "23:41"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Littlehampton",
+      "coordinates": {
+        "lat": 50.8081,
+        "lng": -0.5419
+      },
+      "times": {
+        "morning": [
+          "07:23",
+          "09:23",
+          "11:23"
+        ],
+        "afternoon": [
+          "13:23",
+          "15:23",
+          "17:23"
+        ],
+        "evening": [
+          "19:23",
+          "21:23",
+          "23:23"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Bognor Regis",
+      "coordinates": {
+        "lat": 50.7881,
+        "lng": -0.6719
+      },
+      "times": {
+        "morning": [
+          "07:25",
+          "09:25",
+          "11:25"
+        ],
+        "afternoon": [
+          "13:25",
+          "15:25",
+          "17:25"
+        ],
+        "evening": [
+          "19:25",
+          "21:25",
+          "23:25"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Chichester",
+      "coordinates": {
+        "lat": 50.8381,
+        "lng": -0.7819
+      },
+      "times": {
+        "morning": [
+          "08:27",
+          "10:27",
+          "12:27"
+        ],
+        "afternoon": [
+          "14:27",
+          "16:27",
+          "18:27"
+        ],
+        "evening": [
+          "20:27",
+          "22:27",
+          "00:27"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Havant",
+      "coordinates": {
+        "lat": 50.8581,
+        "lng": -0.9819
+      },
+      "times": {
+        "morning": [
+          "07:17",
+          "09:17",
+          "11:17"
+        ],
+        "afternoon": [
+          "13:17",
+          "15:17",
+          "17:17"
+        ],
+        "evening": [
+          "19:17",
+          "21:17",
+          "23:17"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Portsmouth Harbour",
+      "coordinates": {
+        "lat": 50.7981,
+        "lng": -1.0919
+      },
+      "times": {
+        "morning": [
+          "09:23",
+          "11:23",
+          "13:23"
+        ],
+        "afternoon": [
+          "15:23",
+          "17:23",
+          "19:23"
+        ],
+        "evening": [
+          "21:23",
+          "23:23",
+          "01:23"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Portsmouth & Southsea",
+      "coordinates": {
+        "lat": 50.8081,
+        "lng": -1.0819
+      },
+      "times": {
+        "morning": [
+          "08:30",
+          "10:30",
+          "12:30"
+        ],
+        "afternoon": [
+          "14:30",
+          "16:30",
+          "18:30"
+        ],
+        "evening": [
+          "20:30",
+          "22:30",
+          "00:30"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Eastbourne",
+      "coordinates": {
+        "lat": 50.7681,
+        "lng": 0.2781
+      },
+      "times": {
+        "morning": [
+          "09:42",
+          "11:42",
+          "13:42"
+        ],
+        "afternoon": [
+          "15:42",
+          "17:42",
+          "19:42"
+        ],
+        "evening": [
+          "21:42",
+          "23:42",
+          "01:42"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Hastings",
+      "coordinates": {
+        "lat": 50.8581,
+        "lng": 0.5781
+      },
+      "times": {
+        "morning": [
+          "08:38",
+          "10:38",
+          "12:38"
+        ],
+        "afternoon": [
+          "14:38",
+          "16:38",
+          "18:38"
+        ],
+        "evening": [
+          "20:38",
+          "22:38",
+          "00:38"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Bexhill",
+      "coordinates": {
+        "lat": 50.8481,
+        "lng": 0.4681
+      },
+      "times": {
+        "morning": [
+          "07:47",
+          "09:47",
+          "11:47"
+        ],
+        "afternoon": [
+          "13:47",
+          "15:47",
+          "17:47"
+        ],
+        "evening": [
+          "19:47",
+          "21:47",
+          "23:47"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Battle",
+      "coordinates": {
+        "lat": 50.9181,
+        "lng": 0.4881
+      },
+      "times": {
+        "morning": [
+          "10:37",
+          "12:37",
+          "14:37"
+        ],
+        "afternoon": [
+          "16:37",
+          "18:37",
+          "20:37"
+        ],
+        "evening": [
+          "22:37",
+          "00:37",
+          "02:37"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Tunbridge Wells",
+      "coordinates": {
+        "lat": 51.1319,
+        "lng": 0.2681
+      },
+      "times": {
+        "morning": [
+          "08:44",
+          "10:44",
+          "12:44"
+        ],
+        "afternoon": [
+          "14:44",
+          "16:44",
+          "18:44"
+        ],
+        "evening": [
+          "20:44",
+          "22:44",
+          "00:44"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Sevenoaks",
+      "coordinates": {
+        "lat": 51.2781,
+        "lng": 0.1881
+      },
+      "times": {
+        "morning": [
+          "09:42",
+          "11:42",
+          "13:42"
+        ],
+        "afternoon": [
+          "15:42",
+          "17:42",
+          "19:42"
+        ],
+        "evening": [
+          "21:42",
+          "23:42",
+          "01:42"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Orpington",
+      "coordinates": {
+        "lat": 51.3731,
+        "lng": 0.0981
+      },
+      "times": {
+        "morning": [
+          "11:10",
+          "13:10",
+          "15:10"
+        ],
+        "afternoon": [
+          "17:10",
+          "19:10",
+          "21:10"
+        ],
+        "evening": [
+          "23:10",
+          "01:10",
+          "03:10"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Bromley South",
+      "coordinates": {
+        "lat": 51.4031,
+        "lng": 0.0181
+      },
+      "times": {
+        "morning": [
+          "10:18",
+          "12:18",
+          "14:18"
+        ],
+        "afternoon": [
+          "16:18",
+          "18:18",
+          "20:18"
+        ],
+        "evening": [
+          "22:18",
+          "00:18",
+          "02:18"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Canterbury East",
+      "coordinates": {
+        "lat": 51.2781,
+        "lng": 1.0881
+      },
+      "times": {
+        "morning": [
+          "10:28",
+          "12:28",
+          "14:28"
+        ],
+        "afternoon": [
+          "16:28",
+          "18:28",
+          "20:28"
+        ],
+        "evening": [
+          "22:28",
+          "00:28",
+          "02:28"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Canterbury West",
+      "coordinates": {
+        "lat": 51.2881,
+        "lng": 1.0781
+      },
+      "times": {
+        "morning": [
+          "10:09",
+          "12:09",
+          "14:09"
+        ],
+        "afternoon": [
+          "16:09",
+          "18:09",
+          "20:09"
+        ],
+        "evening": [
+          "22:09",
+          "00:09",
+          "02:09"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Dover Priory",
+      "coordinates": {
+        "lat": 51.1281,
+        "lng": 1.3081
+      },
+      "times": {
+        "morning": [
+          "12:06",
+          "14:06",
+          "16:06"
+        ],
+        "afternoon": [
+          "18:06",
+          "20:06",
+          "22:06"
+        ],
+        "evening": [
+          "00:06",
+          "02:06",
+          "04:06"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Folkestone Central",
+      "coordinates": {
+        "lat": 51.0881,
+        "lng": 1.1681
+      },
+      "times": {
+        "morning": [
+          "12:16",
+          "14:16",
+          "16:16"
+        ],
+        "afternoon": [
+          "18:16",
+          "20:16",
+          "22:16"
+        ],
+        "evening": [
+          "00:16",
+          "02:16",
+          "04:16"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Ashford International",
+      "coordinates": {
+        "lat": 51.142,
+        "lng": 0.8747
+      },
+      "times": {
+        "morning": [
+          "10:58",
+          "12:58",
+          "14:58"
+        ],
+        "afternoon": [
+          "16:58",
+          "18:58",
+          "20:58"
+        ],
+        "evening": [
+          "22:58",
+          "00:58",
+          "02:58"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Maidstone East",
+      "coordinates": {
+        "lat": 51.2681,
+        "lng": 0.5181
+      },
+      "times": {
+        "morning": [
+          "12:32",
+          "14:32",
+          "16:32"
+        ],
+        "afternoon": [
+          "18:32",
+          "20:32",
+          "22:32"
+        ],
+        "evening": [
+          "00:32",
+          "02:32",
+          "04:32"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Maidstone West",
+      "coordinates": {
+        "lat": 51.2781,
+        "lng": 0.5081
+      },
+      "times": {
+        "morning": [
+          "09:44",
+          "11:44",
+          "13:44"
+        ],
+        "afternoon": [
+          "15:44",
+          "17:44",
+          "19:44"
+        ],
+        "evening": [
+          "21:44",
+          "23:44",
+          "01:44"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Tonbridge",
+      "coordinates": {
+        "lat": 51.1981,
+        "lng": 0.2781
+      },
+      "times": {
+        "morning": [
+          "12:47",
+          "14:47",
+          "16:47"
+        ],
+        "afternoon": [
+          "18:47",
+          "20:47",
+          "22:47"
+        ],
+        "evening": [
+          "00:47",
+          "02:47",
+          "04:47"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Redhill",
+      "coordinates": {
+        "lat": 51.2406,
+        "lng": -0.1711
+      },
+      "times": {
+        "morning": [
+          "08:53",
+          "10:53",
+          "12:53"
+        ],
+        "afternoon": [
+          "14:53",
+          "16:53",
+          "18:53"
+        ],
+        "evening": [
+          "20:53",
+          "22:53",
+          "00:53"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Reigate",
+      "coordinates": {
+        "lat": 51.2381,
+        "lng": -0.2081
+      },
+      "times": {
+        "morning": [
+          "13:20",
+          "15:20",
+          "17:20"
+        ],
+        "afternoon": [
+          "19:20",
+          "21:20",
+          "23:20"
+        ],
+        "evening": [
+          "01:20",
+          "03:20",
+          "05:20"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Dorking",
+      "coordinates": {
+        "lat": 51.2281,
+        "lng": -0.3381
+      },
+      "times": {
+        "morning": [
+          "12:25",
+          "14:25",
+          "16:25"
+        ],
+        "afternoon": [
+          "18:25",
+          "20:25",
+          "22:25"
+        ],
+        "evening": [
+          "00:25",
+          "02:25",
+          "04:25"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Horsham",
+      "coordinates": {
+        "lat": 51.0631,
+        "lng": -0.3281
+      },
+      "times": {
+        "morning": [
+          "11:21",
+          "13:21",
+          "15:21"
+        ],
+        "afternoon": [
+          "17:21",
+          "19:21",
+          "21:21"
+        ],
+        "evening": [
+          "23:21",
+          "01:21",
+          "03:21"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Crawley",
+      "coordinates": {
+        "lat": 51.1131,
+        "lng": -0.1881
+      },
+      "times": {
+        "morning": [
+          "15:08",
+          "17:08",
+          "19:08"
+        ],
+        "afternoon": [
+          "21:08",
+          "23:08",
+          "01:08"
+        ],
+        "evening": [
+          "03:08",
+          "05:08",
+          "07:08"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Three Bridges",
+      "coordinates": {
+        "lat": 51.1167,
+        "lng": -0.15
+      },
+      "times": {
+        "morning": [
+          "11:15",
+          "13:15",
+          "15:15"
+        ],
+        "afternoon": [
+          "17:15",
+          "19:15",
+          "21:15"
+        ],
+        "evening": [
+          "23:15",
+          "01:15",
+          "03:15"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Gatwick Airport",
+      "coordinates": {
+        "lat": 51.1564,
+        "lng": -0.1611
+      },
+      "times": {
+        "morning": [
+          "11:12",
+          "13:12",
+          "15:12"
+        ],
+        "afternoon": [
+          "17:12",
+          "19:12",
+          "21:12"
+        ],
+        "evening": [
+          "23:12",
+          "01:12",
+          "03:12"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Haywards Heath",
+      "coordinates": {
+        "lat": 51.0,
+        "lng": -0.1
+      },
+      "times": {
+        "morning": [
+          "15:36",
+          "17:36",
+          "19:36"
+        ],
+        "afternoon": [
+          "21:36",
+          "23:36",
+          "01:36"
+        ],
+        "evening": [
+          "03:36",
+          "05:36",
+          "07:36"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Burgess Hill",
+      "coordinates": {
+        "lat": 50.9583,
+        "lng": -0.1333
+      },
+      "times": {
+        "morning": [
+          "14:36",
+          "16:36",
+          "18:36"
+        ],
+        "afternoon": [
+          "20:36",
+          "22:36",
+          "00:36"
+        ],
+        "evening": [
+          "02:36",
+          "04:36",
+          "06:36"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Lewes",
+      "coordinates": {
+        "lat": 50.8731,
+        "lng": 0.0181
+      },
+      "times": {
+        "morning": [
+          "12:41",
+          "14:41",
+          "16:41"
+        ],
+        "afternoon": [
+          "18:41",
+          "20:41",
+          "22:41"
+        ],
+        "evening": [
+          "00:41",
+          "02:41",
+          "04:41"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Newhaven Harbour",
+      "coordinates": {
+        "lat": 50.7931,
+        "lng": 0.0581
+      },
+      "times": {
+        "morning": [
+          "13:43",
+          "15:43",
+          "17:43"
+        ],
+        "afternoon": [
+          "19:43",
+          "21:43",
+          "23:43"
+        ],
+        "evening": [
+          "01:43",
+          "03:43",
+          "05:43"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Seaford",
+      "coordinates": {
+        "lat": 50.7731,
+        "lng": 0.1081
+      },
+      "times": {
+        "morning": [
+          "15:19",
+          "17:19",
+          "19:19"
+        ],
+        "afternoon": [
+          "21:19",
+          "23:19",
+          "01:19"
+        ],
+        "evening": [
+          "03:19",
+          "05:19",
+          "07:19"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Polegate",
+      "coordinates": {
+        "lat": 50.8181,
+        "lng": 0.2481
+      },
+      "times": {
+        "morning": [
+          "11:08",
+          "13:08",
+          "15:08"
+        ],
+        "afternoon": [
+          "17:08",
+          "19:08",
+          "21:08"
+        ],
+        "evening": [
+          "23:08",
+          "01:08",
+          "03:08"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Berwick (Sussex)",
+      "coordinates": {
+        "lat": 50.8281,
+        "lng": 0.2681
+      },
+      "times": {
+        "morning": [
+          "10:27",
+          "12:27",
+          "14:27"
+        ],
+        "afternoon": [
+          "16:27",
+          "18:27",
+          "20:27"
+        ],
+        "evening": [
+          "22:27",
+          "00:27",
+          "02:27"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Glynde",
+      "coordinates": {
+        "lat": 50.8681,
+        "lng": 0.0381
+      },
+      "times": {
+        "morning": [
+          "14:28",
+          "16:28",
+          "18:28"
+        ],
+        "afternoon": [
+          "20:28",
+          "22:28",
+          "00:28"
+        ],
+        "evening": [
+          "02:28",
+          "04:28",
+          "06:28"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Plumpton",
+      "coordinates": {
+        "lat": 50.9081,
+        "lng": -0.0619
+      },
+      "times": {
+        "morning": [
+          "12:47",
+          "14:47",
+          "16:47"
+        ],
+        "afternoon": [
+          "18:47",
+          "20:47",
+          "22:47"
+        ],
+        "evening": [
+          "00:47",
+          "02:47",
+          "04:47"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Cooksbridge",
+      "coordinates": {
+        "lat": 50.9181,
+        "lng": -0.0319
+      },
+      "times": {
+        "morning": [
+          "12:24",
+          "14:24",
+          "16:24"
+        ],
+        "afternoon": [
+          "18:24",
+          "20:24",
+          "22:24"
+        ],
+        "evening": [
+          "00:24",
+          "02:24",
+          "04:24"
+        ],
+        "night": []
+      }
+    }
+  ],
+  "service_patterns": {
+    "fast": {
+      "service_type": "fast",
+      "description": "Fast service - major towns and interchanges",
+      "typical_journey_time": 75,
+      "frequency": "Every 30 minutes",
+      "stations": [
+        "VIC",
+        "BTN",
+        "DVP",
+        "PMS",
+        "AFK"
+      ],
+      "peak_frequency": "Every 20 minutes",
+      "off_peak_frequency": "Every 30 minutes",
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "semi_fast": {
+      "service_type": "semi_fast",
+      "description": "Semi-fast service - market towns",
+      "typical_journey_time": 90,
+      "frequency": "Every 60 minutes",
+      "stations": [
+        "LO4",
+        "WAE",
+        "LON",
+        "WCR",
+        "BTN",
+        "WRH",
+        "BOG",
+        "HAV",
+        "PMS",
+        "HGS",
+        "BAT",
+        "SEV",
+        "BRO",
+        "CBW",
+        "FKC",
+        "MDE",
+        "TON",
+        "REI",
+        "HRH",
+        "TBD",
+        "HHE",
+        "LWS",
+        "SEF",
+        "BRK",
+        "PMP"
+      ],
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "stopping": {
+      "service_type": "stopping",
+      "description": "Stopping service - all stations",
+      "typical_journey_time": 100,
+      "frequency": "Every 2 hours",
+      "stations": "all",
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    }
+  }
+}

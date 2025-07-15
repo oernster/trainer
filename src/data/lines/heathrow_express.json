@@ -14,9 +14,9 @@
     }
   },
   "typical_journey_times": {
-    "PAD-HXX": 15,
-    "HXX-HT5": 6,
-    "PAD-HT5": 21
+    "London Paddington-Heathrow Central": 15,
+    "Heathrow Central-HT5": 6,
+    "London Paddington-HT5": 21
   },
   "typical_services": {
     "peak_frequency": "Every 15 minutes",
@@ -159,8 +159,8 @@
       "typical_journey_time": 12,
       "frequency": "Every 15 minutes",
       "stations": [
-        "PAD",
-        "HXX",
+        "London Paddington",
+        "Heathrow Central",
         "HT5",
         "HAF"
       ],

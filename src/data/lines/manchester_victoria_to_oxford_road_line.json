@@ -14,9 +14,9 @@
     }
   },
   "typical_journey_times": {
-    "MCV-MSD": 5,
-    "MSD-MCO": 3,
-    "MCV-MCO": 8
+    "Manchester Victoria-Manchester Salford": 5,
+    "Manchester Salford-Manchester Oxford Road": 3,
+    "Manchester Victoria-Manchester Oxford Road": 8
   },
   "typical_services": {
     "peak_frequency": "Every 10 minutes",
@@ -123,9 +123,9 @@
       "typical_journey_time": 4,
       "frequency": "Every 30 minutes",
       "stations": [
-        "MCV",
-        "MSD",
-        "MCO"
+        "Manchester Victoria",
+        "Manchester Salford",
+        "Manchester Oxford Road"
       ],
       "peak_frequency": "Every 20 minutes",
       "off_peak_frequency": "Every 30 minutes",
@@ -142,9 +142,9 @@
       "typical_journey_time": 5,
       "frequency": "Every 60 minutes",
       "stations": [
-        "MCV",
-        "MSD",
-        "MCO"
+        "Manchester Victoria",
+        "Manchester Salford",
+        "Manchester Oxford Road"
       ],
       "peak_frequency": null,
       "off_peak_frequency": null,

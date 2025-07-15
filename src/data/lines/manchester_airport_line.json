@@ -14,9 +14,9 @@
     }
   },
   "typical_journey_times": {
-    "MAN-MCO": 6,
-    "MCO-MIA": 20,
-    "MAN-MIA": 26
+    "Manchester Piccadilly-Manchester Oxford Road": 6,
+    "Manchester Oxford Road-Manchester Airport": 20,
+    "Manchester Piccadilly-Manchester Airport": 26
   },
   "typical_services": {
     "peak_frequency": "Every 10 minutes",
@@ -352,9 +352,9 @@
       "typical_journey_time": 36,
       "frequency": "Every 15 minutes",
       "stations": [
-        "MAN",
-        "MCO",
-        "MSD",
+        "Manchester Piccadilly",
+        "Manchester Oxford Road",
+        "Manchester Salford",
         "MUF",
         "TRA",
         "URM",
@@ -363,7 +363,7 @@
         "IRL",
         "BWD",
         "WAC",
-        "MIA"
+        "Manchester Airport"
       ],
       "peak_frequency": null,
       "off_peak_frequency": null,

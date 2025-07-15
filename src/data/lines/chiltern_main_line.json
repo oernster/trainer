@@ -483,12 +483,12 @@
       "typical_journey_time": 14,
       "frequency": "Every 60 minutes",
       "stations": [
-        "MYB",
-        "AMR",
-        "HWY",
-        "BAN",
-        "LMS",
-        "WRP"
+        "London Marylebone",
+        "Amersham",
+        "High Wycombe",
+        "Banbury",
+        "Leamington Spa",
+        "Warwick Parkway"
       ],
       "peak_frequency": "Every 30 minutes",
       "off_peak_frequency": "Every 60 minutes",
@@ -505,12 +505,12 @@
       "typical_journey_time": 21,
       "frequency": "Every 30 minutes",
       "stations": [
-        "WRP",
-        "LMS",
-        "HWY",
-        "MYB",
-        "AMR",
-        "BAN"
+        "Warwick Parkway",
+        "Leamington Spa",
+        "High Wycombe",
+        "London Marylebone",
+        "Amersham",
+        "Banbury"
       ],
       "peak_frequency": "Every 20 minutes",
       "off_peak_frequency": "Every 30 minutes",
@@ -527,14 +527,14 @@
       "typical_journey_time": 27,
       "frequency": "Every 60 minutes",
       "stations": [
-        "MYB",
+        "London Marylebone",
         "HOH",
         "GMI",
         "SMV",
         "HDM",
-        "HWY",
+        "High Wycombe",
         "GER",
-        "BAN",
+        "Banbury",
         "WRW"
       ],
       "peak_frequency": null,

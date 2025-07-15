@@ -453,7 +453,7 @@
     },
     "semi_fast": {
       "stations": [
-        "LDS",
+        "Leeds",
         "SHY",
         "SKI",
         "GGV",
@@ -463,20 +463,20 @@
         "GSD",
         "KSW",
         "LGW",
-        "CAR"
+        "Carlisle"
       ],
       "description": "Semi-fast service calling at major stations"
     },
     "fast": {
       "stations": [
-        "LDS",
+        "Leeds",
         "KEI",
         "GGV",
         "LPR",
         "RHD",
         "GSD",
         "APP",
-        "CAR"
+        "Carlisle"
       ],
       "description": "Fast service calling at principal stations"
     }

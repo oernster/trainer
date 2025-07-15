@@ -144,7 +144,7 @@
     }
   },
   "typical_journey_times": {
-    "CDF-TRB": 60,
-    "TRB-CDF": 60
+    "Cardiff Central-TRB": 60,
+    "TRB-Cardiff Central": 60
   }
 }

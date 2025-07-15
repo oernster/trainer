@@ -15,25 +15,25 @@
   },
   "typical_journey_times": {
     "LO1-WFJ": 20,
-    "WFJ-MKC": 25,
-    "MKC-RUG": 30,
+    "WFJ-Milton Keynes Central": 25,
+    "Milton Keynes Central-RUG": 30,
     "RUG-NUN": 15,
     "NUN-TAM": 10,
     "TAM-LTV": 8,
     "LTV-STA": 12,
-    "STA-CRE": 20,
-    "CRE-WBQ": 15,
+    "STA-Crewe": 20,
+    "Crewe-WBQ": 15,
     "WBQ-WGN": 10,
-    "WGN-PRE": 15,
-    "PRE-LAN": 20,
+    "WGN-Preston": 15,
+    "Preston-LAN": 20,
     "LAN-OXN": 25,
     "OXN-PNR": 30,
-    "PNR-CAR": 20,
-    "CAR-LOC": 25,
+    "PNR-Carlisle": 20,
+    "Carlisle-LOC": 25,
     "LOC-DMF": 30,
     "DMF-KMK": 45,
-    "KMK-GLC": 30,
-    "LO1-GLC": 480
+    "KMK-Glasgow Central": 30,
+    "LO1-Glasgow Central": 480
   },
   "typical_services": {
     "peak_frequency": "1 service per night",
@@ -439,7 +439,7 @@
       "typical_journey_time": 300,
       "frequency": "Daily",
       "stations": [
-        "GLC"
+        "Glasgow Central"
       ],
       "peak_frequency": null,
       "off_peak_frequency": null,

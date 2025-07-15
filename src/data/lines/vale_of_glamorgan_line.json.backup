@@ -1,0 +1,87 @@
+{
+  "metadata": {
+    "line_name": "Vale of Glamorgan Line",
+    "description": "Cardiff Central to Bridgend via Barry",
+    "operator": "Transport for Wales",
+    "total_stations": 9,
+    "line_color": "#D2001F"
+  },
+  "stations": [
+    {
+      "name": "Cardiff Central",
+      "coordinates": {
+        "lat": 51.4756,
+        "lng": -3.1756
+      }
+    },
+    {
+      "name": "Grangetown",
+      "coordinates": {
+        "lat": 51.4656,
+        "lng": -3.1956
+      }
+    },
+    {
+      "name": "Dinas Powys",
+      "coordinates": {
+        "lat": 51.4456,
+        "lng": -3.2156
+      }
+    },
+    {
+      "name": "Eastbrook",
+      "coordinates": {
+        "lat": 51.4256,
+        "lng": -3.2356
+      }
+    },
+    {
+      "name": "Barry",
+      "coordinates": {
+        "lat": 51.4056,
+        "lng": -3.2556
+      }
+    },
+    {
+      "name": "Barry Island",
+      "coordinates": {
+        "lat": 51.3856,
+        "lng": -3.2756
+      }
+    },
+    {
+      "name": "Rhoose Cardiff Airport",
+      "coordinates": {
+        "lat": 51.3956,
+        "lng": -3.3456
+      }
+    },
+    {
+      "name": "Llantwit Major",
+      "coordinates": {
+        "lat": 51.4056,
+        "lng": -3.4756
+      }
+    },
+    {
+      "name": "Bridgend",
+      "coordinates": {
+        "lat": 51.5056,
+        "lng": -3.5756
+      }
+    }
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Local service through Vale of Glamorgan",
+      "service_type": "stopping",
+      "typical_journey_time": 30,
+      "frequency": "Every 30 minutes"
+    }
+  },
+  "typical_journey_times": {
+    "CDF-BGN": 45,
+    "BGN-CDF": 45
+  }
+}

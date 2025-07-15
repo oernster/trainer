@@ -1240,7 +1240,7 @@
   "service_patterns": {
     "fast": {
       "stations": [
-        "BNK",
+        "Bank",
         "TWG",
         "LHS",
         "POP",

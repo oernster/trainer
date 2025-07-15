@@ -1,0 +1,437 @@
+{
+  "metadata": {
+    "line_name": "Cotswold Line",
+    "description": "Oxford to Worcester and Hereford",
+    "operator": "Great Western Railway",
+    "total_stations": 15,
+    "frequency": {
+      "weekday_peak": "Every hour",
+      "weekday_off_peak": "Every 2 hours",
+      "weekend": "Every 2 hours",
+      "night": "No service"
+    }
+  },
+  "stations": [
+    {
+      "name": "Oxford",
+      "coordinates": {
+        "lat": 51.7531,
+        "lng": -1.2699
+      },
+      "interchange": [
+        "Great Western Main Line",
+        "Chiltern Main Line"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Hanborough",
+      "coordinates": {
+        "lat": 51.8231,
+        "lng": -1.3731
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:15",
+          "08:15",
+          "10:15"
+        ],
+        "afternoon": [
+          "12:15",
+          "14:15",
+          "16:15"
+        ],
+        "evening": [
+          "18:15",
+          "20:15",
+          "22:15"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Charlbury",
+      "coordinates": {
+        "lat": 51.8731,
+        "lng": -1.4831
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:22",
+          "08:22",
+          "10:22"
+        ],
+        "afternoon": [
+          "12:22",
+          "14:22",
+          "16:22"
+        ],
+        "evening": [
+          "18:22",
+          "20:22",
+          "22:22"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Kingham",
+      "coordinates": {
+        "lat": 51.9031,
+        "lng": -1.6331
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:40",
+          "08:40",
+          "10:40"
+        ],
+        "afternoon": [
+          "12:40",
+          "14:40",
+          "16:40"
+        ],
+        "evening": [
+          "18:40",
+          "20:40",
+          "22:40"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Moreton-in-Marsh",
+      "coordinates": {
+        "lat": 51.9931,
+        "lng": -1.7031
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:35",
+          "08:35",
+          "10:35"
+        ],
+        "afternoon": [
+          "12:35",
+          "14:35",
+          "16:35"
+        ],
+        "evening": [
+          "18:35",
+          "20:35",
+          "22:35"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Honeybourne",
+      "coordinates": {
+        "lat": 52.0981,
+        "lng": -1.8331
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:41",
+          "08:41",
+          "10:41"
+        ],
+        "afternoon": [
+          "12:41",
+          "14:41",
+          "16:41"
+        ],
+        "evening": [
+          "18:41",
+          "20:41",
+          "22:41"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Evesham",
+      "coordinates": {
+        "lat": 52.0931,
+        "lng": -1.9431
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:25",
+          "09:25",
+          "11:25"
+        ],
+        "afternoon": [
+          "13:25",
+          "15:25",
+          "17:25"
+        ],
+        "evening": [
+          "19:25",
+          "21:25",
+          "23:25"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Pershore",
+      "coordinates": {
+        "lat": 52.1431,
+        "lng": -2.0731
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:08",
+          "09:08",
+          "11:08"
+        ],
+        "afternoon": [
+          "13:08",
+          "15:08",
+          "17:08"
+        ],
+        "evening": [
+          "19:08",
+          "21:08",
+          "23:08"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Worcester Shrub Hill",
+      "coordinates": {
+        "lat": 52.1931,
+        "lng": -2.2131
+      },
+      "interchange": [
+        "Birmingham to Worcester Line"
+      ],
+      "times": {
+        "morning": [
+          "07:19",
+          "09:19",
+          "11:19"
+        ],
+        "afternoon": [
+          "13:19",
+          "15:19",
+          "17:19"
+        ],
+        "evening": [
+          "19:19",
+          "21:19",
+          "23:19"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Worcester Foregate Street",
+      "coordinates": {
+        "lat": 52.1931,
+        "lng": -2.2231
+      },
+      "interchange": [
+        "Birmingham to Worcester Line"
+      ],
+      "times": {
+        "morning": [
+          "07:09",
+          "09:09",
+          "11:09"
+        ],
+        "afternoon": [
+          "13:09",
+          "15:09",
+          "17:09"
+        ],
+        "evening": [
+          "19:09",
+          "21:09",
+          "23:09"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Malvern Link",
+      "coordinates": {
+        "lat": 52.1231,
+        "lng": -2.3231
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:58",
+          "08:58",
+          "10:58"
+        ],
+        "afternoon": [
+          "12:58",
+          "14:58",
+          "16:58"
+        ],
+        "evening": [
+          "18:58",
+          "20:58",
+          "22:58"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Great Malvern",
+      "coordinates": {
+        "lat": 52.1131,
+        "lng": -2.3331
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:24",
+          "10:24",
+          "12:24"
+        ],
+        "afternoon": [
+          "14:24",
+          "16:24",
+          "18:24"
+        ],
+        "evening": [
+          "20:24",
+          "22:24",
+          "00:24"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Colwall",
+      "coordinates": {
+        "lat": 52.0831,
+        "lng": -2.3631
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:11",
+          "09:11",
+          "11:11"
+        ],
+        "afternoon": [
+          "13:11",
+          "15:11",
+          "17:11"
+        ],
+        "evening": [
+          "19:11",
+          "21:11",
+          "23:11"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Ledbury",
+      "coordinates": {
+        "lat": 52.0431,
+        "lng": -2.4231
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:08",
+          "09:08",
+          "11:08"
+        ],
+        "afternoon": [
+          "13:08",
+          "15:08",
+          "17:08"
+        ],
+        "evening": [
+          "19:08",
+          "21:08",
+          "23:08"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Hereford",
+      "coordinates": {
+        "lat": 52.0531,
+        "lng": -2.7131
+      },
+      "interchange": [
+        "Welsh Marches Line",
+        "Heart of Wales Line"
+      ],
+      "times": {
+        "morning": [
+          "08:42",
+          "10:42",
+          "12:42"
+        ],
+        "afternoon": [
+          "14:42",
+          "16:42",
+          "18:42"
+        ],
+        "evening": [
+          "20:42",
+          "22:42",
+          "00:42"
+        ],
+        "night": []
+      }
+    }
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations"
+    },
+    "semi_fast": {
+      "stations": [
+        "OXF",
+        "HND",
+        "KGM",
+        "HYB",
+        "EVE",
+        "WOS",
+        "MVL",
+        "GMV",
+        "LED",
+        "HFD"
+      ],
+      "description": "Semi-fast service calling at major stations"
+    }
+  }
+}

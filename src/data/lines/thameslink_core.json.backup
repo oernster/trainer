@@ -1,0 +1,755 @@
+{
+  "metadata": {
+    "line_name": "Thameslink Core",
+    "description": "North-South London rail service connecting Bedford, Cambridge, Peterborough to Brighton and other destinations",
+    "operator": "Thameslink",
+    "total_stations": 24,
+    "typical_frequency": "Every 5-15 minutes",
+    "peak_hours": "07:00-09:30, 16:30-19:00",
+    "frequency": {
+      "weekday_peak": "Every hour",
+      "weekday_off_peak": "Every 2 hours",
+      "weekend": "Every 2 hours",
+      "night": "No service"
+    }
+  },
+  "typical_journey_times": {
+    "BDF-LO2": 45,
+    "LO2-BTN": 65,
+    "LO2-LO4": 5,
+    "LO4-ECR": 15,
+    "ECR-GTW": 25,
+    "GTW-BTN": 25,
+    "LO2-BFR": 15,
+    "BFR-LU1": 25,
+    "LU1-BDF": 20
+  },
+  "typical_services": {
+    "peak_frequency": "Every 5 minutes",
+    "off_peak_frequency": "Every 15 minutes",
+    "evening_frequency": "Every 20 minutes",
+    "weekend_frequency": "Every 15 minutes",
+    "first_train": "04:30",
+    "last_train": "01:00"
+  },
+  "stations": [
+    {
+      "name": "Bedford",
+      "coordinates": {
+        "lat": 52.1364,
+        "lng": -0.4778
+      },
+      "interchange": [
+        "East Midlands Railway"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Flitwick",
+      "coordinates": {
+        "lat": 52.0031,
+        "lng": -0.4953
+      },
+      "times": {
+        "morning": [
+          "06:15",
+          "08:15",
+          "10:15"
+        ],
+        "afternoon": [
+          "12:15",
+          "14:15",
+          "16:15"
+        ],
+        "evening": [
+          "18:15",
+          "20:15",
+          "22:15"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Harlington",
+      "coordinates": {
+        "lat": 51.9597,
+        "lng": -0.5131
+      },
+      "times": {
+        "morning": [
+          "06:14",
+          "08:14",
+          "10:14"
+        ],
+        "afternoon": [
+          "12:14",
+          "14:14",
+          "16:14"
+        ],
+        "evening": [
+          "18:14",
+          "20:14",
+          "22:14"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Leagrave",
+      "coordinates": {
+        "lat": 51.9097,
+        "lng": -0.4781
+      },
+      "times": {
+        "morning": [
+          "06:43",
+          "08:43",
+          "10:43"
+        ],
+        "afternoon": [
+          "12:43",
+          "14:43",
+          "16:43"
+        ],
+        "evening": [
+          "18:43",
+          "20:43",
+          "22:43"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Luton",
+      "coordinates": {
+        "lat": 51.8825,
+        "lng": -0.4131
+      },
+      "interchange": [
+        "East Midlands Railway"
+      ],
+      "times": {
+        "morning": [
+          "06:46",
+          "08:46",
+          "10:46"
+        ],
+        "afternoon": [
+          "12:46",
+          "14:46",
+          "16:46"
+        ],
+        "evening": [
+          "18:46",
+          "20:46",
+          "22:46"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Luton Airport Parkway",
+      "coordinates": {
+        "lat": 51.8731,
+        "lng": -0.3981
+      },
+      "interchange": [
+        "East Midlands Railway",
+        "Airport Bus Link"
+      ],
+      "times": {
+        "morning": [
+          "06:56",
+          "08:56",
+          "10:56"
+        ],
+        "afternoon": [
+          "12:56",
+          "14:56",
+          "16:56"
+        ],
+        "evening": [
+          "18:56",
+          "20:56",
+          "22:56"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Harpenden",
+      "coordinates": {
+        "lat": 51.8181,
+        "lng": -0.3531
+      },
+      "times": {
+        "morning": [
+          "06:37",
+          "08:37",
+          "10:37"
+        ],
+        "afternoon": [
+          "12:37",
+          "14:37",
+          "16:37"
+        ],
+        "evening": [
+          "18:37",
+          "20:37",
+          "22:37"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "St Albans City",
+      "coordinates": {
+        "lat": 51.7531,
+        "lng": -0.3281
+      },
+      "times": {
+        "morning": [
+          "07:22",
+          "09:22",
+          "11:22"
+        ],
+        "afternoon": [
+          "13:22",
+          "15:22",
+          "17:22"
+        ],
+        "evening": [
+          "19:22",
+          "21:22",
+          "23:22"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Radlett",
+      "coordinates": {
+        "lat": 51.6881,
+        "lng": -0.3181
+      },
+      "times": {
+        "morning": [
+          "07:59",
+          "09:59",
+          "11:59"
+        ],
+        "afternoon": [
+          "13:59",
+          "15:59",
+          "17:59"
+        ],
+        "evening": [
+          "19:59",
+          "21:59",
+          "23:59"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Elstree & Borehamwood",
+      "coordinates": {
+        "lat": 51.6531,
+        "lng": -0.2831
+      },
+      "times": {
+        "morning": [
+          "07:39",
+          "09:39",
+          "11:39"
+        ],
+        "afternoon": [
+          "13:39",
+          "15:39",
+          "17:39"
+        ],
+        "evening": [
+          "19:39",
+          "21:39",
+          "23:39"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Mill Hill Broadway",
+      "coordinates": {
+        "lat": 51.6131,
+        "lng": -0.2481
+      },
+      "times": {
+        "morning": [
+          "07:54",
+          "09:54",
+          "11:54"
+        ],
+        "afternoon": [
+          "13:54",
+          "15:54",
+          "17:54"
+        ],
+        "evening": [
+          "19:54",
+          "21:54",
+          "23:54"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "West Hampstead Thameslink",
+      "coordinates": {
+        "lat": 51.5481,
+        "lng": -0.1931
+      },
+      "interchange": [
+        "London Overground",
+        "Jubilee Line"
+      ],
+      "times": {
+        "morning": [
+          "08:45",
+          "10:45",
+          "12:45"
+        ],
+        "afternoon": [
+          "14:45",
+          "16:45",
+          "18:45"
+        ],
+        "evening": [
+          "20:45",
+          "22:45",
+          "00:45"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Kentish Town",
+      "coordinates": {
+        "lat": 51.5481,
+        "lng": -0.1431
+      },
+      "interchange": [
+        "Northern Line"
+      ],
+      "times": {
+        "morning": [
+          "08:55",
+          "10:55",
+          "12:55"
+        ],
+        "afternoon": [
+          "14:55",
+          "16:55",
+          "18:55"
+        ],
+        "evening": [
+          "20:55",
+          "22:55",
+          "00:55"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "London St Pancras International",
+      "coordinates": {
+        "lat": 51.5322,
+        "lng": -0.1256
+      },
+      "interchange": [
+        "East Midlands Railway",
+        "Eurostar",
+        "Circle Line",
+        "Hammersmith & City Line",
+        "Metropolitan Line",
+        "Northern Line",
+        "Piccadilly Line",
+        "Victoria Line"
+      ],
+      "times": {
+        "morning": [
+          "07:12",
+          "09:12",
+          "11:12"
+        ],
+        "afternoon": [
+          "13:12",
+          "15:12",
+          "17:12"
+        ],
+        "evening": [
+          "19:12",
+          "21:12",
+          "23:12"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Farringdon",
+      "coordinates": {
+        "lat": 51.5203,
+        "lng": -0.1053
+      },
+      "interchange": [
+        "Circle Line",
+        "Hammersmith & City Line",
+        "Metropolitan Line",
+        "Elizabeth Line"
+      ],
+      "times": {
+        "morning": [
+          "09:21",
+          "11:21",
+          "13:21"
+        ],
+        "afternoon": [
+          "15:21",
+          "17:21",
+          "19:21"
+        ],
+        "evening": [
+          "21:21",
+          "23:21",
+          "01:21"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "City Thameslink",
+      "coordinates": {
+        "lat": 51.5142,
+        "lng": -0.1031
+      },
+      "times": {
+        "morning": [
+          "08:23",
+          "10:23",
+          "12:23"
+        ],
+        "afternoon": [
+          "14:23",
+          "16:23",
+          "18:23"
+        ],
+        "evening": [
+          "20:23",
+          "22:23",
+          "00:23"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "London Blackfriars",
+      "coordinates": {
+        "lat": 51.5114,
+        "lng": -0.1031
+      },
+      "interchange": [
+        "Circle Line",
+        "District Line"
+      ],
+      "times": {
+        "morning": [
+          "09:36",
+          "11:36",
+          "13:36"
+        ],
+        "afternoon": [
+          "15:36",
+          "17:36",
+          "19:36"
+        ],
+        "evening": [
+          "21:36",
+          "23:36",
+          "01:36"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "London Bridge",
+      "coordinates": {
+        "lat": 51.5053,
+        "lng": -0.0864
+      },
+      "interchange": [
+        "Jubilee Line",
+        "Northern Line",
+        "Southeastern",
+        "Southern"
+      ],
+      "times": {
+        "morning": [
+          "09:52",
+          "11:52",
+          "13:52"
+        ],
+        "afternoon": [
+          "15:52",
+          "17:52",
+          "19:52"
+        ],
+        "evening": [
+          "21:52",
+          "23:52",
+          "01:52"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "East Croydon",
+      "coordinates": {
+        "lat": 51.3753,
+        "lng": -0.0953
+      },
+      "interchange": [
+        "Southern",
+        "London Overground"
+      ],
+      "times": {
+        "morning": [
+          "10:18",
+          "12:18",
+          "14:18"
+        ],
+        "afternoon": [
+          "16:18",
+          "18:18",
+          "20:18"
+        ],
+        "evening": [
+          "22:18",
+          "00:18",
+          "02:18"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Gatwick Airport",
+      "coordinates": {
+        "lat": 51.1564,
+        "lng": -0.1614
+      },
+      "interchange": [
+        "Southern",
+        "Gatwick Express",
+        "Airport Terminal"
+      ],
+      "times": {
+        "morning": [
+          "07:46",
+          "09:46",
+          "11:46"
+        ],
+        "afternoon": [
+          "13:46",
+          "15:46",
+          "17:46"
+        ],
+        "evening": [
+          "19:46",
+          "21:46",
+          "23:46"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Three Bridges",
+      "coordinates": {
+        "lat": 51.1164,
+        "lng": -0.1614
+      },
+      "times": {
+        "morning": [
+          "10:40",
+          "12:40",
+          "14:40"
+        ],
+        "afternoon": [
+          "16:40",
+          "18:40",
+          "20:40"
+        ],
+        "evening": [
+          "22:40",
+          "00:40",
+          "02:40"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Haywards Heath",
+      "coordinates": {
+        "lat": 50.9964,
+        "lng": -0.1053
+      },
+      "times": {
+        "morning": [
+          "10:11",
+          "12:11",
+          "14:11"
+        ],
+        "afternoon": [
+          "16:11",
+          "18:11",
+          "20:11"
+        ],
+        "evening": [
+          "22:11",
+          "00:11",
+          "02:11"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Burgess Hill",
+      "coordinates": {
+        "lat": 50.9564,
+        "lng": -0.1281
+      },
+      "times": {
+        "morning": [
+          "08:29",
+          "10:29",
+          "12:29"
+        ],
+        "afternoon": [
+          "14:29",
+          "16:29",
+          "18:29"
+        ],
+        "evening": [
+          "20:29",
+          "22:29",
+          "00:29"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Brighton",
+      "coordinates": {
+        "lat": 50.8294,
+        "lng": -0.1414
+      },
+      "interchange": [
+        "Southern",
+        "Great Western Railway"
+      ],
+      "times": {
+        "morning": [
+          "11:31",
+          "13:31",
+          "15:31"
+        ],
+        "afternoon": [
+          "17:31",
+          "19:31",
+          "21:31"
+        ],
+        "evening": [
+          "23:31",
+          "01:31",
+          "03:31"
+        ],
+        "night": []
+      }
+    }
+  ],
+  "service_patterns": {
+    "fast": {
+      "service_type": "fast",
+      "description": "Fast service - major towns and interchanges",
+      "typical_journey_time": 36,
+      "frequency": "Every 30 minutes",
+      "stations": [
+        "BTN"
+      ],
+      "peak_frequency": "Every 20 minutes",
+      "off_peak_frequency": "Every 30 minutes",
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "semi_fast": {
+      "service_type": "semi_fast",
+      "description": "Semi-fast service - market towns",
+      "typical_journey_time": 43,
+      "frequency": "Every 60 minutes",
+      "stations": [
+        "BDF",
+        "HAR",
+        "LUT",
+        "HPD",
+        "RDT",
+        "MIL",
+        "KTN",
+        "FAR",
+        "BFR",
+        "ECR",
+        "TBD",
+        "BUG"
+      ],
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "stopping": {
+      "service_type": "stopping",
+      "description": "Stopping service - all stations",
+      "typical_journey_time": 48,
+      "frequency": "Every 2 hours",
+      "stations": "all",
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    }
+  }
+}

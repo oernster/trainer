@@ -81,7 +81,7 @@
     }
   },
   "typical_journey_times": {
-    "CDF-BGN": 45,
-    "BGN-CDF": 45
+    "Cardiff Central-BGN": 45,
+    "BGN-Cardiff Central": 45
   }
 }

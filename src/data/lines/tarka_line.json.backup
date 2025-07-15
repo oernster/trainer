@@ -1,0 +1,405 @@
+{
+  "metadata": {
+    "line_name": "Tarka Line",
+    "description": "Exeter to Barnstaple",
+    "operator": "Great Western Railway",
+    "total_stations": 14,
+    "frequency": {
+      "weekday_peak": "Every hour",
+      "weekday_off_peak": "Every 2 hours",
+      "weekend": "Every 2 hours",
+      "night": "No service"
+    }
+  },
+  "stations": [
+    {
+      "name": "Exeter St Davids",
+      "coordinates": {
+        "lat": 50.7281,
+        "lng": -3.5431
+      },
+      "interchange": [
+        "Great Western Main Line",
+        "West of England Main Line"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Exeter St Thomas",
+      "coordinates": {
+        "lat": 50.7231,
+        "lng": -3.5531
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:14",
+          "08:14",
+          "10:14"
+        ],
+        "afternoon": [
+          "12:14",
+          "14:14",
+          "16:14"
+        ],
+        "evening": [
+          "18:14",
+          "20:14",
+          "22:14"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Crediton",
+      "coordinates": {
+        "lat": 50.7881,
+        "lng": -3.6531
+      },
+      "interchange": [
+        "Dartmoor Line"
+      ],
+      "times": {
+        "morning": [
+          "06:12",
+          "08:12",
+          "10:12"
+        ],
+        "afternoon": [
+          "12:12",
+          "14:12",
+          "16:12"
+        ],
+        "evening": [
+          "18:12",
+          "20:12",
+          "22:12"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Newton St Cyres",
+      "coordinates": {
+        "lat": 50.7681,
+        "lng": -3.5981
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:39",
+          "08:39",
+          "10:39"
+        ],
+        "afternoon": [
+          "12:39",
+          "14:39",
+          "16:39"
+        ],
+        "evening": [
+          "18:39",
+          "20:39",
+          "22:39"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Yeoford",
+      "coordinates": {
+        "lat": 50.7981,
+        "lng": -3.7431
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:40",
+          "08:40",
+          "10:40"
+        ],
+        "afternoon": [
+          "12:40",
+          "14:40",
+          "16:40"
+        ],
+        "evening": [
+          "18:40",
+          "20:40",
+          "22:40"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Copplestone",
+      "coordinates": {
+        "lat": 50.8131,
+        "lng": -3.7731
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:08",
+          "09:08",
+          "11:08"
+        ],
+        "afternoon": [
+          "13:08",
+          "15:08",
+          "17:08"
+        ],
+        "evening": [
+          "19:08",
+          "21:08",
+          "23:08"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Morchard Road",
+      "coordinates": {
+        "lat": 50.8381,
+        "lng": -3.8031
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:33",
+          "08:33",
+          "10:33"
+        ],
+        "afternoon": [
+          "12:33",
+          "14:33",
+          "16:33"
+        ],
+        "evening": [
+          "18:33",
+          "20:33",
+          "22:33"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Lapford",
+      "coordinates": {
+        "lat": 50.8581,
+        "lng": -3.8331
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:26",
+          "09:26",
+          "11:26"
+        ],
+        "afternoon": [
+          "13:26",
+          "15:26",
+          "17:26"
+        ],
+        "evening": [
+          "19:26",
+          "21:26",
+          "23:26"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Eggesford",
+      "coordinates": {
+        "lat": 50.8881,
+        "lng": -3.8631
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:47",
+          "08:47",
+          "10:47"
+        ],
+        "afternoon": [
+          "12:47",
+          "14:47",
+          "16:47"
+        ],
+        "evening": [
+          "18:47",
+          "20:47",
+          "22:47"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Kings Nympton",
+      "coordinates": {
+        "lat": 50.9181,
+        "lng": -3.8931
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:08",
+          "10:08",
+          "12:08"
+        ],
+        "afternoon": [
+          "14:08",
+          "16:08",
+          "18:08"
+        ],
+        "evening": [
+          "20:08",
+          "22:08",
+          "00:08"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Portsmouth Arms",
+      "coordinates": {
+        "lat": 50.9481,
+        "lng": -3.9231
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:01",
+          "10:01",
+          "12:01"
+        ],
+        "afternoon": [
+          "14:01",
+          "16:01",
+          "18:01"
+        ],
+        "evening": [
+          "20:01",
+          "22:01",
+          "00:01"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Umberleigh",
+      "coordinates": {
+        "lat": 50.9981,
+        "lng": -3.9831
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:40",
+          "10:40",
+          "12:40"
+        ],
+        "afternoon": [
+          "14:40",
+          "16:40",
+          "18:40"
+        ],
+        "evening": [
+          "20:40",
+          "22:40",
+          "00:40"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Chapelton",
+      "coordinates": {
+        "lat": 51.0281,
+        "lng": -4.0131
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:51",
+          "09:51",
+          "11:51"
+        ],
+        "afternoon": [
+          "13:51",
+          "15:51",
+          "17:51"
+        ],
+        "evening": [
+          "19:51",
+          "21:51",
+          "23:51"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Barnstaple",
+      "coordinates": {
+        "lat": 51.0781,
+        "lng": -4.0631
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "08:05",
+          "10:05",
+          "12:05"
+        ],
+        "afternoon": [
+          "14:05",
+          "16:05",
+          "18:05"
+        ],
+        "evening": [
+          "20:05",
+          "22:05",
+          "00:05"
+        ],
+        "night": []
+      }
+    }
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations"
+    },
+    "semi_fast": {
+      "stations": [
+        "EXD",
+        "EXT",
+        "NTC",
+        "COP",
+        "LAP",
+        "EGG",
+        "PMA",
+        "CPN",
+        "BNP"
+      ],
+      "description": "Semi-fast service calling at major stations"
+    }
+  }
+}

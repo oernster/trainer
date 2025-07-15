@@ -74,7 +74,7 @@
     }
   },
   "typical_journey_times": {
-    "MCH-PWL": 90,
-    "PWL-MCH": 90
+    "Micheldever-PWL": 90,
+    "PWL-Micheldever": 90
   }
 }

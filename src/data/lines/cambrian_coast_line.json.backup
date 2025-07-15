@@ -1,0 +1,80 @@
+{
+  "metadata": {
+    "line_name": "Cambrian Coast Line",
+    "description": "Machynlleth to Pwllheli via Barmouth and Harlech",
+    "operator": "Transport for Wales",
+    "total_stations": 8,
+    "line_color": "#D2001F"
+  },
+  "stations": [
+    {
+      "name": "Machynlleth",
+      "coordinates": {
+        "lat": 52.5919,
+        "lng": -3.8569
+      }
+    },
+    {
+      "name": "Dovey Junction",
+      "coordinates": {
+        "lat": 52.5406,
+        "lng": -4.0456
+      }
+    },
+    {
+      "name": "Aberdovey",
+      "coordinates": {
+        "lat": 52.5444,
+        "lng": -4.0556
+      }
+    },
+    {
+      "name": "Tywyn",
+      "coordinates": {
+        "lat": 52.5889,
+        "lng": -4.0856
+      }
+    },
+    {
+      "name": "Talsarnau",
+      "coordinates": {
+        "lat": 52.9156,
+        "lng": -4.0656
+      }
+    },
+    {
+      "name": "Harlech",
+      "coordinates": {
+        "lat": 52.8606,
+        "lng": -4.1056
+      }
+    },
+    {
+      "name": "Barmouth",
+      "coordinates": {
+        "lat": 52.7206,
+        "lng": -4.0456
+      }
+    },
+    {
+      "name": "Pwllheli",
+      "coordinates": {
+        "lat": 52.8806,
+        "lng": -4.4156
+      }
+    }
+  ],
+  "service_patterns": {
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service along the Cambrian Coast",
+      "service_type": "stopping",
+      "typical_journey_time": 30,
+      "frequency": "Every 30 minutes"
+    }
+  },
+  "typical_journey_times": {
+    "MCH-PWL": 90,
+    "PWL-MCH": 90
+  }
+}

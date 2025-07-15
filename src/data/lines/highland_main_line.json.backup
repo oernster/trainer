@@ -1,0 +1,362 @@
+{
+  "metadata": {
+    "line_name": "Highland Main Line",
+    "description": "Perth to Inverness via Aviemore",
+    "operator": "ScotRail",
+    "total_stations": 12,
+    "frequency": {
+      "weekday_peak": "Every 2 hours",
+      "weekday_off_peak": "Every 3 hours",
+      "weekend": "Every 3 hours",
+      "night": "No service"
+    }
+  },
+  "stations": [
+    {
+      "name": "Perth",
+      "coordinates": {
+        "lat": 56.3919,
+        "lng": -3.4381
+      },
+      "interchange": [
+        "Edinburgh to Aberdeen Line"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Dunkeld & Birnam",
+      "coordinates": {
+        "lat": 56.5581,
+        "lng": -3.5831
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:15",
+          "08:15",
+          "10:15"
+        ],
+        "afternoon": [
+          "12:15",
+          "14:15",
+          "16:15"
+        ],
+        "evening": [
+          "18:15",
+          "20:15",
+          "22:15"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Pitlochry",
+      "coordinates": {
+        "lat": 56.7031,
+        "lng": -3.7331
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:26",
+          "08:26",
+          "10:26"
+        ],
+        "afternoon": [
+          "12:26",
+          "14:26",
+          "16:26"
+        ],
+        "evening": [
+          "18:26",
+          "20:26",
+          "22:26"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Blair Atholl",
+      "coordinates": {
+        "lat": 56.7731,
+        "lng": -3.8531
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:45",
+          "08:45",
+          "10:45"
+        ],
+        "afternoon": [
+          "12:45",
+          "14:45",
+          "16:45"
+        ],
+        "evening": [
+          "18:45",
+          "20:45",
+          "22:45"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Dalwhinnie",
+      "coordinates": {
+        "lat": 56.9381,
+        "lng": -4.2481
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:33",
+          "08:33",
+          "10:33"
+        ],
+        "afternoon": [
+          "12:33",
+          "14:33",
+          "16:33"
+        ],
+        "evening": [
+          "18:33",
+          "20:33",
+          "22:33"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Newtonmore",
+      "coordinates": {
+        "lat": 57.0631,
+        "lng": -4.1231
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:13",
+          "09:13",
+          "11:13"
+        ],
+        "afternoon": [
+          "13:13",
+          "15:13",
+          "17:13"
+        ],
+        "evening": [
+          "19:13",
+          "21:13",
+          "23:13"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Kingussie",
+      "coordinates": {
+        "lat": 57.0781,
+        "lng": -4.0531
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:03",
+          "09:03",
+          "11:03"
+        ],
+        "afternoon": [
+          "13:03",
+          "15:03",
+          "17:03"
+        ],
+        "evening": [
+          "19:03",
+          "21:03",
+          "23:03"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Aviemore",
+      "coordinates": {
+        "lat": 57.1931,
+        "lng": -3.8281
+      },
+      "interchange": [
+        "Strathspey Railway"
+      ],
+      "times": {
+        "morning": [
+          "07:28",
+          "09:28",
+          "11:28"
+        ],
+        "afternoon": [
+          "13:28",
+          "15:28",
+          "17:28"
+        ],
+        "evening": [
+          "19:28",
+          "21:28",
+          "23:28"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Carrbridge",
+      "coordinates": {
+        "lat": 57.2831,
+        "lng": -3.8231
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "06:50",
+          "08:50",
+          "10:50"
+        ],
+        "afternoon": [
+          "12:50",
+          "14:50",
+          "16:50"
+        ],
+        "evening": [
+          "18:50",
+          "20:50",
+          "22:50"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Tomatin",
+      "coordinates": {
+        "lat": 57.3331,
+        "lng": -3.9831
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:58",
+          "09:58",
+          "11:58"
+        ],
+        "afternoon": [
+          "13:58",
+          "15:58",
+          "17:58"
+        ],
+        "evening": [
+          "19:58",
+          "21:58",
+          "23:58"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Slochd",
+      "coordinates": {
+        "lat": 57.3531,
+        "lng": -3.9531
+      },
+      "interchange": [],
+      "times": {
+        "morning": [
+          "07:04",
+          "09:04",
+          "11:04"
+        ],
+        "afternoon": [
+          "13:04",
+          "15:04",
+          "17:04"
+        ],
+        "evening": [
+          "19:04",
+          "21:04",
+          "23:04"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Inverness",
+      "coordinates": {
+        "lat": 57.4781,
+        "lng": -4.2231
+      },
+      "interchange": [
+        "Far North Line",
+        "Kyle Line",
+        "Aberdeen to Inverness Line"
+      ],
+      "times": {
+        "morning": [
+          "08:34",
+          "10:34",
+          "12:34"
+        ],
+        "afternoon": [
+          "14:34",
+          "16:34",
+          "18:34"
+        ],
+        "evening": [
+          "20:34",
+          "22:34",
+          "00:34"
+        ],
+        "night": []
+      }
+    }
+  ],
+  "service_patterns": {
+    "express": {
+      "stations": [
+        "PTH",
+        "KGS",
+        "INV"
+      ],
+      "description": "Express service calling at major stations only"
+    },
+    "fast": {
+      "stations": [
+        "PTH",
+        "PIT",
+        "DLW",
+        "KGS",
+        "CAG",
+        "SLO",
+        "INV"
+      ],
+      "description": "Fast service with limited stops"
+    },
+    "stopping": {
+      "stations": "all",
+      "description": "Stopping service calling at all stations"
+    }
+  }
+}

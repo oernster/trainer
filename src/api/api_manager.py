@@ -366,7 +366,6 @@ class APIManager:
                         
                         calling_point = CallingPoint(
                             station_name=stop.get("station_name", "Unknown"),
-                            station_code=stop.get("station_name", "Unknown"),  # Use station name instead of code
                             scheduled_arrival=scheduled_arrival,
                             scheduled_departure=scheduled_departure,
                             expected_arrival=expected_arrival,
@@ -507,7 +506,6 @@ class APIManager:
                     
                     calling_point = CallingPoint(
                         station_name=stop.get("station_name", "Unknown"),
-                        station_code=stop.get("station_name", "Unknown"),  # Use station name instead of code
                         scheduled_arrival=scheduled_arrival,
                         scheduled_departure=scheduled_departure,
                         expected_arrival=expected_arrival,
@@ -534,7 +532,6 @@ class APIManager:
             
             origin_point = CallingPoint(
                 station_name=origin_name,
-                station_code=origin_name,  # Use station name instead of code
                 scheduled_arrival=None,
                 scheduled_departure=scheduled_dep,
                 expected_arrival=None,
@@ -567,7 +564,6 @@ class APIManager:
                     
                     intermediate_point = CallingPoint(
                         station_name=station_name,
-                        station_code=station_name,  # Use station name instead of code
                         scheduled_arrival=arrival_time,
                         scheduled_departure=departure_time_station,
                         expected_arrival=arrival_time,
@@ -591,7 +587,6 @@ class APIManager:
                     
                     intermediate_point = CallingPoint(
                         station_name=station_name,
-                        station_code=station_name,  # Use station name instead of code
                         scheduled_arrival=arrival_time,
                         scheduled_departure=departure_time_station,
                         expected_arrival=arrival_time,
@@ -621,7 +616,6 @@ class APIManager:
             
             dest_point = CallingPoint(
                 station_name=dest_name,
-                station_code=dest_name,  # Use station name instead of code
                 scheduled_arrival=estimated_arrival,
                 scheduled_departure=None,
                 expected_arrival=estimated_arrival,

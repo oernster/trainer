@@ -647,11 +647,11 @@
       "frequency": "Every 60 minutes",
       "stations": [
         "LO1",
-        "MKC",
-        "CRE",
-        "PRE",
-        "CAR",
-        "GLC"
+        "Milton Keynes Central",
+        "Crewe",
+        "Preston",
+        "Carlisle",
+        "Glasgow Central"
       ],
       "peak_frequency": "Every 30 minutes",
       "off_peak_frequency": "Every 60 minutes",
@@ -668,11 +668,11 @@
       "typical_journey_time": 27,
       "frequency": "Every 30 minutes",
       "stations": [
-        "CAR",
-        "PRE",
-        "GLC",
-        "CRE",
-        "MKC",
+        "Carlisle",
+        "Preston",
+        "Glasgow Central",
+        "Crewe",
+        "Milton Keynes Central",
         "LO1"
       ],
       "peak_frequency": "Every 20 minutes",
@@ -691,17 +691,17 @@
       "frequency": "Every 60 minutes",
       "stations": [
         "LO1",
-        "MKC",
+        "Milton Keynes Central",
         "CCV",
-        "BIR",
+        "Birmingham International",
         "STA",
-        "MAN",
+        "Manchester Piccadilly",
         "WBQ",
-        "PRE",
+        "Preston",
         "OXN",
-        "CAR",
+        "Carlisle",
         "CRS",
-        "GLC"
+        "Glasgow Central"
       ],
       "peak_frequency": null,
       "off_peak_frequency": null,

@@ -1084,8 +1084,10 @@ class MainWindow(QMainWindow):
     def show_stations_settings_dialog(self):
         """Show stations settings dialog."""
         try:
-            dialog = StationsSettingsDialog(self.config_manager, self, self.theme_manager)
-            dialog.settings_saved.connect(self.on_settings_saved)
+            # Get station database from train manager if available
+            station_db = getattr(self.train_manager, 'station_database', None) if hasattr(self, 'train_manager') else None
+            dialog = StationsSettingsDialog(self, station_db, self.config_manager, self.theme_manager)
+            dialog.settings_changed.connect(self.on_settings_saved)
             dialog.exec()
         except Exception as e:
             logger.error(f"Failed to show stations settings dialog: {e}")

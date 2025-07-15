@@ -123,7 +123,7 @@
     }
   },
   "typical_journey_times": {
-    "GLQ-MLG": 240,
-    "MLG-GLQ": 240
+    "Glasgow Queen Street-MLG": 240,
+    "MLG-Glasgow Queen Street": 240
   }
 }

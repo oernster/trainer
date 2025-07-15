@@ -700,7 +700,7 @@
   "service_patterns": {
     "express": {
       "stations": [
-        "CAR",
+        "Carlisle",
         "MRY",
         "PRN",
         "BBR",
@@ -712,7 +712,7 @@
     },
     "fast": {
       "stations": [
-        "CAR",
+        "Carlisle",
         "DLS",
         "ASP",
         "FLM",

@@ -1,0 +1,194 @@
+{
+  "metadata": {
+    "line_name": "Reading to Basingstoke Line",
+    "description": "Reading to Basingstoke via Mortimer and Hook",
+    "operator": "Great Western Railway",
+    "total_stations": 4,
+    "typical_frequency": "Every 30 minutes",
+    "peak_hours": "07:00-09:30, 16:30-19:00",
+    "frequency": {
+      "weekday_peak": "Every hour",
+      "weekday_off_peak": "Every 2 hours",
+      "weekend": "Every 2 hours",
+      "night": "No service"
+    }
+  },
+  "typical_journey_times": {
+    "RDG-MMR": 10,
+    "MMR-HOK": 20,
+    "HOK-BSK": 10,
+    "RDG-BSK": 40
+  },
+  "typical_services": {
+    "peak_frequency": "Every 20 minutes",
+    "off_peak_frequency": "Every 30 minutes",
+    "evening_frequency": "Every 60 minutes",
+    "weekend_frequency": "Every 30 minutes",
+    "first_train": "05:30",
+    "last_train": "23:30"
+  },
+  "stations": [
+    {
+      "name": "Reading",
+      "coordinates": {
+        "lat": 51.4581,
+        "lng": -0.9719
+      },
+      "interchange": [
+        "Great Western Main Line",
+        "North Downs Line"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Mortimer",
+      "coordinates": {
+        "lat": 51.3667,
+        "lng": -1.0333
+      },
+      "times": {
+        "morning": [
+          "06:08",
+          "08:08",
+          "10:08"
+        ],
+        "afternoon": [
+          "12:08",
+          "14:08",
+          "16:08"
+        ],
+        "evening": [
+          "18:08",
+          "20:08",
+          "22:08"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Hook",
+      "coordinates": {
+        "lat": 51.25,
+        "lng": -0.9167
+      },
+      "times": {
+        "morning": [
+          "06:32",
+          "08:32",
+          "10:32"
+        ],
+        "afternoon": [
+          "12:32",
+          "14:32",
+          "16:32"
+        ],
+        "evening": [
+          "18:32",
+          "20:32",
+          "22:32"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Basingstoke",
+      "coordinates": {
+        "lat": 51.2667,
+        "lng": -1.0833
+      },
+      "interchange": [
+        "South Western Main Line"
+      ],
+      "times": {
+        "morning": [
+          "06:54",
+          "08:54",
+          "10:54"
+        ],
+        "afternoon": [
+          "12:54",
+          "14:54",
+          "16:54"
+        ],
+        "evening": [
+          "18:54",
+          "20:54",
+          "22:54"
+        ],
+        "night": []
+      }
+    }
+  ],
+  "service_patterns": {
+    "fast": {
+      "service_type": "fast",
+      "description": "Fast service - major towns and interchanges",
+      "typical_journey_time": 7,
+      "frequency": "Every 30 minutes",
+      "stations": [
+        "RDG",
+        "BSK"
+      ],
+      "peak_frequency": "Every 20 minutes",
+      "off_peak_frequency": "Every 30 minutes",
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "semi_fast": {
+      "service_type": "semi_fast",
+      "description": "Semi-fast service - market towns",
+      "typical_journey_time": 9,
+      "frequency": "Every 60 minutes",
+      "stations": [
+        "RDG",
+        "MMR",
+        "HOK",
+        "BSK"
+      ],
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "stopping": {
+      "service_type": "stopping",
+      "description": "Stopping service - all stations",
+      "typical_journey_time": 10,
+      "frequency": "Every 2 hours",
+      "stations": "all",
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    }
+  }
+}

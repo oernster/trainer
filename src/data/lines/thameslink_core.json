@@ -14,15 +14,15 @@
     }
   },
   "typical_journey_times": {
-    "BDF-LO2": 45,
-    "LO2-BTN": 65,
+    "Bedford-LO2": 45,
+    "LO2-Brighton": 65,
     "LO2-LO4": 5,
-    "LO4-ECR": 15,
-    "ECR-GTW": 25,
-    "GTW-BTN": 25,
+    "LO4-East Croydon": 15,
+    "East Croydon-Gatwick Airport": 25,
+    "Gatwick Airport-Brighton": 25,
     "LO2-BFR": 15,
     "BFR-LU1": 25,
-    "LU1-BDF": 20
+    "LU1-Bedford": 20
   },
   "typical_services": {
     "peak_frequency": "Every 5 minutes",
@@ -697,7 +697,7 @@
       "typical_journey_time": 36,
       "frequency": "Every 30 minutes",
       "stations": [
-        "BTN"
+        "Brighton"
       ],
       "peak_frequency": "Every 20 minutes",
       "off_peak_frequency": "Every 30 minutes",
@@ -714,16 +714,16 @@
       "typical_journey_time": 43,
       "frequency": "Every 60 minutes",
       "stations": [
-        "BDF",
-        "HAR",
+        "Bedford",
+        "Harrow & Wealdstone",
         "LUT",
         "HPD",
         "RDT",
-        "MIL",
-        "KTN",
-        "FAR",
+        "Mile End",
+        "Kentish Town",
+        "Farnham",
         "BFR",
-        "ECR",
+        "East Croydon",
         "TBD",
         "BUG"
       ],

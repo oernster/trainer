@@ -16,12 +16,12 @@
         "Southampton Central"
       ],
       "major_stations": [
-        "WAT",
-        "CLJ",
-        "WOK",
-        "BSK",
-        "WIN",
-        "SOU"
+        "London Waterloo",
+        "Clapham Junction",
+        "Woking",
+        "Basingstoke",
+        "Winchester",
+        "South Woodford"
       ]
     },
     {
@@ -33,11 +33,11 @@
         "Brighton"
       ],
       "major_stations": [
-        "VIC",
-        "CLJ",
-        "ECR",
-        "GTW",
-        "BTN"
+        "London Victoria",
+        "Clapham Junction",
+        "East Croydon",
+        "Gatwick Airport",
+        "Brighton"
       ]
     },
     {
@@ -49,13 +49,13 @@
         "Glasgow Central"
       ],
       "major_stations": [
-        "EUS",
-        "MKC",
-        "BHM",
-        "CRE",
-        "PRE",
-        "CAR",
-        "GLC"
+        "London Euston",
+        "Milton Keynes Central",
+        "Birmingham New Street",
+        "Crewe",
+        "Preston",
+        "Carlisle",
+        "Glasgow Central"
       ]
     },
     {
@@ -67,13 +67,13 @@
         "Edinburgh"
       ],
       "major_stations": [
-        "KGX",
-        "PBO",
-        "DON",
-        "LDS",
-        "YRK",
-        "NCL",
-        "EDB"
+        "London Kings Cross",
+        "Peterborough",
+        "Doncaster",
+        "Leeds",
+        "York",
+        "Newcastle",
+        "Edinburgh Waverley"
       ]
     },
     {
@@ -86,12 +86,12 @@
         "Swansea"
       ],
       "major_stations": [
-        "PAD",
-        "RDG",
-        "SWI",
-        "BRI",
-        "CDF",
-        "SWA"
+        "London Paddington",
+        "Reading",
+        "Swindon",
+        "Bristol Temple Meads",
+        "Cardiff Central",
+        "Swanwick"
       ]
     },
     {
@@ -103,12 +103,12 @@
         "Norwich"
       ],
       "major_stations": [
-        "LST",
-        "SRA",
-        "CHM",
-        "COL",
-        "IPS",
-        "NRW"
+        "London Liverpool Street",
+        "Stratford",
+        "Chelmsford",
+        "Colchester",
+        "Ipswich",
+        "Norwich"
       ]
     },
     {
@@ -120,12 +120,12 @@
         "Sheffield"
       ],
       "major_stations": [
-        "STP",
-        "LTN",
-        "BDF",
-        "LEI",
-        "NOT",
-        "SHF"
+        "London St Pancras",
+        "Luton",
+        "Bedford",
+        "Leicester",
+        "Nottingham",
+        "Sheffield"
       ]
     },
     {
@@ -137,12 +137,12 @@
         "Birmingham"
       ],
       "major_stations": [
-        "MYB",
-        "AMR",
-        "HWY",
-        "BAN",
-        "LMS",
-        "WRP"
+        "London Marylebone",
+        "Amersham",
+        "High Wycombe",
+        "Banbury",
+        "Leamington Spa",
+        "Warwick Parkway"
       ]
     },
     {
@@ -154,12 +154,12 @@
         "Penzance"
       ],
       "major_stations": [
-        "ABD",
-        "EDB",
-        "BHM",
-        "BRI",
-        "PLY",
-        "PNZ"
+        "Aberdeen",
+        "Edinburgh Waverley",
+        "Birmingham New Street",
+        "Bristol Temple Meads",
+        "Plymouth",
+        "Penzance"
       ]
     },
     {
@@ -172,13 +172,13 @@
         "Glasgow Central"
       ],
       "major_stations": [
-        "LIV",
-        "MAN",
-        "LDS",
-        "YRK",
-        "NCL",
-        "EDB",
-        "GLC"
+        "Liverpool Street",
+        "Manchester Piccadilly",
+        "Leeds",
+        "York",
+        "Newcastle",
+        "Edinburgh Waverley",
+        "Glasgow Central"
       ]
     },
     {
@@ -189,12 +189,12 @@
         "Multiple regional terminals"
       ],
       "major_stations": [
-        "MAN",
-        "LDS",
-        "SHF",
-        "LIV",
-        "PRE",
-        "NCL"
+        "Manchester Piccadilly",
+        "Leeds",
+        "Sheffield",
+        "Liverpool Street",
+        "Preston",
+        "Newcastle"
       ]
     },
     {
@@ -208,12 +208,12 @@
         "Inverness"
       ],
       "major_stations": [
-        "GLC",
-        "GLQ",
-        "EDB",
-        "STG",
-        "ABD",
-        "INV"
+        "Glasgow Central",
+        "Glasgow Queen Street",
+        "Edinburgh Waverley",
+        "Stirling",
+        "Aberdeen",
+        "Inverness"
       ]
     },
     {
@@ -226,12 +226,12 @@
         "Holyhead"
       ],
       "major_stations": [
-        "CDF",
-        "SWA",
-        "BNG",
-        "SHR",
-        "ABD",
-        "MER"
+        "Cardiff Central",
+        "Swanwick",
+        "Bangor",
+        "Shrewsbury",
+        "Aberdeen",
+        "Merthyr Tydfil"
       ]
     },
     {
@@ -245,12 +245,12 @@
         "Portsmouth"
       ],
       "major_stations": [
-        "LBG",
-        "VIC",
-        "BTN",
-        "DVP",
-        "PMS",
-        "AFK"
+        "London Bridge",
+        "London Victoria",
+        "Brighton",
+        "Dover Priory",
+        "Portsmouth Harbour",
+        "Ashford International"
       ]
     },
     {
@@ -261,15 +261,15 @@
         "Multiple London terminals and zones"
       ],
       "major_stations": [
-        "WAT",
-        "VIC",
-        "LBG",
-        "PAD",
-        "KGX",
-        "STP",
-        "EUS",
-        "LST",
-        "CLJ"
+        "London Waterloo",
+        "London Victoria",
+        "London Bridge",
+        "London Paddington",
+        "London Kings Cross",
+        "London St Pancras",
+        "London Euston",
+        "London Liverpool Street",
+        "Clapham Junction"
       ]
     },
     {
@@ -281,10 +281,10 @@
         "Manchester Airport"
       ],
       "major_stations": [
-        "MAN",
-        "MIA",
-        "MCV",
-        "MCO"
+        "Manchester Piccadilly",
+        "Manchester Airport",
+        "Manchester Victoria",
+        "Manchester Oxford Road"
       ]
     },
     {
@@ -298,11 +298,11 @@
         "Peterborough"
       ],
       "major_stations": [
-        "BDM",
-        "STP",
-        "BTN",
-        "CBG",
-        "PBO"
+        "Bedford",
+        "London St Pancras",
+        "Brighton",
+        "Cambridge",
+        "Peterborough"
       ]
     },
     {
@@ -316,11 +316,11 @@
         "Shenfield"
       ],
       "major_stations": [
-        "RDG",
-        "PAD",
-        "LVS",
-        "ABW",
-        "SNF"
+        "Reading",
+        "London Paddington",
+        "Liverpool Street",
+        "Abbey Wood",
+        "Shenfield"
       ]
     },
     {
@@ -332,11 +332,11 @@
         "Shoeburyness"
       ],
       "major_stations": [
-        "FST",
-        "BLD",
-        "TLB",
-        "SRY",
-        "SOE"
+        "London Fenchurch Street",
+        "Basildon",
+        "Tilbury Town",
+        "Stanford-le-Hope",
+        "Shoeburyness"
       ]
     },
     {
@@ -350,10 +350,10 @@
         "Kirkby"
       ],
       "major_stations": [
-        "LVC",
-        "SOP",
-        "OMS",
-        "KIR"
+        "Liverpool Central",
+        "Southport",
+        "Ormskirk",
+        "Kirkby"
       ]
     },
     {
@@ -367,10 +367,10 @@
         "Chester"
       ],
       "major_stations": [
-        "LVC",
-        "WKI",
-        "NBN",
-        "CTR"
+        "Liverpool Central",
+        "West Kirby",
+        "New Brighton",
+        "Chester"
       ]
     },
     {
@@ -383,9 +383,9 @@
         "Shrewsbury"
       ],
       "major_stations": [
-        "BHM",
-        "WVH",
-        "SHR"
+        "Birmingham New Street",
+        "Wolverhampton",
+        "Shrewsbury"
       ]
     },
     {
@@ -399,11 +399,11 @@
         "Fort William"
       ],
       "major_stations": [
-        "EUS",
-        "EDB",
-        "INV",
-        "ABD",
-        "FTW"
+        "London Euston",
+        "Edinburgh Waverley",
+        "Inverness",
+        "Aberdeen",
+        "Fort William"
       ]
     },
     {
@@ -416,9 +416,9 @@
         "Edinburgh"
       ],
       "major_stations": [
-        "EUS",
-        "GLC",
-        "EDB"
+        "London Euston",
+        "Glasgow Central",
+        "Edinburgh Waverley"
       ]
     },
     {
@@ -430,9 +430,9 @@
         "Heathrow Terminal 5"
       ],
       "major_stations": [
-        "PAD",
-        "HXX",
-        "HXT5"
+        "London Paddington",
+        "Heathrow Central",
+        "Heathrow Terminal 5"
       ]
     },
     {
@@ -444,8 +444,8 @@
         "Gatwick Airport"
       ],
       "major_stations": [
-        "VIC",
-        "GTW"
+        "London Victoria",
+        "Gatwick Airport"
       ]
     },
     {
@@ -457,8 +457,8 @@
         "Stansted Airport"
       ],
       "major_stations": [
-        "LST",
-        "SSD"
+        "London Liverpool Street",
+        "Stansted Airport"
       ]
     },
     {
@@ -470,9 +470,9 @@
         "Hull"
       ],
       "major_stations": [
-        "KGX",
-        "DON",
-        "HUL"
+        "London Kings Cross",
+        "Doncaster",
+        "Hull"
       ]
     },
     {
@@ -485,10 +485,10 @@
         "Sunderland"
       ],
       "major_stations": [
-        "KGX",
-        "YRK",
-        "BDI",
-        "SUN"
+        "London Kings Cross",
+        "York",
+        "Bradford Interchange",
+        "Sunderland"
       ]
     },
     {
@@ -500,9 +500,9 @@
         "Edinburgh"
       ],
       "major_stations": [
-        "KGX",
-        "NCL",
-        "EDB"
+        "London Kings Cross",
+        "Newcastle",
+        "Edinburgh Waverley"
       ]
     },
     {
@@ -514,9 +514,9 @@
         "Basingstoke"
       ],
       "major_stations": [
-        "RDG",
-        "FLE",
-        "BSK"
+        "Reading",
+        "Fleet",
+        "Basingstoke"
       ]
     },
     {
@@ -528,9 +528,9 @@
         "Manchester Oxford Road"
       ],
       "major_stations": [
-        "MCV",
-        "MSD",
-        "MCO"
+        "Manchester Victoria",
+        "Manchester Salford",
+        "Manchester Oxford Road"
       ]
     },
     {

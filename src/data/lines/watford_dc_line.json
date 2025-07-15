@@ -74,7 +74,7 @@
     },
     "semi_fast": {
       "stations": [
-        "EUS",
+        "London Euston",
         "WIJ",
         "HRW",
         "WFJ"
@@ -86,7 +86,7 @@
     }
   },
   "typical_journey_times": {
-    "EUS-WFJ": 25,
-    "WFJ-EUS": 25
+    "London Euston-WFJ": 25,
+    "WFJ-London Euston": 25
   }
 }

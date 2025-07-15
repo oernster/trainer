@@ -1,0 +1,793 @@
+{
+  "metadata": {
+    "line_name": "c2c Line",
+    "description": "London Fenchurch Street to Shoeburyness via Basildon and Southend",
+    "operator": "c2c",
+    "total_stations": 26,
+    "typical_frequency": "Every 10-20 minutes",
+    "peak_hours": "07:00-09:30, 16:30-19:00",
+    "frequency": {
+      "weekday_peak": "Every hour",
+      "weekday_off_peak": "Every 2 hours",
+      "weekend": "Every 2 hours",
+      "night": "No service"
+    }
+  },
+  "typical_journey_times": {
+    "FST-LHS": 7,
+    "LHS-WEH": 5,
+    "WEH-BAK": 6,
+    "BAK-UPM": 5,
+    "UPM-GRY": 4,
+    "GRY-CFB": 5,
+    "CFB-OCK": 4,
+    "OCK-STF": 5,
+    "STF-TIL": 6,
+    "TIL-PFL": 5,
+    "PFL-BLD": 4,
+    "BEF-SRY": 6,
+    "SRY-WNF": 4,
+    "WNF-SOE": 5
+  },
+  "typical_services": {
+    "peak_frequency": "Every 5-10 minutes",
+    "off_peak_frequency": "Every 15 minutes",
+    "evening_frequency": "Every 20 minutes",
+    "weekend_frequency": "Every 15 minutes",
+    "first_train": "04:30",
+    "last_train": "00:30"
+  },
+  "stations": [
+    {
+      "name": "London Fenchurch Street",
+      "coordinates": {
+        "lat": 51.5111,
+        "lng": -0.0781
+      },
+      "zone": 1,
+      "interchange": [
+        "Circle Line",
+        "District Line",
+        "DLR"
+      ],
+      "times": {
+        "morning": [
+          "06:00",
+          "08:00",
+          "10:00"
+        ],
+        "afternoon": [
+          "12:00",
+          "14:00",
+          "16:00"
+        ],
+        "evening": [
+          "18:00",
+          "20:00",
+          "22:00"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Limehouse",
+      "coordinates": {
+        "lat": 51.5125,
+        "lng": -0.0392
+      },
+      "zone": 2,
+      "interchange": [
+        "DLR"
+      ],
+      "times": {
+        "morning": [
+          "06:15",
+          "08:15",
+          "10:15"
+        ],
+        "afternoon": [
+          "12:15",
+          "14:15",
+          "16:15"
+        ],
+        "evening": [
+          "18:15",
+          "20:15",
+          "22:15"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "West Ham",
+      "coordinates": {
+        "lat": 51.5281,
+        "lng": 0.0053
+      },
+      "zone": 3,
+      "interchange": [
+        "District Line",
+        "Hammersmith & City Line",
+        "Jubilee Line",
+        "DLR"
+      ],
+      "times": {
+        "morning": [
+          "06:24",
+          "08:24",
+          "10:24"
+        ],
+        "afternoon": [
+          "12:24",
+          "14:24",
+          "16:24"
+        ],
+        "evening": [
+          "18:24",
+          "20:24",
+          "22:24"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Barking",
+      "coordinates": {
+        "lat": 51.5394,
+        "lng": 0.0811
+      },
+      "zone": 4,
+      "interchange": [
+        "District Line",
+        "Hammersmith & City Line",
+        "London Overground",
+        "Gospel Oak to Barking Line"
+      ],
+      "times": {
+        "morning": [
+          "06:41",
+          "08:41",
+          "10:41"
+        ],
+        "afternoon": [
+          "12:41",
+          "14:41",
+          "16:41"
+        ],
+        "evening": [
+          "18:41",
+          "20:41",
+          "22:41"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Upminster",
+      "coordinates": {
+        "lat": 51.5589,
+        "lng": 0.2514
+      },
+      "zone": 6,
+      "interchange": [
+        "District Line"
+      ],
+      "times": {
+        "morning": [
+          "06:39",
+          "08:39",
+          "10:39"
+        ],
+        "afternoon": [
+          "12:39",
+          "14:39",
+          "16:39"
+        ],
+        "evening": [
+          "18:39",
+          "20:39",
+          "22:39"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Grays",
+      "coordinates": {
+        "lat": 51.4764,
+        "lng": 0.3236
+      },
+      "times": {
+        "morning": [
+          "07:09",
+          "09:09",
+          "11:09"
+        ],
+        "afternoon": [
+          "13:09",
+          "15:09",
+          "17:09"
+        ],
+        "evening": [
+          "19:09",
+          "21:09",
+          "23:09"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Chafford Hundred",
+      "coordinates": {
+        "lat": 51.4831,
+        "lng": 0.2944
+      },
+      "interchange": [
+        "Lakeside Shopping Centre"
+      ],
+      "times": {
+        "morning": [
+          "06:48",
+          "08:48",
+          "10:48"
+        ],
+        "afternoon": [
+          "12:48",
+          "14:48",
+          "16:48"
+        ],
+        "evening": [
+          "18:48",
+          "20:48",
+          "22:48"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Ockendon",
+      "coordinates": {
+        "lat": 51.5167,
+        "lng": 0.2833
+      },
+      "times": {
+        "morning": [
+          "07:31",
+          "09:31",
+          "11:31"
+        ],
+        "afternoon": [
+          "13:31",
+          "15:31",
+          "17:31"
+        ],
+        "evening": [
+          "19:31",
+          "21:31",
+          "23:31"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Stanford-le-Hope",
+      "coordinates": {
+        "lat": 51.5097,
+        "lng": 0.4264
+      },
+      "times": {
+        "morning": [
+          "07:48",
+          "09:48",
+          "11:48"
+        ],
+        "afternoon": [
+          "13:48",
+          "15:48",
+          "17:48"
+        ],
+        "evening": [
+          "19:48",
+          "21:48",
+          "23:48"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Tilbury Town",
+      "coordinates": {
+        "lat": 51.4625,
+        "lng": 0.3611
+      },
+      "interchange": [
+        "Tilbury Ferry"
+      ],
+      "times": {
+        "morning": [
+          "08:13",
+          "10:13",
+          "12:13"
+        ],
+        "afternoon": [
+          "14:13",
+          "16:13",
+          "18:13"
+        ],
+        "evening": [
+          "20:13",
+          "22:13",
+          "00:13"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Purfleet",
+      "coordinates": {
+        "lat": 51.4806,
+        "lng": 0.2319
+      },
+      "times": {
+        "morning": [
+          "07:24",
+          "09:24",
+          "11:24"
+        ],
+        "afternoon": [
+          "13:24",
+          "15:24",
+          "17:24"
+        ],
+        "evening": [
+          "19:24",
+          "21:24",
+          "23:24"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Basildon",
+      "coordinates": {
+        "lat": 51.5667,
+        "lng": 0.45
+      },
+      "times": {
+        "morning": [
+          "07:45",
+          "09:45",
+          "11:45"
+        ],
+        "afternoon": [
+          "13:45",
+          "15:45",
+          "17:45"
+        ],
+        "evening": [
+          "19:45",
+          "21:45",
+          "23:45"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Laindon",
+      "coordinates": {
+        "lat": 51.5667,
+        "lng": 0.4167
+      },
+      "times": {
+        "morning": [
+          "07:15",
+          "09:15",
+          "11:15"
+        ],
+        "afternoon": [
+          "13:15",
+          "15:15",
+          "17:15"
+        ],
+        "evening": [
+          "19:15",
+          "21:15",
+          "23:15"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Pitsea",
+      "coordinates": {
+        "lat": 51.55,
+        "lng": 0.5
+      },
+      "times": {
+        "morning": [
+          "08:57",
+          "10:57",
+          "12:57"
+        ],
+        "afternoon": [
+          "14:57",
+          "16:57",
+          "18:57"
+        ],
+        "evening": [
+          "20:57",
+          "22:57",
+          "00:57"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Benfleet",
+      "coordinates": {
+        "lat": 51.5444,
+        "lng": 0.5556
+      },
+      "times": {
+        "morning": [
+          "08:23",
+          "10:23",
+          "12:23"
+        ],
+        "afternoon": [
+          "14:23",
+          "16:23",
+          "18:23"
+        ],
+        "evening": [
+          "20:23",
+          "22:23",
+          "00:23"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Leigh-on-Sea",
+      "coordinates": {
+        "lat": 51.5389,
+        "lng": 0.6306
+      },
+      "times": {
+        "morning": [
+          "08:21",
+          "10:21",
+          "12:21"
+        ],
+        "afternoon": [
+          "14:21",
+          "16:21",
+          "18:21"
+        ],
+        "evening": [
+          "20:21",
+          "22:21",
+          "00:21"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Westcliff",
+      "coordinates": {
+        "lat": 51.5361,
+        "lng": 0.6889
+      },
+      "times": {
+        "morning": [
+          "08:52",
+          "10:52",
+          "12:52"
+        ],
+        "afternoon": [
+          "14:52",
+          "16:52",
+          "18:52"
+        ],
+        "evening": [
+          "20:52",
+          "22:52",
+          "00:52"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Southend Central",
+      "coordinates": {
+        "lat": 51.5361,
+        "lng": 0.7111
+      },
+      "times": {
+        "morning": [
+          "08:13",
+          "10:13",
+          "12:13"
+        ],
+        "afternoon": [
+          "14:13",
+          "16:13",
+          "18:13"
+        ],
+        "evening": [
+          "20:13",
+          "22:13",
+          "00:13"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Southend East",
+      "coordinates": {
+        "lat": 51.5361,
+        "lng": 0.7306
+      },
+      "times": {
+        "morning": [
+          "09:59",
+          "11:59",
+          "13:59"
+        ],
+        "afternoon": [
+          "15:59",
+          "17:59",
+          "19:59"
+        ],
+        "evening": [
+          "21:59",
+          "23:59",
+          "01:59"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Thorpe Bay",
+      "coordinates": {
+        "lat": 51.5361,
+        "lng": 0.7556
+      },
+      "times": {
+        "morning": [
+          "08:51",
+          "10:51",
+          "12:51"
+        ],
+        "afternoon": [
+          "14:51",
+          "16:51",
+          "18:51"
+        ],
+        "evening": [
+          "20:51",
+          "22:51",
+          "00:51"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Shoeburyness",
+      "coordinates": {
+        "lat": 51.5306,
+        "lng": 0.7889
+      },
+      "times": {
+        "morning": [
+          "07:46",
+          "09:46",
+          "11:46"
+        ],
+        "afternoon": [
+          "13:46",
+          "15:46",
+          "17:46"
+        ],
+        "evening": [
+          "19:46",
+          "21:46",
+          "23:46"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "East Tilbury",
+      "coordinates": {
+        "lat": 51.4806,
+        "lng": 0.4167
+      },
+      "times": {
+        "morning": [
+          "09:53",
+          "11:53",
+          "13:53"
+        ],
+        "afternoon": [
+          "15:53",
+          "17:53",
+          "19:53"
+        ],
+        "evening": [
+          "21:53",
+          "23:53",
+          "01:53"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Dagenham Dock",
+      "coordinates": {
+        "lat": 51.5292,
+        "lng": 0.1472
+      },
+      "times": {
+        "morning": [
+          "07:52",
+          "09:52",
+          "11:52"
+        ],
+        "afternoon": [
+          "13:52",
+          "15:52",
+          "17:52"
+        ],
+        "evening": [
+          "19:52",
+          "21:52",
+          "23:52"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Rainham",
+      "coordinates": {
+        "lat": 51.5208,
+        "lng": 0.1944
+      },
+      "times": {
+        "morning": [
+          "11:05",
+          "13:05",
+          "15:05"
+        ],
+        "afternoon": [
+          "17:05",
+          "19:05",
+          "21:05"
+        ],
+        "evening": [
+          "23:05",
+          "01:05",
+          "03:05"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "Upney",
+      "coordinates": {
+        "lat": 51.5389,
+        "lng": 0.1306
+      },
+      "zone": 4,
+      "times": {
+        "morning": [
+          "09:48",
+          "11:48",
+          "13:48"
+        ],
+        "afternoon": [
+          "15:48",
+          "17:48",
+          "19:48"
+        ],
+        "evening": [
+          "21:48",
+          "23:48",
+          "01:48"
+        ],
+        "night": []
+      }
+    },
+    {
+      "name": "West Horndon",
+      "coordinates": {
+        "lat": 51.5667,
+        "lng": 0.35
+      },
+      "times": {
+        "morning": [
+          "11:45",
+          "13:45",
+          "15:45"
+        ],
+        "afternoon": [
+          "17:45",
+          "19:45",
+          "21:45"
+        ],
+        "evening": [
+          "23:45",
+          "01:45",
+          "03:45"
+        ],
+        "night": []
+      }
+    }
+  ],
+  "service_patterns": {
+    "fast": {
+      "service_type": "fast",
+      "description": "Fast service - major towns and interchanges",
+      "typical_journey_time": 39,
+      "frequency": "Every 30 minutes",
+      "stations": [
+        "FST",
+        "BLD",
+        "SRY",
+        "SOE"
+      ],
+      "peak_frequency": "Every 20 minutes",
+      "off_peak_frequency": "Every 30 minutes",
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "semi_fast": {
+      "service_type": "semi_fast",
+      "description": "Semi-fast service - market towns",
+      "typical_journey_time": 46,
+      "frequency": "Every 60 minutes",
+      "stations": [
+        "FST",
+        "WEH",
+        "UPM",
+        "CFB",
+        "STF",
+        "PFL",
+        "LAI",
+        "BEF",
+        "WCF",
+        "SOE",
+        "SRY",
+        "DDK",
+        "UPY"
+      ],
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    },
+    "stopping": {
+      "service_type": "stopping",
+      "description": "Stopping service - all stations",
+      "typical_journey_time": 52,
+      "frequency": "Every 2 hours",
+      "stations": "all",
+      "peak_frequency": null,
+      "off_peak_frequency": null,
+      "weekend_frequency": null,
+      "first_service": null,
+      "last_service": null,
+      "operates_on": [
+        "daily"
+      ]
+    }
+  }
+}

@@ -460,10 +460,10 @@
       "typical_journey_time": 13,
       "frequency": "Every 60 minutes",
       "stations": [
-        "STP",
-        "BDF",
-        "LEI",
-        "NOT",
+        "London St Pancras",
+        "Bedford",
+        "Leicester",
+        "Nottingham",
         "ATB"
       ],
       "peak_frequency": "Every 30 minutes",
@@ -481,12 +481,12 @@
       "typical_journey_time": 20,
       "frequency": "Every 30 minutes",
       "stations": [
-        "BDF",
-        "STP",
-        "SHF",
+        "Bedford",
+        "London St Pancras",
+        "Sheffield",
         "ATB",
-        "LEI",
-        "NOT"
+        "Leicester",
+        "Nottingham"
       ],
       "peak_frequency": "Every 20 minutes",
       "off_peak_frequency": "Every 30 minutes",
@@ -503,13 +503,13 @@
       "typical_journey_time": 25,
       "frequency": "Every 60 minutes",
       "stations": [
-        "STP",
-        "BDF",
+        "London St Pancras",
+        "Bedford",
         "KET",
-        "LEI",
+        "Leicester",
         "EMD",
         "ALF",
-        "SHF",
+        "Sheffield",
         "LGE",
         "ATB"
       ],

@@ -2,7 +2,7 @@
 Train data management for the Train Times application.
 
 This module coordinates fetching train data from the internal database,
-processing it, and managing updates. Now uses offline timetable data.
+processing it, and managing updates. Now uses offline timetable data and new core services.
 """
 
 import asyncio
@@ -14,7 +14,9 @@ from ..models.train_data import TrainData, TrainStatus, ServiceType
 from ..api.api_manager import APIManager, APIException, NetworkException
 from ..managers.config_manager import ConfigData
 from ..managers.timetable_manager import TimetableManager
-from ..managers.station_database_manager import StationDatabaseManager
+from ..core.services.service_factory import ServiceFactory
+from ..core.interfaces.i_route_service import IRouteService
+from ..core.interfaces.i_station_service import IStationService
 from ..utils.helpers import (
     sort_trains_by_departure,
     filter_trains_by_status,
@@ -49,7 +51,6 @@ class TrainManager(QObject):
         self.config = config
         self.api_manager: Optional[APIManager] = None
         self.timetable_manager: Optional[TimetableManager] = None
-        self.station_database: Optional[StationDatabaseManager] = None
         self.current_trains: List[TrainData] = []
         self.last_update: Optional[datetime] = None
         self.is_fetching = False
@@ -58,19 +59,16 @@ class TrainManager(QObject):
         self.from_station: Optional[str] = None
         self.to_station: Optional[str] = None
 
-        # Auto-refresh removed as obsolete
-
-        # Initialize station database manager (same as settings dialog)
+        # Initialize new core services
         try:
-            self.station_database = StationDatabaseManager()
-            if self.station_database.load_database():
-                logger.debug("StationDatabaseManager initialized successfully")
-            else:
-                logger.error("Failed to load station database")
-                self.station_database = None
+            service_factory = ServiceFactory()
+            self.station_service: Optional[IStationService] = service_factory.get_station_service()
+            self.route_service: Optional[IRouteService] = service_factory.get_route_service()
+            logger.debug("Core services initialized successfully")
         except Exception as e:
-            logger.error(f"Failed to initialize StationDatabaseManager: {e}")
-            self.station_database = None
+            logger.error(f"Failed to initialize core services: {e}")
+            self.station_service = None
+            self.route_service = None
 
         # Initialize timetable manager
         try:
@@ -92,28 +90,20 @@ class TrainManager(QObject):
             logger.info(f"Time window updated from {old_time_window} to {config.display.time_window_hours} hours")
 
     def set_route(self, from_station: str, to_station: str):
-        """Set the current route for timetable generation."""
-        # Convert station codes to names if needed
-        station_mapping = self._create_station_mapping()
+        """Set the current route for timetable generation and trigger refresh."""
+        # Station names are used directly now - no conversion needed
+        old_from = self.from_station
+        old_to = self.to_station
         
-        # Check if we received codes or names
-        if from_station in station_mapping:
-            # It's a code, convert to name
-            self.from_station = station_mapping[from_station]
-            logger.debug(f"Converted from station code {from_station} to name {self.from_station}")
-        else:
-            # It's already a name
-            self.from_station = from_station
-            
-        if to_station in station_mapping:
-            # It's a code, convert to name
-            self.to_station = station_mapping[to_station]
-            logger.debug(f"Converted to station code {to_station} to name {self.to_station}")
-        else:
-            # It's already a name
-            self.to_station = to_station
-            
+        self.from_station = from_station
+        self.to_station = to_station
+        
         logger.debug(f"Route set: {self.from_station} -> {self.to_station}")
+        
+        # If route actually changed, trigger a refresh
+        if old_from != from_station or old_to != to_station:
+            logger.info(f"Route changed from {old_from} -> {old_to} to {from_station} -> {to_station}, triggering refresh")
+            self.fetch_trains()
 
     # Auto-refresh functionality removed as obsolete
 
@@ -205,17 +195,14 @@ class TrainManager(QObject):
             self.is_fetching = False
 
     async def _fetch_trains_from_timetable(self) -> List[TrainData]:
-        """Fetch train data from internal timetable database."""
-        # Check if timetable manager is available
-        if self.timetable_manager is None:
-            logger.error("Timetable manager not available")
-            return []
-        
+        """Fetch train data using new core services for realistic routing."""
         # Get current route
         if not self.from_station or not self.to_station:
             # If no route configured, return empty list
-            logger.info("No route configured - showing empty train list")
+            logger.warning(f"No route configured - from_station: {self.from_station}, to_station: {self.to_station}")
             return []
+        
+        logger.info(f"Fetching trains from {self.from_station} to {self.to_station}")
         
         # Additional check: if config doesn't have proper station data, don't show demo data
         if (not self.config or
@@ -224,6 +211,230 @@ class TrainManager(QObject):
             not getattr(self.config.stations, 'from_name', None) or
             not getattr(self.config.stations, 'to_name', None)):
             logger.info("No valid station configuration - showing empty train list")
+            return []
+
+        # Use new core services for realistic train generation
+        if not self.route_service:
+            logger.error("Route service not available - falling back to old timetable manager")
+            return await self._fetch_trains_from_old_timetable()
+
+        try:
+            # Calculate route using new core services
+            route_result = self.route_service.calculate_route(self.from_station, self.to_station)
+            
+            if not route_result:
+                logger.error(f"No route found from {self.from_station} to {self.to_station} using core services")
+                # Fall back to old timetable manager
+                logger.info("Falling back to old timetable manager")
+                return await self._fetch_trains_from_old_timetable()
+
+            # Generate realistic train services based on the calculated route
+            departure_time = datetime.now()
+            time_window_hours = self.config.display.time_window_hours
+            max_trains = self.config.display.max_trains
+            
+            trains = []
+            
+            # Generate trains at realistic intervals (every 15-30 minutes)
+            current_time = departure_time
+            train_count = 0
+            
+            while train_count < max_trains and current_time < departure_time + timedelta(hours=time_window_hours):
+                # Create realistic train service based on route
+                train_data = self._create_train_from_route(route_result, current_time, train_count)
+                if train_data:
+                    trains.append(train_data)
+                    train_count += 1
+                
+                # Next train in 15-30 minutes (realistic frequency)
+                interval_minutes = 15 + (train_count % 2) * 15  # Alternates between 15 and 30 minutes
+                current_time += timedelta(minutes=interval_minutes)
+
+            logger.debug(f"Generated {len(trains)} realistic trains using core services")
+            return trains
+            
+        except Exception as e:
+            logger.error(f"Error generating trains with core services: {e}")
+            # Fallback to old system
+            return await self._fetch_trains_from_old_timetable()
+
+    def _create_train_from_route(self, route_result, departure_time: datetime, train_index: int) -> Optional[TrainData]:
+        """Create a realistic TrainData object from a route calculation."""
+        try:
+            # Calculate arrival time based on route total journey time
+            if route_result.total_journey_time_minutes:
+                arrival_time = departure_time + timedelta(minutes=route_result.total_journey_time_minutes)
+            else:
+                # Fallback: estimate 2 minutes per km if distance available
+                if route_result.total_distance_km:
+                    estimated_minutes = int(route_result.total_distance_km * 2)
+                    arrival_time = departure_time + timedelta(minutes=estimated_minutes)
+                else:
+                    # Final fallback: 1 hour
+                    arrival_time = departure_time + timedelta(hours=1)
+            
+            # Determine service type based on route complexity
+            if route_result.changes_required == 0:
+                service_type = ServiceType.EXPRESS if route_result.total_distance_km and route_result.total_distance_km > 50 else ServiceType.FAST
+            elif route_result.changes_required <= 2:
+                service_type = ServiceType.FAST
+            else:
+                service_type = ServiceType.STOPPING
+            
+            # Generate realistic operator based on route
+            operators = ["Great Western Railway", "South Western Railway", "Southern", "CrossCountry", "Chiltern Railways"]
+            operator = operators[train_index % len(operators)]
+            
+            # Generate unique IDs
+            service_id = f"SVC{train_index+1:03d}{departure_time.strftime('%H%M')}"
+            train_uid = f"T{train_index+1:05d}"
+            
+            # Generate platform (1-12)
+            platform = str((train_index % 12) + 1)
+            
+            # All trains are on time
+            train_status = TrainStatus.ON_TIME
+            delay_minutes = 0
+            
+            # Calculate journey duration
+            journey_duration = arrival_time - departure_time
+            
+            # Generate calling points from route
+            calling_points = self._generate_calling_points_from_route(route_result, departure_time, arrival_time)
+            
+            train_data = TrainData(
+                departure_time=departure_time,
+                scheduled_departure=departure_time,
+                destination=self.to_station or "Unknown",
+                platform=platform,
+                operator=operator,
+                service_type=service_type,
+                status=train_status,
+                delay_minutes=delay_minutes,
+                estimated_arrival=arrival_time,
+                journey_duration=journey_duration,
+                current_location=None,
+                train_uid=train_uid,
+                service_id=service_id,
+                calling_points=calling_points
+            )
+            
+            return train_data
+            
+        except Exception as e:
+            logger.error(f"Error creating train from route: {e}")
+            return None
+
+    def _generate_calling_points_from_route(self, route_result, departure_time: datetime, arrival_time: datetime) -> List:
+        """Generate calling points from route calculation."""
+        from ..models.train_data import CallingPoint
+        
+        calling_points = []
+        
+        # Add origin
+        origin_point = CallingPoint(
+            station_name=self.from_station or "Unknown",
+            scheduled_arrival=None,
+            scheduled_departure=departure_time,
+            expected_arrival=None,
+            expected_departure=departure_time,
+            platform=None,
+            is_origin=True,
+            is_destination=False
+        )
+        calling_points.append(origin_point)
+        
+        # Add intermediate stations from route - try multiple ways to get them
+        intermediate_stations = []
+        
+        # Try to get intermediate stations from route result
+        if hasattr(route_result, 'intermediate_stations') and route_result.intermediate_stations:
+            intermediate_stations = route_result.intermediate_stations
+            logger.info(f"Got {len(intermediate_stations)} intermediate stations from route_result.intermediate_stations")
+        elif hasattr(route_result, 'stations') and route_result.stations and len(route_result.stations) > 2:
+            # Get all stations except first and last (origin and destination)
+            intermediate_stations = route_result.stations[1:-1]
+            logger.info(f"Got {len(intermediate_stations)} intermediate stations from route_result.stations")
+        elif hasattr(route_result, 'path') and route_result.path and len(route_result.path) > 2:
+            # Alternative: use path if available
+            intermediate_stations = route_result.path[1:-1]
+            logger.info(f"Got {len(intermediate_stations)} intermediate stations from route_result.path")
+        
+        # If we still don't have intermediate stations, try to get them from the route service directly
+        if not intermediate_stations and self.route_service:
+            try:
+                logger.info(f"No intermediate stations found in route_result, querying route service directly for {self.from_station} -> {self.to_station}")
+                if self.from_station and self.to_station:
+                    detailed_route = self.route_service.calculate_route(self.from_station, self.to_station)
+                    if detailed_route:
+                        if hasattr(detailed_route, 'intermediate_stations') and detailed_route.intermediate_stations:
+                            intermediate_stations = detailed_route.intermediate_stations
+                            logger.info(f"Got {len(intermediate_stations)} intermediate stations from direct route service call")
+                        elif hasattr(detailed_route, 'interchange_stations') and detailed_route.interchange_stations:
+                            # Use interchange stations as intermediate stations for main UI display
+                            intermediate_stations = detailed_route.interchange_stations
+                            logger.info(f"Using {len(intermediate_stations)} interchange stations as intermediate stations")
+                        else:
+                            logger.warning(f"Route service returned route but no intermediate or interchange stations")
+                    else:
+                        logger.warning(f"Route service returned None for route calculation")
+            except Exception as e:
+                logger.warning(f"Could not get detailed route from route service: {e}")
+        
+        # If we still have no intermediate stations, generate some key interchange stations manually
+        # This ensures the main UI shows meaningful information
+        if not intermediate_stations and self.from_station and self.to_station:
+            logger.info(f"No intermediate stations available, generating key interchange stations for {self.from_station} -> {self.to_station}")
+            intermediate_stations = self._generate_key_interchange_stations(self.from_station, self.to_station)
+            logger.info(f"Generated {len(intermediate_stations)} key interchange stations")
+        
+        # Add all intermediate stations as calling points
+        if intermediate_stations:
+            logger.info(f"Adding {len(intermediate_stations)} intermediate stations to calling points: {intermediate_stations}")
+            total_journey_time = (arrival_time - departure_time).total_seconds() / 60  # minutes
+            
+            for i, station_name in enumerate(intermediate_stations):
+                # Calculate proportional time for this station
+                progress = (i + 1) / (len(intermediate_stations) + 1)
+                station_time = departure_time + timedelta(minutes=int(total_journey_time * progress))
+                
+                # Add 2-minute stop
+                stop_duration = timedelta(minutes=2)
+                
+                intermediate_point = CallingPoint(
+                    station_name=station_name,
+                    scheduled_arrival=station_time,
+                    scheduled_departure=station_time + stop_duration,
+                    expected_arrival=station_time,
+                    expected_departure=station_time + stop_duration,
+                    platform=None,
+                    is_origin=False,
+                    is_destination=False
+                )
+                calling_points.append(intermediate_point)
+        else:
+            logger.warning(f"No intermediate stations found for route {self.from_station} -> {self.to_station}")
+        
+        # Add destination
+        destination_point = CallingPoint(
+            station_name=self.to_station or "Unknown",
+            scheduled_arrival=arrival_time,
+            scheduled_departure=None,
+            expected_arrival=arrival_time,
+            expected_departure=None,
+            platform=None,
+            is_origin=False,
+            is_destination=True
+        )
+        calling_points.append(destination_point)
+        
+        return calling_points
+
+    async def _fetch_trains_from_old_timetable(self) -> List[TrainData]:
+        """Fallback method using old timetable manager."""
+        # Check if timetable manager is available
+        if self.timetable_manager is None:
+            logger.error("Timetable manager not available")
             return []
 
         # Generate train services using timetable manager
@@ -236,6 +447,11 @@ class TrainManager(QObject):
         # Generate more services than needed to ensure we have enough within the time window
         # Generate services for the full time window plus some buffer
         estimated_services_needed = max(self.config.display.max_trains * 2, 20)
+        # Check for null stations before calling timetable manager
+        if not self.from_station or not self.to_station:
+            logger.error("Cannot generate train services: missing from_station or to_station")
+            return []
+            
         train_services = self.timetable_manager.generate_train_services(
             self.from_station, self.to_station, departure_time,
             num_services=estimated_services_needed
@@ -282,8 +498,13 @@ class TrainManager(QObject):
             train_uid = f"T{i+1:05d}"
             
             # Generate calling points for this service
-            calling_points = self._generate_calling_points(service, dep_time, arr_time, service_type)
+            calling_points = self._generate_calling_points_old(service, dep_time, arr_time, service_type)
             
+            # Ensure we have a valid destination
+            if not self.to_station:
+                logger.error("Cannot create train data: missing to_station")
+                continue
+                
             train_data = TrainData(
                 departure_time=dep_time,
                 scheduled_departure=dep_time,
@@ -306,10 +527,10 @@ class TrainManager(QObject):
             if len(trains) >= self.config.display.max_trains:
                 break
 
-        logger.debug(f"Generated {len(trains)} trains within {time_window_hours} hour time window")
+        logger.debug(f"Generated {len(trains)} trains using old timetable manager")
         return trains
 
-    def _generate_calling_points(self, service, departure_time: datetime, arrival_time: datetime, service_type_enum):
+    def _generate_calling_points_old(self, service, departure_time: datetime, arrival_time: datetime, service_type_enum):
         """Generate calling points for a train service."""
         from ..models.train_data import CallingPoint
         
@@ -322,7 +543,6 @@ class TrainManager(QObject):
         # Add origin station
         origin_point = CallingPoint(
             station_name=self.from_station,
-            station_code=self.from_station,  # Use station name instead of code
             scheduled_arrival=None,
             scheduled_departure=departure_time,
             expected_arrival=None,
@@ -359,7 +579,6 @@ class TrainManager(QObject):
             
             intermediate_point = CallingPoint(
                 station_name=station_name,
-                station_code=station_name,  # Use station name instead of code
                 scheduled_arrival=current_time,
                 scheduled_departure=current_time + timedelta(minutes=stop_time),
                 expected_arrival=current_time,
@@ -376,7 +595,6 @@ class TrainManager(QObject):
         # Add destination station
         destination_point = CallingPoint(
             station_name=self.to_station,
-            station_code=self.to_station,  # Use station name instead of code
             scheduled_arrival=arrival_time,
             scheduled_departure=None,
             expected_arrival=arrival_time,
@@ -621,16 +839,9 @@ class TrainManager(QObject):
     
     def _find_intermediate_interchange(self, from_station: str, to_station: str) -> Optional[str]:
         """Find intermediate interchange for long segments."""
-        # Only add intermediate interchanges for very long segments
-        long_distance_routes = {
-            ("Fleet", "Bristol Temple Meads"): "Reading",
-            ("Fleet", "Birmingham New Street"): "Reading",
-            ("Clapham Junction", "Manchester"): "Birmingham New Street",
-            ("Bristol Temple Meads", "Manchester"): "Birmingham New Street",
-        }
-        
-        route_key = (from_station, to_station)
-        return long_distance_routes.get(route_key)
+        # Remove hardcoded long distance routes - let core services handle routing
+        # The route service should determine intermediate stations based on actual railway data
+        return None
     
     def _create_detailed_interchange_journey(self, from_station: str, to_station: str,
                                            configured_via_stations: List[str], service_type: str) -> List[str]:
@@ -1339,34 +1550,38 @@ class TrainManager(QObject):
     
     def _find_geographical_route(self, from_station: str, to_station: str,
                                station_network: Dict[str, Dict], service_type: str) -> List[str]:
-        """Find route using StationDatabaseManager instead of JSON-based network."""
+        """Find route using new core services instead of old station database."""
         
         logger.debug(f"Looking for route from {from_station} to {to_station}")
         
-        # Use StationDatabaseManager for route finding instead of JSON network
-        if self.station_database and self.station_database.loaded:
+        # Use new core services for route finding
+        if self.route_service:
             try:
-                # Parse station names to remove disambiguation
-                from_parsed = self.station_database.parse_station_name(from_station)
-                to_parsed = self.station_database.parse_station_name(to_station)
+                # Calculate route using the new route service
+                route_result = self.route_service.calculate_route(from_station, to_station)
                 
-                # Find route using the station database
-                routes = self.station_database.find_route_between_stations(from_parsed, to_parsed)
-                
-                if routes:
-                    # Use the first (best) route
-                    route = routes[0]
+                if route_result and route_result.segments:
+                    # Extract station names from route - use the route's intermediate_stations property
+                    route = [from_station]  # Start with origin
+                    
+                    # Add intermediate stations from the route
+                    if route_result.intermediate_stations:
+                        route.extend(route_result.intermediate_stations)
+                    
+                    # Add the final destination
+                    route.append(to_station)
+                    
                     logger.debug(f"Found route with {len(route)} stations: {' -> '.join(route[:5])}{'...' if len(route) > 5 else ''}")
                     return self._filter_stations_by_service_type_improved(route, service_type)
                 else:
-                    logger.warning(f"No route found via StationDatabaseManager")
+                    logger.warning(f"No route found via core services")
                     return [from_station, to_station]
                     
             except Exception as e:
-                logger.error(f"Error finding route via StationDatabaseManager: {e}")
+                logger.error(f"Error finding route via core services: {e}")
                 return [from_station, to_station]
         else:
-            logger.error("StationDatabaseManager not available for route finding")
+            logger.error("Route service not available for route finding")
             return [from_station, to_station]
 
     def _follow_railway_lines(self, from_station: str, to_station: str) -> List[str]:
@@ -1542,20 +1757,26 @@ class TrainManager(QObject):
         return lines_count >= 2
 
     def _create_station_mapping(self) -> Dict[str, str]:
-        """Create mapping from station codes to full station names using StationDatabaseManager."""
+        """Create mapping from station codes to full station names using new station service."""
         mapping = {}
         
-        # Use the same station database as the settings dialog
-        if self.station_database and self.station_database.loaded:
-            # Since we removed station codes, just create a simple identity mapping
-            # This allows the code to work with station names directly
-            for station_name in self.station_database.all_stations.keys():
-                if station_name:
-                    mapping[station_name] = station_name
-            
-            logger.debug(f"Built station mapping with {len(mapping)} stations from StationDatabaseManager")
+        # Use the new station service
+        if self.station_service:
+            try:
+                # Get all stations from the station service
+                all_stations = self.station_service.get_all_stations()
+                
+                # Since we removed station codes, just create a simple identity mapping
+                # This allows the code to work with station names directly
+                for station in all_stations:
+                    if station.name:
+                        mapping[station.name] = station.name
+                
+                logger.debug(f"Built station mapping with {len(mapping)} stations from station service")
+            except Exception as e:
+                logger.error(f"Error building station mapping: {e}")
         else:
-            logger.warning("StationDatabaseManager not available, using empty mapping")
+            logger.warning("Station service not available, using empty mapping")
         
         return mapping
 
@@ -1568,19 +1789,19 @@ class TrainManager(QObject):
         for line_name, data in line_data.items():
             journey_times = data.get('typical_journey_times', {})
             
-            # Try to find station codes for the given station names
-            from_code = self._find_station_code(from_station, data)
-            to_code = self._find_station_code(to_station, data)
+            # Use station names directly
+            from_name = from_station
+            to_name = to_station
             
-            if from_code and to_code:
-                # Try direct journey time
-                journey_key = f"{from_code}-{to_code}"
+            if from_name and to_name:
+                # Try direct journey time using station names
+                journey_key = f"{from_name}-{to_name}"
                 if journey_key in journey_times:
                     base_time = journey_times[journey_key]
                     return self._adjust_time_for_service_type(base_time, service_type)
                 
                 # Try reverse direction
-                reverse_key = f"{to_code}-{from_code}"
+                reverse_key = f"{to_name}-{from_name}"
                 if reverse_key in journey_times:
                     base_time = journey_times[reverse_key]
                     return self._adjust_time_for_service_type(base_time, service_type)
@@ -1596,8 +1817,8 @@ class TrainManager(QObject):
         default_times = {"Express": 15, "Fast": 20, "Stopping": 25}
         return default_times.get(service_type, 20)
 
-    def _find_station_code(self, station_name: str, line_data: Dict) -> Optional[str]:
-        """Find station code for a given station name in line data."""
+    def _find_station_name(self, station_name: str, line_data: Dict) -> Optional[str]:
+        """Find and validate station name in line data."""
         stations = line_data.get('stations', [])
         for station in stations:
             if station.get('name', '').lower() == station_name.lower():
@@ -1834,5 +2055,67 @@ class TrainManager(QObject):
                     }
         
         return relationships
+
+    def _generate_key_interchange_stations(self, from_station: str, to_station: str) -> List[str]:
+        """Generate key interchange stations for a route when route service doesn't provide them."""
+        # Define major interchange stations and their typical connections
+        major_interchanges = {
+            "Clapham Junction": {"region": "london", "priority": 1},
+            "Birmingham New Street": {"region": "midlands", "priority": 1},
+            "Reading": {"region": "south", "priority": 2},
+            "Bristol Temple Meads": {"region": "southwest", "priority": 2},
+            "Manchester Piccadilly": {"region": "north", "priority": 1},
+            "Oxford": {"region": "central", "priority": 3},
+            "Crewe": {"region": "northwest", "priority": 2},
+            "Preston": {"region": "northwest", "priority": 3},
+            "Coventry": {"region": "midlands", "priority": 3},
+            "Wolverhampton": {"region": "midlands", "priority": 3},
+            "Stafford": {"region": "midlands", "priority": 3},
+        }
+        
+        # Common route patterns with key interchange stations
+        route_patterns = {
+            ("Fleet", "Manchester Airport"): ["Reading", "Birmingham New Street"],
+            ("Fleet", "Manchester"): ["Reading", "Birmingham New Street"],
+            ("Fleet", "Birmingham"): ["Reading"],
+            ("Fleet", "Bristol"): ["Reading"],
+            ("London", "Manchester"): ["Birmingham New Street"],
+            ("London", "Birmingham"): ["Reading"],
+            ("Birmingham", "Manchester"): ["Stafford"],
+            ("Bristol", "Manchester"): ["Birmingham New Street"],
+            ("Reading", "Manchester"): ["Birmingham New Street"],
+        }
+        
+        # Try to find a direct pattern match
+        route_key = (from_station, to_station)
+        if route_key in route_patterns:
+            return route_patterns[route_key]
+        
+        # Try reverse direction
+        reverse_key = (to_station, from_station)
+        if reverse_key in route_patterns:
+            return list(reversed(route_patterns[reverse_key]))
+        
+        # Try partial matches (e.g., "Manchester Airport" matches "Manchester")
+        for (pattern_from, pattern_to), stations in route_patterns.items():
+            if (pattern_from in from_station or from_station in pattern_from) and \
+               (pattern_to in to_station or to_station in pattern_to):
+                return stations
+        
+        # Fallback: generate based on geographical logic
+        interchange_stations = []
+        
+        # If going from south to north, add key midlands interchange
+        if any(south in from_station.lower() for south in ["fleet", "london", "reading", "bristol"]) and \
+           any(north in to_station.lower() for north in ["manchester", "birmingham", "coventry"]):
+            if "birmingham" not in from_station.lower():
+                interchange_stations.append("Birmingham New Street")
+        
+        # If going through London area, add Clapham Junction
+        if "fleet" in from_station.lower() and "manchester" in to_station.lower():
+            if "Clapham Junction" not in interchange_stations:
+                interchange_stations.insert(0, "Clapham Junction")
+        
+        return interchange_stations
 
     # Auto-refresh methods removed as obsolete

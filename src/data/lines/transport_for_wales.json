@@ -895,11 +895,11 @@
       "typical_journey_time": 52,
       "frequency": "Every 30 minutes",
       "stations": [
-        "CDF",
-        "SWA",
-        "BNG",
-        "ABD",
-        "MER"
+        "Cardiff Central",
+        "Swanwick",
+        "Bangor",
+        "Aberdeen",
+        "Merthyr Tydfil"
       ],
       "peak_frequency": "Every 20 minutes",
       "off_peak_frequency": "Every 30 minutes",
@@ -916,7 +916,7 @@
       "typical_journey_time": 63,
       "frequency": "Every 60 minutes",
       "stations": [
-        "CDF",
+        "Cardiff Central",
         "NWP",
         "LLE",
         "HVF",
@@ -929,10 +929,10 @@
         "LLD",
         "CWB",
         "PRT",
-        "CTR",
+        "Chester",
         "SSH",
         "NTN",
-        "MER",
+        "Merthyr Tydfil",
         "TRE"
       ],
       "peak_frequency": null,

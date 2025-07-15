@@ -67,10 +67,10 @@
   "service_patterns": {
     "express": {
       "stations": [
-        "CTR",
+        "Chester",
         "RHL",
         "LLJ",
-        "BNG",
+        "Bangor",
         "HHD"
       ],
       "description": "Express service with limited stops",
@@ -87,7 +87,7 @@
     }
   },
   "typical_journey_times": {
-    "CTR-HHD": 120,
-    "HHD-CTR": 120
+    "Chester-HHD": 120,
+    "HHD-Chester": 120
   }
 }

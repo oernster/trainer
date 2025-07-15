@@ -3,7 +3,7 @@ Simple Route Finder - Emergency fallback for route finding
 Author: Oliver Ernster
 
 This is a simple, reliable route finder that bypasses complex service patterns
-and provides basic route finding functionality.
+and provides basic route finding functionality using station names only.
 """
 
 import json
@@ -11,18 +11,17 @@ from pathlib import Path
 from typing import List, Dict, Optional
 
 class SimpleRouteFinder:
-    """Simple route finder without complex algorithms."""
+    """Simple route finder without complex algorithms, using station names only."""
     
     def __init__(self):
         self.data_dir = Path(__file__).parent.parent / "data"
         self.lines_dir = self.data_dir / "lines"
-        self.stations = {}  # name -> code
-        self.station_lines = {}  # code -> [line_names]
-        self.line_stations = {}  # line_name -> [station_codes_in_order]
+        self.station_lines = {}  # station_name -> [line_names]
+        self.line_stations = {}  # line_name -> [station_names_in_order]
         self.loaded = False
     
     def load_data(self) -> bool:
-        """Load basic station and line data."""
+        """Load basic station and line data using station names only."""
         try:
             # Load railway lines index
             index_file = self.data_dir / "railway_lines_index.json"
@@ -42,24 +41,20 @@ class SimpleRouteFinder:
                     line_data = json.load(f)
                 
                 line_name = line_info['name']
-                station_codes = []
+                station_names = []
                 
                 for station_data in line_data['stations']:
                     name = station_data['name']
-                    code = station_data['code']
-                    
-                    # Store station name -> code mapping
-                    self.stations[name] = code
                     
                     # Store station -> lines mapping
-                    if code not in self.station_lines:
-                        self.station_lines[code] = []
-                    self.station_lines[code].append(line_name)
+                    if name not in self.station_lines:
+                        self.station_lines[name] = []
+                    self.station_lines[name].append(line_name)
                     
-                    station_codes.append(code)
+                    station_names.append(name)
                 
                 # Store line -> stations mapping
-                self.line_stations[line_name] = station_codes
+                self.line_stations[line_name] = station_names
             
             self.loaded = True
             return True
@@ -69,21 +64,18 @@ class SimpleRouteFinder:
             return False
     
     def find_direct_route(self, from_station: str, to_station: str) -> Optional[List[str]]:
-        """Find direct route between two stations."""
+        """Find direct route between two stations using station names."""
         if not self.loaded:
             if not self.load_data():
                 return None
         
-        # Get station codes
-        from_code = self.stations.get(from_station)
-        to_code = self.stations.get(to_station)
-        
-        if not from_code or not to_code:
+        # Check if stations exist
+        if from_station not in self.station_lines or to_station not in self.station_lines:
             return None
         
         # Find common lines
-        from_lines = set(self.station_lines.get(from_code, []))
-        to_lines = set(self.station_lines.get(to_code, []))
+        from_lines = set(self.station_lines.get(from_station, []))
+        to_lines = set(self.station_lines.get(to_station, []))
         common_lines = from_lines.intersection(to_lines)
         
         if not common_lines:
@@ -94,28 +86,90 @@ class SimpleRouteFinder:
         line_stations = self.line_stations.get(line_name, [])
         
         try:
-            from_idx = line_stations.index(from_code)
-            to_idx = line_stations.index(to_code)
+            from_idx = line_stations.index(from_station)
+            to_idx = line_stations.index(to_station)
         except ValueError:
             return None
         
         # Build route
         if from_idx < to_idx:
-            route_codes = line_stations[from_idx:to_idx + 1]
+            route_names = line_stations[from_idx:to_idx + 1]
         else:
-            route_codes = line_stations[to_idx:from_idx + 1]
-            route_codes.reverse()
-        
-        # Convert codes back to names
-        route_names = []
-        code_to_name = {code: name for name, code in self.stations.items()}
-        
-        for code in route_codes:
-            name = code_to_name.get(code)
-            if name:
-                route_names.append(name)
+            route_names = line_stations[to_idx:from_idx + 1]
+            route_names.reverse()
         
         return route_names if len(route_names) >= 2 else None
+    
+    def get_all_stations(self) -> List[str]:
+        """Get list of all station names."""
+        if not self.loaded:
+            if not self.load_data():
+                return []
+        
+        return list(self.station_lines.keys())
+    
+    def get_lines_for_station(self, station_name: str) -> List[str]:
+        """Get list of lines that serve a station."""
+        if not self.loaded:
+            if not self.load_data():
+                return []
+        
+        return self.station_lines.get(station_name, [])
+    
+    def get_stations_on_line(self, line_name: str) -> List[str]:
+        """Get list of stations on a line in order."""
+        if not self.loaded:
+            if not self.load_data():
+                return []
+        
+        return self.line_stations.get(line_name, [])
+    
+    def find_interchange_stations(self) -> List[str]:
+        """Find stations that serve multiple lines (interchange stations)."""
+        if not self.loaded:
+            if not self.load_data():
+                return []
+        
+        interchange_stations = []
+        for station_name, lines in self.station_lines.items():
+            if len(lines) > 1:
+                interchange_stations.append(station_name)
+        
+        return interchange_stations
+    
+    def find_route_with_changes(self, from_station: str, to_station: str, max_changes: int = 2) -> Optional[List[str]]:
+        """Find route between stations allowing for changes at interchange stations."""
+        if not self.loaded:
+            if not self.load_data():
+                return None
+        
+        # Try direct route first
+        direct_route = self.find_direct_route(from_station, to_station)
+        if direct_route:
+            return direct_route
+        
+        if max_changes < 1:
+            return None
+        
+        # Try one change via interchange stations
+        interchange_stations = self.find_interchange_stations()
+        
+        for interchange in interchange_stations:
+            # Check if we can get from origin to interchange
+            route_to_interchange = self.find_direct_route(from_station, interchange)
+            if not route_to_interchange:
+                continue
+            
+            # Check if we can get from interchange to destination
+            route_from_interchange = self.find_direct_route(interchange, to_station)
+            if not route_from_interchange:
+                continue
+            
+            # Combine routes, avoiding duplicate interchange station
+            combined_route = route_to_interchange + route_from_interchange[1:]
+            return combined_route
+        
+        return None
 
 # Global instance
 simple_finder = SimpleRouteFinder()
