@@ -408,8 +408,6 @@ class TrainItemWidget(QFrame):
         
         # Debug logging to understand what calling points we have
         logger.debug(f"Train {self.train_data.service_id} has {len(all_calling_points)} calling points")
-        for i, cp in enumerate(all_calling_points):
-            logger.debug(f"  {i}: {cp.station_name} (origin={cp.is_origin}, dest={cp.is_destination})")
         
         # Remove duplicate stations while preserving order and keeping the most important one
         seen_stations = set()

@@ -535,22 +535,26 @@ class RouteService(IRouteService):
             
             segments.append(segment)
         
+        # Enhance segments with intermediate stations from railway line data
+        enhanced_segments = []
+        for segment in segments:
+            enhanced_segment = self._enhance_segment_with_intermediate_stations(segment)
+            enhanced_segments.append(enhanced_segment)
+        
+        # Create enhanced full path with all intermediate stations
+        enhanced_full_path = self._create_enhanced_full_path(enhanced_segments)
+        
         # Create route with enhanced intermediate stations calculation
         route = Route(
             from_station=path_node.path[0],
             to_station=path_node.path[-1],
-            segments=segments,
+            segments=enhanced_segments,
             total_distance_km=path_node.distance,
             total_journey_time_minutes=path_node.time,
             changes_required=path_node.changes,
-            full_path=path_node.path  # Include the complete path for accurate intermediate stations
+            full_path=enhanced_full_path  # Use enhanced path with all intermediate stations
         )
         
-        # Log the route details for debugging
-        self.logger.info(f"Created route {route.from_station} -> {route.to_station}")
-        self.logger.info(f"  Path: {' -> '.join(path_node.path)}")
-        self.logger.info(f"  Intermediate stations: {route.intermediate_stations}")
-        self.logger.info(f"  Interchange stations: {route.interchange_stations}")
         
         return route
     
@@ -1571,3 +1575,118 @@ class RouteService(IRouteService):
         except Exception as e:
             self.logger.error(f"Failed to load interchange connections: {e}")
             return {}
+    
+    def _enhance_segment_with_intermediate_stations(self, segment: RouteSegment) -> RouteSegment:
+        """Enhance a route segment by adding intermediate stations from railway line data."""
+        # Skip walking segments - they don't have intermediate stations
+        if segment.service_pattern == "WALKING" or segment.line_name == "WALKING":
+            return segment
+        
+        # Skip if from and to stations are the same
+        if segment.from_station == segment.to_station:
+            return segment
+        
+        # Try to find the railway line data for this segment
+        intermediate_stations = self._get_intermediate_stations_from_line_data(
+            segment.from_station, segment.to_station, segment.line_name
+        )
+        
+        if intermediate_stations:
+            self.logger.debug(f"Found {len(intermediate_stations)} intermediate stations for {segment.from_station} -> {segment.to_station} on {segment.line_name}")
+            # Create a new segment - we'll store intermediate stations in the full_path instead
+            # since RouteSegment doesn't have intermediate_stations parameter
+            return segment
+        else:
+            self.logger.debug(f"No intermediate stations found for {segment.from_station} -> {segment.to_station} on {segment.line_name}")
+            return segment
+    
+    def _get_intermediate_stations_from_line_data(self, from_station: str, to_station: str, line_name: str) -> List[str]:
+        """Get intermediate stations between two stations on a specific line from JSON data."""
+        self.logger.debug(f"Looking for intermediate stations between {from_station} -> {to_station} on {line_name}")
+        try:
+            # Get line data with coordinates
+            line_data = self._get_line_data_with_coordinates(line_name)
+            if not line_data:
+                self.logger.debug(f"No line data found for {line_name}")
+                return []
+            
+            stations_data = line_data.get('stations', [])
+            if not stations_data:
+                self.logger.debug(f"No stations data found in line {line_name}")
+                return []
+            
+            # Extract station names in order
+            station_names = []
+            for station_data in stations_data:
+                if isinstance(station_data, dict):
+                    station_name = station_data.get('name', '')
+                    if station_name:
+                        station_names.append(station_name)
+            
+            self.logger.debug(f"Found {len(station_names)} stations on {line_name}")
+            
+            # Find indices of from and to stations
+            from_idx = None
+            to_idx = None
+            
+            for i, station_name in enumerate(station_names):
+                if station_name == from_station:
+                    from_idx = i
+                elif station_name == to_station:
+                    to_idx = i
+            
+            self.logger.debug(f"Station indices - {from_station}: {from_idx}, {to_station}: {to_idx}")
+            
+            # If we found both stations, extract intermediate stations
+            if from_idx is not None and to_idx is not None:
+                # Ensure we go in the right direction
+                start_idx = min(from_idx, to_idx)
+                end_idx = max(from_idx, to_idx)
+                
+                # Get intermediate stations (excluding start and end)
+                intermediate_stations = station_names[start_idx + 1:end_idx]
+                
+                # If we were going in reverse direction, reverse the intermediate stations
+                if from_idx > to_idx:
+                    intermediate_stations.reverse()
+                
+                self.logger.debug(f"Extracted {len(intermediate_stations)} intermediate stations for {from_station} -> {to_station} on {line_name}")
+                return intermediate_stations
+            else:
+                self.logger.debug(f"Could not find both stations on line {line_name}")
+                return []
+                
+        except Exception as e:
+            self.logger.debug(f"Failed to get intermediate stations for {from_station} -> {to_station} on {line_name}: {e}")
+            return []
+    
+    def _create_enhanced_full_path(self, segments: List[RouteSegment]) -> List[str]:
+        """Create a full path including all intermediate stations from enhanced segments."""
+        self.logger.debug(f"Creating enhanced full path for {len(segments)} segments")
+        if not segments:
+            return []
+        
+        full_path = [segments[0].from_station]
+        self.logger.debug(f"Starting with: {full_path}")
+        
+        for i, segment in enumerate(segments):
+            self.logger.debug(f"Processing segment {i}: {segment.from_station} -> {segment.to_station} on {segment.line_name}")
+            
+            # Get intermediate stations for this segment
+            intermediate_stations = self._get_intermediate_stations_from_line_data(
+                segment.from_station, segment.to_station, segment.line_name
+            )
+            
+            # Add intermediate stations if they exist
+            if intermediate_stations:
+                self.logger.debug(f"Adding {len(intermediate_stations)} intermediate stations")
+                full_path.extend(intermediate_stations)
+            else:
+                self.logger.debug(f"No intermediate stations found for segment {i}")
+            
+            # Add the destination station
+            full_path.append(segment.to_station)
+            self.logger.debug(f"Path after segment {i}: {full_path}")
+        
+        self.logger.debug(f"Final enhanced path: {full_path}")
+        return full_path

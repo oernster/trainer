@@ -937,6 +937,7 @@ class TrainManager(QObject):
                 route_segments=getattr(route_result, 'segments', [])
             )
             
+            
             # Debug: Log the route segments that are being attached to the train
             if train_data.route_segments:
                 logger.debug(f"Attached {len(train_data.route_segments)} route segments to train {service_id}")
@@ -989,10 +990,14 @@ class TrainManager(QObject):
             # Extract intermediate stations from full_path (this is the corrected route)
             if len(full_path) > 2:
                 intermediate_stations = full_path[1:-1]  # Exclude origin and destination
+                logger.debug(f"Using full_path with {len(intermediate_stations)} intermediate stations")
         else:
             # Fallback: try to get from intermediate_stations property
             if route_result and hasattr(route_result, 'intermediate_stations'):
                 intermediate_stations = route_result.intermediate_stations or []
+                logger.debug(f"Using intermediate_stations property with {len(intermediate_stations)} stations")
+            else:
+                logger.debug("No full_path or intermediate_stations available in route_result")
         
         # CRITICAL FIX: Also include transfer stations from route segments
         # These are stations where passengers change trains but aren't included in intermediate_stations
@@ -1040,6 +1045,7 @@ class TrainManager(QObject):
         
         # Add all intermediate stations as calling points
         if intermediate_stations:
+            logger.debug(f"Creating calling points for {len(intermediate_stations)} intermediate stations")
             total_journey_time = (arrival_time - departure_time).total_seconds() / 60  # minutes
             
             # Get segments to check for walking connections
@@ -1159,6 +1165,8 @@ class TrainManager(QObject):
             is_destination=True
         )
         calling_points.append(destination_point)
+        
+        logger.debug(f"Generated {len(calling_points)} calling points for train")
         
         return calling_points
 
@@ -2692,7 +2700,18 @@ class TrainManager(QObject):
         This is a general solution that analyzes JSON data to detect when stations are on
         different unconnected lines and dynamically finds required interchange stations.
         """
+        logger.debug(f"Starting _ensure_valid_interchange_route")
+        
         if not route_result or not self.from_station or not self.to_station:
+            logger.debug(f"Early return - missing route_result or stations")
+            return route_result
+        
+        # CRITICAL FIX: If the route service has already provided an enhanced full_path with intermediate stations,
+        # we should preserve it instead of overriding it. The route service's enhanced path is the authoritative
+        # source that includes all intermediate stations from railway line JSON data.
+        if (hasattr(route_result, 'full_path') and route_result.full_path and
+            len(route_result.full_path) > 2):  # More than just origin and destination
+            logger.debug(f"Route service provided enhanced path with {len(route_result.full_path)} stations - preserving it")
             return route_result
         
         try:
@@ -2813,12 +2832,13 @@ class TrainManager(QObject):
                         # Create proper route segments with line change information
                         corrected_segments = self._create_route_segments_from_path(corrected_path, line_data)
                         route_result = CorrectedRoute(corrected_path, corrected_segments)
-                        logger.critical(f"CREATED NEW ROUTE: {corrected_path}")
+                        logger.debug(f"Created new route with {len(corrected_path)} stations")
             
+            logger.debug(f"Returning modified route_result")
             return route_result
             
         except Exception as e:
-            logger.critical(f"ROUTE VALIDATION ERROR: {e}")
+            logger.error(f"Route validation error: {e}")
             return route_result
     
     def _find_required_interchanges(self, origin_lines, dest_lines, station_to_lines):
