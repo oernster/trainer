@@ -210,11 +210,6 @@ class CacheKey:
         return f"via:{from_station.lower()}:{to_station.lower()}"
         
     @staticmethod
-    def station_code_key(station_name: str) -> str:
-        """Generate cache key for station code lookups."""
-        return f"code:{station_name.lower()}"
-        
-    @staticmethod
     def validation_key(route_hash: str) -> str:
         """Generate cache key for route validation results."""
         return f"validation:{route_hash}"

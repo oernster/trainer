@@ -58,7 +58,7 @@ class MainWindow(QMainWindow):
     theme_changed = Signal(str)
     # Auto-refresh removed
     astronomy_manager_ready = Signal()  # New signal for when astronomy manager is ready
-    route_changed = Signal(str, str)  # Signal for when route changes (from_code, to_code)
+    route_changed = Signal(str, str)  # Signal for when route changes (from_name, to_name)
     config_updated = Signal(object)  # Signal for when configuration is updated
 
     def __init__(self, config_manager: Optional[ConfigManager] = None):
@@ -1133,7 +1133,7 @@ class MainWindow(QMainWindow):
                 
                 # Update train manager route if stations changed
                 # This signal will be connected from main.py
-                self.route_changed.emit(self.config.stations.from_code, self.config.stations.to_code)
+                self.route_changed.emit(self.config.stations.from_name, self.config.stations.to_name)
                 
                 # Update route display with via stations
                 via_stations = getattr(self.config.stations, 'via_stations', [])

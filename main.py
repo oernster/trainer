@@ -250,15 +250,15 @@ def setup_logging():
     log_file = log_dir / "train_times.log"
     
     logging.basicConfig(
-        level=logging.INFO,
+        level=logging.WARNING,
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         handlers=[logging.FileHandler(str(log_file)), logging.StreamHandler()],
     )
 
     # Set specific log levels for different modules
-    logging.getLogger("src.api").setLevel(logging.INFO)
-    logging.getLogger("src.ui").setLevel(logging.INFO)
-    logging.getLogger("src.managers").setLevel(logging.INFO)
+    logging.getLogger("src.api").setLevel(logging.WARNING)
+    logging.getLogger("src.ui").setLevel(logging.WARNING)
+    logging.getLogger("src.managers").setLevel(logging.WARNING)
 
 def setup_application_icon(app: QApplication):
     """
@@ -294,7 +294,7 @@ def setup_application_icon(app: QApplication):
         icon = QIcon(pixmap)
         app.setWindowIcon(icon)
         
-        logging.info("Application icon set using Unicode train emoji")
+        logging.warning("Application icon set using Unicode train emoji")
         
     except Exception as e:
         logging.warning(f"Failed to create emoji icon, using default: {e}")
@@ -401,7 +401,7 @@ def main():
         setup_logging()
         logger = logging.getLogger(__name__)
 
-        logger.info("Starting Trainer - Trainer train times application")
+        logger.warning("Starting Trainer - Trainer train times application")
 
         # Create single instance QApplication with dual protection
         app = SingleInstanceApplication(sys.argv)

@@ -45,7 +45,7 @@ class ServicePattern:
     description: str
     typical_journey_time: int  # minutes
     frequency: str  # e.g., "Every 30 minutes"
-    stations: Union[List[str], str]  # List of station codes or "all"
+    stations: Union[List[str], str]  # List of station names or "all"
     peak_frequency: Optional[str] = None
     off_peak_frequency: Optional[str] = None
     weekend_frequency: Optional[str] = None
@@ -56,14 +56,14 @@ class ServicePattern:
     def __post_init__(self):
         """Validate service pattern data."""
         if isinstance(self.stations, str) and self.stations != "all":
-            raise ValueError("stations must be a list of station codes or 'all'")
+            raise ValueError("stations must be a list of station names or 'all'")
     
-    def serves_station(self, station_code: str, all_stations: List[str]) -> bool:
+    def serves_station(self, station_name: str, all_stations: List[str]) -> bool:
         """Check if this service pattern serves a specific station."""
         if self.stations == "all":
-            return station_code in all_stations
+            return station_name in all_stations
         elif isinstance(self.stations, list):
-            return station_code in self.stations
+            return station_name in self.stations
         return False
     
     def get_station_count(self, all_stations: List[str]) -> int:
@@ -136,7 +136,7 @@ class ServicePatternSet:
         """Get a specific service pattern."""
         return self.patterns.get(service_type_code)
     
-    def get_best_pattern_for_stations(self, from_code: str, to_code: str, 
+    def get_best_pattern_for_stations(self, from_name: str, to_name: str,
                                     all_stations: List[str]) -> Optional[ServicePattern]:
         """
         Find the best (fastest) service pattern that serves both stations.
@@ -149,20 +149,20 @@ class ServicePatternSet:
         )
         
         for pattern in sorted_patterns:
-            if (pattern.serves_station(from_code, all_stations) and 
-                pattern.serves_station(to_code, all_stations)):
+            if (pattern.serves_station(from_name, all_stations) and
+                pattern.serves_station(to_name, all_stations)):
                 return pattern
         
         return None
     
-    def get_available_patterns_for_stations(self, from_code: str, to_code: str,
+    def get_available_patterns_for_stations(self, from_name: str, to_name: str,
                                           all_stations: List[str]) -> List[ServicePattern]:
         """Get all service patterns that serve both stations, sorted by priority."""
         available_patterns = []
         
         for pattern in self.patterns.values():
-            if (pattern.serves_station(from_code, all_stations) and 
-                pattern.serves_station(to_code, all_stations)):
+            if (pattern.serves_station(from_name, all_stations) and
+                pattern.serves_station(to_name, all_stations)):
                 available_patterns.append(pattern)
         
         # Sort by priority (fastest first)

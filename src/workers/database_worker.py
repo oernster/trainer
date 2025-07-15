@@ -50,14 +50,12 @@ class DatabaseWorker(BaseWorker):
         # Initialize caches
         self.search_cache = MemoryCache(max_size=1000, default_ttl=1800)  # 30 minutes
         self.station_cache = MemoryCache(max_size=5000, default_ttl=3600)  # 1 hour
-        self.code_cache = MemoryCache(max_size=2000, default_ttl=3600)     # 1 hour
         
         # Connect slot methods
         self.search_requested.connect(self.perform_search)
         self.load_database_requested.connect(self.load_database)
         self.warm_cache_requested.connect(self.warm_cache)
         self.get_all_stations_requested.connect(self.get_all_stations)
-        self.get_station_code_requested.connect(self.get_station_code)
         
         # Performance tracking
         self._search_count = 0
@@ -68,7 +66,6 @@ class DatabaseWorker(BaseWorker):
     load_database_requested = Signal()
     warm_cache_requested = Signal()
     get_all_stations_requested = Signal(str)  # request_id
-    get_station_code_requested = Signal(str, str)  # station_name, request_id
     
     def on_thread_started(self):
         """Initialize worker thread."""
@@ -265,29 +262,6 @@ class DatabaseWorker(BaseWorker):
             self.logger.error(f"Get all stations error: {e}")
             self.error.emit(f"Failed to load station list: {str(e)}")
             
-    def get_station_code(self, station_name: str, request_id: str):
-        """Get station code for a station name."""
-        try:
-            with self.measure_operation("get_station_code"):
-                # Check cache first
-                cache_key = CacheKey.station_code_key(station_name)
-                cached_code = self.code_cache.get(cache_key)
-                
-                if cached_code is not None:
-                    return cached_code
-                    
-                # Get from database
-                code = self.db_manager.get_station_code(station_name)
-                
-                # Cache the result
-                if code:
-                    self.code_cache.put(cache_key, code, ttl=3600)  # 1 hour
-                    
-                return code
-                
-        except Exception as e:
-            self.logger.error(f"Get station code error: {e}")
-            return None
             
     def _populate_station_cache(self):
         """Pre-populate station cache with frequently accessed data."""
@@ -297,23 +271,6 @@ class DatabaseWorker(BaseWorker):
             if all_stations:
                 self.station_cache.put("all_station_names", all_stations, ttl=7200)
                 
-            # Cache station codes for common stations
-            common_stations = [
-                "London Waterloo", "London Paddington", "London Victoria",
-                "London Kings Cross", "London St Pancras", "London Liverpool Street",
-                "Manchester Piccadilly", "Birmingham New Street", "Bristol Temple Meads",
-                "Leeds", "Liverpool Lime Street", "Newcastle", "Edinburgh Waverley",
-                "Glasgow Central", "Cardiff Central"
-            ]
-            
-            for station in common_stations:
-                try:
-                    code = self.db_manager.get_station_code(station)
-                    if code:
-                        cache_key = CacheKey.station_code_key(station)
-                        self.code_cache.put(cache_key, code, ttl=3600)
-                except Exception as e:
-                    self.logger.warning(f"Failed to cache code for {station}: {e}")
                     
         except Exception as e:
             self.logger.warning(f"Failed to populate station cache: {e}")
@@ -323,7 +280,6 @@ class DatabaseWorker(BaseWorker):
         return {
             'search_cache': self.search_cache.get_stats(),
             'station_cache': self.station_cache.get_stats(),
-            'code_cache': self.code_cache.get_stats(),
             'performance': {
                 'total_searches': self._search_count,
                 'cache_hits': self._cache_hits,
@@ -336,9 +292,8 @@ class DatabaseWorker(BaseWorker):
         try:
             search_cleaned = self.search_cache.cleanup_expired()
             station_cleaned = self.station_cache.cleanup_expired()
-            code_cleaned = self.code_cache.cleanup_expired()
             
-            total_cleaned = search_cleaned + station_cleaned + code_cleaned
+            total_cleaned = search_cleaned + station_cleaned
             if total_cleaned > 0:
                 self.logger.info(f"Cleaned up {total_cleaned} expired cache entries")
                 

@@ -64,7 +64,7 @@ try:
             logger.debug(f"Available lines: {list(station_database.railway_lines.keys())}")
         
         # Check station name mappings for Farnborough
-        farnborough_mappings = {name: code for name, code in station_database.station_name_to_code.items() if 'farnborough' in name.lower()}
+        farnborough_mappings = {name: name for name in station_database.all_stations.keys() if 'farnborough' in name.lower()}
         logger.debug(f"Farnborough name mappings: {farnborough_mappings}")
         
     else:
@@ -1276,8 +1276,8 @@ class StationsSettingsDialog(QDialog):
             print(f"Error in database station search: {e}")
             return []
 
-    def api_get_station_code(self, station_name: str, strict_mode: bool = False):
-        """Get station code for a station name using the internal database with smart matching.
+    def api_get_station_name(self, station_name: str, strict_mode: bool = False):
+        """Get validated station name using the internal database with smart matching.
         
         Args:
             station_name: The station name to look up
@@ -1285,23 +1285,24 @@ class StationsSettingsDialog(QDialog):
         """
         try:
             station_name_clean = station_name.strip()
-            print(f"🔍 api_get_station_code called with: '{station_name_clean}', strict_mode={strict_mode}")
+            # print(f"🔍 api_get_station_code called with: '{station_name_clean}', strict_mode={strict_mode}")
             
             # First try exact match with original name (don't parse yet)
-            code = station_database.get_station_code(station_name_clean)
-            if code:
-                print(f"✅ Found exact station code '{code}' for '{station_name_clean}' in internal database")
-                return code
+            # Station names are used directly now - no codes needed
+            station_obj = station_database.get_station_by_name(station_name_clean)
+            if station_obj:
+                print(f"✅ Found exact station '{station_obj.name}' for '{station_name_clean}' in internal database")
+                return station_obj.name
             
             # If that fails, try with parsed name (remove parentheses)
             parsed_name = station_database.parse_station_name(station_name_clean)
-            print(f"🔍 Trying parsed name: '{parsed_name}'")
+            # print(f"🔍 Trying parsed name: '{parsed_name}'")
             
             if parsed_name != station_name_clean:
-                code = station_database.get_station_code(parsed_name)
-                if code:
-                    print(f"✅ Found station code '{code}' for parsed name '{parsed_name}' in internal database")
-                    return code
+                parsed_station_obj = station_database.get_station_by_name(parsed_name)
+                if parsed_station_obj:
+                    print(f"✅ Found station '{parsed_station_obj.name}' for parsed name '{parsed_name}' in internal database")
+                    return parsed_station_obj.name
             
             # In strict mode, don't use fallback search - require exact matches
             if strict_mode:
@@ -1309,29 +1310,29 @@ class StationsSettingsDialog(QDialog):
                 return None
             
             # If exact matches fail, try to find the best match from search results
-            print(f"🔍 No exact match found, trying search for '{station_name_clean}'...")
+            # print(f"🔍 No exact match found, trying search for '{station_name_clean}'...")
             search_results = station_database.search_stations(station_name_clean, limit=5)
             
             if search_results:
-                print(f"🔍 Search results: {search_results}")
+                # print(f"🔍 Search results: {search_results}")
                 # Use the first (best) match from search results
                 best_match = search_results[0]
                 
                 # Try the best match directly first (without parsing)
-                best_match_code = station_database.get_station_code(best_match)
-                if best_match_code:
-                    print(f"✅ Found best match station code '{best_match_code}' for '{best_match}' (from search)")
-                    return best_match_code
+                best_match_obj = station_database.get_station_by_name(best_match)
+                if best_match_obj:
+                    print(f"✅ Found best match station '{best_match_obj.name}' for '{best_match}' (from search)")
+                    return best_match_obj.name
                 
                 # If that fails, try parsing the best match
                 best_match_parsed = station_database.parse_station_name(best_match)
                 if best_match_parsed != best_match:
-                    best_match_code = station_database.get_station_code(best_match_parsed)
-                    if best_match_code:
-                        print(f"✅ Found best match station code '{best_match_code}' for parsed '{best_match_parsed}' (from search)")
-                        return best_match_code
+                    best_match_parsed_obj = station_database.get_station_by_name(best_match_parsed)
+                    if best_match_parsed_obj:
+                        print(f"✅ Found best match station '{best_match_parsed_obj.name}' for parsed '{best_match_parsed}' (from search)")
+                        return best_match_parsed_obj.name
                 
-                print(f"❌ Best match '{best_match}' found but no code available")
+                print(f"❌ Best match '{best_match}' found but no station available")
             else:
                 print(f"❌ No search results found for '{station_name_clean}'")
             
@@ -1457,8 +1458,8 @@ class StationsSettingsDialog(QDialog):
                 self.clear_via_stations()
                 return
                 
-            code = self.api_get_station_code(name.strip())
-            if code:
+            validated_name = self.api_get_station_name(name.strip())
+            if validated_name:
                 # Temporarily disconnect signals to prevent recursive calls
                 line_edit = self.to_name_edit
                 if line_edit:
@@ -1479,7 +1480,7 @@ class StationsSettingsDialog(QDialog):
                     self.to_name_edit.clear()
                 
                 # Pre-populate to station dropdown with reachable destinations
-                self.populate_to_stations_completer(code)
+                self.populate_to_stations_completer(validated_name)
                 
                 # Reconnect signals
                 if line_edit:
@@ -1529,7 +1530,7 @@ class StationsSettingsDialog(QDialog):
         except Exception as e:
             print(f"Error in set_to_station_by_name: {e}")
 
-    def populate_to_stations_completer(self, from_station_code: str):
+    def populate_to_stations_completer(self, from_station_name: str):
         """Populate to station completer with all available stations."""
         signals_disconnected = False
         try:
@@ -2235,8 +2236,8 @@ class StationsSettingsDialog(QDialog):
             from_station = self.from_name_edit.text().strip()
             to_station = self.to_name_edit.text().strip()
             
-            print(f"🔍 From station: '{from_station}'")
-            print(f"🔍 To station: '{to_station}'")
+            # print(f"🔍 From station: '{from_station}'")
+            # print(f"🔍 To station: '{to_station}'")
             
             if not from_station or not to_station:
                 print("❌ Missing stations - showing info dialog")
@@ -2262,7 +2263,7 @@ class StationsSettingsDialog(QDialog):
             
             # If departure time is specified, validate it and suggest alternatives if needed
             if departure_time:
-                print(f"🔍 Departure time specified: {departure_time}")
+                # print(f"🔍 Departure time specified: {departure_time}")
                 valid_times = self._get_valid_departure_times(from_parsed, to_parsed)
                 if valid_times and departure_time not in valid_times:
                     print(f"⚠️ Departure time {departure_time} not available for this route")
@@ -2275,7 +2276,7 @@ class StationsSettingsDialog(QDialog):
             
             # First try the station database manager's route finding
             best_route = None
-            print(f"🔍 Attempting route finding from '{from_parsed}' to '{to_parsed}'")
+            # print(f"🔍 Attempting route finding from '{from_parsed}' to '{to_parsed}'")
             
             # Force database reload to ensure fresh data
             print("🔄 Force reloading station database...")
@@ -2283,22 +2284,22 @@ class StationsSettingsDialog(QDialog):
                 print("❌ Database reload failed")
             
             # Debug: Check if stations exist in database using strict lookup for validation
-            from_code = self.api_get_station_code(from_station, strict_mode=True)
-            to_code = self.api_get_station_code(to_station, strict_mode=True)
-            print(f"🔍 Station codes (strict): from_code='{from_code}', to_code='{to_code}'")
+            from_name = self.api_get_station_name(from_station, strict_mode=True)
+            to_name = self.api_get_station_name(to_station, strict_mode=True)
+            # print(f"🔍 Station codes (strict): from_code='{from_code}', to_code='{to_code}'")
             
-            if not from_code:
+            if not from_name:
                 print(f"❌ CRITICAL: Cannot find station code for '{from_parsed}' (original: '{from_station}')")
                 
                 # Debug: Check what stations are actually in the database
-                print("🔍 Checking database contents...")
-                print(f"🔍 Database loaded: {station_database.loaded}")
-                print(f"🔍 Total stations in database: {len(station_database.all_stations)}")
-                print(f"🔍 Total station name mappings: {len(station_database.station_name_to_code)}")
+                # print("🔍 Checking database contents...")
+                # print(f"🔍 Database loaded: {station_database.loaded}")
+                # print(f"🔍 Total stations in database: {len(station_database.all_stations)}")
+                # print(f"🔍 Total station name mappings: {len(station_database.station_name_to_code)}")
                 
                 # Check if any Farnborough stations exist
-                farnborough_stations = [name for name in station_database.station_name_to_code.keys() if 'farnborough' in name.lower()]
-                print(f"🔍 Farnborough stations in database: {farnborough_stations}")
+                farnborough_stations = [name for name in station_database.all_stations.keys() if 'farnborough' in name.lower()]
+                # print(f"🔍 Farnborough stations in database: {farnborough_stations}")
                 
                 # Try searching for similar stations
                 similar_stations = station_database.search_stations(from_parsed, limit=5)
@@ -2314,19 +2315,19 @@ class StationsSettingsDialog(QDialog):
                     print(f"✅ South Western Main Line loaded with {len(swml_line.stations)} stations")
                     # Check if Farnborough (Main) is in the line stations
                     farnborough_in_line = [s for s in swml_line.stations if 'farnborough' in s.name.lower()]
-                    print(f"🔍 Farnborough stations in SWML: {[s.name for s in farnborough_in_line]}")
+                    # print(f"🔍 Farnborough stations in SWML: {[s.name for s in farnborough_in_line]}")
                 else:
                     print("❌ South Western Main Line not found in railway_lines")
-                    print(f"🔍 Available railway lines: {list(station_database.railway_lines.keys())}")
+                    # print(f"🔍 Available railway lines: {list(station_database.railway_lines.keys())}")
             
-            if not to_code:
-                print(f"❌ CRITICAL: Cannot find station code for '{to_parsed}' (original: '{to_station}')")
+            if not to_name:
+                print(f"❌ CRITICAL: Cannot find station name for '{to_parsed}' (original: '{to_station}')")
                 # Try searching for similar stations
                 similar_stations = station_database.search_stations(to_parsed, limit=5)
                 print(f"💡 Similar stations found: {similar_stations}")
             
-            if not from_code or not to_code:
-                print("❌ Cannot proceed with route finding - missing station codes")
+            if not from_name or not to_name:
+                print("❌ Cannot proceed with route finding - missing station names")
                 # Re-enable button and show user-friendly error
                 self.fastest_route_button.setEnabled(True)
                 self.fastest_route_button.setText("Fastest Route")
@@ -2351,9 +2352,9 @@ class StationsSettingsDialog(QDialog):
                 return
             
             try:
-                print("🔍 Trying station database manager route finding...")
+                # print("🔍 Trying station database manager route finding...")
                 routes = station_database.find_route_between_stations(from_parsed, to_parsed, departure_time=departure_time)
-                print(f"🔍 Database manager returned {len(routes) if routes else 0} routes")
+                # print(f"🔍 Database manager returned {len(routes) if routes else 0} routes")
                 
                 if routes:
                     # Use the shortest route found
@@ -2368,7 +2369,7 @@ class StationsSettingsDialog(QDialog):
             
             # If database manager fails, try our custom fastest route method
             if not best_route:
-                print("🔍 Trying custom fastest route method...")
+                # print("🔍 Trying custom fastest route method...")
                 try:
                     best_route = self._find_fastest_direct_route(from_parsed, to_parsed)
                     if best_route:
@@ -2578,15 +2579,15 @@ class StationsSettingsDialog(QDialog):
         """Find the fastest direct route using actual railway service patterns and real stopping patterns."""
         try:
             # Get station codes using strict lookup for validation
-            from_code = self.api_get_station_code(from_station, strict_mode=True)
-            to_code = self.api_get_station_code(to_station, strict_mode=True)
+            from_name = self.api_get_station_name(from_station, strict_mode=True)
+            to_name = self.api_get_station_name(to_station, strict_mode=True)
             
-            if not from_code or not to_code:
+            if not from_name or not to_name:
                 return None
             
             # Check if both stations are on the same line
-            from_lines = set(station_database.get_railway_lines_for_station(from_code))
-            to_lines = set(station_database.get_railway_lines_for_station(to_code))
+            from_lines = set(station_database.get_railway_lines_for_station(from_name))
+            to_lines = set(station_database.get_railway_lines_for_station(to_name))
             common_lines = from_lines.intersection(to_lines)
             
             if common_lines:
@@ -2595,12 +2596,12 @@ class StationsSettingsDialog(QDialog):
                 
                 if railway_line:
                     # First, try to find the best service pattern that serves both stations
-                    best_route = self._find_best_service_pattern_route(railway_line, from_code, to_code)
+                    best_route = self._find_best_service_pattern_route(railway_line, from_name, to_name)
                     if best_route:
                         return best_route
                     
                     # Fallback: create a realistic route based on actual line geography
-                    return self._create_realistic_route(from_code, to_code, railway_line)
+                    return self._create_realistic_route(from_name, to_name, railway_line)
             
             return None
             
@@ -2611,18 +2612,18 @@ class StationsSettingsDialog(QDialog):
     def _find_best_service_pattern_route(self, railway_line, from_code: str, to_code: str) -> Optional[List[str]]:
         """Find the best service pattern route that serves both stations with proper time ordering."""
         try:
-            print(f"🔍 _find_best_service_pattern_route: from_code='{from_code}', to_code='{to_code}'")
+            # print(f"🔍 _find_best_service_pattern_route: from_code='{from_code}', to_code='{to_code}'")
             
             if not railway_line.service_patterns:
                 print("❌ No service patterns available")
                 return None
             
             all_station_codes = [s.code for s in railway_line.stations]
-            print(f"🔍 All station codes: {all_station_codes}")
+            # print(f"🔍 All station codes: {all_station_codes}")
             
             # Try service patterns in order of preference: express, fast, semi_fast, stopping
             for pattern_name in ['express', 'fast', 'semi_fast', 'stopping']:
-                print(f"🔍 Trying {pattern_name} service pattern...")
+                # print(f"🔍 Trying {pattern_name} service pattern...")
                 
                 pattern = railway_line.service_patterns.get_pattern(pattern_name)
                 if not pattern:
@@ -2643,45 +2644,45 @@ class StationsSettingsDialog(QDialog):
                 # Check if both stations are served by this pattern
                 from_in_pattern = from_code in pattern_stations
                 to_in_pattern = to_code in pattern_stations
-                print(f"🔍 {pattern_name}: from_code '{from_code}' in pattern: {from_in_pattern}")
-                print(f"🔍 {pattern_name}: to_code '{to_code}' in pattern: {to_in_pattern}")
+                # print(f"🔍 {pattern_name}: from_code '{from_code}' in pattern: {from_in_pattern}")
+                # print(f"🔍 {pattern_name}: to_code '{to_code}' in pattern: {to_in_pattern}")
                 
                 if from_in_pattern and to_in_pattern:
                     print(f"✅ Both stations found in {pattern_name} pattern")
                     try:
                         from_idx = pattern_stations.index(from_code)
                         to_idx = pattern_stations.index(to_code)
-                        print(f"🔍 Station indices: from_idx={from_idx}, to_idx={to_idx}")
+                        # print(f"🔍 Station indices: from_idx={from_idx}, to_idx={to_idx}")
                         
                         # Extract route between stations in correct direction
                         # Always go from the user's specified from_station to to_station
                         if from_idx < to_idx:
                             # Normal direction: from_station appears before to_station in the line
                             route_codes = pattern_stations[from_idx:to_idx + 1]
-                            print(f"🔍 Forward route codes: {route_codes}")
+                            # print(f"🔍 Forward route codes: {route_codes}")
                         else:
                             # Reverse direction: from_station appears after to_station in the line
                             # We need to get the stations from to_station to from_station, then reverse
                             route_codes = list(pattern_stations[to_idx:from_idx + 1])
                             route_codes.reverse()  # Now we have from_station -> ... -> to_station
-                            print(f"🔍 Corrected reverse route codes: {route_codes}")
+                            # print(f"🔍 Corrected reverse route codes: {route_codes}")
                         
                         # Convert codes to names and create route in user's requested direction
                         route_with_times = []
-                        for code in route_codes:
-                            station = station_database.get_station_by_code(code)
+                        for station_name in route_codes:
+                            station = station_database.get_station_by_name(station_name)
                             if station and station.name:
                                 # Filter out line names that might have been included as stations
                                 if not self._is_line_name(station.name):
                                     route_with_times.append({
                                         'name': station.name,
-                                        'code': code,
+                                        'station_name': station_name,
                                         'times': self._get_station_times(station, railway_line)
                                     })
                                 else:
                                     print(f"⚠️ Filtered out line name: {station.name}")
                             else:
-                                print(f"⚠️ Could not find station for code: {code}")
+                                print(f"⚠️ Could not find station for name: {station_name}")
                         
                         # Extract just the station names in the order we constructed them
                         # Do NOT sort by geographical position as this would override our direction correction
@@ -2689,8 +2690,8 @@ class StationsSettingsDialog(QDialog):
                         
                         # Ensure the route starts with from_station and ends with to_station
                         if route_names:
-                            from_station_obj = station_database.get_station_by_code(from_code)
-                            to_station_obj = station_database.get_station_by_code(to_code)
+                            from_station_obj = station_database.get_station_by_name(from_code)
+                            to_station_obj = station_database.get_station_by_name(to_code)
                             from_station_name = from_station_obj.name if from_station_obj else None
                             to_station_name = to_station_obj.name if to_station_obj else None
                             
@@ -2767,8 +2768,8 @@ class StationsSettingsDialog(QDialog):
             
             # Ensure the route starts with from_station and ends with to_station
             if route_names and len(route_names) >= 2:
-                from_station_obj = station_database.get_station_by_code(from_code)
-                to_station_obj = station_database.get_station_by_code(to_code)
+                from_station_obj = station_database.get_station_by_name(from_code)
+                to_station_obj = station_database.get_station_by_name(to_code)
                 from_station_name = from_station_obj.name if from_station_obj else None
                 to_station_name = to_station_obj.name if to_station_obj else None
                 
@@ -2808,7 +2809,7 @@ class StationsSettingsDialog(QDialog):
                     include_station = True
                 
                 # Include major stations (based on common major station codes)
-                elif station.code in ['CLJ', 'WOK', 'BSK', 'WIN', 'SOU', 'VIC', 'WAT', 'PAD', 'KGX', 'EUS', 'LST', 'LBG']:
+                elif station.name in ['Clapham Junction', 'Woking', 'Basingstoke', 'Winchester', 'Southampton Central', 'London Victoria', 'London Waterloo', 'London Paddington', 'London Kings Cross', 'London Euston', 'London Liverpool Street', 'London Bridge']:
                     include_station = True
                 
                 # For longer routes, include some intermediate stations at regular intervals
@@ -3021,7 +3022,7 @@ class StationsSettingsDialog(QDialog):
             sorted_route = sorted(route_with_times, key=get_position_key)
             
             # Debug output
-            print("🔍 Route sorting by geographical position:")
+            # print("🔍 Route sorting by geographical position:")
             for station in sorted_route:
                 code = station.get('code', '')
                 position = station_position_map.get(code, 'Unknown')
@@ -3039,15 +3040,15 @@ class StationsSettingsDialog(QDialog):
         """Simple fallback for direct routes on the same line - optimized for fastest route."""
         try:
             # Get station codes using strict lookup for validation
-            from_code = self.api_get_station_code(from_station, strict_mode=True)
-            to_code = self.api_get_station_code(to_station, strict_mode=True)
+            from_name = self.api_get_station_name(from_station, strict_mode=True)
+            to_name = self.api_get_station_name(to_station, strict_mode=True)
             
-            if not from_code or not to_code:
+            if not from_name or not to_name:
                 return None
             
             # Check if both stations are on the same line
-            from_lines = set(station_database.get_railway_lines_for_station(from_code))
-            to_lines = set(station_database.get_railway_lines_for_station(to_code))
+            from_lines = set(station_database.get_railway_lines_for_station(from_name))
+            to_lines = set(station_database.get_railway_lines_for_station(to_name))
             common_lines = from_lines.intersection(to_lines)
             
             if common_lines:
@@ -3062,18 +3063,18 @@ class StationsSettingsDialog(QDialog):
                         best_pattern = None
                         for pattern_code in ['express', 'fast', 'semi_fast', 'stopping']:
                             pattern = railway_line.service_patterns.get_pattern(pattern_code)
-                            if pattern and pattern.serves_station(from_code, [s.code for s in railway_line.stations]) and pattern.serves_station(to_code, [s.code for s in railway_line.stations]):
+                            if pattern and pattern.serves_station(from_code, [s.name for s in railway_line.stations]) and pattern.serves_station(to_code, [s.name for s in railway_line.stations]):
                                 best_pattern = pattern
                                 break
                         
                         if best_pattern:
                             # Use service pattern stations
                             if best_pattern.stations == "all":
-                                pattern_stations = [s.code for s in railway_line.stations]
+                                pattern_stations = [s.name for s in railway_line.stations]
                             elif isinstance(best_pattern.stations, list):
                                 pattern_stations = best_pattern.stations
                             else:
-                                pattern_stations = [s.code for s in railway_line.stations]
+                                pattern_stations = [s.name for s in railway_line.stations]
                             
                             # Find route within service pattern
                             try:
@@ -3090,15 +3091,15 @@ class StationsSettingsDialog(QDialog):
                                 
                                 # Convert codes to names
                                 route_names = []
-                                for code in route_codes:
-                                    station = station_database.get_station_by_code(code)
+                                for station_name in route_codes:
+                                    station = station_database.get_station_by_name(station_name)
                                     if station:
                                         route_names.append(station.name)
                                 
                                 # Ensure the route direction is correct
                                 if route_names and len(route_names) >= 2:
-                                    from_station_obj = station_database.get_station_by_code(from_code)
-                                    to_station_obj = station_database.get_station_by_code(to_code)
+                                    from_station_obj = station_database.get_station_by_name(from_code)
+                                    to_station_obj = station_database.get_station_by_name(to_code)
                                     from_station_name = from_station_obj.name if from_station_obj else None
                                     to_station_name = to_station_obj.name if to_station_obj else None
                                     
@@ -3117,11 +3118,11 @@ class StationsSettingsDialog(QDialog):
                                 pass  # Fall through to basic route
                     
                     # Fallback to basic direct route (for lines without service patterns)
-                    station_codes = [station.code for station in railway_line.stations]
+                    station_names = [station.name for station in railway_line.stations]
                     
                     try:
-                        from_idx = station_codes.index(from_code)
-                        to_idx = station_codes.index(to_code)
+                        from_idx = station_names.index(from_code)
+                        to_idx = station_names.index(to_code)
                         
                         # Get the route between stations in correct direction
                         # For fastest route, always use direct from_station -> to_station order
@@ -3129,15 +3130,15 @@ class StationsSettingsDialog(QDialog):
                         
                         # Convert codes to names
                         route_names = []
-                        for code in route_codes:
-                            station = station_database.get_station_by_code(code)
+                        for station_name in route_codes:
+                            station = station_database.get_station_by_name(station_name)
                             if station:
                                 route_names.append(station.name)
                         
                         # Ensure the route direction is correct (should already be correct for direct routes)
                         if route_names and len(route_names) >= 2:
-                            from_station_obj = station_database.get_station_by_code(from_code)
-                            to_station_obj = station_database.get_station_by_code(to_code)
+                            from_station_obj = station_database.get_station_by_name(from_code)
+                            to_station_obj = station_database.get_station_by_name(to_code)
                             from_station_name = from_station_obj.name if from_station_obj else None
                             to_station_name = to_station_obj.name if to_station_obj else None
                             
@@ -3167,8 +3168,8 @@ class StationsSettingsDialog(QDialog):
             valid_times = []
             
             # Get station code using strict lookup for validation
-            from_code = self.api_get_station_code(from_station, strict_mode=True)
-            if not from_code:
+            from_name = self.api_get_station_name(from_station, strict_mode=True)
+            if not from_name:
                 return []
             
             # Find which railway line contains this station
@@ -3414,7 +3415,7 @@ class StationsSettingsDialog(QDialog):
             line_edit = self.to_name_edit
             to_station = line_edit.text().strip() if line_edit else ""
             
-            print(f"🔍 update_via_stations_availability called:")
+            # print(f"🔍 update_via_stations_availability called:")
             print(f"   from_station: '{from_station}'")
             print(f"   to_station: '{to_station}'")
             
@@ -3422,10 +3423,10 @@ class StationsSettingsDialog(QDialog):
             has_both_stations = False
             if from_station and to_station and from_station != to_station:
                 # Additional check: verify both stations can be found in the database using strict mode
-                from_code = self.api_get_station_code(from_station, strict_mode=True)
-                to_code = self.api_get_station_code(to_station, strict_mode=True)
-                has_both_stations = bool(from_code and to_code)
-                print(f"   from_code: '{from_code}', to_code: '{to_code}'")
+                from_name = self.api_get_station_name(from_station, strict_mode=True)
+                to_name = self.api_get_station_name(to_station, strict_mode=True)
+                has_both_stations = bool(from_name and to_name)
+                print(f"   from_name: '{from_name}', to_name: '{to_name}'")
             
             print(f"   has_both_stations: {has_both_stations}")
             
@@ -3546,7 +3547,7 @@ class StationsSettingsDialog(QDialog):
         if from_name:
             self.from_name_edit.setText(from_name)
             # Immediately validate and enable to station if valid
-            if self.api_get_station_code(from_name.strip()):
+            if self.api_get_station_name(from_name.strip()):
                 self.set_from_station_by_name(from_name.strip())
         
         # Set to station
@@ -4036,33 +4037,33 @@ class StationsSettingsDialog(QDialog):
     
     def _ui_safe_close_with_parent_restore(self, parent_window, parent_visible_before, parent_active_before):
         """Safely close dialog while ensuring parent window remains visible and active."""
-        print("🔍 Starting UI-safe close with parent restoration...")
+        # print("🔍 Starting UI-safe close with parent restoration...")
         
         try:
             # Step 1: Close the dialog first
-            print("🔍 Closing dialog...")
+            # print("🔍 Closing dialog...")
             self.accept()
             print("✅ Dialog closed")
             
             # Step 2: Restore parent window state
             if parent_window:
-                print("🔍 Restoring parent window state...")
+                # print("🔍 Restoring parent window state...")
                 
                 try:
                     # Ensure parent is visible
                     if parent_visible_before and hasattr(parent_window, 'isVisible') and hasattr(parent_window, 'show'):
                         if not getattr(parent_window, 'isVisible')():
-                            print("🔍 Making parent window visible...")
+                            # print("🔍 Making parent window visible...")
                             getattr(parent_window, 'show')()
                     
                     # Ensure parent is not minimized
                     if hasattr(parent_window, 'isMinimized') and hasattr(parent_window, 'showNormal'):
                         if getattr(parent_window, 'isMinimized')():
-                            print("🔍 Restoring parent window from minimized state...")
+                            # print("🔍 Restoring parent window from minimized state...")
                             getattr(parent_window, 'showNormal')()
                     
                     # Bring parent to front and activate
-                    print("🔍 Bringing parent window to front...")
+                    # print("🔍 Bringing parent window to front...")
                     if hasattr(parent_window, 'raise_'):
                         getattr(parent_window, 'raise_')()
                     if hasattr(parent_window, 'activateWindow'):
@@ -4076,11 +4077,14 @@ class StationsSettingsDialog(QDialog):
                     
                     # Verify final state
                     if hasattr(parent_window, 'isVisible'):
-                        print(f"🔍 Final parent visible: {getattr(parent_window, 'isVisible')()}")
+                        # print(f"🔍 Final parent visible: {getattr(parent_window, 'isVisible')()}")
+                        pass
                     if hasattr(parent_window, 'isActiveWindow'):
-                        print(f"🔍 Final parent active: {getattr(parent_window, 'isActiveWindow')()}")
+                        # print(f"🔍 Final parent active: {getattr(parent_window, 'isActiveWindow')()}")
+                        pass
                     if hasattr(parent_window, 'isMinimized'):
-                        print(f"🔍 Final parent minimized: {getattr(parent_window, 'isMinimized')()}")
+                        # print(f"🔍 Final parent minimized: {getattr(parent_window, 'isMinimized')()}")
+                        pass
                     
                 except Exception as restore_error:
                     print(f"⚠️ Error restoring parent window: {restore_error}")
@@ -4098,7 +4102,7 @@ class StationsSettingsDialog(QDialog):
     def _ultra_debug_validate_config(self):
         """Ultra debug config validation with maximum safety."""
         try:
-            print("🔍 Ultra debug config validation starting...")
+            # print("🔍 Ultra debug config validation starting...")
             
             if self.config is None:
                 print("❌ self.config is None")
@@ -4132,7 +4136,7 @@ class StationsSettingsDialog(QDialog):
     def _ultra_debug_collect_ui_data(self):
         """Ultra debug UI data collection with maximum safety."""
         try:
-            print("🔍 Ultra debug UI data collection starting...")
+            # print("🔍 Ultra debug UI data collection starting...")
             return self._extensive_debug_collect_ui_data()
         except Exception as e:
             print(f"❌ CRITICAL ERROR in ultra debug UI data collection: {e}")
@@ -4143,7 +4147,7 @@ class StationsSettingsDialog(QDialog):
     def _ultra_debug_update_config(self, ui_data):
         """Ultra debug config update with maximum safety."""
         try:
-            print("🔍 Ultra debug config update starting...")
+            # print("🔍 Ultra debug config update starting...")
             return self._extensive_debug_update_config(ui_data)
         except Exception as e:
             print(f"❌ CRITICAL ERROR in ultra debug config update: {e}")
@@ -4154,7 +4158,7 @@ class StationsSettingsDialog(QDialog):
     def _ultra_debug_save_config(self):
         """Ultra debug config save with maximum safety."""
         try:
-            print("🔍 Ultra debug config save starting...")
+            # print("🔍 Ultra debug config save starting...")
             return self._extensive_debug_save_config()
         except Exception as e:
             print(f"❌ CRITICAL ERROR in ultra debug config save: {e}")
@@ -4167,13 +4171,13 @@ class StationsSettingsDialog(QDialog):
         import time
         
         try:
-            print("🔍 Pre-signal emission state check...")
+            # print("🔍 Pre-signal emission state check...")
             print(f"   Dialog still exists: {self is not None}")
             print(f"   Dialog visible: {self.isVisible()}")
             print(f"   Settings saved signal exists: {hasattr(self, 'settings_saved')}")
             
             if hasattr(self, 'settings_saved') and self.settings_saved:
-                print("🔍 About to emit settings_saved signal...")
+                # print("🔍 About to emit settings_saved signal...")
                 
                 # Emit signal with monitoring
                 self.settings_saved.emit()
@@ -4182,7 +4186,7 @@ class StationsSettingsDialog(QDialog):
                 
                 # Wait a moment and check state
                 time.sleep(0.1)
-                print("🔍 Post-signal emission state check...")
+                # print("🔍 Post-signal emission state check...")
                 print(f"   Dialog still exists: {self is not None}")
                 print(f"   Dialog visible: {self.isVisible()}")
                 
@@ -4200,20 +4204,20 @@ class StationsSettingsDialog(QDialog):
         import time
         
         try:
-            print("🔍 Pre-close state check...")
+            # print("🔍 Pre-close state check...")
             print(f"   Dialog still exists: {self is not None}")
             print(f"   Dialog visible: {self.isVisible()}")
             print(f"   Dialog parent: {self.parent()}")
             
             # Try accept() with monitoring
-            print("🔍 Attempting accept()...")
+            # print("🔍 Attempting accept()...")
             self.accept()
             
             print("✅ accept() completed")
             
             # Wait a moment and check state
             time.sleep(0.1)
-            print("🔍 Post-close state check...")
+            # print("🔍 Post-close state check...")
             print(f"   Dialog still exists: {self is not None}")
             try:
                 print(f"   Dialog visible: {self.isVisible()}")
@@ -4226,7 +4230,7 @@ class StationsSettingsDialog(QDialog):
             traceback.print_exc()
             
             # Try alternative close methods
-            print("🔍 Trying alternative close methods...")
+            # print("🔍 Trying alternative close methods...")
             try:
                 self.reject()
                 print("✅ reject() succeeded")
@@ -4246,14 +4250,14 @@ class StationsSettingsDialog(QDialog):
     def _ultra_debug_show_error_and_close(self, message):
         """Show error message and close dialog safely."""
         try:
-            print(f"🔍 Showing error message: {message}")
+            # print(f"🔍 Showing error message: {message}")
             QMessageBox.critical(self, "Error", f"{message}. Dialog will close.")
             print("✅ Error message shown")
         except Exception as msg_error:
             print(f"❌ Error showing message: {msg_error}")
         
         try:
-            print("🔍 Closing dialog after error...")
+            # print("🔍 Closing dialog after error...")
             self._ultra_debug_force_close_with_monitoring()
         except Exception as close_error:
             print(f"❌ Error closing dialog: {close_error}")
@@ -4262,7 +4266,7 @@ class StationsSettingsDialog(QDialog):
         """Extensive debug version of UI data collection with maximum logging."""
         import traceback
         
-        print("🔍 Starting extensive debug UI data collection...")
+        # print("🔍 Starting extensive debug UI data collection...")
         ui_data = {
             'from_name': '',
             'to_name': '',
@@ -4276,7 +4280,7 @@ class StationsSettingsDialog(QDialog):
         }
         
         # Collect from_name with extensive debugging
-        print("🔍 Collecting from_name...")
+        # print("🔍 Collecting from_name...")
         try:
             print(f"   hasattr(self, 'from_name_edit'): {hasattr(self, 'from_name_edit')}")
             if hasattr(self, 'from_name_edit'):
@@ -4299,7 +4303,7 @@ class StationsSettingsDialog(QDialog):
             traceback.print_exc()
         
         # Collect to_name with extensive debugging
-        print("🔍 Collecting to_name...")
+        # print("🔍 Collecting to_name...")
         try:
             print(f"   hasattr(self, 'to_name_edit'): {hasattr(self, 'to_name_edit')}")
             if hasattr(self, 'to_name_edit'):
@@ -4322,7 +4326,7 @@ class StationsSettingsDialog(QDialog):
             traceback.print_exc()
         
         # Collect departure_time with extensive debugging
-        print("🔍 Collecting departure_time...")
+        # print("🔍 Collecting departure_time...")
         try:
             print(f"   hasattr(self, 'departure_time_picker'): {hasattr(self, 'departure_time_picker')}")
             if hasattr(self, 'departure_time_picker'):
@@ -4345,7 +4349,7 @@ class StationsSettingsDialog(QDialog):
             traceback.print_exc()
         
         # Get station codes with extensive debugging
-        print("🔍 Getting station codes...")
+        # print("🔍 Getting station codes...")
         try:
             if ui_data['from_name']:
                 print(f"   Getting code for from_name: '{ui_data['from_name']}'")
@@ -4377,7 +4381,7 @@ class StationsSettingsDialog(QDialog):
             traceback.print_exc()
         
         # Collect via_stations with extensive debugging
-        print("🔍 Collecting via_stations...")
+        # print("🔍 Collecting via_stations...")
         try:
             print(f"   hasattr(self, 'via_stations'): {hasattr(self, 'via_stations')}")
             if hasattr(self, 'via_stations'):
@@ -4396,7 +4400,7 @@ class StationsSettingsDialog(QDialog):
             traceback.print_exc()
         
         # Collect route_auto_fixed with extensive debugging
-        print("🔍 Collecting route_auto_fixed...")
+        # print("🔍 Collecting route_auto_fixed...")
         try:
             print(f"   hasattr(self, 'route_auto_fixed'): {hasattr(self, 'route_auto_fixed')}")
             if hasattr(self, 'route_auto_fixed'):
@@ -4412,7 +4416,7 @@ class StationsSettingsDialog(QDialog):
             traceback.print_exc()
         
         # Collect display settings with extensive debugging
-        print("🔍 Collecting max_trains...")
+        # print("🔍 Collecting max_trains...")
         try:
             print(f"   hasattr(self, 'max_trains_spin'): {hasattr(self, 'max_trains_spin')}")
             if hasattr(self, 'max_trains_spin'):
@@ -4434,7 +4438,7 @@ class StationsSettingsDialog(QDialog):
             print(f"   ❌ Error collecting max_trains: {e}")
             traceback.print_exc()
         
-        print("🔍 Collecting time_window...")
+        # print("🔍 Collecting time_window...")
         try:
             print(f"   hasattr(self, 'time_window_spin'): {hasattr(self, 'time_window_spin')}")
             if hasattr(self, 'time_window_spin'):
@@ -4463,19 +4467,19 @@ class StationsSettingsDialog(QDialog):
         """Extensive debug version of config update with maximum logging."""
         import traceback
         
-        print("🔍 Starting extensive debug config update...")
+        # print("🔍 Starting extensive debug config update...")
         
         try:
             config = self.config
-            print(f"🔍 Config object: {config}")
-            print(f"🔍 Config type: {type(config)}")
+            # print(f"🔍 Config object: {config}")
+            # print(f"🔍 Config type: {type(config)}")
             
             if not config:
                 print("❌ Config is None - cannot update")
                 return False
             
             # Update station settings with extensive debugging
-            print("🔍 Updating station settings...")
+            # print("🔍 Updating station settings...")
             try:
                 print(f"   hasattr(config, 'stations'): {hasattr(config, 'stations')}")
                 if hasattr(config, 'stations'):
@@ -4522,7 +4526,7 @@ class StationsSettingsDialog(QDialog):
                 traceback.print_exc()
             
             # Update display settings with extensive debugging
-            print("🔍 Updating display settings...")
+            # print("🔍 Updating display settings...")
             try:
                 print(f"   hasattr(config, 'display'): {hasattr(config, 'display')}")
                 if hasattr(config, 'display'):
@@ -4549,7 +4553,7 @@ class StationsSettingsDialog(QDialog):
                 traceback.print_exc()
             
             # Update refresh settings with extensive debugging
-            print("🔍 Updating refresh settings...")
+            # print("🔍 Updating refresh settings...")
             try:
                 print(f"   hasattr(config, 'refresh'): {hasattr(config, 'refresh')}")
                 if hasattr(config, 'refresh'):
@@ -4591,36 +4595,36 @@ class StationsSettingsDialog(QDialog):
         """Extensive debug version of config save with maximum logging."""
         import traceback
         
-        print("🔍 Starting extensive debug config save...")
+        # print("🔍 Starting extensive debug config save...")
         
         try:
-            print(f"🔍 hasattr(self, 'config_manager'): {hasattr(self, 'config_manager')}")
+            # print(f"🔍 hasattr(self, 'config_manager'): {hasattr(self, 'config_manager')}")
             if not hasattr(self, 'config_manager'):
                 print("❌ No config_manager attribute")
                 return False
             
             config_manager = self.config_manager
-            print(f"🔍 config_manager: {config_manager}")
-            print(f"🔍 config_manager type: {type(config_manager)}")
+            # print(f"🔍 config_manager: {config_manager}")
+            # print(f"🔍 config_manager type: {type(config_manager)}")
             
             if not config_manager:
                 print("❌ config_manager is None")
                 return False
             
-            print(f"🔍 hasattr(config_manager, 'save_config'): {hasattr(config_manager, 'save_config')}")
+            # print(f"🔍 hasattr(config_manager, 'save_config'): {hasattr(config_manager, 'save_config')}")
             if not hasattr(config_manager, 'save_config'):
                 print("❌ config_manager has no save_config method")
                 return False
             
             config = self.config
-            print(f"🔍 config for save: {config}")
-            print(f"🔍 config type: {type(config)}")
+            # print(f"🔍 config for save: {config}")
+            # print(f"🔍 config type: {type(config)}")
             
             if not config:
                 print("❌ config is None - cannot save")
                 return False
             
-            print("🔍 Calling config_manager.save_config(config)...")
+            # print("🔍 Calling config_manager.save_config(config)...")
             config_manager.save_config(config)
             print("✅ config_manager.save_config() completed successfully")
             
@@ -4632,7 +4636,7 @@ class StationsSettingsDialog(QDialog):
             
             # Show error but don't crash
             try:
-                print("🔍 Attempting to show save warning dialog...")
+                # print("🔍 Attempting to show save warning dialog...")
                 QMessageBox.warning(self, "Save Warning", f"Settings may not have been saved properly: {e}")
                 print("✅ Save warning dialog shown successfully")
             except Exception as msg_error:
@@ -4645,28 +4649,28 @@ class StationsSettingsDialog(QDialog):
         """Extensive debug version of signal emission with maximum logging."""
         import traceback
         
-        print("🔍 Starting extensive debug signal emission...")
+        # print("🔍 Starting extensive debug signal emission...")
         
         try:
-            print(f"🔍 hasattr(self, 'settings_saved'): {hasattr(self, 'settings_saved')}")
+            # print(f"🔍 hasattr(self, 'settings_saved'): {hasattr(self, 'settings_saved')}")
             if not hasattr(self, 'settings_saved'):
                 print("❌ No settings_saved attribute")
                 return
             
             settings_saved = self.settings_saved
-            print(f"🔍 settings_saved: {settings_saved}")
-            print(f"🔍 settings_saved type: {type(settings_saved)}")
+            # print(f"🔍 settings_saved: {settings_saved}")
+            # print(f"🔍 settings_saved type: {type(settings_saved)}")
             
             if not settings_saved:
                 print("❌ settings_saved is None")
                 return
             
-            print(f"🔍 hasattr(settings_saved, 'emit'): {hasattr(settings_saved, 'emit')}")
+            # print(f"🔍 hasattr(settings_saved, 'emit'): {hasattr(settings_saved, 'emit')}")
             if not hasattr(settings_saved, 'emit'):
                 print("❌ settings_saved has no emit method")
                 return
             
-            print("🔍 Calling settings_saved.emit()...")
+            # print("🔍 Calling settings_saved.emit()...")
             settings_saved.emit()
             print("✅ settings_saved.emit() completed successfully")
             
@@ -4678,10 +4682,10 @@ class StationsSettingsDialog(QDialog):
         """Extensive debug version of dialog close with maximum logging."""
         import traceback
         
-        print("🔍 Starting extensive debug force close...")
+        # print("🔍 Starting extensive debug force close...")
         
         # Method 1: Try normal accept()
-        print("🔍 Attempting accept()...")
+        # print("🔍 Attempting accept()...")
         try:
             print(f"   hasattr(self, 'accept'): {hasattr(self, 'accept')}")
             if hasattr(self, 'accept'):
@@ -4696,7 +4700,7 @@ class StationsSettingsDialog(QDialog):
             traceback.print_exc()
         
         # Method 2: Try reject()
-        print("🔍 Attempting reject()...")
+        # print("🔍 Attempting reject()...")
         try:
             print(f"   hasattr(self, 'reject'): {hasattr(self, 'reject')}")
             if hasattr(self, 'reject'):
@@ -4711,7 +4715,7 @@ class StationsSettingsDialog(QDialog):
             traceback.print_exc()
         
         # Method 3: Try close()
-        print("🔍 Attempting close()...")
+        # print("🔍 Attempting close()...")
         try:
             print(f"   hasattr(self, 'close'): {hasattr(self, 'close')}")
             if hasattr(self, 'close'):
@@ -4726,7 +4730,7 @@ class StationsSettingsDialog(QDialog):
             traceback.print_exc()
         
         # Method 4: Try hide()
-        print("🔍 Attempting hide()...")
+        # print("🔍 Attempting hide()...")
         try:
             print(f"   hasattr(self, 'hide'): {hasattr(self, 'hide')}")
             if hasattr(self, 'hide'):
@@ -4741,7 +4745,7 @@ class StationsSettingsDialog(QDialog):
             traceback.print_exc()
         
         # Method 5: Try setVisible(False)
-        print("🔍 Attempting setVisible(False)...")
+        # print("🔍 Attempting setVisible(False)...")
         try:
             print(f"   hasattr(self, 'setVisible'): {hasattr(self, 'setVisible')}")
             if hasattr(self, 'setVisible'):
@@ -4857,9 +4861,7 @@ class StationsSettingsDialog(QDialog):
             # Update station settings
             if hasattr(config, 'stations') and config.stations:
                 try:
-                    config.stations.from_code = ui_data['from_code']
                     config.stations.from_name = ui_data['from_name']
-                    config.stations.to_code = ui_data['to_code']
                     config.stations.to_name = ui_data['to_name']
                     config.stations.via_stations = ui_data['via_stations']
                     config.stations.route_auto_fixed = ui_data['route_auto_fixed']

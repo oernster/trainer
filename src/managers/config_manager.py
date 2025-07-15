@@ -37,11 +37,11 @@ class APIConfig(BaseModel):
 
 
 class StationConfig(BaseModel):
-    """Configuration for station codes and names."""
+    """Configuration for station names (codes removed)."""
 
-    from_code: str = "FLE"
+    from_code: str = "Fleet"  # Now stores station name, not code
     from_name: str = "Fleet"
-    to_code: str = "WAT"
+    to_code: str = "London Waterloo"  # Now stores station name, not code
     to_name: str = "London Waterloo"
     via_stations: List[str] = []
     route_auto_fixed: bool = False

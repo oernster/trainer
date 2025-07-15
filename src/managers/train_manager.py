@@ -221,8 +221,8 @@ class TrainManager(QObject):
         if (not self.config or
             not hasattr(self.config, 'stations') or
             not self.config.stations or
-            not getattr(self.config.stations, 'from_code', None) or
-            not getattr(self.config.stations, 'to_code', None)):
+            not getattr(self.config.stations, 'from_name', None) or
+            not getattr(self.config.stations, 'to_name', None)):
             logger.info("No valid station configuration - showing empty train list")
             return []
 
@@ -322,7 +322,7 @@ class TrainManager(QObject):
         # Add origin station
         origin_point = CallingPoint(
             station_name=self.from_station,
-            station_code=self.from_station[:3].upper(),  # Simple code generation
+            station_code=self.from_station,  # Use station name instead of code
             scheduled_arrival=None,
             scheduled_departure=departure_time,
             expected_arrival=None,
@@ -359,7 +359,7 @@ class TrainManager(QObject):
             
             intermediate_point = CallingPoint(
                 station_name=station_name,
-                station_code=station_name[:3].upper(),
+                station_code=station_name,  # Use station name instead of code
                 scheduled_arrival=current_time,
                 scheduled_departure=current_time + timedelta(minutes=stop_time),
                 expected_arrival=current_time,
@@ -376,7 +376,7 @@ class TrainManager(QObject):
         # Add destination station
         destination_point = CallingPoint(
             station_name=self.to_station,
-            station_code=self.to_station[:3].upper(),
+            station_code=self.to_station,  # Use station name instead of code
             scheduled_arrival=arrival_time,
             scheduled_departure=None,
             expected_arrival=arrival_time,
@@ -1547,11 +1547,11 @@ class TrainManager(QObject):
         
         # Use the same station database as the settings dialog
         if self.station_database and self.station_database.loaded:
-            # Use the station_name_to_code mapping from the database
-            # Reverse it to get code_to_name mapping
-            for name, code in self.station_database.station_name_to_code.items():
-                if code and name:
-                    mapping[code] = name
+            # Since we removed station codes, just create a simple identity mapping
+            # This allows the code to work with station names directly
+            for station_name in self.station_database.all_stations.keys():
+                if station_name:
+                    mapping[station_name] = station_name
             
             logger.debug(f"Built station mapping with {len(mapping)} stations from StationDatabaseManager")
         else:

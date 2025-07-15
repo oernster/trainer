@@ -124,15 +124,15 @@ class APIManager:
         params = {
             "app_id": self.config.api.app_id,
             "app_key": self.config.api.app_key,
-            "destination": self.config.stations.to_code,
+            "destination": self.config.stations.to_name,
             "train_status": "passenger",
             "darwin": "true",  # Include real-time data
-            "calling_at": self.config.stations.to_code,
+            "calling_at": self.config.stations.to_name,
             "from_offset": "PT0H",  # Start from now
             "to_offset": f"PT{self.config.display.time_window_hours}H",  # End at specified hours ahead
         }
 
-        url = f"{self.config.api.base_url}/train/station/{self.config.stations.from_code}/live.json"
+        url = f"{self.config.api.base_url}/train/station/{self.config.stations.from_name}/live.json"
 
         for attempt in range(self.config.api.max_retries):
             try:
@@ -366,7 +366,7 @@ class APIManager:
                         
                         calling_point = CallingPoint(
                             station_name=stop.get("station_name", "Unknown"),
-                            station_code=stop.get("station_code", ""),
+                            station_code=stop.get("station_name", "Unknown"),  # Use station name instead of code
                             scheduled_arrival=scheduled_arrival,
                             scheduled_departure=scheduled_departure,
                             expected_arrival=expected_arrival,
@@ -507,7 +507,7 @@ class APIManager:
                     
                     calling_point = CallingPoint(
                         station_name=stop.get("station_name", "Unknown"),
-                        station_code=stop.get("station_code", ""),
+                        station_code=stop.get("station_name", "Unknown"),  # Use station name instead of code
                         scheduled_arrival=scheduled_arrival,
                         scheduled_departure=scheduled_departure,
                         expected_arrival=expected_arrival,
@@ -527,14 +527,14 @@ class APIManager:
         if not calling_points:
             # Create origin calling point
             origin_name = departure.get("origin_name", "Fleet")
-            origin_code = self.config.stations.from_code
+            origin_code = self.config.stations.from_name
             
             scheduled_dep = self._parse_time(departure.get("aimed_departure_time"))
             expected_dep = self._parse_time(departure.get("expected_departure_time"))
             
             origin_point = CallingPoint(
                 station_name=origin_name,
-                station_code=origin_code,
+                station_code=origin_name,  # Use station name instead of code
                 scheduled_arrival=None,
                 scheduled_departure=scheduled_dep,
                 expected_arrival=None,
@@ -552,22 +552,22 @@ class APIManager:
             if departure_time and service_type == ServiceType.STOPPING:
                 # Add intermediate stations for stopping services
                 intermediate_stations = [
-                    ("Farnborough (Main)", "FNB", 8),  # 8 minutes from Fleet
-                    ("Brookwood", "BKW", 15),          # 15 minutes from Fleet
-                    ("Woking", "WOK", 20),             # 20 minutes from Fleet
-                    ("West Byfleet", "WBY", 25),       # 25 minutes from Fleet
-                    ("Weybridge", "WYB", 30),          # 30 minutes from Fleet
-                    ("Walton-on-Thames", "WAL", 35),   # 35 minutes from Fleet
-                    ("Surbiton", "SUR", 40),           # 40 minutes from Fleet
+                    ("Farnborough (Main)", 8),  # 8 minutes from Fleet
+                    ("Brookwood", 15),          # 15 minutes from Fleet
+                    ("Woking", 20),             # 20 minutes from Fleet
+                    ("West Byfleet", 25),       # 25 minutes from Fleet
+                    ("Weybridge", 30),          # 30 minutes from Fleet
+                    ("Walton-on-Thames", 35),   # 35 minutes from Fleet
+                    ("Surbiton", 40),           # 40 minutes from Fleet
                 ]
                 
-                for station_name, station_code, minutes_offset in intermediate_stations:
+                for station_name, minutes_offset in intermediate_stations:
                     arrival_time = departure_time + timedelta(minutes=minutes_offset)
                     departure_time_station = arrival_time + timedelta(minutes=1)  # 1 minute stop
                     
                     intermediate_point = CallingPoint(
                         station_name=station_name,
-                        station_code=station_code,
+                        station_code=station_name,  # Use station name instead of code
                         scheduled_arrival=arrival_time,
                         scheduled_departure=departure_time_station,
                         expected_arrival=arrival_time,
@@ -581,17 +581,17 @@ class APIManager:
             elif departure_time and service_type == ServiceType.FAST:
                 # Add fewer stations for fast services
                 intermediate_stations = [
-                    ("Woking", "WOK", 20),             # 20 minutes from Fleet
-                    ("Surbiton", "SUR", 35),           # 35 minutes from Fleet
+                    ("Woking", 20),             # 20 minutes from Fleet
+                    ("Surbiton", 35),           # 35 minutes from Fleet
                 ]
                 
-                for station_name, station_code, minutes_offset in intermediate_stations:
+                for station_name, minutes_offset in intermediate_stations:
                     arrival_time = departure_time + timedelta(minutes=minutes_offset)
                     departure_time_station = arrival_time + timedelta(minutes=1)  # 1 minute stop
                     
                     intermediate_point = CallingPoint(
                         station_name=station_name,
-                        station_code=station_code,
+                        station_code=station_name,  # Use station name instead of code
                         scheduled_arrival=arrival_time,
                         scheduled_departure=departure_time_station,
                         expected_arrival=arrival_time,
@@ -604,7 +604,7 @@ class APIManager:
             
             # Create destination calling point
             dest_name = departure.get("destination_name", "London Waterloo")
-            dest_code = self.config.stations.to_code
+            dest_code = self.config.stations.to_name
             
             # Estimate arrival time based on service type
             estimated_arrival = None
@@ -621,7 +621,7 @@ class APIManager:
             
             dest_point = CallingPoint(
                 station_name=dest_name,
-                station_code=dest_code,
+                station_code=dest_name,  # Use station name instead of code
                 scheduled_arrival=estimated_arrival,
                 scheduled_departure=None,
                 expected_arrival=estimated_arrival,
