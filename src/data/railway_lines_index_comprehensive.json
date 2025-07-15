@@ -532,6 +532,159 @@
         "Manchester Salford",
         "Manchester Oxford Road"
       ]
+    },
+    {
+      "name": "Farnborough North Line",
+      "file": "farnborough_north_line.json",
+      "operator": "South Western Railway",
+      "terminus_stations": [
+        "Farnborough (Main)",
+        "Farnborough North"
+      ],
+      "major_stations": [
+        "Farnborough (Main)",
+        "Farnborough North"
+      ]
+    },
+    {
+      "name": "Watford DC Line",
+      "file": "watford_dc_line.json",
+      "operator": "London Northwestern Railway",
+      "terminus_stations": [
+        "London Euston",
+        "Watford Junction"
+      ],
+      "major_stations": [
+        "London Euston",
+        "Willesden Junction",
+        "Harrow & Wealdstone",
+        "Watford Junction"
+      ]
+    },
+    {
+      "name": "Isle of Wight Line",
+      "file": "isle_of_wight_line.json",
+      "operator": "South Western Railway",
+      "terminus_stations": [
+        "Ryde Pier Head",
+        "Shanklin"
+      ],
+      "major_stations": [
+        "Ryde Pier Head",
+        "Brading",
+        "Sandown",
+        "Shanklin"
+      ]
+    },
+    {
+      "name": "Cambrian Coast Line",
+      "file": "cambrian_coast_line.json",
+      "operator": "Transport for Wales",
+      "terminus_stations": [
+        "Machynlleth",
+        "Pwllheli"
+      ],
+      "major_stations": [
+        "Machynlleth",
+        "Dovey Junction",
+        "Barmouth",
+        "Harlech",
+        "Pwllheli"
+      ]
+    },
+    {
+      "name": "Conwy Valley Line",
+      "file": "conwy_valley_line.json",
+      "operator": "Transport for Wales",
+      "terminus_stations": [
+        "Llandudno Junction",
+        "Blaenau Ffestiniog"
+      ],
+      "major_stations": [
+        "Llandudno Junction",
+        "Betws-y-Coed",
+        "Blaenau Ffestiniog"
+      ]
+    },
+    {
+      "name": "North Wales Coast Line",
+      "file": "north_wales_coast_line.json",
+      "operator": "Transport for Wales",
+      "terminus_stations": [
+        "Chester",
+        "Holyhead"
+      ],
+      "major_stations": [
+        "Chester",
+        "Rhyl",
+        "Llandudno Junction",
+        "Bangor",
+        "Holyhead"
+      ]
+    },
+    {
+      "name": "Vale of Glamorgan Line",
+      "file": "vale_of_glamorgan_line.json",
+      "operator": "Transport for Wales",
+      "terminus_stations": [
+        "Cardiff Central",
+        "Bridgend"
+      ],
+      "major_stations": [
+        "Cardiff Central",
+        "Barry",
+        "Rhoose Cardiff Airport",
+        "Bridgend"
+      ]
+    },
+    {
+      "name": "Rhymney Line",
+      "file": "rhymney_line.json",
+      "operator": "Transport for Wales",
+      "terminus_stations": [
+        "Cardiff Central",
+        "Rhymney"
+      ],
+      "major_stations": [
+        "Cardiff Central",
+        "Caerphilly",
+        "Ystrad Mynach",
+        "Bargoed",
+        "Rhymney"
+      ]
+    },
+    {
+      "name": "Taff Vale Line",
+      "file": "taff_vale_line.json",
+      "operator": "Transport for Wales",
+      "terminus_stations": [
+        "Cardiff Central",
+        "Treherbert"
+      ],
+      "major_stations": [
+        "Cardiff Central",
+        "Pontypridd",
+        "Porth",
+        "Treorchy",
+        "Treherbert"
+      ]
+    },
+    {
+      "name": "West Highland Line",
+      "file": "west_highland_line.json",
+      "operator": "ScotRail",
+      "terminus_stations": [
+        "Glasgow Queen Street",
+        "Mallaig"
+      ],
+      "major_stations": [
+        "Glasgow Queen Street",
+        "Helensburgh Central",
+        "Crianlarich",
+        "Fort William",
+        "Mallaig"
+      ]
     }
-  ]
+  ],
+  "total_lines": 47
 }

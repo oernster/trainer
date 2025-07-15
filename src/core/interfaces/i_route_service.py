@@ -14,8 +14,8 @@ class IRouteService(ABC):
     """Interface for route calculation and management services."""
     
     @abstractmethod
-    def calculate_route(self, from_station: str, to_station: str, 
-                       max_changes: int = 3) -> Optional[Route]:
+    def calculate_route(self, from_station: str, to_station: str,
+                       max_changes: int = 3, preferences: Optional[Dict[str, Any]] = None) -> Optional[Route]:
         """
         Calculate the best route between two stations.
         
@@ -23,6 +23,7 @@ class IRouteService(ABC):
             from_station: Starting station name
             to_station: Destination station name
             max_changes: Maximum number of changes allowed
+            preferences: Optional dictionary of routing preferences
             
         Returns:
             Route object if found, None otherwise
@@ -31,7 +32,8 @@ class IRouteService(ABC):
     
     @abstractmethod
     def calculate_multiple_routes(self, from_station: str, to_station: str,
-                                max_routes: int = 5, max_changes: int = 3) -> List[Route]:
+                                max_routes: int = 5, max_changes: int = 3,
+                                preferences: Optional[Dict[str, Any]] = None) -> List[Route]:
         """
         Calculate multiple alternative routes between two stations.
         
@@ -40,6 +42,7 @@ class IRouteService(ABC):
             to_station: Destination station name
             max_routes: Maximum number of routes to return
             max_changes: Maximum number of changes allowed
+            preferences: Optional dictionary of routing preferences
             
         Returns:
             List of Route objects sorted by preference
@@ -221,13 +224,15 @@ class IRouteService(ABC):
         pass
     
     @abstractmethod
-    def get_route_alternatives(self, route: Route, max_alternatives: int = 3) -> List[Route]:
+    def get_route_alternatives(self, route: Route, max_alternatives: int = 3,
+                              preferences: Optional[Dict[str, Any]] = None) -> List[Route]:
         """
         Get alternative routes similar to the given route.
         
         Args:
             route: Original route
             max_alternatives: Maximum number of alternatives
+            preferences: Optional dictionary of routing preferences
             
         Returns:
             List of alternative Route objects

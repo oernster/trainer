@@ -69,49 +69,63 @@ class JsonDataRepository(IDataRepository):
             raise
     
     def _load_railway_lines_from_json(self) -> List[RailwayLine]:
-        """Load railway lines from JSON files using the railway lines index."""
+        """Load railway lines from ALL JSON files in the lines directory."""
         railway_lines = []
         
-        # Load the railway lines index
-        index_file = self.data_directory / "railway_lines_index.json"
-        if not index_file.exists():
-            self.logger.error(f"Railway lines index not found: {index_file}")
-            return railway_lines
-        
-        try:
-            with open(index_file, 'r', encoding='utf-8') as f:
-                index_data = json.load(f)
-        except Exception as e:
-            self.logger.error(f"Failed to load railway lines index: {e}")
-            return railway_lines
-        
-        # Load each railway line from the index
-        lines_info = index_data.get('lines', [])
-        self.logger.info(f"Found {len(lines_info)} railway lines in index")
-        
-        for line_info in lines_info:
-            line_name = line_info.get('name', 'Unknown')
+        # Load the comprehensive railway lines index for metadata (if available)
+        index_file = self.data_directory / "railway_lines_index_comprehensive.json"
+        index_data = {}
+        if index_file.exists():
             try:
-                line_file_name = line_info.get('file', 'unknown.json')
-                line_file = self.lines_directory / line_file_name
-                
-                if not line_file.exists():
-                    self.logger.warning(f"Railway line file not found: {line_file}")
-                    continue
-                
+                with open(index_file, 'r', encoding='utf-8') as f:
+                    index_data = json.load(f)
+                self.logger.info(f"Loaded railway lines index with {len(index_data.get('lines', []))} entries")
+            except Exception as e:
+                self.logger.warning(f"Failed to load railway lines index: {e}")
+        
+        # Create a mapping of file names to index info
+        index_mapping = {}
+        for line_info in index_data.get('lines', []):
+            file_name = line_info.get('file', '')
+            if file_name:
+                index_mapping[file_name] = line_info
+        
+        # Load ALL JSON files from the lines directory
+        if not self.lines_directory.exists():
+            self.logger.error(f"Lines directory not found: {self.lines_directory}")
+            return railway_lines
+        
+        json_files = list(self.lines_directory.glob("*.json"))
+        # Filter out backup files
+        json_files = [f for f in json_files if not f.name.endswith('.backup')]
+        
+        self.logger.info(f"Found {len(json_files)} railway line files to load")
+        
+        for line_file in json_files:
+            try:
                 with open(line_file, 'r', encoding='utf-8') as f:
                     line_data = json.load(f)
                 
-                # Parse the JSON structure with line info from index
-                railway_line = self._parse_railway_line_json_with_index(line_info, line_data)
+                # Get index info if available, otherwise use file-based info
+                line_info = index_mapping.get(line_file.name, {})
+                
+                # Parse the JSON structure
+                if line_info:
+                    # Use index-based parsing if we have index info
+                    railway_line = self._parse_railway_line_json_with_index(line_info, line_data)
+                else:
+                    # Use file-based parsing for files not in index
+                    railway_line = self._parse_railway_line_json_from_file(line_file.name, line_data)
+                
                 if railway_line:
                     railway_lines.append(railway_line)
-                    self.logger.debug(f"Loaded railway line: {line_name}")
+                    self.logger.debug(f"Loaded railway line: {railway_line.name}")
                 
             except Exception as e:
-                self.logger.error(f"Failed to load railway line {line_name}: {e}")
+                self.logger.error(f"Failed to load railway line from {line_file.name}: {e}")
                 continue
         
+        self.logger.info(f"Successfully loaded {len(railway_lines)} railway lines")
         return railway_lines
     
     def _parse_railway_line_json_with_index(self, line_info: Dict[str, Any], line_data: Dict[str, Any]) -> Optional[RailwayLine]:
@@ -191,6 +205,94 @@ class JsonDataRepository(IDataRepository):
             
         except Exception as e:
             self.logger.error(f"Failed to parse railway line {line_info.get('name', 'Unknown')}: {e}")
+            return None
+    
+    def _parse_railway_line_json_from_file(self, file_name: str, data: Dict[str, Any]) -> Optional[RailwayLine]:
+        """Parse railway line data from JSON file when not in index."""
+        try:
+            # Extract line name from metadata or derive from filename
+            metadata = data.get('metadata', {})
+            line_name = metadata.get('line_name', '')
+            
+            if not line_name:
+                # Derive line name from filename
+                line_name = file_name.replace('.json', '').replace('_', ' ').title()
+            
+            # Extract stations list from the line data
+            stations = []
+            
+            # Handle different JSON structures
+            if "stations" in data:
+                # Extract station names from stations array
+                stations_data = data["stations"]
+                if isinstance(stations_data, list):
+                    for station_data in stations_data:
+                        if isinstance(station_data, dict):
+                            station_name = station_data.get('name', '')
+                            if station_name:
+                                stations.append(station_name)
+                        elif isinstance(station_data, str):
+                            stations.append(station_data)
+            elif "major_stations" in data:
+                stations = data["major_stations"]
+            
+            # Remove duplicates while preserving order
+            unique_stations = []
+            seen = set()
+            for station in stations:
+                if station and station not in seen:
+                    unique_stations.append(station)
+                    seen.add(station)
+            
+            if len(unique_stations) < 2:
+                self.logger.warning(f"Railway line {line_name} has insufficient stations: {unique_stations}")
+                return None
+            
+            # Extract and validate journey times if available
+            journey_times = {}
+            if "typical_journey_times" in data:
+                raw_journey_times = data["typical_journey_times"]
+                if isinstance(raw_journey_times, dict):
+                    # Parse journey time entries and validate against station list
+                    station_set = set(unique_stations)
+                    for journey_key, time_value in raw_journey_times.items():
+                        # Skip metadata entries
+                        if journey_key == "metadata" or not isinstance(time_value, (int, float)):
+                            continue
+                        
+                        # Parse journey time key (e.g., "London Waterloo-Clapham Junction")
+                        if "-" in journey_key:
+                            parts = journey_key.split("-", 1)  # Split on first dash only
+                            if len(parts) == 2:
+                                from_station = parts[0].strip()
+                                to_station = parts[1].strip()
+                                
+                                # Only include if both stations exist in the line
+                                if from_station in station_set and to_station in station_set:
+                                    journey_times[journey_key] = time_value
+                                else:
+                                    self.logger.debug(f"Skipping journey time {journey_key}: stations not in line")
+            
+            # Determine line type based on name
+            line_type = self._determine_line_type(line_name)
+            
+            # Extract operator from metadata
+            operator = metadata.get('operator', 'Unknown')
+            
+            # Create railway line
+            railway_line = RailwayLine(
+                name=line_name,
+                stations=unique_stations,
+                line_type=line_type,
+                status=LineStatus.ACTIVE,
+                operator=operator,
+                journey_times=journey_times if journey_times else None
+            )
+            
+            return railway_line
+            
+        except Exception as e:
+            self.logger.error(f"Failed to parse railway line from file {file_name}: {e}")
             return None
     
     def _parse_railway_line_json(self, line_name: str, data: Dict[str, Any]) -> Optional[RailwayLine]:

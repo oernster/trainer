@@ -46,6 +46,7 @@ class StationConfig(BaseModel):
     via_stations: List[str] = []
     route_auto_fixed: bool = False
     departure_time: str = ""  # Optional departure time in HH:MM format
+    route_path: List[str] = []  # Store the complete route path for persistence
 
 
 class RefreshConfig(BaseModel):
@@ -87,6 +88,16 @@ class ConfigData(BaseModel):
     ui: UIConfig = UIConfig()  # Default UI state
     weather: Optional[WeatherConfig] = None
     astronomy: Optional[AstronomyConfig] = None
+    
+    # Route preferences
+    optimize_for_speed: bool = True
+    show_intermediate_stations: bool = True
+    avoid_london: bool = False
+    prefer_direct: bool = False
+    avoid_walking: bool = False
+    max_walking_distance_km: float = 1.0  # Default threshold of 1.0km
+    max_changes: int = 3
+    max_journey_time: int = 8
 
     def __init__(self, **data):
         """Initialize ConfigData with optional weather, astronomy, and UI config."""
@@ -255,15 +266,16 @@ class ConfigManager:
         except Exception as e:
             raise ConfigurationError(f"Failed to load config: {e}")
 
-    def save_config(self, config: ConfigData) -> None:
+    def save_config(self, config: ConfigData, force_flush: bool = False) -> bool:
         """
-        Save configuration to file.
-
+        Save configuration to file with optional forced flush.
+        
         Args:
             config: Configuration data to save
-
-        Raises:
-            ConfigurationError: If saving fails
+            force_flush: If True, forces an fsync to ensure data is written to disk
+            
+        Returns:
+            bool: True if saved successfully, False otherwise
         """
         import logging
 
@@ -274,14 +286,37 @@ class ConfigManager:
             # Ensure directory exists
             self.config_path.parent.mkdir(parents=True, exist_ok=True)
             logger.info(f"Config directory ensured: {self.config_path.parent}")
+            
+            # Serialize config to JSON
+            config_json = config.model_dump()
+            
+            # Ensure route_path is properly serialized if present
+            if 'stations' in config_json and 'route_path' in config_json['stations']:
+                # Ensure it's a list of strings
+                route_path = config_json['stations']['route_path']
+                if not isinstance(route_path, list):
+                    logger.warning(f"Invalid route_path type: {type(route_path)}, converting to list")
+                    config_json['stations']['route_path'] = []
+                elif route_path and len(route_path) >= 2:
+                    logger.info(f"Saving route path with {len(route_path)} stations")
 
+            # Write to file with proper encoding
             with open(self.config_path, "w", encoding="utf-8") as f:
-                json.dump(config.model_dump(), f, indent=2, ensure_ascii=False)
+                json.dump(config_json, f, indent=2, ensure_ascii=False)
+                
+                # Force flush to disk if requested
+                if force_flush:
+                    f.flush()
+                    os.fsync(f.fileno())
+                    logger.info("Forced flush to disk to ensure persistence")
+                    
             self.config = config
             logger.info(f"Successfully saved config to: {self.config_path}")
+            return True
+            
         except Exception as e:
             logger.error(f"Failed to save config to {self.config_path}: {e}")
-            raise ConfigurationError(f"Failed to save config: {e}")
+            return False
 
     def create_default_config(self) -> None:
         """Create a default configuration file."""

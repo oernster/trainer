@@ -36,6 +36,7 @@ class DialogState(QObject):
             'show_intermediate_stations': True,
             'avoid_london': False,
             'prefer_direct': False,
+            'avoid_walking': False,
             'max_changes': 3,
             'max_journey_time': 8
         }
@@ -43,8 +44,48 @@ class DialogState(QObject):
         logger.debug("DialogState initialized")
     
     def set_route_data(self, route_data: Dict[str, Any]):
-        """Set the route data and emit signal."""
-        self.route_data = route_data.copy() if route_data else {}
+        """Set route data with enhanced validation and logging."""
+        if not route_data:
+            logger.warning("Attempted to set empty route data")
+            self.route_data = {}
+            self.route_data_changed.emit(self.route_data)
+            return
+        
+        # Make a copy to avoid modifying the original
+        self.route_data = route_data.copy()
+        
+        # Validate route data has required fields
+        required_fields = ['from_station', 'to_station']
+        missing_fields = [field for field in required_fields if field not in self.route_data]
+        if missing_fields:
+            logger.warning(f"Route data missing required fields: {missing_fields}")
+        
+        # Ensure full_path is present
+        if 'full_path' not in self.route_data or not self.route_data['full_path']:
+            logger.warning("Route data missing full_path - attempting to reconstruct")
+            
+            # Try to reconstruct from interchange stations
+            if ('interchange_stations' in self.route_data and
+                self.route_data.get('from_station') and
+                self.route_data.get('to_station')):
+                
+                self.route_data['full_path'] = [
+                    self.route_data['from_station']
+                ] + self.route_data['interchange_stations'] + [
+                    self.route_data['to_station']
+                ]
+                logger.info(f"Reconstructed full_path with {len(self.route_data['full_path'])} stations")
+        
+        # Log the route data details
+        if 'full_path' in self.route_data and self.route_data['full_path']:
+            path_len = len(self.route_data['full_path'])
+            logger.info(f"Route data set with {path_len} stations in path")
+            if path_len >= 2:
+                from_station = self.route_data['full_path'][0]
+                to_station = self.route_data['full_path'][-1]
+                logger.info(f"Route path: {from_station} -> ... -> {to_station}")
+        
+        # Emit signal for UI updates
         self.route_data_changed.emit(self.route_data)
         logger.debug(f"Route data updated: {len(self.route_data)} keys")
     

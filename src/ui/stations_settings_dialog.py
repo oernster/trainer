@@ -11,7 +11,7 @@ from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QTabWidget, QWidget, QGroupBox, QMessageBox
 )
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt, Signal, QTimer
 from PySide6.QtGui import QFont
 
 # Import components
@@ -276,6 +276,21 @@ class StationsSettingsDialog(QDialog):
                 
                 if self.preferences_widget and 'preferences' in settings:
                     self.preferences_widget.set_preferences(settings['preferences'])
+                
+                # Load route data if available
+                if 'route_data' in settings and settings['route_data']:
+                    self.dialog_state.set_route_data(settings['route_data'])
+                    if self.route_details_widget:
+                        self.route_details_widget.update_route_data(settings['route_data'])
+                    self._update_status("Route path loaded from saved settings")
+                
+                # Auto-trigger route calculation to ensure complete route data
+                from_station = settings.get('from_station', '')
+                to_station = settings.get('to_station', '')
+                if from_station and to_station and from_station != to_station:
+                    # Use QTimer to delay the route calculation until after dialog is fully initialized
+                    QTimer.singleShot(100, lambda: self._find_route())
+                    logger.info(f"Auto-triggering route calculation for {from_station} → {to_station}")
             
             self._update_status("Settings loaded successfully")
             
@@ -361,7 +376,12 @@ class StationsSettingsDialog(QDialog):
         
         from_station = self.station_selection_widget.get_from_station()
         to_station = self.station_selection_widget.get_to_station()
-        self.route_calculation_handler.calculate_route(from_station, to_station, [])
+        
+        # Get current preferences
+        preferences = self.dialog_state.get_preferences()
+        
+        logger.info(f"Finding route: {from_station} → {to_station} with preferences: {preferences}")
+        self.route_calculation_handler.calculate_route(from_station, to_station, [], preferences=preferences)
     
     
     def _clear_route(self):
@@ -411,6 +431,63 @@ class StationsSettingsDialog(QDialog):
             departure_time = self.route_details_widget.get_departure_time() if self.route_details_widget else "08:00"
             route_data = self.dialog_state.get_route_data()
             
+            # Ensure route_data is complete and has full_path
+            if route_data and 'full_path' not in route_data:
+                logger.warning("Route data missing full_path - attempting to reconstruct")
+                # Try to reconstruct from interchange stations if available
+                if 'interchange_stations' in route_data:
+                    route_data['full_path'] = [from_station] + route_data['interchange_stations'] + [to_station]
+                    logger.info(f"Reconstructed full_path with {len(route_data['full_path'])} stations")
+                else:
+                    # Create minimal route path with just from and to stations
+                    route_data['full_path'] = [from_station, to_station]
+                    logger.warning(f"Created minimal route path with just from/to stations: {from_station} → {to_station}")
+            
+            # Validate and fix route_path if needed
+            if route_data and 'full_path' in route_data:
+                route_path = route_data['full_path']
+                
+                # Ensure route_path is a list
+                if not isinstance(route_path, list):
+                    logger.warning(f"Route path is not a list, converting: {route_path}")
+                    try:
+                        # Try to convert to list if it's a string or other type
+                        if isinstance(route_path, str):
+                            route_path = [s.strip() for s in route_path.split(',')]
+                        else:
+                            route_path = list(route_path)
+                    except:
+                        # Fallback to minimal path
+                        route_path = [from_station, to_station]
+                    route_data['full_path'] = route_path
+                
+                # Ensure route_path has at least from and to stations
+                if len(route_path) < 2:
+                    logger.warning(f"Route path too short ({len(route_path)}), fixing")
+                    if len(route_path) == 1:
+                        # Add missing station
+                        if route_path[0] == from_station:
+                            route_path.append(to_station)
+                        else:
+                            route_path.insert(0, from_station)
+                    else:
+                        # Empty path, create minimal path
+                        route_path = [from_station, to_station]
+                    route_data['full_path'] = route_path
+                
+                # Ensure first and last stations match from/to
+                if route_path[0] != from_station or route_path[-1] != to_station:
+                    logger.warning(f"Route path endpoints ({route_path[0]}, {route_path[-1]}) "
+                                  f"don't match from/to stations ({from_station}, {to_station})")
+                    # Fix the route path
+                    route_path[0] = from_station
+                    route_path[-1] = to_station
+                    route_data['full_path'] = route_path
+                
+                # Log the validated route path
+                logger.info(f"Saving route with {len(route_path)} stations: {' → '.join(route_path)}")
+            
+            # Save settings with complete route data
             success = self.settings_handler.save_settings(
                 from_station, to_station, preferences, departure_time, route_data
             )
@@ -421,17 +498,43 @@ class StationsSettingsDialog(QDialog):
                 self.settings_saved.emit()
                 
                 # Signal the main window to refresh trains with the new route
-                if hasattr(self.parent_window, 'route_changed'):
+                if self.parent_window is not None and hasattr(self.parent_window, 'route_changed'):
                     self.parent_window.route_changed.emit(from_station, to_station)
                 
                 # Also emit refresh signal if available
-                if hasattr(self.parent_window, 'refresh_requested'):
+                if self.parent_window is not None and hasattr(self.parent_window, 'refresh_requested'):
                     self.parent_window.refresh_requested.emit()
                 
                 # Direct call to train manager if available
-                if hasattr(self.parent_window, 'train_manager') and self.parent_window.train_manager:
+                if self.parent_window is not None and hasattr(self.parent_window, 'train_manager') and self.parent_window.train_manager:
                     if from_station and to_station:
-                        self.parent_window.train_manager.set_route(from_station, to_station)
+                        # Extract the full_path from route_data if available
+                        route_path = None
+                        if route_data and 'full_path' in route_data:
+                            route_path = route_data['full_path']
+                            logger.info(f"Passing route path with {len(route_path)} stations to train manager: {' → '.join(route_path)}")
+                        
+                        # Pass the route_path to the train manager
+                        train_manager = self.parent_window.train_manager
+                        train_manager.set_route(from_station, to_station, route_path)
+                        
+                        # Share config_manager with train_manager for direct access
+                        if self.config_manager and hasattr(train_manager.__class__, 'config_manager'):
+                            train_manager.__class__.config_manager = self.config_manager
+                            logger.info("Shared config_manager with train_manager for direct access")
+                        
+                        # Force config save to ensure persistence
+                        if self.config_manager:
+                            # Get the config from train_manager if available
+                            if hasattr(train_manager, 'config'):
+                                config = train_manager.config
+                                # Use force_flush if available
+                                if hasattr(self.config_manager, 'save_config') and 'force_flush' in self.config_manager.save_config.__code__.co_varnames:
+                                    self.config_manager.save_config(config, force_flush=True)
+                                    logger.info("Forced config save with force_flush=True to ensure route persistence")
+                                else:
+                                    self.config_manager.save_config(config)
+                                    logger.info("Saved config (force_flush not available)")
                 
                 self._update_status("Settings saved successfully")
                 self.accept()

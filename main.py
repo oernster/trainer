@@ -372,8 +372,13 @@ def main():
             if (config and config.stations and
                 getattr(config.stations, 'from_name', None) and
                 getattr(config.stations, 'to_name', None)):
-                train_manager.set_route(config.stations.from_name, config.stations.to_name)
-                logger.debug(f"Route configured: {config.stations.from_name} -> {config.stations.to_name}")
+                # Pass the route_path from configuration if available
+                route_path = getattr(config.stations, 'route_path', None)
+                train_manager.set_route(config.stations.from_name, config.stations.to_name, route_path)
+                if route_path:
+                    logger.debug(f"Route configured with path: {config.stations.from_name} -> {config.stations.to_name} ({len(route_path)} stations)")
+                else:
+                    logger.debug(f"Route configured without path: {config.stations.from_name} -> {config.stations.to_name}")
             else:
                 logger.info("No valid station configuration found - train list will be empty until stations are configured")
 

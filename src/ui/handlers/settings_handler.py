@@ -84,6 +84,8 @@ class SettingsHandler(QObject):
                 preferences['avoid_london'] = config.avoid_london
             if hasattr(config, 'prefer_direct'):
                 preferences['prefer_direct'] = config.prefer_direct
+            if hasattr(config, 'avoid_walking'):
+                preferences['avoid_walking'] = config.avoid_walking
             if hasattr(config, 'max_changes'):
                 preferences['max_changes'] = config.max_changes
             if hasattr(config, 'max_journey_time'):
@@ -96,6 +98,20 @@ class SettingsHandler(QObject):
                 settings['departure_time'] = config.departure_time
             else:
                 settings['departure_time'] = "08:00"
+                
+            # Load route path if available
+            if hasattr(config, 'stations') and hasattr(config.stations, 'route_path'):
+                route_path = config.stations.route_path
+                if route_path and len(route_path) >= 2:
+                    # Create minimal route data with the path
+                    route_data = {
+                        'full_path': route_path,
+                        'journey_time': 0,  # Placeholder, will be recalculated
+                        'distance': 0,      # Placeholder, will be recalculated
+                        'changes': 0        # Placeholder, will be recalculated
+                    }
+                    settings['route_data'] = route_data
+                    logger.info(f"Loaded route path with {len(route_path)} stations")
             
             logger.info(f"Settings loaded successfully: {list(settings.keys())}")
             self.settings_loaded.emit(settings)
@@ -107,7 +123,7 @@ class SettingsHandler(QObject):
             self.settings_error.emit(error_msg)
             return {}
     
-    def save_settings(self, from_station: str, to_station: str, preferences: Dict[str, Any], 
+    def save_settings(self, from_station: str, to_station: str, preferences: Dict[str, Any],
                      departure_time: str = "08:00", route_data: Optional[Dict[str, Any]] = None) -> bool:
         """
         Save settings to configuration.
@@ -117,7 +133,7 @@ class SettingsHandler(QObject):
             to_station: To station name
             preferences: Preferences dictionary
             departure_time: Departure time string
-            route_data: Optional route data for validation
+            route_data: Optional route data for validation and route path persistence
             
         Returns:
             True if saved successfully, False otherwise
@@ -161,9 +177,39 @@ class SettingsHandler(QObject):
             # Update departure time
             if hasattr(config, 'departure_time'):
                 config.departure_time = departure_time
+                
+            # Save route path if available
+            if route_data and 'full_path' in route_data and hasattr(config, 'stations'):
+                if hasattr(config.stations, 'route_path'):
+                    # Extract the full path from route data
+                    route_path = route_data.get('full_path', [])
+                    
+                    # Validate route path
+                    if route_path and len(route_path) >= 2:
+                        # Ensure first and last stations match from/to
+                        if route_path[0] != from_station or route_path[-1] != to_station:
+                            logger.warning(f"Route path endpoints ({route_path[0]}, {route_path[-1]}) "
+                                          f"don't match from/to stations ({from_station}, {to_station})")
+                            # Fix the route path to match from/to stations
+                            if route_path[0] != from_station:
+                                route_path[0] = from_station
+                            if route_path[-1] != to_station:
+                                route_path[-1] = to_station
+                        
+                        config.stations.route_path = route_path
+                        logger.info(f"Saved route path with {len(route_path)} stations: {' → '.join(route_path)}")
+                    else:
+                        logger.warning("Invalid route path, not saving")
             
-            # Save configuration
-            self.config_manager.save_config(config)
+            # Save configuration with force_flush to ensure persistence
+            if hasattr(self.config_manager, 'save_config') and 'force_flush' in self.config_manager.save_config.__code__.co_varnames:
+                # Use force_flush if available
+                self.config_manager.save_config(config, force_flush=True)
+                logger.debug("Saved configuration with force_flush=True")
+            else:
+                # Fallback to regular save
+                self.config_manager.save_config(config)
+                logger.debug("Saved configuration (force_flush not available)")
             
             logger.info(f"Settings saved successfully: {from_station} → {to_station}")
             self.settings_saved.emit()
@@ -176,7 +222,7 @@ class SettingsHandler(QObject):
             QMessageBox.critical(self.parent_dialog, "Settings Error", f"Failed to save settings: {e}")
             return False
     
-    def _validate_settings(self, from_station: str, to_station: str, 
+    def _validate_settings(self, from_station: str, to_station: str,
                           route_data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """
         Validate settings before saving.
@@ -210,6 +256,27 @@ class SettingsHandler(QObject):
                         'valid': False,
                         'message': 'Please click "Find Route" to calculate the route before saving settings.'
                     }
+                
+                # Validate route path if available
+                if route_data and 'full_path' in route_data:
+                    route_path = route_data.get('full_path', [])
+                    
+                    # Check if route path is valid
+                    if not route_path or len(route_path) < 2:
+                        logger.warning("Route path is empty or too short")
+                        return {
+                            'valid': False,
+                            'message': 'Route path is invalid. Please recalculate the route.'
+                        }
+                    
+                    # Check if route path matches from/to stations
+                    if route_path[0] != from_station or route_path[-1] != to_station:
+                        logger.warning(f"Route path endpoints ({route_path[0]}, {route_path[-1]}) "
+                                      f"don't match from/to stations ({from_station}, {to_station})")
+                        return {
+                            'valid': False,
+                            'message': 'Route path does not match selected stations. Please recalculate the route.'
+                        }
             
             # Validate stations exist (if station service is available)
             if self.station_service:
@@ -257,6 +324,7 @@ class SettingsHandler(QObject):
                 'show_intermediate_stations': True,
                 'avoid_london': False,
                 'prefer_direct': False,
+                'avoid_walking': False,
                 'max_changes': 3,
                 'max_journey_time': 8
             }

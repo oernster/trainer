@@ -50,7 +50,8 @@ class RouteService(IRouteService):
         
         # Cache for network graph and calculations
         self._network_graph: Optional[Dict[str, Dict[str, List[Dict[str, Any]]]]] = None
-        self._route_cache: Dict[Tuple[str, str], List[Route]] = {}
+        # Cache key is (from_station, to_station, preferences_key)
+        self._route_cache: Dict[Tuple, List[Route]] = {}
         
         self.logger.info("Initialized RouteService")
     
@@ -162,7 +163,8 @@ class RouteService(IRouteService):
         return self._network_graph
     
     def _dijkstra_shortest_path(self, start: str, end: str,
-                               weight_func: str = 'time') -> Optional[PathNode]:
+                               weight_func: str = 'time',
+                               preferences: Optional[Dict[str, Any]] = None) -> Optional[PathNode]:
         """
         Find shortest path using Dijkstra's algorithm with enhanced pathfinding.
         
@@ -180,7 +182,20 @@ class RouteService(IRouteService):
             self.logger.warning(f"End station '{end}' not found in network graph")
             return None
         
+        # Get preferences or use empty dict
+        if preferences is None:
+            preferences = {}
+            
+        avoid_walking = preferences.get('avoid_walking', False)
+        prefer_direct = preferences.get('prefer_direct', False)
+        max_walking_distance_km = preferences.get('max_walking_distance_km', 0.1)  # Get configurable threshold
+        
         self.logger.info(f"Starting Dijkstra pathfinding from '{start}' to '{end}' using {weight_func} optimization")
+        if avoid_walking:
+            self.logger.info("Preference: Avoiding walking connections when possible")
+            self.logger.info(f"Maximum walking distance threshold: {max_walking_distance_km}km")
+        if prefer_direct:
+            self.logger.info("Preference: Preferring direct connections")
         
         # Priority queue: (weight, node)
         pq = [PathNode(start, 0.0, 0, 0, [start], [])]
@@ -212,13 +227,73 @@ class RouteService(IRouteService):
                 if next_station in visited:
                     continue
                 
+                # Check if there's a direct connection
+                direct_connections = [c for c in connections if c.get('is_direct', False)]
+                
+                # Prioritize direct connections if available
+                if direct_connections:
+                    connections_to_check = direct_connections
+                    self.logger.debug(f"Found direct connection from {current.station} to {next_station}")
+                else:
+                    connections_to_check = connections
+                
+                # Handle walking connections if avoid_walking is enabled
+                if avoid_walking:
+                    # Identify walking connections using the specific logic:
+                    # If station1 not on same line as station2 (specified as interchange)
+                    # AND lat/lon haversine distance > 0.1km then it's clearly a walk
+                    walking_connections = []
+                    non_walking_connections = []
+                    
+                    for conn in connections_to_check:
+                        # Get the two stations
+                        from_station = current.station
+                        to_station = conn['to_station']
+                        
+                        # Check if they're on the same line
+                        same_line = False
+                        for line in self.data_repository.load_railway_lines():
+                            if from_station in line.stations and to_station in line.stations:
+                                same_line = True
+                                break
+                        
+                        # Calculate haversine distance if we have coordinates
+                        distance_km = 0
+                        if hasattr(self, '_network_graph') and self._network_graph:
+                            if 'distance' in conn:
+                                distance_km = conn['distance']
+                        
+                        # Apply the logic: not same line AND distance > max_walking_distance_km = walking connection
+                        if not same_line and distance_km > max_walking_distance_km:
+                            walking_connections.append(conn)
+                            # Mark it explicitly as a walking connection
+                            conn['is_walking_connection'] = True
+                        else:
+                            non_walking_connections.append(conn)
+                    
+                    # If avoid_walking is true, strictly avoid all walking connections
+                    if non_walking_connections:
+                        connections_to_check = non_walking_connections
+                        self.logger.info(f"Using only {len(non_walking_connections)} non-walking connections from {current.station} to {next_station}")
+                        
+                        # Completely exclude walking connections when alternatives exist
+                        walking_connections = []
+                    else:
+                        # If there are no non-walking alternatives, we have no choice but to use walking connections
+                        # This is a fallback to ensure network connectivity in extreme cases
+                        self.logger.warning(f"No non-walking alternatives found from {current.station} to {next_station}")
+                        self.logger.warning(f"Network may be disconnected if walking is strictly avoided")
+                
                 # Find best connection based on weight function
                 if weight_func == 'time':
-                    best_connection = min(connections, key=lambda x: x['time'])
+                    best_connection = min(connections_to_check, key=lambda x: x['time'])
                 elif weight_func == 'distance':
-                    best_connection = min(connections, key=lambda x: x['distance'])
+                    best_connection = min(connections_to_check, key=lambda x: x['distance'])
+                elif weight_func == 'changes':
+                    # For changes, prioritize direct connections even more
+                    best_connection = min(connections_to_check, key=lambda x: (0 if x.get('is_direct', False) else 1, x['time']))
                 else:
-                    best_connection = min(connections, key=lambda x: x['time'])  # Default to time
+                    best_connection = min(connections_to_check, key=lambda x: x['time'])  # Default to time
                 
                 # Calculate new weights using Haversine distance if coordinates available
                 new_distance = current.distance + best_connection['distance']
@@ -227,8 +302,10 @@ class RouteService(IRouteService):
                 # Calculate changes (if switching lines)
                 new_changes = current.changes
                 if current.lines_used and current.lines_used[-1] != best_connection['line']:
-                    new_changes += 1
-                    new_time += 5  # Add 5 minutes for interchange (realistic connection time)
+                    # Don't count as a change if it's a direct connection
+                    if not best_connection.get('is_direct', False):
+                        new_changes += 1
+                        new_time += 5  # Add 5 minutes for interchange (realistic connection time)
                 
                 new_path = current.path + [next_station]
                 new_lines = current.lines_used + [best_connection['line']]
@@ -239,9 +316,68 @@ class RouteService(IRouteService):
                 elif weight_func == 'distance':
                     weight = new_distance
                 elif weight_func == 'changes':
-                    weight = new_changes * 1000 + new_time  # Prioritize fewer changes
+                    # Heavily penalize changes, but give direct connections a big advantage
+                    direct_bonus = 0 if best_connection.get('is_direct', False) else 1000
+                    weight = (new_changes * 1000) + direct_bonus + new_time
                 else:
                     weight = new_time
+                
+                # Apply penalties for walking connections
+                # Check if this is a walking connection using our specific logic
+                is_walking = False
+                
+                # Get the two stations
+                from_station = current.station
+                to_station = best_connection['to_station']
+                
+                # Check if this is explicitly defined as a walking connection in interchange_connections.json
+                interchange_connections = self._load_interchange_connections()
+                for ic in interchange_connections.get('connections', []):
+                    if ((ic.get('from_station') == from_station and ic.get('to_station') == to_station) or
+                        (ic.get('from_station') == to_station and ic.get('to_station') == from_station)):
+                        if ic.get('connection_type') == 'WALKING':
+                            is_walking = True
+                            break
+                
+                if not is_walking:
+                    # Check if they're on the same line
+                    same_line = False
+                    for line in self.data_repository.load_railway_lines():
+                        # Handle parentheses in station names
+                        line_stations = [s.replace(" (Main)", "").replace(" (Cross Country Line)", "")
+                                        for s in line.stations]
+                        clean_from = from_station.replace(" (Main)", "").replace(" (Cross Country Line)", "")
+                        clean_to = to_station.replace(" (Main)", "").replace(" (Cross Country Line)", "")
+                        
+                        if clean_from in line_stations and clean_to in line_stations:
+                            # Found both stations on the same line
+                            same_line = True
+                            break
+                    
+                    # Calculate haversine distance
+                    distance_km = best_connection.get('distance', 0)
+                    
+                    # Apply the logic: not same line AND distance > max_walking_distance_km = walking connection
+                    if not same_line and distance_km > max_walking_distance_km:
+                        is_walking = True
+                
+                # Also check the explicit flags
+                if is_walking or best_connection.get('line') == 'WALKING' or best_connection.get('is_walking_connection', False):
+                    # For walking connections, we need to handle them differently based on avoid_walking preference
+                    if avoid_walking:
+                        # If avoid_walking is true, strictly avoid all walking connections
+                        # Skip this connection completely
+                        self.logger.warning(f"Skipping walking connection: {current.station} -> {next_station}")
+                        continue
+                    else:
+                        # If "prefer not to walk" is NOT selected, use a small penalty
+                        # This will prioritize non-walking connections but allow walking within threshold
+                        penalty_multiplier = best_connection.get('walking_penalty', 2)
+                        
+                        # Apply penalty
+                        original_weight = weight
+                        weight = weight * penalty_multiplier
+                        self.logger.debug(f"Applied walking penalty: {original_weight} -> {weight}")
                 
                 # Only add to queue if we found a better path
                 if next_station not in distances or weight < distances[next_station]:
@@ -298,8 +434,9 @@ class RouteService(IRouteService):
                             if connections:
                                 # Find connection for this line
                                 line_connection = next((c for c in connections if c['line'] == current_line), connections[0])
-                                segment_distance += line_connection.get('distance', 0)
+                                # Use the actual time for the segment (not the penalized time)
                                 segment_time += line_connection.get('time', 0)
+                                segment_distance += line_connection.get('distance', 0)
                     
                     segment = RouteSegment(
                         from_station=segment_from,
@@ -334,8 +471,9 @@ class RouteService(IRouteService):
                     if connections:
                         # Find connection for this line
                         line_connection = next((c for c in connections if c['line'] == current_line), connections[0])
-                        segment_distance += line_connection.get('distance', 0)
+                        # Use the actual time for the segment (not the penalized time)
                         segment_time += line_connection.get('time', 0)
+                        segment_distance += line_connection.get('distance', 0)
             
             segment = RouteSegment(
                 from_station=segment_from,
@@ -366,7 +504,8 @@ class RouteService(IRouteService):
         return route
     
     def calculate_route(self, from_station: str, to_station: str,
-                       max_changes: Optional[int] = None) -> Optional[Route]:
+                       max_changes: Optional[int] = None,
+                       preferences: Optional[Dict[str, Any]] = None) -> Optional[Route]:
         """Calculate the best route between two stations."""
         if not self.data_repository.validate_station_exists(from_station):
             self.logger.warning(f"From station does not exist: {from_station}")
@@ -379,15 +518,18 @@ class RouteService(IRouteService):
         if from_station == to_station:
             return None
         
+        # Get cache key that includes preferences
+        cache_key = self._get_cache_key(from_station, to_station, preferences)
+        
         # Check cache first
-        cache_key = (from_station, to_station)
         if cache_key in self._route_cache:
             routes = self._route_cache[cache_key]
             if routes:
+                self.logger.debug(f"Using cached route for {from_station} → {to_station} with preferences")
                 return routes[0]  # Return best route
         
         # Calculate route using Dijkstra's algorithm
-        path_node = self._dijkstra_shortest_path(from_station, to_station, 'time')
+        path_node = self._dijkstra_shortest_path(from_station, to_station, 'time', preferences)
         
         if path_node is None:
             self.logger.warning(f"No route found from {from_station} to {to_station}")
@@ -401,8 +543,9 @@ class RouteService(IRouteService):
         try:
             route = self._path_to_route(path_node)
             
-            # Cache the result
+            # Cache the result with preference-aware key
             self._route_cache[cache_key] = [route]
+            self.logger.debug(f"Cached route for {from_station} → {to_station} with preferences")
             
             return route
             
@@ -411,9 +554,18 @@ class RouteService(IRouteService):
             return None
     
     def calculate_multiple_routes(self, from_station: str, to_station: str,
-                                max_routes: int = 5, max_changes: Optional[int] = None) -> List[Route]:
+                                max_routes: int = 5, max_changes: Optional[int] = None,
+                                preferences: Optional[Dict[str, Any]] = None) -> List[Route]:
         """Calculate multiple alternative routes between two stations."""
         routes = []
+        
+        # Get cache key that includes preferences
+        cache_key = self._get_cache_key(from_station, to_station, preferences)
+        
+        # Check cache first
+        if cache_key in self._route_cache and len(self._route_cache[cache_key]) >= max_routes:
+            self.logger.debug(f"Using cached multiple routes for {from_station} → {to_station} with preferences")
+            return self._route_cache[cache_key][:max_routes]
         
         # Try different optimization strategies
         strategies = ['time', 'changes', 'distance']
@@ -422,7 +574,7 @@ class RouteService(IRouteService):
             if len(routes) >= max_routes:
                 break
             
-            path_node = self._dijkstra_shortest_path(from_station, to_station, strategy)
+            path_node = self._dijkstra_shortest_path(from_station, to_station, strategy, preferences)
             
             if path_node:
                 # Only check max_changes if explicitly provided
@@ -452,6 +604,10 @@ class RouteService(IRouteService):
             r.changes_required,
             r.total_distance_km or 999
         ))
+        
+        # Cache the results with preference-aware key
+        self._route_cache[cache_key] = routes
+        self.logger.debug(f"Cached {len(routes)} routes for {from_station} → {to_station} with preferences")
         
         return routes[:max_routes]
     
@@ -501,13 +657,17 @@ class RouteService(IRouteService):
                         distance_km=distance
                     )
                     
+                    # Create full path for direct route
+                    full_path = [from_station, to_station]
+                    
                     route = Route(
                         from_station=from_station,
                         to_station=to_station,
                         segments=[segment],
                         total_journey_time_minutes=journey_time,
                         total_distance_km=distance,
-                        changes_required=0
+                        changes_required=0,
+                        full_path=full_path
                     )
                     
                     direct_routes.append(route)
@@ -548,13 +708,28 @@ class RouteService(IRouteService):
                     total_time = (leg1.total_journey_time_minutes or 0) + (leg2.total_journey_time_minutes or 0) + 5  # 5 min interchange
                     total_distance = (leg1.total_distance_km or 0) + (leg2.total_distance_km or 0)
                     
+                    # Create full path for interchange route
+                    # Get full path from both legs if available, otherwise create from segments
+                    full_path = []
+                    if hasattr(leg1, 'full_path') and leg1.full_path:
+                        full_path.extend(leg1.full_path[:-1])  # Exclude last station (interchange)
+                    else:
+                        full_path.append(from_station)
+                        
+                    if hasattr(leg2, 'full_path') and leg2.full_path:
+                        full_path.extend(leg2.full_path)  # Include all stations from second leg
+                    else:
+                        full_path.append(interchange.name)
+                        full_path.append(to_station)
+                    
                     route = Route(
                         from_station=from_station,
                         to_station=to_station,
                         segments=combined_segments,
                         total_journey_time_minutes=total_time,
                         total_distance_km=total_distance,
-                        changes_required=1
+                        changes_required=1,
+                        full_path=full_path
                     )
                     
                     interchange_routes.append(route)
@@ -564,9 +739,10 @@ class RouteService(IRouteService):
         
         return interchange_routes
     
-    def get_fastest_route(self, from_station: str, to_station: str) -> Optional[Route]:
+    def get_fastest_route(self, from_station: str, to_station: str,
+                         preferences: Optional[Dict[str, Any]] = None) -> Optional[Route]:
         """Get the fastest route between two stations."""
-        path_node = self._dijkstra_shortest_path(from_station, to_station, 'time')
+        path_node = self._dijkstra_shortest_path(from_station, to_station, 'time', preferences)
         
         if path_node:
             try:
@@ -576,9 +752,10 @@ class RouteService(IRouteService):
         
         return None
     
-    def get_shortest_route(self, from_station: str, to_station: str) -> Optional[Route]:
+    def get_shortest_route(self, from_station: str, to_station: str,
+                          preferences: Optional[Dict[str, Any]] = None) -> Optional[Route]:
         """Get the shortest distance route between two stations."""
-        path_node = self._dijkstra_shortest_path(from_station, to_station, 'distance')
+        path_node = self._dijkstra_shortest_path(from_station, to_station, 'distance', preferences)
         
         if path_node:
             try:
@@ -588,9 +765,10 @@ class RouteService(IRouteService):
         
         return None
     
-    def get_fewest_changes_route(self, from_station: str, to_station: str) -> Optional[Route]:
+    def get_fewest_changes_route(self, from_station: str, to_station: str,
+                                preferences: Optional[Dict[str, Any]] = None) -> Optional[Route]:
         """Get the route with fewest changes between two stations."""
-        path_node = self._dijkstra_shortest_path(from_station, to_station, 'changes')
+        path_node = self._dijkstra_shortest_path(from_station, to_station, 'changes', preferences)
         
         if path_node:
             try:
@@ -601,17 +779,18 @@ class RouteService(IRouteService):
         return None
     
     def find_routes_via_station(self, from_station: str, to_station: str,
-                               via_station: str) -> List[Route]:
+                               via_station: str,
+                               preferences: Optional[Dict[str, Any]] = None) -> List[Route]:
         """Find routes that pass through a specific intermediate station."""
         routes = []
         
         # Calculate route from start to via station
-        first_leg = self.calculate_route(from_station, via_station)
+        first_leg = self.calculate_route(from_station, via_station, preferences=preferences)
         if not first_leg:
             return routes
         
         # Calculate route from via station to destination
-        second_leg = self.calculate_route(via_station, to_station)
+        second_leg = self.calculate_route(via_station, to_station, preferences=preferences)
         if not second_leg:
             return routes
         
@@ -629,24 +808,40 @@ class RouteService(IRouteService):
                 total_time += 5  # 5 minutes interchange time
                 total_changes += 1
         
+        # Create full path for via station route
+        # Get full path from both legs if available, otherwise create from segments
+        full_path = []
+        if hasattr(first_leg, 'full_path') and first_leg.full_path:
+            full_path.extend(first_leg.full_path[:-1])  # Exclude last station (via station)
+        else:
+            full_path.append(from_station)
+            
+        if hasattr(second_leg, 'full_path') and second_leg.full_path:
+            full_path.extend(second_leg.full_path)  # Include all stations from second leg
+        else:
+            full_path.append(via_station)
+            full_path.append(to_station)
+        
         route = Route(
             from_station=from_station,
             to_station=to_station,
             segments=combined_segments,
             total_journey_time_minutes=total_time,
             total_distance_km=total_distance,
-            changes_required=total_changes
+            changes_required=total_changes,
+            full_path=full_path
         )
         
         routes.append(route)
         return routes
     
     def find_routes_avoiding_station(self, from_station: str, to_station: str,
-                                   avoid_station: str) -> List[Route]:
+                                   avoid_station: str,
+                                   preferences: Optional[Dict[str, Any]] = None) -> List[Route]:
         """Find routes that avoid a specific station."""
         # This would require modifying the graph to exclude the avoided station
         # For now, return regular routes and filter out those containing the avoided station
-        routes = self.calculate_multiple_routes(from_station, to_station)
+        routes = self.calculate_multiple_routes(from_station, to_station, preferences=preferences)
         
         filtered_routes = []
         for route in routes:
@@ -656,7 +851,8 @@ class RouteService(IRouteService):
         return filtered_routes
     
     def find_routes_on_line(self, from_station: str, to_station: str,
-                           line_name: str) -> List[Route]:
+                           line_name: str,
+                           preferences: Optional[Dict[str, Any]] = None) -> List[Route]:
         """Find routes that use a specific railway line."""
         # Check if both stations are on the specified line
         line = self.data_repository.get_railway_line_by_name(line_name)
@@ -720,14 +916,16 @@ class RouteService(IRouteService):
         
         return sorted(list(destinations))
     
-    def get_journey_time(self, from_station: str, to_station: str) -> Optional[int]:
+    def get_journey_time(self, from_station: str, to_station: str,
+                        preferences: Optional[Dict[str, Any]] = None) -> Optional[int]:
         """Get estimated journey time between two stations."""
-        route = self.get_fastest_route(from_station, to_station)
+        route = self.get_fastest_route(from_station, to_station, preferences)
         return route.total_journey_time_minutes if route else None
     
-    def get_distance(self, from_station: str, to_station: str) -> Optional[float]:
+    def get_distance(self, from_station: str, to_station: str,
+                    preferences: Optional[Dict[str, Any]] = None) -> Optional[float]:
         """Get distance between two stations."""
-        route = self.get_shortest_route(from_station, to_station)
+        route = self.get_shortest_route(from_station, to_station, preferences)
         return route.total_distance_km if route else None
     
     def validate_route(self, route: Route) -> Tuple[bool, List[str]]:
@@ -767,12 +965,14 @@ class RouteService(IRouteService):
         
         return len(errors) == 0, errors
     
-    def get_route_alternatives(self, route: Route, max_alternatives: int = 3) -> List[Route]:
+    def get_route_alternatives(self, route: Route, max_alternatives: int = 3,
+                              preferences: Optional[Dict[str, Any]] = None) -> List[Route]:
         """Get alternative routes similar to the given route."""
         return self.calculate_multiple_routes(
-            route.from_station, 
-            route.to_station, 
-            max_alternatives + 1  # +1 because original might be included
+            route.from_station,
+            route.to_station,
+            max_alternatives + 1,  # +1 because original might be included
+            preferences=preferences
         )[:max_alternatives]
     
     def calculate_route_cost(self, route: Route) -> Optional[float]:
@@ -846,7 +1046,8 @@ class RouteService(IRouteService):
                         from_station=station,
                         to_station=station,
                         segments=segments,
-                        total_distance_km=distance
+                        total_distance_km=distance,
+                        full_path=path  # Include the complete path
                     )
                     
                     circular_routes.append(route)
@@ -893,6 +1094,22 @@ class RouteService(IRouteService):
         """Clear any cached route calculations."""
         self._route_cache.clear()
         self.logger.info("Route cache cleared")
+        
+    def _get_cache_key(self, from_station: str, to_station: str, preferences: Optional[Dict[str, Any]] = None) -> Tuple:
+        """Create a cache key that includes relevant preferences."""
+        pref_key = None
+        if preferences:
+            # Only include preferences that affect routing
+            routing_prefs = {
+                'avoid_walking': preferences.get('avoid_walking', False),
+                'prefer_direct': preferences.get('prefer_direct', False),
+                'avoid_london': preferences.get('avoid_london', False),
+                'max_walking_distance_km': preferences.get('max_walking_distance_km', 0.1)
+            }
+            if any(routing_prefs.values()):
+                pref_key = frozenset(routing_prefs.items())
+        
+        return (from_station, to_station, pref_key)
     
     def precompute_common_routes(self, station_pairs: List[Tuple[str, str]]) -> None:
         """Precompute routes for common station pairs."""
@@ -911,35 +1128,54 @@ class RouteService(IRouteService):
     def _get_line_data_with_coordinates(self, line_name: str) -> Optional[Dict[str, Any]]:
         """Get line data with station coordinates from JSON files."""
         try:
-            # Map line names to file names based on the index
-            line_file_mapping = {
-                "South Western Main Line": "south_western_main_line.json",
-                "Manchester Airport Line": "manchester_airport_line.json",
-                "Great Western Main Line": "great_western_main_line.json",
-                "West Coast Main Line": "west_coast_main_line.json",
-                "Cross Country Line": "cross_country_line.json",
-                "Reading to Basingstoke Line": "reading_to_basingstoke_line.json",
-                # Add more mappings as needed
-            }
-            
-            file_name = line_file_mapping.get(line_name)
-            if not file_name:
-                self.logger.debug(f"No file mapping found for line: {line_name}")
-                return None
-            
-            # Load the JSON file directly
             import json
             from pathlib import Path
             
             lines_dir = Path("src/data/lines")
-            line_file = lines_dir / file_name
             
-            if not line_file.exists():
-                self.logger.debug(f"Line file not found: {line_file}")
+            # Convert line name to potential file name
+            # Remove common suffixes and normalize
+            normalized_name = line_name.lower()
+            normalized_name = normalized_name.replace(" line", "").replace(" main", "").replace(" railway", "")
+            normalized_name = normalized_name.replace(" ", "_").replace("-", "_")
+            
+            # Try different file name variations
+            potential_files = [
+                f"{normalized_name}.json",
+                f"{normalized_name}_line.json",
+                f"{normalized_name}_main_line.json",
+                f"{normalized_name}_railway.json"
+            ]
+            
+            # Also try exact match with underscores
+            exact_match = line_name.lower().replace(" ", "_").replace("-", "_")
+            potential_files.insert(0, f"{exact_match}.json")
+            
+            # Search through all JSON files if no direct match
+            if not any((lines_dir / f).exists() for f in potential_files):
+                for json_file in lines_dir.glob("*.json"):
+                    if json_file.name.endswith('.backup'):
+                        continue
+                    try:
+                        with open(json_file, 'r', encoding='utf-8') as f:
+                            data = json.load(f)
+                            metadata = data.get('metadata', {})
+                            if metadata.get('line_name') == line_name:
+                                return data
+                    except Exception:
+                        continue
+                
+                self.logger.debug(f"No file found for line: {line_name}")
                 return None
             
-            with open(line_file, 'r', encoding='utf-8') as f:
-                return json.load(f)
+            # Try each potential file name
+            for file_name in potential_files:
+                line_file = lines_dir / file_name
+                if line_file.exists():
+                    with open(line_file, 'r', encoding='utf-8') as f:
+                        return json.load(f)
+            
+            return None
                 
         except Exception as e:
             self.logger.error(f"Failed to load line data for {line_name}: {e}")
@@ -979,8 +1215,227 @@ class RouteService(IRouteService):
         return earth_radius_km * c
     
     def _add_interchange_connections(self, graph: Dict, station_coordinates: Dict[str, Dict]) -> None:
-        """Add interchange connections between stations that are close to each other."""
-        # Find stations that might be interchanges (same name or very close)
+        """Add interchange connections from JSON data and automatic walking connections."""
+        # Load interchange connections from JSON file
+        self._load_interchange_connections_from_json(graph)
+        
+        # Add automatic walking connections based on distance
+        self._add_automatic_walking_connections(graph, station_coordinates)
+        
+        # Add same-station interchanges (different name representations)
+        self._add_same_station_interchanges(graph, station_coordinates)
+    
+    def _load_interchange_connections_from_json(self, graph: Dict) -> None:
+        """Load interchange connections from the JSON data file."""
+        try:
+            import json
+            from pathlib import Path
+            
+            interchange_file = Path("src/data/interchange_connections.json")
+            if not interchange_file.exists():
+                self.logger.warning("Interchange connections file not found")
+                return
+            
+            with open(interchange_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            
+            # Load regular interchange connections
+            connections = data.get('connections', [])
+            self.logger.info(f"Loading {len(connections)} interchange connections from JSON")
+            
+            for conn in connections:
+                from_station = conn.get('from_station')
+                to_station = conn.get('to_station')
+                connection_type = conn.get('connection_type', 'WALKING')
+                time_minutes = conn.get('time_minutes', 10)
+                walking_distance_m = conn.get('walking_distance_m', 500)
+                description = conn.get('description', '')
+                
+                # Special logging for Farnborough connections
+                if ('Farnborough' in from_station and 'Farnborough' in to_station):
+                    self.logger.warning(f"Found Farnborough connection: {from_station} → {to_station}, type: {connection_type}")
+                
+                # Only add if both stations exist in the graph
+                if from_station in graph and to_station in graph:
+                    # Calculate distance in km
+                    distance_km = walking_distance_m / 1000.0
+                    
+                    # Create connection
+                    connection = {
+                        'line': connection_type,
+                        'time': time_minutes,
+                        'distance': distance_km,
+                        'to_station': to_station,
+                        'description': description
+                    }
+                    
+                    reverse_connection = {
+                        'line': connection_type,
+                        'time': time_minutes,
+                        'distance': distance_km,
+                        'to_station': from_station,
+                        'description': description
+                    }
+                    
+                    # Add walking_distance_m field for all connections that involve walking
+                    if connection_type == 'WALKING':
+                        connection['walking_distance_m'] = walking_distance_m
+                        reverse_connection['walking_distance_m'] = walking_distance_m
+                        connection['is_walking_connection'] = True
+                        reverse_connection['is_walking_connection'] = True
+                        
+                        # Special handling for Farnborough connections
+                        if ('Farnborough' in from_station and 'Farnborough' in to_station):
+                            self.logger.warning(f"Marking Farnborough connection as walking: {from_station} → {to_station}")
+                            # Make sure these are properly marked
+                            connection['is_walking_connection'] = True
+                            reverse_connection['is_walking_connection'] = True
+                            # Add an extremely high penalty for this specific connection
+                            # Use a higher penalty than before to ensure it's never used when alternatives exist
+                            connection['walking_penalty'] = 1000000000
+                            reverse_connection['walking_penalty'] = 1000000000
+                    
+                    # Add bidirectional connections
+                    graph[from_station][to_station].append(connection)
+                    graph[to_station][from_station].append(reverse_connection)
+                    
+                    self.logger.debug(f"Added {connection_type} connection: {from_station} ↔ {to_station} ({time_minutes}min)")
+                else:
+                    if from_station not in graph:
+                        self.logger.debug(f"Station not found in graph: {from_station}")
+                    if to_station not in graph:
+                        self.logger.debug(f"Station not found in graph: {to_station}")
+            
+            # Load direct connections
+            direct_connections = data.get('direct_connections', [])
+            if direct_connections:
+                self.logger.info(f"Loading {len(direct_connections)} direct connections from JSON")
+                
+                for conn in direct_connections:
+                    from_station = conn.get('from_station')
+                    to_station = conn.get('to_station')
+                    connection_type = conn.get('connection_type', 'DIRECT')
+                    time_minutes = conn.get('time_minutes', 60)
+                    walking_distance_m = conn.get('walking_distance_m', 0)
+                    description = conn.get('description', 'Direct connection')
+                    
+                    # Create or update stations in the graph if they don't exist
+                    if from_station not in graph:
+                        graph[from_station] = defaultdict(list)
+                        self.logger.debug(f"Created missing station in graph: {from_station}")
+                    
+                    if to_station not in graph:
+                        graph[to_station] = defaultdict(list)
+                        self.logger.debug(f"Created missing station in graph: {to_station}")
+                    
+                    # Calculate distance in km (use a reasonable estimate if not provided)
+                    distance_km = walking_distance_m / 1000.0
+                    if distance_km == 0:
+                        # Estimate distance based on time (assuming average speed of 100 km/h)
+                        distance_km = (time_minutes / 60) * 100
+                    
+                    # Create connection
+                    connection = {
+                        'line': connection_type,
+                        'time': time_minutes,
+                        'distance': distance_km,
+                        'to_station': to_station,
+                        'description': description,
+                        'is_direct': True
+                    }
+                    
+                    reverse_connection = {
+                        'line': connection_type,
+                        'time': time_minutes,
+                        'distance': distance_km,
+                        'to_station': from_station,
+                        'description': description,
+                        'is_direct': True
+                    }
+                    
+                    # Add bidirectional connections
+                    graph[from_station][to_station].append(connection)
+                    graph[to_station][from_station].append(reverse_connection)
+                    
+                    self.logger.debug(f"Added direct connection: {from_station} ↔ {to_station} ({time_minutes}min)")
+                        
+        except Exception as e:
+            self.logger.error(f"Failed to load interchange connections: {e}")
+    
+    def _add_automatic_walking_connections(self, graph: Dict, station_coordinates: Dict[str, Dict]) -> None:
+        """Add automatic walking connections between nearby stations."""
+        try:
+            import json
+            from pathlib import Path
+            
+            interchange_file = Path("src/data/interchange_connections.json")
+            if not interchange_file.exists():
+                return
+                
+            with open(interchange_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            
+            auto_config = data.get('auto_walking_connections', {})
+            if not auto_config.get('enabled', False):
+                return
+                
+            max_distance_m = auto_config.get('max_distance_m', 1000)
+            walking_speed_mps = auto_config.get('walking_speed_mps', 1.4)
+            
+            station_names = list(graph.keys())
+            connections_added = 0
+            
+            for i, station1 in enumerate(station_names):
+                for station2 in station_names[i+1:]:
+                    # Skip if already connected or same station
+                    if station2 in graph[station1] or station1 == station2:
+                        continue
+                    
+                    # Only add if both stations have coordinates
+                    if station1 in station_coordinates and station2 in station_coordinates:
+                        distance = self._calculate_haversine_distance_between_stations(
+                            station1, station2, station_coordinates
+                        )
+                        
+                        if distance and distance * 1000 <= max_distance_m:  # Convert km to m
+                            walking_time = max(2, int((distance * 1000) / (walking_speed_mps * 60)))  # Convert to minutes
+                            
+                            # Create walking connection with explicit walking_distance_m field
+                            walking_distance_m = int(distance * 1000)
+                            connection = {
+                                'line': 'WALKING',
+                                'time': walking_time,
+                                'distance': distance,
+                                'to_station': station2,
+                                'description': f'Walk {walking_distance_m}m between stations',
+                                'walking_distance_m': walking_distance_m,
+                                'is_walking_connection': True  # Explicit flag for walking connections
+                            }
+                            
+                            reverse_connection = {
+                                'line': 'WALKING',
+                                'time': walking_time,
+                                'distance': distance,
+                                'to_station': station1,
+                                'description': f'Walk {walking_distance_m}m between stations',
+                                'walking_distance_m': walking_distance_m,
+                                'is_walking_connection': True  # Explicit flag for walking connections
+                            }
+                            
+                            graph[station1][station2].append(connection)
+                            graph[station2][station1].append(reverse_connection)
+                            connections_added += 1
+                            
+                            self.logger.debug(f"Auto-added walking connection: {station1} ↔ {station2} ({walking_time}min, {int(distance * 1000)}m)")
+            
+            if connections_added > 0:
+                self.logger.info(f"Added {connections_added} automatic walking connections")
+                
+        except Exception as e:
+            self.logger.error(f"Failed to add automatic walking connections: {e}")
+    
+    def _add_same_station_interchanges(self, graph: Dict, station_coordinates: Dict[str, Dict]) -> None:
+        """Add interchange connections for same stations with different names."""
         station_names = list(graph.keys())
         
         for i, station1 in enumerate(station_names):
@@ -990,63 +1445,39 @@ class RouteService(IRouteService):
                     continue
                 
                 # Check if stations are the same (different representations)
-                # Only add if both stations have coordinate data for real distance calculation
-                if (self._are_same_station(station1, station2) and
-                    station1 in station_coordinates and station2 in station_coordinates):
+                if self._are_same_station(station1, station2):
+                    # Use minimal time for same station interchange
+                    interchange_time = 2
+                    distance = 0.0
                     
-                    # Calculate real distance between same station representations
-                    distance = self._calculate_haversine_distance_between_stations(
-                        station1, station2, station_coordinates
-                    )
+                    # If we have coordinates, calculate actual distance
+                    if station1 in station_coordinates and station2 in station_coordinates:
+                        distance = self._calculate_haversine_distance_between_stations(
+                            station1, station2, station_coordinates
+                        )
+                        if distance:
+                            interchange_time = max(1, int(distance * 1000 / 80))  # 80m/min walking speed
                     
-                    # Only add interchange if we have real distance data
-                    if distance is not None:
-                        # Use real distance for walking time calculation
-                        walking_time = max(1, int(distance * 1000 / 80))  # 80m/min walking speed
-                        
-                        interchange_connection = {
-                            'line': 'INTERCHANGE',
-                            'time': walking_time,
-                            'distance': distance,
-                            'to_station': station2
-                        }
-                        
-                        reverse_interchange = {
-                            'line': 'INTERCHANGE',
-                            'time': walking_time,
-                            'distance': distance,
-                            'to_station': station1
-                        }
-                        
-                        graph[station1][station2].append(interchange_connection)
-                        graph[station2][station1].append(reverse_interchange)
+                    interchange_connection = {
+                        'line': 'INTERCHANGE',
+                        'time': interchange_time,
+                        'distance': distance or 0.0,
+                        'to_station': station2,
+                        'description': 'Same station - different platforms/names'
+                    }
                     
-                # Only add interchange connections if both stations have coordinates
-                elif station1 in station_coordinates and station2 in station_coordinates:
-                    distance = self._calculate_haversine_distance_between_stations(
-                        station1, station2, station_coordinates
-                    )
+                    reverse_interchange = {
+                        'line': 'INTERCHANGE',
+                        'time': interchange_time,
+                        'distance': distance or 0.0,
+                        'to_station': station1,
+                        'description': 'Same station - different platforms/names'
+                    }
                     
-                    # Only add if we have real distance data and stations are close
-                    if distance and distance < 0.5:  # Within 500m
-                        walking_time = max(2, int(distance * 1000 / 80))  # 80m/min walking speed
-                        
-                        interchange_connection = {
-                            'line': 'WALKING',
-                            'time': walking_time,
-                            'distance': distance,
-                            'to_station': station2
-                        }
-                        
-                        reverse_interchange = {
-                            'line': 'WALKING',
-                            'time': walking_time,
-                            'distance': distance,
-                            'to_station': station1
-                        }
-                        
-                        graph[station1][station2].append(interchange_connection)
-                        graph[station2][station1].append(reverse_interchange)
+                    graph[station1][station2].append(interchange_connection)
+                    graph[station2][station1].append(reverse_interchange)
+                    
+                    self.logger.debug(f"Added same-station interchange: {station1} ↔ {station2}")
     
     def _are_same_station(self, station1: str, station2: str) -> bool:
         """Check if two station names refer to the same station."""
@@ -1074,3 +1505,22 @@ class RouteService(IRouteService):
                 return True
         
         return False
+        
+    def _load_interchange_connections(self) -> dict:
+        """Load interchange connections from JSON file."""
+        try:
+            import json
+            from pathlib import Path
+            
+            interchange_file = Path("src/data/interchange_connections.json")
+            if not interchange_file.exists():
+                self.logger.warning("Interchange connections file not found")
+                return {}
+            
+            with open(interchange_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            
+            return data
+        except Exception as e:
+            self.logger.error(f"Failed to load interchange connections: {e}")
+            return {}

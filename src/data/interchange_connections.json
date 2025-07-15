@@ -1,0 +1,286 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "description": "Interchange and walking connections between railway stations",
+    "last_updated": "2025-07-15",
+    "connection_types": {
+      "UNDERGROUND": "London Underground connection",
+      "WALKING": "Walking connection between nearby stations",
+      "INTERCHANGE": "Station interchange (same station, different platforms)",
+      "BUS": "Bus connection between stations"
+    }
+  },
+  "connections": [
+    {
+      "from_station": "London Waterloo",
+      "to_station": "London Kings Cross",
+      "connection_type": "UNDERGROUND",
+      "time_minutes": 15,
+      "description": "Northern Line to Bank, then Circle/Hammersmith & City to Kings Cross",
+      "lines_used": ["Northern Line", "Circle Line"],
+      "walking_distance_m": 100,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "London Waterloo",
+      "to_station": "London Paddington",
+      "connection_type": "UNDERGROUND",
+      "time_minutes": 12,
+      "description": "Bakerloo Line direct to Paddington",
+      "lines_used": ["Bakerloo Line"],
+      "walking_distance_m": 50,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "London Waterloo",
+      "to_station": "London Victoria",
+      "connection_type": "UNDERGROUND",
+      "time_minutes": 8,
+      "description": "Victoria Line direct to Victoria",
+      "lines_used": ["Victoria Line"],
+      "walking_distance_m": 30,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "London Waterloo",
+      "to_station": "London Liverpool Street",
+      "connection_type": "UNDERGROUND",
+      "time_minutes": 18,
+      "description": "Waterloo & City Line to Bank, then walk to Liverpool Street",
+      "lines_used": ["Waterloo & City Line"],
+      "walking_distance_m": 200,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "London Waterloo",
+      "to_station": "London Euston",
+      "connection_type": "UNDERGROUND",
+      "time_minutes": 12,
+      "description": "Northern Line direct to Euston",
+      "lines_used": ["Northern Line"],
+      "walking_distance_m": 50,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "London Waterloo",
+      "to_station": "London St Pancras",
+      "connection_type": "UNDERGROUND",
+      "time_minutes": 16,
+      "description": "Northern Line to Euston, then walk to St Pancras",
+      "lines_used": ["Northern Line"],
+      "walking_distance_m": 400,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "London Kings Cross",
+      "to_station": "London Paddington",
+      "connection_type": "UNDERGROUND",
+      "time_minutes": 20,
+      "description": "Circle Line or Hammersmith & City Line direct",
+      "lines_used": ["Circle Line"],
+      "walking_distance_m": 100,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "London Kings Cross",
+      "to_station": "London Victoria",
+      "connection_type": "UNDERGROUND",
+      "time_minutes": 18,
+      "description": "Circle Line to Victoria",
+      "lines_used": ["Circle Line"],
+      "walking_distance_m": 80,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "London Kings Cross",
+      "to_station": "London Liverpool Street",
+      "connection_type": "UNDERGROUND",
+      "time_minutes": 10,
+      "description": "Circle Line or Hammersmith & City Line direct",
+      "lines_used": ["Circle Line"],
+      "walking_distance_m": 60,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "London Kings Cross",
+      "to_station": "London Euston",
+      "connection_type": "UNDERGROUND",
+      "time_minutes": 8,
+      "description": "Northern Line direct or walk",
+      "lines_used": ["Northern Line"],
+      "walking_distance_m": 600,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "London Kings Cross",
+      "to_station": "London St Pancras",
+      "connection_type": "WALKING",
+      "time_minutes": 3,
+      "description": "Short walk between adjacent stations",
+      "walking_distance_m": 200,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "London Paddington",
+      "to_station": "London Victoria",
+      "connection_type": "UNDERGROUND",
+      "time_minutes": 15,
+      "description": "Circle Line to Victoria",
+      "lines_used": ["Circle Line"],
+      "walking_distance_m": 70,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "London Paddington",
+      "to_station": "London Liverpool Street",
+      "connection_type": "UNDERGROUND",
+      "time_minutes": 22,
+      "description": "Circle Line or Hammersmith & City Line direct",
+      "lines_used": ["Circle Line"],
+      "walking_distance_m": 90,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "London Paddington",
+      "to_station": "London Euston",
+      "connection_type": "UNDERGROUND",
+      "time_minutes": 18,
+      "description": "Circle Line to Euston Square, then walk",
+      "lines_used": ["Circle Line"],
+      "walking_distance_m": 300,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "London Victoria",
+      "to_station": "London Liverpool Street",
+      "connection_type": "UNDERGROUND",
+      "time_minutes": 20,
+      "description": "Circle Line direct",
+      "lines_used": ["Circle Line"],
+      "walking_distance_m": 80,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "London Victoria",
+      "to_station": "London Euston",
+      "connection_type": "UNDERGROUND",
+      "time_minutes": 16,
+      "description": "Victoria Line direct",
+      "lines_used": ["Victoria Line"],
+      "walking_distance_m": 50,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "London Liverpool Street",
+      "to_station": "London Euston",
+      "connection_type": "UNDERGROUND",
+      "time_minutes": 14,
+      "description": "Circle Line to Euston Square, then walk",
+      "lines_used": ["Circle Line"],
+      "walking_distance_m": 300,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Farnborough (Main)",
+      "to_station": "Farnborough North",
+      "connection_type": "WALKING",
+      "time_minutes": 12,
+      "description": "Walk between Farnborough Main and North stations",
+      "walking_distance_m": 900,
+      "accessibility": "step_free_access",
+      "coordinates": {
+        "from": {"lat": 51.2948, "lng": -0.7624},
+        "to": {"lat": 51.3021, "lng": -0.7543}
+      }
+    },
+    {
+      "from_station": "Edinburgh",
+      "to_station": "Edinburgh Waverley",
+      "connection_type": "INTERCHANGE",
+      "time_minutes": 2,
+      "description": "Same station - different name representations",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Glasgow Central",
+      "to_station": "Glasgow Queen Street",
+      "connection_type": "WALKING",
+      "time_minutes": 8,
+      "description": "Walk between Glasgow's two main stations",
+      "walking_distance_m": 600,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Manchester Piccadilly",
+      "to_station": "Manchester Victoria",
+      "connection_type": "WALKING",
+      "time_minutes": 15,
+      "description": "Walk through Manchester city center",
+      "walking_distance_m": 1200,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Manchester Piccadilly",
+      "to_station": "Manchester Oxford Road",
+      "connection_type": "WALKING",
+      "time_minutes": 10,
+      "description": "Walk between Manchester stations",
+      "walking_distance_m": 800,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Birmingham New Street",
+      "to_station": "Birmingham Snow Hill",
+      "connection_type": "WALKING",
+      "time_minutes": 12,
+      "description": "Walk through Birmingham city center",
+      "walking_distance_m": 900,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Leeds",
+      "to_station": "Leeds City",
+      "connection_type": "INTERCHANGE",
+      "time_minutes": 2,
+      "description": "Same station - different name representations",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Fleet",
+      "to_station": "London Waterloo",
+      "connection_type": "South Western Main Line",
+      "time_minutes": 60,
+      "description": "Direct train on South Western Main Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    }
+  ],
+  "auto_walking_connections": {
+    "enabled": true,
+    "max_distance_m": 1000,
+    "walking_speed_mps": 1.4,
+    "description": "Automatically generate walking connections between stations within max_distance using Haversine calculation"
+  },
+  "direct_connections": [
+    {
+      "from_station": "London Kings Cross",
+      "to_station": "Edinburgh",
+      "connection_type": "East Coast Main Line",
+      "time_minutes": 270,
+      "description": "Direct train on East Coast Main Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Edinburgh",
+      "to_station": "Aberdeen",
+      "connection_type": "ScotRail Network",
+      "time_minutes": 150,
+      "description": "Direct train on ScotRail Network",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    }
+  ]
+}

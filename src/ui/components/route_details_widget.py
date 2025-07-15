@@ -238,6 +238,28 @@ class RouteDetailsWidget(QWidget):
                 if len(operators) <= 3:  # Only show if not too many
                     details.append(f"Operators: {', '.join(operators)}")
             
+            # Check for walking segments and display walking information
+            segments = self.route_data.get('segments', [])
+            walking_segments = []
+            
+            for segment in segments:
+                if hasattr(segment, 'line_name') and segment.line_name == 'WALKING':
+                    from_station = segment.from_station
+                    to_station = segment.to_station
+                    distance_km = segment.distance_km
+                    time_min = segment.journey_time_minutes
+                    
+                    # Calculate walking time based on 4mph if not provided
+                    if not time_min and distance_km:
+                        # 4mph = 6.44km/h = 0.107km/min
+                        time_min = int(distance_km / 0.107)
+                    
+                    walking_segments.append(f"Walk {distance_km:.1f}km ({time_min}min) between {from_station} and {to_station}")
+            
+            if walking_segments:
+                details.append("Walking required:")
+                details.extend([f"• {segment}" for segment in walking_segments])
+            
             return "\n".join(details)
             
         except Exception as e:

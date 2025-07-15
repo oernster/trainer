@@ -39,7 +39,7 @@ class RouteCalculationHandler(QObject):
         logger.debug("RouteCalculationHandler initialized")
     
     def calculate_route(self, from_station: str, to_station: str, via_stations: Optional[list] = None,
-                       max_changes: int = 10) -> bool:
+                       max_changes: int = 10, preferences: Optional[Dict[str, Any]] = None) -> bool:
         """
         Calculate route between stations.
         
@@ -70,11 +70,16 @@ class RouteCalculationHandler(QObject):
             logger.info(f"Starting route calculation: {from_station} → {to_station}")
             self.calculation_started.emit()
             
+            # Get preferences from parent dialog if available
+            if preferences is None and hasattr(self.parent_dialog, 'dialog_state'):
+                preferences = self.parent_dialog.dialog_state.get_preferences()
+            
             # Use real route service to calculate the route
             route_result = self.route_service.calculate_route(
                 from_station,
                 to_station,
-                max_changes=max_changes
+                max_changes=max_changes,
+                preferences=preferences
             )
             
             if route_result:
@@ -128,6 +133,11 @@ class RouteCalculationHandler(QObject):
                     if hasattr(segment, 'to_station'):
                         interchange_stations.append(segment.to_station)
             
+            # Extract full path from route result if available
+            full_path = []
+            if hasattr(route_result, 'full_path') and route_result.full_path:
+                full_path = route_result.full_path
+            
             route_data = {
                 'from_station': from_station,
                 'to_station': to_station,
@@ -139,7 +149,8 @@ class RouteCalculationHandler(QObject):
                 'segments': route_result.segments or [],
                 'route_type': route_result.route_type or 'calculated',
                 'is_direct': route_result.is_direct or False,
-                'interchange_stations': interchange_stations
+                'interchange_stations': interchange_stations,
+                'full_path': full_path  # Include full path for persistence
             }
             
             return route_data
@@ -157,7 +168,8 @@ class RouteCalculationHandler(QObject):
                 'segments': [],
                 'route_type': 'error',
                 'is_direct': False,
-                'interchange_stations': []
+                'interchange_stations': [],
+                'full_path': []  # Include empty full path for consistency
             }
     
     def auto_fix_route(self, from_station: str, to_station: str) -> bool:
@@ -175,7 +187,12 @@ class RouteCalculationHandler(QObject):
             logger.info(f"Starting route auto-fix: {from_station} → {to_station}")
             
             # Use a higher max_changes for auto-fix to find any possible route
-            return self.calculate_route(from_station, to_station, max_changes=15)
+            # Get preferences from parent dialog if available
+            preferences = None
+            if hasattr(self.parent_dialog, 'dialog_state'):
+                preferences = self.parent_dialog.dialog_state.get_preferences()
+                
+            return self.calculate_route(from_station, to_station, max_changes=15, preferences=preferences)
             
         except Exception as e:
             error_msg = f"Error auto-fixing route: {e}"

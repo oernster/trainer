@@ -396,7 +396,11 @@ class TrainItemWidget(QFrame):
         calling_points_main_layout.setContentsMargins(0, 0, 0, 0)
         calling_points_main_layout.setSpacing(2)
         
-        # Get all calling points to show complete journey, removing duplicates
+        # We don't have access to the train manager here, so we can't get the full route path
+        # We'll just use the calling points from the train data
+        full_path = None
+        
+        # Get all calling points to show complete journey
         all_calling_points = self.train_data.calling_points
         
         # Debug logging to understand what calling points we have
@@ -456,24 +460,16 @@ class TrainItemWidget(QFrame):
                     current_line_layout.addWidget(indent_label)
                     stations_in_current_line = 0
                 
-                # Add arrow if not the first station on any line
-                if i > 0 and stations_in_current_line > 0:
-                    arrow_label = QLabel("→")
-                    arrow_font = QFont()
-                    arrow_font.setPointSize(9)
-                    arrow_label.setFont(arrow_font)
-                    arrow_label.setStyleSheet("""
-                        QLabel {
-                            background-color: transparent;
-                            color: #1976d2;
-                            border: none;
-                            margin: 0px;
-                            padding: 0px;
-                        }
-                    """)
-                    current_line_layout.addWidget(arrow_label)
-                elif i > 0 and stations_in_current_line == 0:
-                    # For continuation lines, add arrow at the beginning
+                # Check if this is a walking connection (station name contains HTML formatting)
+                is_walking = "<font color='#f44336'" in station_name
+                walking_info = ""
+                display_name = station_name
+                
+                # We don't need to extract walking info anymore since it's already formatted in HTML
+                
+                # Add arrow between stations (no special handling for walking connections needed)
+                if i > 0:
+                    # Regular arrow for all connections
                     arrow_label = QLabel("→")
                     arrow_font = QFont()
                     arrow_font.setPointSize(9)
@@ -489,7 +485,11 @@ class TrainItemWidget(QFrame):
                     """)
                     current_line_layout.addWidget(arrow_label)
                 
-                station_label = QLabel(station_name)
+                # Create station label with the station name, enabling HTML rendering
+                station_label = QLabel()
+                station_label.setText(display_name)  # This will render HTML if present
+                station_label.setTextFormat(Qt.TextFormat.RichText)  # Enable HTML rendering
+                
                 station_font = QFont()
                 station_font.setPointSize(9)
                 
@@ -501,37 +501,53 @@ class TrainItemWidget(QFrame):
                     
                 station_label.setFont(station_font)
                 
-                # Check if this is a major interchange station for colored text
-                if self._is_major_interchange(station_name):
-                    # Use orange/yellow for interchange stations as requested
-                    interchange_color = "#ff9800" if self.current_theme == "light" else "#ffc107"
-                    station_label.setStyleSheet(f"""
-                        QLabel {{
-                            background-color: transparent;
-                            color: {interchange_color};
-                            border: none;
-                            margin: 0px;
-                            padding: 0px;
-                        }}
-                    """)
-                elif calling_point.is_origin or calling_point.is_destination:
-                    # Origin and destination in white/black (normal text color)
-                    text_color = "#ffffff" if self.current_theme == "dark" else "#000000"
-                    station_label.setStyleSheet(f"""
-                        QLabel {{
-                            background-color: transparent;
-                            color: {text_color};
-                            border: none;
-                            margin: 0px;
-                            padding: 0px;
-                        }}
-                    """)
+                # No need for special styling for walking connections anymore
+                # since we're using HTML formatting directly in the station name
+                
+                # Only apply stylesheet if this is not a walking connection
+                # This ensures the HTML formatting for walking connections is not overridden
+                if not is_walking:
+                    if self._is_major_interchange(display_name):
+                        # Use orange/yellow for interchange stations as requested
+                        interchange_color = "#ff9800" if self.current_theme == "light" else "#ffc107"
+                        station_label.setStyleSheet(f"""
+                            QLabel {{
+                                background-color: transparent;
+                                color: {interchange_color};
+                                border: none;
+                                margin: 0px;
+                                padding: 0px;
+                            }}
+                        """)
+                    elif calling_point.is_origin or calling_point.is_destination:
+                        # Origin and destination in white/black (normal text color)
+                        text_color = "#ffffff" if self.current_theme == "dark" else "#000000"
+                        station_label.setStyleSheet(f"""
+                            QLabel {{
+                                background-color: transparent;
+                                color: {text_color};
+                                border: none;
+                                margin: 0px;
+                                padding: 0px;
+                            }}
+                        """)
+                    else:
+                        # Regular light blue text for normal intermediate stations
+                        station_label.setStyleSheet("""
+                            QLabel {
+                                background-color: transparent;
+                                color: #1976d2;
+                                border: none;
+                                margin: 0px;
+                                padding: 0px;
+                            }
+                        """)
                 else:
-                    # Regular light blue text for normal intermediate stations
+                    # For walking connections, only set background and border properties
+                    # but not color, to preserve the HTML color formatting
                     station_label.setStyleSheet("""
                         QLabel {
                             background-color: transparent;
-                            color: #1976d2;
                             border: none;
                             margin: 0px;
                             padding: 0px;
@@ -620,6 +636,9 @@ class TrainItemWidget(QFrame):
         QWidget {{
             background-color: transparent;
         }}
+        
+        /* Walking connection styling is no longer needed here
+           as we're using HTML formatting directly in the station name */
         """
 
     def get_light_style(self) -> str:
@@ -652,6 +671,9 @@ class TrainItemWidget(QFrame):
         QWidget {{
             background-color: transparent;
         }}
+        
+        /* Walking connection styling is no longer needed here
+           as we're using HTML formatting directly in the station name */
         """
 
     def update_theme(self, theme: str):
@@ -674,29 +696,35 @@ class TrainItemWidget(QFrame):
             station_name = label.text()
             # Skip non-station labels
             if station_name not in ["Via:", "→", "    ", "Direct service"] and station_name:
-                if self._is_major_interchange(station_name):
-                    # Update interchange station color based on theme - use orange/yellow as requested
+                # Check if this is a walking connection (HTML formatted)
+                is_walking = "<font color='#f44336'" in station_name
+                
+                # No need to apply special styling for walking connections
+                # since we're using HTML formatting directly in the station name
+                
+                if not is_walking and self._is_major_interchange(station_name):
+                    # Update interchange station color using property
+                    label.setProperty("interchange", "true")
+                    label.setProperty("regular", None)
+                    
+                    # Set the color directly since it's theme-dependent
                     interchange_color = "#ff9800" if self.current_theme == "light" else "#ffc107"
-                    label.setStyleSheet(f"""
-                        QLabel {{
-                            background-color: transparent;
-                            color: {interchange_color};
-                            border: none;
-                            margin: 0px;
-                            padding: 0px;
-                        }}
-                    """)
-                elif "→" not in station_name and not station_name.startswith("Current:") and not station_name.startswith("Arrives:"):
-                    # Update regular station color
-                    label.setStyleSheet("""
-                        QLabel {
-                            background-color: transparent;
-                            color: #1976d2;
-                            border: none;
-                            margin: 0px;
-                            padding: 0px;
-                        }
-                    """)
+                    label.setStyleSheet(f"color: {interchange_color};")
+                    
+                    # Force style refresh
+                    label.style().unpolish(label)
+                    label.style().polish(label)
+                elif not is_walking and "→" not in station_name and not station_name.startswith("Current:") and not station_name.startswith("Arrives:"):
+                    # Update regular station color using property
+                    label.setProperty("interchange", None)
+                    label.setProperty("regular", "true")
+                    
+                    # Set the color directly for regular stations
+                    label.setStyleSheet("color: #1976d2;")
+                    
+                    # Force style refresh
+                    label.style().unpolish(label)
+                    label.style().polish(label)
 
     def mousePressEvent(self, event):
         """Handle mouse press event."""
@@ -1183,41 +1211,116 @@ class RouteDisplayDialog(QDialog):
         calling_points_layout = QVBoxLayout(calling_points_widget)
         calling_points_layout.setSpacing(4)
 
-        # Use original calling points directly to ensure consistency with main UI
-        calling_points = self.train_data.calling_points
-        logger.info(f"Displaying all {len(calling_points)} calling points in route dialog")
-
-        # Remove duplicate stations (keep the one with more complete information)
-        seen_stations = set()
-        filtered_calling_points = []
+        # First check if we can get the full route path from the train manager
+        full_path = None
+        if self.train_manager and hasattr(self.train_manager, 'route_path') and self.train_manager.route_path:
+            # Use the stored route path from train manager if available
+            full_path = self.train_manager.route_path
+            logger.info(f"Using full route path from train manager with {len(full_path)} stations")
         
-        for calling_point in calling_points:
-            station_name = calling_point.station_name
-            if station_name not in seen_stations:
-                seen_stations.add(station_name)
-                filtered_calling_points.append(calling_point)
-            else:
-                # If we've seen this station before, check if this one has more info
-                # Find the existing one and replace if this one is better
-                for j, existing_cp in enumerate(filtered_calling_points):
-                    if existing_cp.station_name == station_name:
-                        # Prefer origin/destination over intermediate, or one with platform info
-                        if (calling_point.is_origin or calling_point.is_destination or
-                            (calling_point.platform and not existing_cp.platform)):
-                            filtered_calling_points[j] = calling_point
-                        break
+        # If we have a full path, use it to create a more comprehensive display
+        if full_path and len(full_path) >= 2:
+            # Create calling points from the full path
+            from ..models.train_data import CallingPoint
+            
+            # Use original calling points for origin and destination to get timing info
+            original_calling_points = self.train_data.calling_points
+            origin_cp = None
+            destination_cp = None
+            
+            # Find origin and destination calling points
+            for cp in original_calling_points:
+                if cp.is_origin:
+                    origin_cp = cp
+                elif cp.is_destination:
+                    destination_cp = cp
+            
+            # Create a mapping of station names to calling points for intermediate stations
+            station_to_cp = {}
+            for cp in original_calling_points:
+                if not cp.is_origin and not cp.is_destination:
+                    station_to_cp[cp.station_name] = cp
+            
+            # Create new calling points list using the full path
+            filtered_calling_points = []
+            
+            # Add each station from the full path
+            for i, station_name in enumerate(full_path):
+                is_origin = (i == 0)
+                is_destination = (i == len(full_path) - 1)
+                
+                # Use existing calling point if available
+                if is_origin and origin_cp:
+                    filtered_calling_points.append(origin_cp)
+                elif is_destination and destination_cp:
+                    filtered_calling_points.append(destination_cp)
+                elif station_name in station_to_cp:
+                    # Use existing intermediate calling point
+                    filtered_calling_points.append(station_to_cp[station_name])
+                else:
+                    # Create a new calling point without timing info
+                    new_cp = CallingPoint(
+                        station_name=station_name,
+                        scheduled_arrival=None,
+                        scheduled_departure=None,
+                        expected_arrival=None,
+                        expected_departure=None,
+                        platform=None,
+                        is_origin=is_origin,
+                        is_destination=is_destination
+                    )
+                    filtered_calling_points.append(new_cp)
+            
+            logger.info(f"Created {len(filtered_calling_points)} calling points from full route path")
+        else:
+            # Fall back to using original calling points
+            calling_points = self.train_data.calling_points
+            logger.info(f"Falling back to original {len(calling_points)} calling points in route dialog")
+            
+            # Remove duplicate stations (keep the one with more complete information)
+            seen_stations = set()
+            filtered_calling_points = []
+            
+            for calling_point in calling_points:
+                station_name = calling_point.station_name
+                if station_name not in seen_stations:
+                    seen_stations.add(station_name)
+                    filtered_calling_points.append(calling_point)
+                else:
+                    # If we've seen this station before, check if this one has more info
+                    # Find the existing one and replace if this one is better
+                    for j, existing_cp in enumerate(filtered_calling_points):
+                        if existing_cp.station_name == station_name:
+                            # Prefer origin/destination over intermediate, or one with platform info
+                            if (calling_point.is_origin or calling_point.is_destination or
+                                (calling_point.platform and not existing_cp.platform)):
+                                filtered_calling_points[j] = calling_point
+                            break
 
         logger.info(f"Filtered to {len(filtered_calling_points)} unique stations")
 
         # Display all stations in the route
         for i, calling_point in enumerate(filtered_calling_points):
+            # Check if this is a walking connection (station name contains HTML formatting)
+            station_name = calling_point.station_name
+            is_walking = "<font color='#f44336'" in station_name
+            display_name = station_name
+            
+            # We don't need to extract walking info anymore since it's already formatted in HTML
+            
+            # We don't need to add a separate walking indicator anymore
+            # since the walking information is already included in the station name with HTML formatting
+            
             # Create station display
             station_frame = QFrame()
             station_layout = QHBoxLayout(station_frame)
             station_layout.setContentsMargins(8, 4, 8, 4)
 
             # Station name with special formatting for origin/destination
-            station_label = QLabel(calling_point.station_name)
+            station_label = QLabel()
+            station_label.setText(display_name)  # This will render HTML if present
+            station_label.setTextFormat(Qt.TextFormat.RichText)  # Enable HTML rendering
+            
             station_font = QFont()
             station_font.setPointSize(11)
             
@@ -1229,6 +1332,9 @@ class RouteDisplayDialog(QDialog):
                 station_font.setBold(True)
             station_label.setFont(station_font)
             station_layout.addWidget(station_label)
+            
+            # We don't need to add the walking info label here anymore
+            # since we're showing it in the walking indicator above
 
             # Add CHANGE indicator for major interchange stations (but not origin/destination)
             if self._is_major_interchange(calling_point.station_name) and not is_origin and not is_destination:
@@ -1277,6 +1383,25 @@ class RouteDisplayDialog(QDialog):
                         border-left: 3px solid #f44336;
                         border-radius: 4px;
                         margin: 1px;
+                    }
+                """)
+            elif is_walking:
+                # For walking connections, use a distinct style but don't override text color
+                station_frame.setStyleSheet("""
+                    QFrame {
+                        background-color: rgba(244, 67, 54, 0.1);
+                        border-left: 3px solid #f44336;
+                        border-radius: 4px;
+                        margin: 1px;
+                    }
+                """)
+                # Don't apply any stylesheet to the label to preserve HTML formatting
+                station_label.setStyleSheet("""
+                    QLabel {
+                        background-color: transparent;
+                        border: none;
+                        margin: 0px;
+                        padding: 0px;
                     }
                 """)
             elif self._is_major_interchange(calling_point.station_name):
@@ -1350,6 +1475,8 @@ class RouteDisplayDialog(QDialog):
                     border-radius: 4px;
                     background-color: #1a1a1a;
                 }
+                /* Walking connection styling is no longer needed here
+                   as we're using HTML formatting directly in the station name */
             """)
         else:
             self.setStyleSheet("""
@@ -1377,6 +1504,8 @@ class RouteDisplayDialog(QDialog):
                     border-radius: 4px;
                     background-color: #ffffff;
                 }
+                /* Walking connection styling is no longer needed here
+                   as we're using HTML formatting directly in the station name */
             """)
     
     def _is_major_interchange(self, station_name: str) -> bool:

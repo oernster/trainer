@@ -58,6 +58,15 @@ class TrainManager(QObject):
         # Store current route for timetable generation
         self.from_station: Optional[str] = None
         self.to_station: Optional[str] = None
+        self.route_path: Optional[List[str]] = None
+        
+        # Load route path from config if available
+        if (config and hasattr(config, 'stations') and
+            hasattr(config.stations, 'route_path') and
+            config.stations.route_path):
+            self.route_path = config.stations.route_path
+            logger.info(f"Loaded route path from config with {len(self.route_path)} stations")
+        # Route path already initialized above
 
         # Initialize new core services
         try:
@@ -89,20 +98,113 @@ class TrainManager(QObject):
         if old_time_window != config.display.time_window_hours:
             logger.info(f"Time window updated from {old_time_window} to {config.display.time_window_hours} hours")
 
-    def set_route(self, from_station: str, to_station: str):
+    # Reference to config_manager for direct access
+    config_manager = None
+    
+    def set_route(self, from_station: str, to_station: str, route_path: Optional[List[str]] = None):
         """Set the current route for timetable generation and trigger refresh."""
         # Station names are used directly now - no conversion needed
         old_from = self.from_station
         old_to = self.to_station
+        old_path = self.route_path
         
         self.from_station = from_station
         self.to_station = to_station
         
-        logger.debug(f"Route set: {self.from_station} -> {self.to_station}")
+        # Store route_path for persistence with enhanced validation
+        if route_path is not None:
+            # Ensure route_path is a list
+            if not isinstance(route_path, list):
+                logger.warning(f"Route path is not a list, converting: {route_path}")
+                try:
+                    # Try to convert to list if it's a string or other type
+                    if isinstance(route_path, str):
+                        route_path = [s.strip() for s in route_path.split(',')]
+                    else:
+                        route_path = list(route_path)
+                except Exception as e:
+                    logger.error(f"Failed to convert route_path to list: {e}")
+                    route_path = [from_station, to_station]
+            
+            # Ensure route_path has at least from and to stations
+            if len(route_path) < 2:
+                logger.warning(f"Route path too short ({len(route_path)}), fixing")
+                if len(route_path) == 1:
+                    # Add missing station
+                    if route_path[0] == from_station:
+                        route_path.append(to_station)
+                    else:
+                        route_path.insert(0, from_station)
+                else:
+                    # Empty path, create minimal path
+                    route_path = [from_station, to_station]
+            
+            # Validate route path matches from/to stations
+            if route_path[0] != from_station or route_path[-1] != to_station:
+                logger.warning(f"Route path endpoints ({route_path[0]}, {route_path[-1]}) "
+                              f"don't match from/to stations ({from_station}, {to_station}) - adjusting")
+                # Fix the path to match from/to stations
+                if route_path[0] != from_station:
+                    route_path[0] = from_station
+                if route_path[-1] != to_station:
+                    route_path[-1] = to_station
+            
+            self.route_path = route_path
+            logger.info(f"Route path set with {len(route_path)} stations: {' → '.join(route_path)}")
+            
+            # Update config with the new route path and save it
+            if self.config and hasattr(self.config, 'stations'):
+                # Ensure route_path is properly serializable
+                serializable_path = [str(station) for station in route_path]
+                self.config.stations.route_path = serializable_path
+                logger.info(f"Updated config with new route path: {len(serializable_path)} stations")
+                
+                # Save the config to disk using the provided config manager
+                try:
+                    # Try to use the class-level config_manager if available
+                    if self.__class__.config_manager:
+                        # Check if force_flush is available
+                        if hasattr(self.__class__.config_manager, 'save_config') and 'force_flush' in self.__class__.config_manager.save_config.__code__.co_varnames:
+                            self.__class__.config_manager.save_config(self.config, force_flush=True)
+                            logger.info("Saved config with new route path to disk using shared config manager (force_flush=True)")
+                        else:
+                            self.__class__.config_manager.save_config(self.config)
+                            logger.info("Saved config with new route path to disk using shared config manager")
+                        
+                        # Verify the route path was saved correctly
+                        try:
+                            saved_config = self.__class__.config_manager.load_config()
+                            if (hasattr(saved_config, 'stations') and
+                                hasattr(saved_config.stations, 'route_path') and
+                                saved_config.stations.route_path):
+                                saved_path = saved_config.stations.route_path
+                                logger.info(f"Verified saved route path: {len(saved_path)} stations")
+                            else:
+                                logger.warning("Route path not found in saved config")
+                        except Exception as e:
+                            logger.warning(f"Could not verify saved route path: {e}")
+                    else:
+                        # Fall back to creating a new config manager
+                        from .config_manager import ConfigManager
+                        config_manager = ConfigManager()
+                        config_manager.save_config(self.config, force_flush=True)
+                        logger.info("Saved config with new route path to disk using new config manager")
+                except Exception as e:
+                    logger.error(f"Failed to save config with new route path: {e}")
+        else:
+            # Clear route path if invalid
+            self.route_path = None
+            
+            # Also clear in config if available
+            if self.config and hasattr(self.config, 'stations'):
+                self.config.stations.route_path = []
+                logger.info("Cleared route path in config")
+        
+        logger.debug(f"Route set: {self.from_station} → {self.to_station}")
         
         # If route actually changed, trigger a refresh
-        if old_from != from_station or old_to != to_station:
-            logger.info(f"Route changed from {old_from} -> {old_to} to {from_station} -> {to_station}, triggering refresh")
+        if old_from != from_station or old_to != to_station or old_path != self.route_path:
+            logger.info(f"Route changed, triggering refresh")
             self.fetch_trains()
 
     # Auto-refresh functionality removed as obsolete
@@ -195,16 +297,15 @@ class TrainManager(QObject):
             self.is_fetching = False
 
     async def _fetch_trains_from_timetable(self) -> List[TrainData]:
-        """Fetch train data using new core services for realistic routing."""
+        """Fetch train data using core services - NO FALLBACKS."""
         # Get current route
         if not self.from_station or not self.to_station:
-            # If no route configured, return empty list
             logger.warning(f"No route configured - from_station: {self.from_station}, to_station: {self.to_station}")
             return []
         
         logger.info(f"Fetching trains from {self.from_station} to {self.to_station}")
         
-        # Additional check: if config doesn't have proper station data, don't show demo data
+        # Check if config has proper station data
         if (not self.config or
             not hasattr(self.config, 'stations') or
             not self.config.stations or
@@ -213,65 +314,144 @@ class TrainManager(QObject):
             logger.info("No valid station configuration - showing empty train list")
             return []
 
-        # Use new core services for realistic train generation
+        # Use core services only - no fallbacks
         if not self.route_service:
-            logger.error("Route service not available - falling back to old timetable manager")
-            return await self._fetch_trains_from_old_timetable()
+            logger.error("Route service not available - cannot generate trains")
+            return []
 
-        try:
-            # Calculate route using new core services
-            route_result = self.route_service.calculate_route(self.from_station, self.to_station)
+        # Get preferences from config
+        # Note: These preferences are dynamically added to the config object
+        # by the SettingsHandler.save_settings method, so we need to check
+        # if they exist before accessing them
+        preferences = {}
+        if hasattr(self.config, 'avoid_walking'):
+            preferences['avoid_walking'] = self.config.avoid_walking
+        if hasattr(self.config, 'prefer_direct'):
+            preferences['prefer_direct'] = self.config.prefer_direct
             
-            if not route_result:
-                logger.error(f"No route found from {self.from_station} to {self.to_station} using core services")
-                # Fall back to old timetable manager
-                logger.info("Falling back to old timetable manager")
-                return await self._fetch_trains_from_old_timetable()
-
-            # Generate realistic train services based on the calculated route
-            departure_time = datetime.now()
-            time_window_hours = self.config.display.time_window_hours
-            max_trains = self.config.display.max_trains
+        # Calculate route using core services with preferences
+        route_result = self.route_service.calculate_route(
+            self.from_station,
+            self.to_station,
+            preferences=preferences
+        )
+        
+        # If we have a stored route_path that matches the current from/to stations, use it
+        if (self.route_path and len(self.route_path) >= 2 and
+            self.route_path[0] == self.from_station and
+            self.route_path[-1] == self.to_station):
+            logger.info(f"Using stored route path with {len(self.route_path)} stations")
             
-            trains = []
-            
-            # Generate trains at realistic intervals (every 15-30 minutes)
-            current_time = departure_time
-            train_count = 0
-            
-            while train_count < max_trains and current_time < departure_time + timedelta(hours=time_window_hours):
-                # Create realistic train service based on route
-                train_data = self._create_train_from_route(route_result, current_time, train_count)
-                if train_data:
-                    trains.append(train_data)
-                    train_count += 1
+            # If we have a route result, update its full_path with our stored path
+            if route_result:
+                # Use the stored route path for the full path
+                # This is a bit of a hack, but it works because Route is a dataclass
+                # and we can modify its attributes even though it's marked as frozen
+                # by using object.__setattr__
+                object.__setattr__(route_result, 'full_path', self.route_path)
                 
-                # Next train in 15-30 minutes (realistic frequency)
-                interval_minutes = 15 + (train_count % 2) * 15  # Alternates between 15 and 30 minutes
-                current_time += timedelta(minutes=interval_minutes)
+                # NOTE: We don't need to update intermediate_stations directly
+                # It's a computed property that derives its value from full_path
+                # The intermediate_stations property will automatically return the correct values
+                # based on the updated full_path
+                
+                logger.info(f"Updated route result with stored path: {' -> '.join(self.route_path[:3])}...{' -> '.join(self.route_path[-3:])}")
+                logger.info(f"Route now has {len(route_result.intermediate_stations)} intermediate stations")
+        # If we got a route result with a full path, store it for future use
+        elif route_result and hasattr(route_result, 'full_path') and route_result.full_path:
+            # Get the route path from the route result and ensure it's a list
+            try:
+                # First, try to get the route path as a list
+                if isinstance(route_result.full_path, list):
+                    route_path = route_result.full_path
+                else:
+                    # If it's not a list, create a minimal path
+                    logger.warning(f"Route path is not a list: {type(route_result.full_path)}")
+                    route_path = [self.from_station, self.to_station]
+                
+                # Ensure route_path has at least from and to stations
+                if len(route_path) < 2:
+                    logger.warning(f"Route path too short ({len(route_path)}), fixing")
+                    route_path = [self.from_station, self.to_station]
+                
+                # Validate route path matches from/to stations
+                if route_path[0] != self.from_station or route_path[-1] != self.to_station:
+                    logger.warning(f"Route path endpoints ({route_path[0]}, {route_path[-1]}) "
+                                  f"don't match from/to stations ({self.from_station}, {self.to_station}) - adjusting")
+                    # Fix the path to match from/to stations
+                    route_path[0] = self.from_station
+                    route_path[-1] = self.to_station
+                
+                # Store the validated route path
+                self.route_path = route_path
+                logger.info(f"Stored new route path with {len(self.route_path)} stations")
+                
+                # Update config with the new route path and save it
+                if (self.config and hasattr(self.config, 'stations')):
+                    # Ensure route_path is properly serializable
+                    serializable_path = [str(station) for station in route_path]
+                    self.config.stations.route_path = serializable_path
+                    logger.info(f"Updated config with new route path: {len(serializable_path)} stations")
+                    
+                    # Save the config to disk using the class-level config_manager if available
+                    try:
+                        if self.__class__.config_manager:
+                            # Use force_flush if available
+                            if hasattr(self.__class__.config_manager, 'save_config') and 'force_flush' in self.__class__.config_manager.save_config.__code__.co_varnames:
+                                self.__class__.config_manager.save_config(self.config, force_flush=True)
+                                logger.info("Saved config with new route path to disk using shared config manager (force_flush=True)")
+                            else:
+                                self.__class__.config_manager.save_config(self.config)
+                                logger.info("Saved config with new route path to disk using shared config manager")
+                        else:
+                            # Fall back to creating a new config manager
+                            from .config_manager import ConfigManager
+                            config_manager = ConfigManager()
+                            config_manager.save_config(self.config, force_flush=True)
+                            logger.info("Saved config with new route path to disk using new config manager (force_flush=True)")
+                    except Exception as e:
+                        logger.error(f"Failed to save config with new route path: {e}")
+            except Exception as e:
+                logger.error(f"Error processing route path: {e}")
+        
+        if not route_result:
+            logger.error(f"No route found from {self.from_station} to {self.to_station} using core services")
+            return []
 
-            logger.debug(f"Generated {len(trains)} realistic trains using core services")
-            return trains
+        # Generate realistic train services based on the calculated route
+        departure_time = datetime.now()
+        time_window_hours = self.config.display.time_window_hours
+        max_trains = self.config.display.max_trains
+        
+        trains = []
+        
+        # Generate trains at realistic intervals (every 15-30 minutes)
+        current_time = departure_time
+        train_count = 0
+        
+        while train_count < max_trains and current_time < departure_time + timedelta(hours=time_window_hours):
+            # Create realistic train service based on route
+            train_data = self._create_train_from_route(route_result, current_time, train_count)
+            if train_data:
+                trains.append(train_data)
+                train_count += 1
             
-        except Exception as e:
-            logger.error(f"Error generating trains with core services: {e}")
-            # Fallback to old system
-            return await self._fetch_trains_from_old_timetable()
+            # Next train in 15-30 minutes (realistic frequency)
+            interval_minutes = 15 + (train_count % 2) * 15  # Alternates between 15 and 30 minutes
+            current_time += timedelta(minutes=interval_minutes)
+
+        logger.debug(f"Generated {len(trains)} realistic trains using core services")
+        return trains
 
     def _create_train_from_route(self, route_result, departure_time: datetime, train_index: int) -> Optional[TrainData]:
-        """Create a realistic TrainData object from a route calculation."""
+        """Create a realistic TrainData object from a route calculation - NO FALLBACKS."""
         try:
-            # Calculate arrival time based on route total journey time
-            if route_result.total_journey_time_minutes:
-                arrival_time = departure_time + timedelta(minutes=route_result.total_journey_time_minutes)
-            else:
-                # Fallback: estimate 2 minutes per km if distance available
-                if route_result.total_distance_km:
-                    estimated_minutes = int(route_result.total_distance_km * 2)
-                    arrival_time = departure_time + timedelta(minutes=estimated_minutes)
-                else:
-                    # Final fallback: 1 hour
-                    arrival_time = departure_time + timedelta(hours=1)
+            # Calculate arrival time based on route total journey time - NO FALLBACKS
+            if not route_result.total_journey_time_minutes:
+                logger.error(f"Route result has no journey time - cannot create train")
+                return None
+            
+            arrival_time = departure_time + timedelta(minutes=route_result.total_journey_time_minutes)
             
             # Determine service type based on route complexity
             if route_result.changes_required == 0:
@@ -326,7 +506,7 @@ class TrainManager(QObject):
             return None
 
     def _generate_calling_points_from_route(self, route_result, departure_time: datetime, arrival_time: datetime) -> List:
-        """Generate calling points from route calculation."""
+        """Generate calling points from route calculation - NO FALLBACKS."""
         from ..models.train_data import CallingPoint
         
         calling_points = []
@@ -344,54 +524,20 @@ class TrainManager(QObject):
         )
         calling_points.append(origin_point)
         
-        # Add intermediate stations from route - try multiple ways to get them
+        # Get intermediate stations ONLY from the route service - no fallbacks
         intermediate_stations = []
-        
-        # Try to get intermediate stations from route result
-        if hasattr(route_result, 'intermediate_stations') and route_result.intermediate_stations:
-            intermediate_stations = route_result.intermediate_stations
-            logger.info(f"Got {len(intermediate_stations)} intermediate stations from route_result.intermediate_stations")
-        elif hasattr(route_result, 'stations') and route_result.stations and len(route_result.stations) > 2:
-            # Get all stations except first and last (origin and destination)
-            intermediate_stations = route_result.stations[1:-1]
-            logger.info(f"Got {len(intermediate_stations)} intermediate stations from route_result.stations")
-        elif hasattr(route_result, 'path') and route_result.path and len(route_result.path) > 2:
-            # Alternative: use path if available
-            intermediate_stations = route_result.path[1:-1]
-            logger.info(f"Got {len(intermediate_stations)} intermediate stations from route_result.path")
-        
-        # If we still don't have intermediate stations, try to get them from the route service directly
-        if not intermediate_stations and self.route_service:
-            try:
-                logger.info(f"No intermediate stations found in route_result, querying route service directly for {self.from_station} -> {self.to_station}")
-                if self.from_station and self.to_station:
-                    detailed_route = self.route_service.calculate_route(self.from_station, self.to_station)
-                    if detailed_route:
-                        if hasattr(detailed_route, 'intermediate_stations') and detailed_route.intermediate_stations:
-                            intermediate_stations = detailed_route.intermediate_stations
-                            logger.info(f"Got {len(intermediate_stations)} intermediate stations from direct route service call")
-                        elif hasattr(detailed_route, 'interchange_stations') and detailed_route.interchange_stations:
-                            # Use interchange stations as intermediate stations for main UI display
-                            intermediate_stations = detailed_route.interchange_stations
-                            logger.info(f"Using {len(intermediate_stations)} interchange stations as intermediate stations")
-                        else:
-                            logger.warning(f"Route service returned route but no intermediate or interchange stations")
-                    else:
-                        logger.warning(f"Route service returned None for route calculation")
-            except Exception as e:
-                logger.warning(f"Could not get detailed route from route service: {e}")
-        
-        # If we still have no intermediate stations, generate some key interchange stations manually
-        # This ensures the main UI shows meaningful information
-        if not intermediate_stations and self.from_station and self.to_station:
-            logger.info(f"No intermediate stations available, generating key interchange stations for {self.from_station} -> {self.to_station}")
-            intermediate_stations = self._generate_key_interchange_stations(self.from_station, self.to_station)
-            logger.info(f"Generated {len(intermediate_stations)} key interchange stations")
+        if route_result and hasattr(route_result, 'intermediate_stations'):
+            intermediate_stations = route_result.intermediate_stations or []
+            logger.info(f"Got {len(intermediate_stations)} intermediate stations from route service: {intermediate_stations}")
+        else:
+            logger.warning(f"Route result has no intermediate_stations property or is None")
         
         # Add all intermediate stations as calling points
         if intermediate_stations:
-            logger.info(f"Adding {len(intermediate_stations)} intermediate stations to calling points: {intermediate_stations}")
             total_journey_time = (arrival_time - departure_time).total_seconds() / 60  # minutes
+            
+            # Get segments to check for walking connections
+            segments = route_result.segments if hasattr(route_result, 'segments') else []
             
             for i, station_name in enumerate(intermediate_stations):
                 # Calculate proportional time for this station
@@ -401,8 +547,59 @@ class TrainManager(QObject):
                 # Add 2-minute stop
                 stop_duration = timedelta(minutes=2)
                 
+                # Check if this is a walking connection
+                is_walking = False
+                walking_distance = None
+                walking_time = None
+                
+                # Look for walking segments to/from this station
+                for segment in segments:
+                    if hasattr(segment, 'line_name') and segment.line_name == 'WALKING':
+                        if hasattr(segment, 'from_station') and hasattr(segment, 'to_station'):
+                            if segment.from_station == station_name or segment.to_station == station_name:
+                                is_walking = True
+                                walking_distance = segment.distance_km if hasattr(segment, 'distance_km') else None
+                                walking_time = segment.journey_time_minutes if hasattr(segment, 'journey_time_minutes') else None
+                                
+                                # Calculate walking time based on 4mph if not provided
+                                if not walking_time and walking_distance:
+                                    # 4mph = 6.44km/h = 0.107km/min
+                                    walking_time = int(walking_distance / 0.107)
+                                
+                                break
+                
+                # Also check for connections marked with is_walking_connection flag
+                if not is_walking:
+                    for segment in segments:
+                        if hasattr(segment, 'is_walking_connection') and segment.is_walking_connection:
+                            if hasattr(segment, 'from_station') and hasattr(segment, 'to_station'):
+                                if segment.from_station == station_name or segment.to_station == station_name:
+                                    is_walking = True
+                                    walking_distance = segment.distance_km if hasattr(segment, 'distance_km') else None
+                                    walking_time = segment.journey_time_minutes if hasattr(segment, 'journey_time_minutes') else None
+                                    
+                                    # Calculate walking time based on 4mph if not provided
+                                    if not walking_time and walking_distance:
+                                        # 4mph = 6.44km/h = 0.107km/min
+                                        walking_time = int(walking_distance / 0.107)
+                                    
+                                    break
+                
+                # Create station name with walking info if needed
+                display_name = station_name
+                if is_walking:
+                    # Format walking connection with HTML-style tags for red text
+                    if walking_distance and walking_time:
+                        display_name = f"<font color='#f44336'>{station_name} → Walk {walking_distance:.1f}km ({walking_time}min)</font>"
+                    elif walking_distance:
+                        display_name = f"<font color='#f44336'>{station_name} → Walk {walking_distance:.1f}km</font>"
+                    else:
+                        display_name = f"<font color='#f44336'>{station_name} → Walking connection</font>"
+                    
+                    logger.info(f"Added walking connection info to station: {display_name}")
+                
                 intermediate_point = CallingPoint(
-                    station_name=station_name,
+                    station_name=display_name,
                     scheduled_arrival=station_time,
                     scheduled_departure=station_time + stop_duration,
                     expected_arrival=station_time,
@@ -412,8 +609,6 @@ class TrainManager(QObject):
                     is_destination=False
                 )
                 calling_points.append(intermediate_point)
-        else:
-            logger.warning(f"No intermediate stations found for route {self.from_station} -> {self.to_station}")
         
         # Add destination
         destination_point = CallingPoint(
@@ -430,182 +625,7 @@ class TrainManager(QObject):
         
         return calling_points
 
-    async def _fetch_trains_from_old_timetable(self) -> List[TrainData]:
-        """Fallback method using old timetable manager."""
-        # Check if timetable manager is available
-        if self.timetable_manager is None:
-            logger.error("Timetable manager not available")
-            return []
 
-        # Generate train services using timetable manager
-        departure_time = datetime.now()
-        
-        # Calculate time window end based on configuration
-        time_window_hours = self.config.display.time_window_hours
-        time_window_end = departure_time + timedelta(hours=time_window_hours)
-        
-        # Generate more services than needed to ensure we have enough within the time window
-        # Generate services for the full time window plus some buffer
-        estimated_services_needed = max(self.config.display.max_trains * 2, 20)
-        # Check for null stations before calling timetable manager
-        if not self.from_station or not self.to_station:
-            logger.error("Cannot generate train services: missing from_station or to_station")
-            return []
-            
-        train_services = self.timetable_manager.generate_train_services(
-            self.from_station, self.to_station, departure_time,
-            num_services=estimated_services_needed
-        )
-
-        # Convert train services to TrainData objects and filter by time window
-        trains = []
-        for i, service in enumerate(train_services):
-            # Parse departure and arrival times
-            dep_time = datetime.strptime(service.departure_time, "%H:%M").replace(
-                year=departure_time.year, month=departure_time.month, day=departure_time.day
-            )
-            arr_time = datetime.strptime(service.arrival_time, "%H:%M").replace(
-                year=departure_time.year, month=departure_time.month, day=departure_time.day
-            )
-            
-            # Handle next day arrivals
-            if arr_time < dep_time:
-                arr_time += timedelta(days=1)
-            
-            # Handle next day departures (if departure time has wrapped to next day)
-            if dep_time < departure_time:
-                dep_time += timedelta(days=1)
-                arr_time += timedelta(days=1)
-            
-            # Filter by time window - only include trains departing within the configured window
-            if dep_time > time_window_end:
-                continue
-            
-            # All trains are on time since we removed delay simulation
-            delay_minutes = 0
-            train_status = TrainStatus.ON_TIME
-            
-            # Map service type
-            service_type_map = {
-                "Express": ServiceType.EXPRESS,
-                "Fast": ServiceType.FAST,
-                "Stopping": ServiceType.STOPPING
-            }
-            service_type = service_type_map.get(service.service_type, ServiceType.STOPPING)
-            
-            # Generate unique IDs
-            service_id = f"SVC{i+1:03d}{dep_time.strftime('%H%M')}"
-            train_uid = f"T{i+1:05d}"
-            
-            # Generate calling points for this service
-            calling_points = self._generate_calling_points_old(service, dep_time, arr_time, service_type)
-            
-            # Ensure we have a valid destination
-            if not self.to_station:
-                logger.error("Cannot create train data: missing to_station")
-                continue
-                
-            train_data = TrainData(
-                departure_time=dep_time,
-                scheduled_departure=dep_time,
-                destination=self.to_station,
-                platform=service.platform,
-                operator=service.operator,
-                service_type=service_type,
-                status=train_status,
-                delay_minutes=delay_minutes,
-                estimated_arrival=arr_time,
-                journey_duration=timedelta(minutes=service.duration_minutes),
-                current_location=None,
-                train_uid=train_uid,
-                service_id=service_id,
-                calling_points=calling_points
-            )
-            trains.append(train_data)
-            
-            # Stop if we have enough trains within the time window
-            if len(trains) >= self.config.display.max_trains:
-                break
-
-        logger.debug(f"Generated {len(trains)} trains using old timetable manager")
-        return trains
-
-    def _generate_calling_points_old(self, service, departure_time: datetime, arrival_time: datetime, service_type_enum):
-        """Generate calling points for a train service."""
-        from ..models.train_data import CallingPoint
-        
-        calling_points = []
-        
-        # Ensure we have valid station names
-        if not self.from_station or not self.to_station:
-            return calling_points
-        
-        # Add origin station
-        origin_point = CallingPoint(
-            station_name=self.from_station,
-            scheduled_arrival=None,
-            scheduled_departure=departure_time,
-            expected_arrival=None,
-            expected_departure=departure_time,
-            platform=service.platform,
-            is_origin=True,
-            is_destination=False
-        )
-        calling_points.append(origin_point)
-        
-        # Add intermediate stations based on the route and service type
-        # Convert ServiceType enum to string for route lookup
-        service_type_str = service_type_enum.value.title() if service_type_enum else "Stopping"
-            
-        intermediate_stations = self._get_intermediate_stations_for_route(
-            self.from_station, self.to_station, service_type_str
-        )
-        
-        # Calculate intermediate times using realistic travel times between stations
-        current_time = departure_time
-        
-        for i, station_name in enumerate(intermediate_stations):
-            # Calculate realistic travel time to this station
-            travel_time = self._calculate_realistic_travel_time(
-                intermediate_stations[i-1] if i > 0 else self.from_station,
-                station_name,
-                service_type_str
-            )
-            
-            current_time += timedelta(minutes=travel_time)
-            
-            # Add stop time (1-3 minutes depending on station importance)
-            stop_time = self._get_station_stop_time(station_name)
-            
-            intermediate_point = CallingPoint(
-                station_name=station_name,
-                scheduled_arrival=current_time,
-                scheduled_departure=current_time + timedelta(minutes=stop_time),
-                expected_arrival=current_time,
-                expected_departure=current_time + timedelta(minutes=stop_time),
-                platform=None,
-                is_origin=False,
-                is_destination=False
-            )
-            calling_points.append(intermediate_point)
-            
-            # Update current time to departure time from this station
-            current_time += timedelta(minutes=stop_time)
-        
-        # Add destination station
-        destination_point = CallingPoint(
-            station_name=self.to_station,
-            scheduled_arrival=arrival_time,
-            scheduled_departure=None,
-            expected_arrival=arrival_time,
-            expected_departure=None,
-            platform=None,
-            is_origin=False,
-            is_destination=True
-        )
-        calling_points.append(destination_point)
-        
-        return calling_points
 
     def _get_intermediate_stations_for_route(self, from_station: str, to_station: str, service_type: str = "Stopping") -> List[str]:
         """Get intermediate stations for a specific route based on service type."""
@@ -1557,8 +1577,18 @@ class TrainManager(QObject):
         # Use new core services for route finding
         if self.route_service:
             try:
-                # Calculate route using the new route service
-                route_result = self.route_service.calculate_route(from_station, to_station)
+                # Get preferences from config
+                # Note: These preferences are dynamically added to the config object
+                # by the SettingsHandler.save_settings method, so we need to check
+                # if they exist before accessing them
+                preferences = {}
+                if hasattr(self.config, 'avoid_walking'):
+                    preferences['avoid_walking'] = self.config.avoid_walking
+                if hasattr(self.config, 'prefer_direct'):
+                    preferences['prefer_direct'] = self.config.prefer_direct
+                
+                # Calculate route using the new route service with preferences
+                route_result = self.route_service.calculate_route(from_station, to_station, preferences=preferences)
                 
                 if route_result and route_result.segments:
                     # Extract station names from route - use the route's intermediate_stations property

@@ -224,7 +224,8 @@ class Route:
             "journey_time_display": self.get_journey_time_display(),
             "distance_display": self.get_distance_display(),
             "route_description": self.get_route_description(),
-            "detailed_description": self.get_detailed_description()
+            "detailed_description": self.get_detailed_description(),
+            "full_path": self.full_path  # Include full path for persistence
         }
     
     @classmethod
@@ -250,7 +251,8 @@ class Route:
             total_journey_time_minutes=data.get("total_journey_time_minutes"),
             changes_required=data.get("changes_required", 0),
             route_type=data.get("route_type", "direct"),
-            service_patterns=data.get("service_patterns")
+            service_patterns=data.get("service_patterns"),
+            full_path=data.get("full_path")  # Include full path when creating from dict
         )
     
     def __str__(self) -> str:
