@@ -74,7 +74,7 @@ class TrainManager(QObject):
             service_factory = ServiceFactory()
             self.station_service: Optional[IStationService] = service_factory.get_station_service()
             self.route_service: Optional[IRouteService] = service_factory.get_route_service()
-            logger.critical("Core services initialized successfully")
+            logger.info("Core services initialized successfully")
         except Exception as e:
             logger.error(f"Failed to initialize core services: {e}")
             self.station_service = None
@@ -83,12 +83,12 @@ class TrainManager(QObject):
         # Initialize timetable manager
         try:
             self.timetable_manager = TimetableManager()
-            logger.critical("TimetableManager initialized successfully")
+            logger.info("TimetableManager initialized successfully")
         except Exception as e:
             logger.error(f"Failed to initialize TimetableManager: {e}")
             self.timetable_manager = None
 
-        logger.critical("TrainManager initialized")
+        logger.info("TrainManager initialized")
 
     def update_config(self, config: ConfigData):
         """Update the configuration and refresh if needed."""
@@ -212,7 +212,7 @@ class TrainManager(QObject):
                 self.config.stations.route_path = []
                 logger.info("Cleared route path in config")
         
-        logger.critical(f"Route set: {self.from_station} -> {self.to_station}")
+        logger.info(f"Route set: {self.from_station} -> {self.to_station}")
         
         # If route actually changed, trigger a refresh
         if old_from != from_station or old_to != to_station or old_path != self.route_path:
@@ -297,7 +297,7 @@ class TrainManager(QObject):
 
             self.status_changed.emit(status_msg)
 
-            logger.critical(f"Successfully loaded {len(processed_trains)} trains")
+            logger.info(f"Successfully loaded {len(processed_trains)} trains")
 
         except Exception as e:
             error_msg = f"Error loading train data: {e}"
@@ -521,12 +521,12 @@ class TrainManager(QObject):
                     
                     # If it's a known walking connection, the route is invalid
                     if station_pair in walking_connections or reverse_pair in walking_connections:
-                        logger.critical(f"Found walking segment: {route[i]} → {route[i+1]}")
+                        logger.debug(f"Found walking segment: {route[i]} → {route[i+1]}")
                         return False
                     
                     # Verify stations are directly connected by rail
                     if avoid_walking and not is_rail_connected(route[i], route[i+1]):
-                        logger.critical(f"Segment not directly connected by rail: {route[i]} → {route[i+1]}")
+                        logger.debug(f"Segment not directly connected by rail: {route[i]} → {route[i+1]}")
                         return False
                 
                 return True
@@ -587,7 +587,7 @@ class TrainManager(QObject):
             # Try finding routes with various numbers of changes
             # Start with min_expected_changes and go up to 9
             for max_changes in range(max(1, min_expected_changes), 10):
-                logger.critical(f"Trying SimpleRouteFinder with max_changes={max_changes}")
+                logger.debug(f"Trying SimpleRouteFinder with max_changes={max_changes}")
                 
                 # Get a candidate route
                 candidate_route = simple_finder.find_route_with_changes(
@@ -606,7 +606,7 @@ class TrainManager(QObject):
                 # Store as best route if valid (even if we continue searching)
                 if valid_route and (not best_route or len(candidate_route) < len(best_route)):
                     best_route = candidate_route
-                    logger.critical(f"Updated best route: {len(best_route)} stations with {max_changes} max changes")
+                    logger.debug(f"Updated best route: {len(best_route)} stations with {max_changes} max changes")
                 
                 # Check if route is realistic based on network analysis
                 if valid_route and is_realistic_route(candidate_route, min_expected_changes):
@@ -735,7 +735,7 @@ class TrainManager(QObject):
                     )
                     if potential_route and len(potential_route) >= 2:
                         all_routes.append(potential_route)
-                        logger.critical(f"Found potential route with {len(potential_route)} stations and {max_changes} max changes")
+                        logger.debug(f"Found potential route with {len(potential_route)} stations and {max_changes} max changes")
                 
                 # Extract all station pairs from these routes
                 for route in all_routes:
@@ -754,7 +754,7 @@ class TrainManager(QObject):
                         
                         # If avoid_walking is true, completely exclude walking connections from the graph
                         if avoid_walking and is_walking:
-                            logger.critical(f"Excluding walking connection {from_stn} → {to_stn} from routing graph")
+                            logger.debug(f"Excluding walking connection {from_stn} → {to_stn} from routing graph")
                             continue
                         
                         # For non-walking connections or if avoid_walking is false, add to graph
@@ -939,21 +939,21 @@ class TrainManager(QObject):
             
             # Debug: Log the route segments that are being attached to the train
             if train_data.route_segments:
-                logger.critical(f"TRAIN MANAGER: Attached {len(train_data.route_segments)} route segments to train {service_id}")
+                logger.debug(f"Attached {len(train_data.route_segments)} route segments to train {service_id}")
                 for i, segment in enumerate(train_data.route_segments):
                     segment_from = getattr(segment, 'from_station', 'UNKNOWN')
                     segment_to = getattr(segment, 'to_station', 'UNKNOWN')
                     line_name = getattr(segment, 'line_name', 'UNKNOWN')
                     service_pattern = getattr(segment, 'service_pattern', 'NONE')
-                    logger.critical(f"  Segment {i}: {segment_from} -> {segment_to} (line: {line_name}, service_pattern: {service_pattern})")
+                    logger.debug(f"  Segment {i}: {segment_from} -> {segment_to} (line: {line_name}, service_pattern: {service_pattern})")
                     
                     # Additional debug: Check the actual segment object type and attributes
-                    logger.critical(f"    Segment type: {type(segment)}")
-                    logger.critical(f"    Segment attributes: {dir(segment)}")
+                    logger.debug(f"    Segment type: {type(segment)}")
+                    logger.debug(f"    Segment attributes: {dir(segment)}")
                     if hasattr(segment, '__dict__'):
-                        logger.critical(f"    Segment dict: {segment.__dict__}")
+                        logger.debug(f"    Segment dict: {segment.__dict__}")
             else:
-                logger.critical(f"TRAIN MANAGER: No route segments attached to train {service_id}")
+                logger.debug(f"No route segments attached to train {service_id}")
             
             return train_data
             
@@ -1166,14 +1166,14 @@ class TrainManager(QObject):
 
     def _get_intermediate_stations_for_route(self, from_station: str, to_station: str, service_type: str = "Stopping") -> List[str]:
         """Get intermediate stations for a specific route based on service type."""
-        logger.critical(f"Getting intermediate stations for route: {from_station} -> {to_station}, service type: {service_type}")
+        logger.debug(f"Getting intermediate stations for route: {from_station} -> {to_station}, service type: {service_type}")
         
         # Get configured via stations
         configured_via_stations = []
         if hasattr(self, 'config') and self.config and hasattr(self.config, 'stations'):
             configured_via_stations = getattr(self.config.stations, 'via_stations', [])
         
-        logger.critical(f"Configured via stations: {configured_via_stations}")
+        logger.debug(f"Configured via stations: {configured_via_stations}")
         
         # Use dynamic routing from JSON data instead of hardcoded patterns
         route_pattern_stations = []
@@ -1183,8 +1183,8 @@ class TrainManager(QObject):
             from_station, to_station, configured_via_stations, service_type
         )
         
-        logger.critical(f"Route pattern stations found: {route_pattern_stations}")
-        logger.critical(f"Final intermediate stations list: {all_stations} (total: {len(all_stations)})")
+        logger.debug(f"Route pattern stations found: {route_pattern_stations}")
+        logger.debug(f"Final intermediate stations list: {all_stations} (total: {len(all_stations)})")
         return all_stations
 
     def _merge_stations_in_journey_order(self, from_station: str, to_station: str,
@@ -1196,8 +1196,8 @@ class TrainManager(QObject):
         This method attempts to create a realistic journey by placing configured via stations
         in geographically/logically correct positions within the route pattern.
         """
-        logger.critical(f"Merging stations for {from_station} -> {to_station}")
-        logger.critical(f"Route pattern: {route_pattern_stations}")
+        logger.debug(f"Merging stations for {from_station} -> {to_station}")
+        logger.debug(f"Route pattern: {route_pattern_stations}")
         logger.info(f"Configured via: {configured_via_stations}")
         
         # Use JSON data to determine station relationships dynamically
@@ -1214,9 +1214,9 @@ class TrainManager(QObject):
                     via_station, merged_stations, from_station, to_station, station_relationships
                 )
                 merged_stations.insert(insert_position, via_station)
-                logger.critical(f"Inserted {via_station} at position {insert_position}")
+                logger.debug(f"Inserted {via_station} at position {insert_position}")
         
-        logger.critical(f"Final merged stations: {merged_stations}")
+        logger.debug(f"Final merged stations: {merged_stations}")
         return merged_stations
     
     def _find_best_insert_position(self, via_station: str, current_stations: List[str],
@@ -1304,7 +1304,7 @@ class TrainManager(QObject):
         else:
             result = priority_stations[:max_stations]
         
-        logger.critical(f"Limited {len(stations)} stations to {len(result)} for {service_type} service")
+        logger.debug(f"Limited {len(stations)} stations to {len(result)} for {service_type} service")
         return result
     
     def _create_interchange_journey(self, from_station: str, to_station: str,
@@ -1313,8 +1313,8 @@ class TrainManager(QObject):
         Create a journey showing key interchange stations (CHANGES) rather than all stops.
         This focuses on where passengers would change trains/lines.
         """
-        logger.critical(f"Creating interchange journey: {from_station} -> {to_station}")
-        logger.critical(f"Configured via stations: {configured_via_stations}")
+        logger.debug(f"Creating interchange journey: {from_station} -> {to_station}")
+        logger.debug(f"Configured via stations: {configured_via_stations}")
         
         # Define major interchange stations and their typical connections
         major_interchanges = {
@@ -1406,9 +1406,9 @@ class TrainManager(QObject):
         Create a detailed journey showing ALL stops in geographical order.
         Uses JSON line data to build proper railway network routing with configured via stations.
         """
-        logger.critical(f"Creating detailed interchange journey: {from_station} -> {to_station}")
-        logger.critical(f"Configured via stations: {configured_via_stations}")
-        logger.critical(f"Service type: {service_type}")
+        logger.debug(f"Creating detailed interchange journey: {from_station} -> {to_station}")
+        logger.debug(f"Configured via stations: {configured_via_stations}")
+        logger.debug(f"Service type: {service_type}")
         
         # Create station code to name mapping
         station_mapping = self._create_station_mapping()
@@ -1417,7 +1417,7 @@ class TrainManager(QObject):
         from_name = station_mapping.get(from_station, from_station)
         to_name = station_mapping.get(to_station, to_station)
         
-        logger.critical(f"Mapped stations: {from_station} -> {from_name}, {to_station} -> {to_name}")
+        logger.debug(f"Mapped stations: {from_station} -> {from_name}, {to_station} -> {to_name}")
         
         # Load all line data
         line_data = self._load_all_line_data()
@@ -1430,7 +1430,7 @@ class TrainManager(QObject):
         
         # If we have configured via stations, build route through them
         if configured_via_stations:
-            logger.critical(f"Building route through configured via stations: {configured_via_stations}")
+            logger.debug(f"Building route through configured via stations: {configured_via_stations}")
             route = self._build_route_via_configured_stations(
                 from_name, to_name, configured_via_stations, station_network, service_type
             )
@@ -1444,14 +1444,14 @@ class TrainManager(QObject):
             # Use JSON-only routing as fallback
             route = self._get_route_from_json_data(from_name, to_name, service_type)
         
-        logger.critical(f"Generated route with {len(route)} stations: {' -> '.join(route[:5])}{'...' if len(route) > 5 else ''}")
+        logger.debug(f"Generated route with {len(route)} stations: {' -> '.join(route[:5])}{'...' if len(route) > 5 else ''}")
         return route
 
     def _build_route_via_configured_stations(self, from_station: str, to_station: str,
                                            configured_via_stations: List[str],
                                            station_network: Dict[str, Dict], service_type: str) -> List[str]:
         """Build a route that goes through all configured via stations in order."""
-        logger.critical(f"Building route: {from_station} -> {' -> '.join(configured_via_stations)} -> {to_station}")
+        logger.debug(f"Building route: {from_station} -> {' -> '.join(configured_via_stations)} -> {to_station}")
         
         # For configured via stations, create a more direct route
         # This respects the user's intention for a specific routing
@@ -1459,7 +1459,7 @@ class TrainManager(QObject):
         
         # Add each via station as a direct waypoint
         for via_station in configured_via_stations:
-            logger.critical(f"Adding configured via station: {via_station}")
+            logger.debug(f"Adding configured via station: {via_station}")
             
             # For Express services, add minimal intermediate stations
             if service_type == "Express":
@@ -1498,7 +1498,7 @@ class TrainManager(QObject):
         if to_station not in complete_route:
             complete_route.append(to_station)
         
-        logger.critical(f"Complete route built with {len(complete_route)} stations: {' -> '.join(complete_route[:5])}{'...' if len(complete_route) > 5 else ''}")
+        logger.debug(f"Complete route built with {len(complete_route)} stations: {' -> '.join(complete_route[:5])}{'...' if len(complete_route) > 5 else ''}")
         return complete_route
 
     def _get_major_interchanges_between(self, from_station: str, to_station: str,
@@ -1613,7 +1613,7 @@ class TrainManager(QObject):
                     if next_station not in station_network[station_name]['connections']:
                         station_network[station_name]['connections'].append(next_station)
         
-        logger.critical(f"Built station network with {len(station_network)} stations")
+        logger.debug(f"Built station network with {len(station_network)} stations")
         return station_network
     
     def _build_weighted_graph(self, line_data: Dict[str, Dict]) -> Tuple[Dict[str, Dict[str, float]], Dict[str, Dict[str, Dict]]]:
@@ -1694,7 +1694,7 @@ class TrainManager(QObject):
                         graph[station_name][interchange_station] = interchange_weight
                         graph[interchange_station][station_name] = interchange_weight
         
-        logger.critical(f"Built weighted graph with {len(graph)} stations")
+        logger.debug(f"Built weighted graph with {len(graph)} stations")
         return graph, station_timetables
     
     def _calculate_edge_weight(self, station1: str, station2: str,
@@ -1879,7 +1879,7 @@ class TrainManager(QObject):
         # Reverse to get path from origin to destination
         path.reverse()
         
-        logger.critical(f"Found route with {len(path)} stations and {interchanges[to_station]} interchanges using Dijkstra's algorithm")
+        logger.debug(f"Found route with {len(path)} stations and {interchanges[to_station]} interchanges using Dijkstra's algorithm")
         return path
     
     def _calculate_timetable_adjustment(self, station1: str, station2: str,
@@ -1993,14 +1993,14 @@ class TrainManager(QObject):
         if len(stations) <= 2:  # Always keep origin and destination
             return stations
         
-        logger.critical(f"Filtering {len(stations)} stations for {service_type} service: {' -> '.join(stations[:5])}{'...' if len(stations) > 5 else ''}")
+        logger.debug(f"Filtering {len(stations)} stations for {service_type} service: {' -> '.join(stations[:5])}{'...' if len(stations) > 5 else ''}")
         
         # Define filtering rules based on service type
         if service_type == "Express":
             # Express: Keep origin, destination, and major stations only
             # Aim for 5-8 stations total
             if len(stations) <= 8:
-                logger.critical(f"Express service: keeping all {len(stations)} stations")
+                logger.debug(f"Express service: keeping all {len(stations)} stations")
                 return stations
                 
             # Get major stations from JSON data
@@ -2035,7 +2035,7 @@ class TrainManager(QObject):
             # Fast: Keep more stations but still filter
             # Aim for 8-15 stations total
             if len(stations) <= 15:
-                logger.critical(f"Fast service: keeping all {len(stations)} stations")
+                logger.debug(f"Fast service: keeping all {len(stations)} stations")
                 return stations
                 
             # Keep origin, destination, and evenly spaced stations
@@ -2056,7 +2056,7 @@ class TrainManager(QObject):
             # Stopping: Keep most stations but still limit to a reasonable number
             # Aim for 15-25 stations maximum
             if len(stations) <= 25:
-                logger.critical(f"Stopping service: keeping all {len(stations)} stations")
+                logger.debug(f"Stopping service: keeping all {len(stations)} stations")
                 return stations
                 
             # Keep origin, destination, and evenly spaced stations
@@ -2109,7 +2109,7 @@ class TrainManager(QObject):
                                station_network: Dict[str, Dict], service_type: str) -> List[str]:
         """Find route using new core services instead of old station database."""
         
-        logger.critical(f"Looking for route from {from_station} to {to_station}")
+        logger.debug(f"Looking for route from {from_station} to {to_station}")
         
         # Use new core services for route finding
         if self.route_service:
@@ -2138,7 +2138,7 @@ class TrainManager(QObject):
                     # Add the final destination
                     route.append(to_station)
                     
-                    logger.critical(f"Found route with {len(route)} stations: {' -> '.join(route[:5])}{'...' if len(route) > 5 else ''}")
+                    logger.debug(f"Found route with {len(route)} stations: {' -> '.join(route[:5])}{'...' if len(route) > 5 else ''}")
                     return self._filter_stations_by_service_type_improved(route, service_type)
                 else:
                     logger.warning(f"No route found via core services")
@@ -2339,7 +2339,7 @@ class TrainManager(QObject):
                     if station.name:
                         mapping[station.name] = station.name
                 
-                logger.critical(f"Built station mapping with {len(mapping)} stations from station service")
+                logger.debug(f"Built station mapping with {len(mapping)} stations from station service")
             except Exception as e:
                 logger.error(f"Error building station mapping: {e}")
         else:

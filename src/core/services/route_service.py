@@ -190,13 +190,8 @@ class RouteService(IRouteService):
         prefer_direct = preferences.get('prefer_direct', False)
         max_walking_distance_km = preferences.get('max_walking_distance_km', 0.1)  # Get configurable threshold
         
-        self.logger.critical(f"Starting Dijkstra pathfinding from '{start}' to '{end}' using {weight_func} optimization")
-        self.logger.critical(f"PREFERENCES: avoid_walking={avoid_walking}, prefer_direct={prefer_direct}, max_walking_distance_km={max_walking_distance_km}")
-        if avoid_walking:
-            self.logger.critical("AVOID_WALKING ENABLED: Will strictly avoid all walking connections")
-            self.logger.critical(f"Maximum walking distance threshold: {max_walking_distance_km}km")
-        if prefer_direct:
-            self.logger.critical("Preference: Preferring direct connections")
+        self.logger.debug(f"Starting Dijkstra pathfinding from '{start}' to '{end}' using {weight_func} optimization")
+        self.logger.debug(f"Preferences: avoid_walking={avoid_walking}, prefer_direct={prefer_direct}, max_walking_distance_km={max_walking_distance_km}")
         
         # Priority queue: (weight, node)
         pq = [PathNode(start, 0.0, 0, 0, [start], [])]
@@ -338,7 +333,7 @@ class RouteService(IRouteService):
                         (ic.get('from_station') == to_station and ic.get('to_station') == from_station)):
                         if ic.get('connection_type') == 'WALKING':
                             is_walking = True
-                            self.logger.critical(f"WALKING CONNECTION DETECTED: {from_station} -> {to_station} (from interchange_connections.json)")
+                            self.logger.debug(f"Walking connection detected: {from_station} -> {to_station} (from interchange_connections.json)")
                             break
                 
                 if not is_walking:
@@ -363,12 +358,12 @@ class RouteService(IRouteService):
                     # If we have coordinates, use Haversine distance to determine walking connection
                     if from_coords and to_coords:
                         haversine_distance_km = self._calculate_haversine_distance(from_coords, to_coords)
-                        self.logger.critical(f"HAVERSINE DISTANCE: {from_station} -> {to_station} = {haversine_distance_km:.3f}km")
+                        self.logger.debug(f"Haversine distance: {from_station} -> {to_station} = {haversine_distance_km:.3f}km")
                         
                         # If distance > threshold, it's a walking connection
                         if haversine_distance_km > max_walking_distance_km:
                             is_walking = True
-                            self.logger.critical(f"WALKING CONNECTION BY DISTANCE: {from_station} -> {to_station} ({haversine_distance_km:.3f}km > {max_walking_distance_km}km)")
+                            self.logger.debug(f"Walking connection by distance: {from_station} -> {to_station} ({haversine_distance_km:.3f}km > {max_walking_distance_km}km)")
                     else:
                         # Fallback: Check if they're on the same line
                         same_line = False
@@ -390,7 +385,7 @@ class RouteService(IRouteService):
                         # Apply the logic: not same line AND distance > max_walking_distance_km = walking connection
                         if not same_line and distance_km > max_walking_distance_km:
                             is_walking = True
-                            self.logger.critical(f"WALKING CONNECTION BY FALLBACK: {from_station} -> {to_station} (not same line, distance: {distance_km:.3f}km)")
+                            self.logger.debug(f"Walking connection by fallback: {from_station} -> {to_station} (not same line, distance: {distance_km:.3f}km)")
                 
                 # Also check the explicit flags
                 if is_walking or best_connection.get('line') == 'WALKING' or best_connection.get('is_walking_connection', False):
@@ -398,7 +393,7 @@ class RouteService(IRouteService):
                     if avoid_walking:
                         # If avoid_walking is true, strictly avoid all walking connections
                         # Skip this connection completely
-                        self.logger.critical(f"AVOID_WALKING: Skipping walking connection: {current.station} -> {next_station} (distance: {best_connection.get('distance', 0):.3f}km)")
+                        self.logger.debug(f"Avoid walking: Skipping walking connection: {current.station} -> {next_station} (distance: {best_connection.get('distance', 0):.3f}km)")
                         continue
                     else:
                         # If avoid_walking is false, allow walking connections but mark them properly
@@ -412,7 +407,7 @@ class RouteService(IRouteService):
                         # Apply penalty
                         original_weight = weight
                         weight = weight * penalty_multiplier
-                        self.logger.critical(f"WALKING CONNECTION ALLOWED: {current.station} -> {next_station} (penalty applied: {original_weight} -> {weight})")
+                        self.logger.debug(f"Walking connection allowed: {current.station} -> {next_station} (penalty applied: {original_weight} -> {weight})")
                 
                 # Only add to queue if we found a better path
                 if next_station not in distances or weight < distances[next_station]:
@@ -481,7 +476,7 @@ class RouteService(IRouteService):
                                     line_connection.get('line') == 'WALKING' or
                                     current_line == 'WALKING'):
                                     is_walking_segment = True
-                                    self.logger.critical(f"MARKING SEGMENT AS WALKING: {hop_from} -> {hop_to} (line: {current_line})")
+                                    self.logger.debug(f"Marking segment as walking: {hop_from} -> {hop_to} (line: {current_line})")
                     
                     segment = RouteSegment(
                         from_station=segment_from,
@@ -527,7 +522,7 @@ class RouteService(IRouteService):
                             line_connection.get('line') == 'WALKING' or
                             current_line == 'WALKING'):
                             is_walking_segment = True
-                            self.logger.critical(f"MARKING FINAL SEGMENT AS WALKING: {hop_from} -> {hop_to} (line: {current_line})")
+                            self.logger.debug(f"Marking final segment as walking: {hop_from} -> {hop_to} (line: {current_line})")
             
             segment = RouteSegment(
                 from_station=segment_from,

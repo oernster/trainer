@@ -485,13 +485,13 @@ class TrainItemWidget(QFrame):
                     
                     # Look for walking connections in segments
                     if hasattr(self.train_data, 'route_segments') and self.train_data.route_segments:
-                        logger.debug(f"TRAIN WIDGET: Checking {len(self.train_data.route_segments)} route segments for walking connections")
+                        logger.debug(f"Checking {len(self.train_data.route_segments)} route segments for walking connections")
                         for j, segment in enumerate(self.train_data.route_segments):
                             # Check if this segment connects the previous station to current station
                             segment_from = getattr(segment, 'from_station', '')
                             segment_to = getattr(segment, 'to_station', '')
                             
-                            logger.debug(f"TRAIN WIDGET: Segment {j}: {segment_from} -> {segment_to}")
+                            logger.debug(f"Segment {j}: {segment_from} -> {segment_to}")
                             
                             # Check both directions for the connection
                             connects_stations = ((segment_from == prev_station and segment_to == station_name) or
@@ -503,7 +503,7 @@ class TrainItemWidget(QFrame):
                                 service_pattern = getattr(segment, 'service_pattern', '')
                                 is_walking_attr = getattr(segment, 'is_walking_connection', False)
                                 
-                                logger.debug(f"TRAIN WIDGET: Segment connects {prev_station} <-> {station_name}: line_name='{line_name}', service_pattern='{service_pattern}'")
+                                logger.debug(f"Segment connects {prev_station} <-> {station_name}: line_name='{line_name}', service_pattern='{service_pattern}'")
                                 
                                 # Multiple ways to detect walking connections
                                 is_walking_segment = (line_name == 'WALKING' or
@@ -521,10 +521,10 @@ class TrainItemWidget(QFrame):
                                     else:
                                         walking_info = "Walking connection"
                                     
-                                    logger.debug(f"TRAIN WIDGET: Found walking connection: {prev_station} -> {station_name} ({walking_info})")
+                                    logger.debug(f"Found walking connection: {prev_station} -> {station_name} ({walking_info})")
                                     break
                     else:
-                        logger.debug(f"TRAIN WIDGET: No route segments available for train {getattr(self.train_data, 'service_id', 'UNKNOWN')}")
+                        logger.debug(f"No route segments available for train {getattr(self.train_data, 'service_id', 'UNKNOWN')}")
                     
                     # Walking connections should be determined from route segments data only
                     # No hardcoded walking connections

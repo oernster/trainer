@@ -188,17 +188,17 @@ class InterchangeDetectionService:
                 description="Through service - same train continues"
             )
         
-        # Check if this represents a change between different JSON files (different railway networks)
-        if not self._is_json_file_line_change(from_line, to_line):
-            self.logger.debug(f"Same network detected at {station_name}: {from_line} -> {to_line}")
+        # Check if this is actually a meaningful line change that requires user action
+        if not self._is_meaningful_user_journey_change(from_line, to_line, station_name, current_segment, next_segment):
+            self.logger.debug(f"Not a meaningful user journey change at {station_name}: {from_line} -> {to_line}")
             return InterchangePoint(
                 station_name=station_name,
                 from_line=from_line,
                 to_line=to_line,
-                interchange_type=InterchangeType.PLATFORM_CHANGE,
-                walking_time_minutes=2,
+                interchange_type=InterchangeType.THROUGH_SERVICE,
+                walking_time_minutes=0,
                 is_user_journey_change=False,
-                description="Platform change within same network"
+                description="Same train continues with different line designation"
             )
         
         # Validate that this is a legitimate interchange geographically
@@ -241,6 +241,121 @@ class InterchangeDetectionService:
             if ((service["from_line"] == line1 and service["to_line"] == line2) or
                 (service["from_line"] == line2 and service["to_line"] == line1)):
                 return True
+        
+        return False
+    
+    def _is_meaningful_user_journey_change(self, from_line: str, to_line: str, station_name: str,
+                                         current_segment: Any, next_segment: Any) -> bool:
+        """
+        Determine if a line change represents a meaningful user journey change where the passenger
+        must actually change trains, rather than just a line name change for the same physical train.
+        
+        Args:
+            from_line: Line name of the incoming segment
+            to_line: Line name of the outgoing segment
+            station_name: Station where the change occurs
+            current_segment: Current route segment
+            next_segment: Next route segment
+            
+        Returns:
+            True if this is a meaningful change requiring user action, False otherwise
+        """
+        self.logger.debug(f"Analyzing {station_name}: {from_line} -> {to_line}")
+        
+        # First check if this represents a change between different JSON files (different railway networks)
+        is_json_change = self._is_json_file_line_change(from_line, to_line)
+        self.logger.debug(f"{station_name} JSON file change: {is_json_change}")
+        
+        if not is_json_change:
+            self.logger.debug(f"Same network detected at {station_name}: {from_line} -> {to_line}")
+            return False
+        
+        # Check if this is a continuous service where the same train continues with different line names
+        is_continuous = self._is_continuous_train_service(from_line, to_line, station_name)
+        self.logger.debug(f"{station_name} continuous service: {is_continuous}")
+        
+        if is_continuous:
+            self.logger.debug(f"Continuous train service at {station_name}: {from_line} -> {to_line}")
+            return False
+        
+        # Check if the station is actually a terminus or origin for one of the lines
+        # If the user is just passing through on the same train, it's not a meaningful change
+        is_through = self._is_through_station_for_journey(station_name, from_line, to_line, current_segment, next_segment)
+        self.logger.debug(f"{station_name} through station: {is_through}")
+        
+        if is_through:
+            self.logger.debug(f"Through station for journey at {station_name}: {from_line} -> {to_line}")
+            return False
+        
+        # If we get here, it's likely a real interchange requiring user action
+        self.logger.debug(f"{station_name} marked as REAL INTERCHANGE requiring user action")
+        return True
+    
+    def _is_continuous_train_service(self, from_line: str, to_line: str, station_name: str) -> bool:
+        """
+        Check if this represents a continuous train service where the same physical train
+        continues its journey with different line designations.
+        """
+        # Known continuous services where the same train continues with different line names
+        continuous_services = [
+            # South Western Main Line continuing as Reading to Basingstoke Line
+            ("South Western Main Line", "Reading to Basingstoke Line"),
+            ("Reading to Basingstoke Line", "South Western Main Line"),
+            # Add other known continuous services here
+        ]
+        
+        for service_from, service_to in continuous_services:
+            if ((from_line == service_from and to_line == service_to) or
+                (from_line == service_to and to_line == service_from)):
+                return True
+        
+        return False
+    
+    def _is_through_station_for_journey(self, station_name: str, from_line: str, to_line: str,
+                                      current_segment: Any, next_segment: Any) -> bool:
+        """
+        Check if this station is just a through station for the user's journey,
+        meaning they don't need to change trains here.
+        """
+        # Check if both segments have the same service pattern or train ID
+        # This would indicate it's the same physical train continuing
+        current_service = getattr(current_segment, 'service_pattern', None)
+        next_service = getattr(next_segment, 'service_pattern', None)
+        
+        if current_service and next_service and current_service == next_service:
+            self.logger.debug(f"Same service pattern detected: {current_service}")
+            return True
+        
+        # Check train IDs if available
+        current_train_id = getattr(current_segment, 'train_id', None)
+        next_train_id = getattr(next_segment, 'train_id', None)
+        
+        if current_train_id and next_train_id and current_train_id == next_train_id:
+            self.logger.debug(f"Same train ID detected: {current_train_id}")
+            return True
+        
+        # Check if this is a known through station for specific line combinations
+        through_stations = {
+            "Woking": [
+                # Woking is a through station for South Western services
+                ("South Western Main Line", "Reading to Basingstoke Line"),
+                ("Reading to Basingstoke Line", "South Western Main Line"),
+            ],
+            "Hook": [
+                ("South Western Main Line", "Reading to Basingstoke Line"),
+                ("Reading to Basingstoke Line", "South Western Main Line"),
+            ],
+            "Fleet": [
+                ("South Western Main Line", "Reading to Basingstoke Line"),
+                ("Reading to Basingstoke Line", "South Western Main Line"),
+            ]
+        }
+        
+        if station_name in through_stations:
+            for through_from, through_to in through_stations[station_name]:
+                if ((from_line == through_from and to_line == through_to) or
+                    (from_line == through_to and to_line == through_from)):
+                    return True
         
         return False
     
