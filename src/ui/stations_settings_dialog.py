@@ -19,7 +19,6 @@ from .components.station_selection_widget import StationSelectionWidget
 from .components.route_action_buttons import RouteActionButtons
 from .components.route_details_widget import RouteDetailsWidget
 from .components.preferences_widget import PreferencesWidget
-from .components.via_stations_widget import ViaStationsWidget
 
 # Import handlers
 from .handlers.settings_handler import SettingsHandler
@@ -84,7 +83,6 @@ class StationsSettingsDialog(QDialog):
         # UI components
         self.tab_widget = None
         self.station_selection_widget = None
-        self.via_stations_widget = None
         self.route_action_buttons = None
         self.route_details_widget = None
         self.preferences_widget = None
@@ -168,14 +166,6 @@ class StationsSettingsDialog(QDialog):
         station_layout.addWidget(self.station_selection_widget)
         layout.addWidget(station_group)
         
-        # Via stations section
-        via_group = QGroupBox("Via Stations")
-        via_layout = QVBoxLayout(via_group)
-        
-        self.via_stations_widget = ViaStationsWidget(self, self.theme_manager)
-        via_layout.addWidget(self.via_stations_widget)
-        layout.addWidget(via_group)
-        
         # Route action buttons
         self.route_action_buttons = RouteActionButtons(self, self.theme_manager)
         layout.addWidget(self.route_action_buttons)
@@ -219,16 +209,16 @@ class StationsSettingsDialog(QDialog):
         # Add stretch to push buttons to the right
         layout.addStretch()
         
-        # Save button
+        # Cancel button (now first/left)
+        self.cancel_button = QPushButton("Cancel")
+        self.cancel_button.setObjectName("cancelButton")
+        layout.addWidget(self.cancel_button)
+        
+        # Save button (now second/right)
         self.save_button = QPushButton("Save")
         self.save_button.setDefault(True)
         self.save_button.setObjectName("saveButton")
         layout.addWidget(self.save_button)
-        
-        # Cancel button
-        self.cancel_button = QPushButton("Cancel")
-        self.cancel_button.setObjectName("cancelButton")
-        layout.addWidget(self.cancel_button)
         
         return layout
     
@@ -352,7 +342,6 @@ class StationsSettingsDialog(QDialog):
                 self.route_details_widget.apply_theme(self.theme_manager)
             if self.preferences_widget:
                 self.preferences_widget.apply_theme(self.theme_manager)
-            # Note: via_stations_widget doesn't have apply_theme method
             
         except Exception as e:
             logger.error(f"Error applying theme: {e}")
@@ -372,19 +361,14 @@ class StationsSettingsDialog(QDialog):
         
         from_station = self.station_selection_widget.get_from_station()
         to_station = self.station_selection_widget.get_to_station()
-        via_stations = self.dialog_state.via_stations
-        
-        self.route_calculation_handler.calculate_route(from_station, to_station, via_stations)
+        self.route_calculation_handler.calculate_route(from_station, to_station, [])
     
     
     def _clear_route(self):
         """Clear the current route."""
-        self.dialog_state.clear_via_stations()
         self.dialog_state.clear_route_data()
         if self.route_details_widget:
             self.route_details_widget.clear_route_data()
-        if self.via_stations_widget:
-            self.via_stations_widget.clear_via_stations()
         self._update_status("Route cleared")
     
     def _on_route_calculated(self, route_data: Dict[str, Any]):
@@ -471,7 +455,7 @@ class StationsSettingsDialog(QDialog):
         return {
             'from_station': self.station_selection_widget.get_from_station(),
             'to_station': self.station_selection_widget.get_to_station(),
-            'via_stations': self.dialog_state.via_stations,
+            'via_stations': [],
             'departure_time': self.dialog_state.get_departure_time(),
             'route_data': self.dialog_state.get_route_data()
         }
@@ -484,9 +468,6 @@ class StationsSettingsDialog(QDialog):
             
             if 'to_station' in route_config and self.station_selection_widget:
                 self.station_selection_widget.set_to_station(route_config['to_station'])
-            
-            if 'via_stations' in route_config:
-                self.dialog_state.set_via_stations(route_config['via_stations'])
             
             if 'departure_time' in route_config and self.route_details_widget:
                 self.route_details_widget.set_departure_time(route_config['departure_time'])

@@ -41,8 +41,6 @@ class PreferencesWidget(QWidget):
         self.show_intermediate_checkbox = None
         self.avoid_london_checkbox = None
         self.prefer_direct_checkbox = None
-        self.max_changes_spin = None
-        self.max_journey_time_spin = None
         
         # Button group for radio buttons
         self.optimization_group = None
@@ -64,10 +62,6 @@ class PreferencesWidget(QWidget):
         # Route preferences
         preferences_group = self._create_preferences_group()
         layout.addWidget(preferences_group)
-        
-        # Constraints
-        constraints_group = self._create_constraints_group()
-        layout.addWidget(constraints_group)
         
         # Add stretch
         layout.addStretch()
@@ -114,23 +108,6 @@ class PreferencesWidget(QWidget):
         
         return group
     
-    def _create_constraints_group(self) -> QGroupBox:
-        """Create the journey constraints group box."""
-        group = QGroupBox("Journey Constraints")
-        layout = QGridLayout(group)
-        
-        # Maximum changes
-        layout.addWidget(QLabel("Maximum changes:"), 0, 0)
-        self.max_changes_spin = HorizontalSpinWidget(0, 10, 3, theme_manager=self.theme_manager)
-        layout.addWidget(self.max_changes_spin, 0, 1)
-        
-        # Maximum journey time
-        layout.addWidget(QLabel("Maximum journey time (hours):"), 1, 0)
-        self.max_journey_time_spin = HorizontalSpinWidget(1, 24, 8, theme_manager=self.theme_manager)
-        layout.addWidget(self.max_journey_time_spin, 1, 1)
-        
-        return group
-    
     def _connect_signals(self):
         """Connect signals and slots."""
         # Optimization radio buttons
@@ -145,11 +122,6 @@ class PreferencesWidget(QWidget):
         if self.prefer_direct_checkbox:
             self.prefer_direct_checkbox.toggled.connect(self._on_preferences_changed)
         
-        # Spin widgets
-        if self.max_changes_spin:
-            self.max_changes_spin.valueChanged.connect(self._on_preferences_changed)
-        if self.max_journey_time_spin:
-            self.max_journey_time_spin.valueChanged.connect(self._on_preferences_changed)
     
     def _on_preferences_changed(self):
         """Handle preferences change."""
@@ -164,8 +136,6 @@ class PreferencesWidget(QWidget):
             'show_intermediate_stations': self.show_intermediate_checkbox.isChecked() if self.show_intermediate_checkbox else True,
             'avoid_london': self.avoid_london_checkbox.isChecked() if self.avoid_london_checkbox else False,
             'prefer_direct': self.prefer_direct_checkbox.isChecked() if self.prefer_direct_checkbox else False,
-            'max_changes': self.max_changes_spin.value() if self.max_changes_spin else 3,
-            'max_journey_time': self.max_journey_time_spin.value() if self.max_journey_time_spin else 8
         }
     
     def set_preferences(self, preferences: Dict[str, Any]):
@@ -189,13 +159,6 @@ class PreferencesWidget(QWidget):
             if 'prefer_direct' in preferences and self.prefer_direct_checkbox:
                 self.prefer_direct_checkbox.setChecked(preferences['prefer_direct'])
             
-            # Spin widgets
-            if 'max_changes' in preferences and self.max_changes_spin:
-                self.max_changes_spin.setValue(preferences['max_changes'])
-            
-            if 'max_journey_time' in preferences and self.max_journey_time_spin:
-                self.max_journey_time_spin.setValue(preferences['max_journey_time'])
-            
             logger.debug(f"Preferences set: {list(preferences.keys())}")
             
         except Exception as e:
@@ -208,8 +171,6 @@ class PreferencesWidget(QWidget):
             'show_intermediate_stations': True,
             'avoid_london': False,
             'prefer_direct': False,
-            'max_changes': 3,
-            'max_journey_time': 8
         }
         self.set_preferences(defaults)
         logger.debug("Preferences reset to defaults")
@@ -226,10 +187,6 @@ class PreferencesWidget(QWidget):
             self.avoid_london_checkbox.setEnabled(enabled)
         if self.prefer_direct_checkbox:
             self.prefer_direct_checkbox.setEnabled(enabled)
-        if self.max_changes_spin:
-            self.max_changes_spin.setEnabled(enabled)
-        if self.max_journey_time_spin:
-            self.max_journey_time_spin.setEnabled(enabled)
     
     def apply_theme(self, theme_manager):
         """Apply theme to the widget."""

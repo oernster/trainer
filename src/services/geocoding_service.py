@@ -135,6 +135,7 @@ class GeocodingThread:
 
 # Predefined coordinates for common cities to reduce API calls
 CITY_COORDINATES = {
+    # UK Cities
     "london": (51.5074, -0.1278),
     "manchester": (53.4808, -2.2426),
     "birmingham": (52.4862, -1.8904),
@@ -155,12 +156,58 @@ CITY_COORDINATES = {
     "brighton": (50.8225, -0.1372),
     "canterbury": (51.2802, 1.0789),
     "winchester": (51.0632, -1.3080),
+    
+    # Major European Cities
+    "paris": (48.8566, 2.3522),
+    "berlin": (52.5200, 13.4050),
+    "madrid": (40.4168, -3.7038),
+    "rome": (41.9028, 12.4964),
+    "amsterdam": (52.3676, 4.9041),
+    "brussels": (50.8503, 4.3517),
+    "vienna": (48.2082, 16.3738),
+    "zurich": (47.3769, 8.5417),
+    "stockholm": (59.3293, 18.0686),
+    "copenhagen": (55.6761, 12.5683),
+    "oslo": (59.9139, 10.7522),
+    "helsinki": (60.1699, 24.9384),
+    "dublin": (53.3498, -6.2603),
+    "lisbon": (38.7223, -9.1393),
+    "athens": (37.9838, 23.7275),
+    "prague": (50.0755, 14.4378),
+    "budapest": (47.4979, 19.0402),
+    "warsaw": (52.2297, 21.0122),
+    
+    # Major World Cities
+    "new york": (40.7128, -74.0060),
+    "los angeles": (34.0522, -118.2437),
+    "chicago": (41.8781, -87.6298),
+    "toronto": (43.6532, -79.3832),
+    "vancouver": (49.2827, -123.1207),
+    "sydney": (-33.8688, 151.2093),
+    "melbourne": (-37.8136, 144.9631),
+    "tokyo": (35.6762, 139.6503),
+    "beijing": (39.9042, 116.4074),
+    "shanghai": (31.2304, 121.4737),
+    "mumbai": (19.0760, 72.8777),
+    "delhi": (28.7041, 77.1025),
+    "singapore": (1.3521, 103.8198),
+    "hong kong": (22.3193, 114.1694),
+    "dubai": (25.2048, 55.2708),
+    "moscow": (55.7558, 37.6176),
+    "istanbul": (41.0082, 28.9784),
+    "cairo": (30.0444, 31.2357),
+    "cape town": (-33.9249, 18.4241),
+    "johannesburg": (-26.2041, 28.0473),
+    "sao paulo": (-23.5505, -46.6333),
+    "rio de janeiro": (-22.9068, -43.1729),
+    "buenos aires": (-34.6118, -58.3960),
+    "mexico city": (19.4326, -99.1332),
 }
 
 
 def get_city_coordinates(city_name: str) -> Optional[Tuple[float, float]]:
     """
-    Get coordinates for a city, checking predefined list first.
+    Get coordinates for a city, checking predefined list first, then online geocoding.
     
     Args:
         city_name: Name of the city
@@ -172,4 +219,47 @@ def get_city_coordinates(city_name: str) -> Optional[Tuple[float, float]]:
         return None
         
     clean_name = city_name.strip().lower()
-    return CITY_COORDINATES.get(clean_name)
+    
+    # First check predefined coordinates
+    coords = CITY_COORDINATES.get(clean_name)
+    if coords:
+        return coords
+    
+    # If not found, try online geocoding as fallback
+    try:
+        service = GeocodingService()
+        return service.geocode_city_sync(city_name)
+    except Exception as e:
+        logger.error(f"Error in fallback geocoding for '{city_name}': {e}")
+        return None
+
+
+def get_available_cities() -> list[str]:
+    """
+    Get list of available cities for autocomplete.
+    
+    Returns:
+        List of city names sorted alphabetically
+    """
+    return sorted(CITY_COORDINATES.keys())
+
+
+def get_cities_matching(prefix: str) -> list[str]:
+    """
+    Get cities that match the given prefix for autocomplete.
+    
+    Args:
+        prefix: The prefix to match against
+        
+    Returns:
+        List of matching city names
+    """
+    if not prefix:
+        return get_available_cities()
+    
+    prefix_lower = prefix.lower().strip()
+    matching_cities = [
+        city for city in CITY_COORDINATES.keys()
+        if city.startswith(prefix_lower)
+    ]
+    return sorted(matching_cities)

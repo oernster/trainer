@@ -354,23 +354,23 @@ class MainWindow(QMainWindow):
 
     def setup_header_buttons(self):
         """Setup header buttons (theme, astronomy toggle, and train settings) in top-right corner."""
-        # Create theme button
+        # Create theme button (150% bigger: 32 * 1.5 = 48)
         self.theme_button = QPushButton(self.theme_manager.get_theme_icon(), self)
         self.theme_button.clicked.connect(self.toggle_theme)
         self.theme_button.setToolTip(self.theme_manager.get_theme_tooltip())
-        self.theme_button.setFixedSize(32, 32)
+        self.theme_button.setFixedSize(48, 48)
         
-        # Create astronomy settings button
+        # Create astronomy settings button (150% bigger: 32 * 1.5 = 48)
         self.astronomy_button = QPushButton("🔭", self)
         self.astronomy_button.clicked.connect(self.show_astronomy_settings_dialog)
         self.astronomy_button.setToolTip("Astronomy Settings")
-        self.astronomy_button.setFixedSize(32, 32)
+        self.astronomy_button.setFixedSize(48, 48)
         
-        # Create train settings button
+        # Create train settings button (150% bigger: 32 * 1.5 = 48)
         self.train_button = QPushButton("🚅", self)
         self.train_button.clicked.connect(self.show_stations_settings_dialog)
         self.train_button.setToolTip("Train Settings")
-        self.train_button.setFixedSize(32, 32)
+        self.train_button.setFixedSize(48, 48)
         
         # Apply styling to all buttons
         self.apply_header_button_styling()
@@ -405,6 +405,7 @@ class MainWindow(QMainWindow):
                 border-radius: 4px;
                 color: #ffffff;
                 padding: 4px;
+                font-size: 24px;
             }
             QPushButton:hover {
                 background-color: #404040;
@@ -422,6 +423,7 @@ class MainWindow(QMainWindow):
                 border-radius: 4px;
                 color: #000000;
                 padding: 4px;
+                font-size: 24px;
             }
             QPushButton:hover {
                 background-color: #e0e0e0;
@@ -447,10 +449,10 @@ class MainWindow(QMainWindow):
 
     def position_header_buttons(self):
         """Position header buttons (theme, astronomy, and train) in the top-right corner."""
-        button_width = 32
-        button_spacing = 8
-        right_margin = 8
-        top_margin = 8
+        button_width = 48  # Updated for 150% bigger buttons
+        button_spacing = 12  # Increased spacing proportionally (8 * 1.5 = 12)
+        right_margin = 12    # Increased margin proportionally (8 * 1.5 = 12)
+        top_margin = 12      # Increased margin proportionally (8 * 1.5 = 12)
         
         if self.astronomy_button:
             # Astronomy button (rightmost)

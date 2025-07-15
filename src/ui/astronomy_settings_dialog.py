@@ -22,13 +22,14 @@ from PySide6.QtWidgets import (
     QMessageBox,
     QListWidget,
     QListWidgetItem,
+    QCompleter,
 )
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt, Signal, QStringListModel
 from PySide6.QtGui import QFont
 from ..managers.config_manager import ConfigManager, ConfigData, ConfigurationError
 from ..managers.theme_manager import ThemeManager
 from ..managers.astronomy_config import AstronomyConfig
-from ..services.geocoding_service import get_city_coordinates
+from ..services.geocoding_service import get_city_coordinates, get_available_cities, get_cities_matching
 # Use a direct title since __astronomy_settings_title__ may not exist
 ASTRONOMY_SETTINGS_TITLE = "Astronomy Settings"
 
@@ -143,11 +144,14 @@ class AstronomySettingsDialog(QDialog):
         info_label.setStyleSheet("color: #666666; font-style: italic; margin-bottom: 10px;")
         location_form.addRow(info_label)
 
-        # Location settings
+        # Location settings with autocomplete
         location_layout = QHBoxLayout()
         self.astronomy_location_edit = QLineEdit()
         self.astronomy_location_edit.setPlaceholderText("London")
         self.astronomy_location_edit.setText("London")
+        
+        # Set up autocomplete
+        self.setup_city_autocomplete()
         
         self.lookup_coordinates_button = QPushButton("Lookup")
         self.lookup_coordinates_button.setFixedWidth(80)
@@ -230,6 +234,25 @@ class AstronomySettingsDialog(QDialog):
         main_layout.addLayout(right_column)
 
         layout.addLayout(main_layout)
+
+    def setup_city_autocomplete(self):
+        """Set up autocomplete functionality for the city input field."""
+        try:
+            # Get list of available cities
+            cities = get_available_cities()
+            
+            # Create completer with city list
+            completer = QCompleter(cities, self)
+            completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
+            completer.setFilterMode(Qt.MatchFlag.MatchStartsWith)
+            
+            # Set completer on the location edit field
+            self.astronomy_location_edit.setCompleter(completer)
+            
+            logger.debug(f"Set up autocomplete with {len(cities)} cities")
+            
+        except Exception as e:
+            logger.error(f"Error setting up city autocomplete: {e}")
 
     def lookup_coordinates(self):
         """Lookup coordinates for the entered city name."""
@@ -472,19 +495,20 @@ class AstronomySettingsDialog(QDialog):
                 border: 1px solid #1976d2;
             }
             QPushButton {
-                background-color: #f0f0f0;
-                border: 1px solid #cccccc;
+                background-color: #1976d2;
+                border: 1px solid #1976d2;
                 border-radius: 4px;
                 padding: 6px 12px;
-                color: #1976d2;
+                color: #ffffff;
+                font-weight: bold;
             }
             QPushButton:hover {
-                background-color: #e0e0e0;
-                border-color: #1976d2;
+                background-color: #1565c0;
+                border-color: #1565c0;
             }
             QPushButton:pressed {
-                background-color: #1976d2;
-                color: #ffffff;
+                background-color: #0d47a1;
+                border-color: #0d47a1;
             }
             QLabel {
                 color: #1976d2;
@@ -543,19 +567,20 @@ class AstronomySettingsDialog(QDialog):
                 border: 1px solid #1976d2;
             }
             QPushButton {
-                background-color: #2d2d2d;
-                border: 1px solid #404040;
+                background-color: #1976d2;
+                border: 1px solid #1976d2;
                 border-radius: 4px;
                 padding: 6px 12px;
                 color: #ffffff;
+                font-weight: bold;
             }
             QPushButton:hover {
-                background-color: #404040;
-                border-color: #1976d2;
+                background-color: #1565c0;
+                border-color: #1565c0;
             }
             QPushButton:pressed {
-                background-color: #1976d2;
-                color: #ffffff;
+                background-color: #0d47a1;
+                border-color: #0d47a1;
             }
             QLabel {
                 color: #ffffff;
