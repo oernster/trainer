@@ -194,35 +194,6 @@
       }
     },
     {
-      "from_station": "Guildford",
-      "to_station": "Farnborough North",
-      "connection_type": "North Downs Line",
-      "time_minutes": 26,
-      "description": "Direct train on North Downs Line",
-      "walking_distance_m": 0,
-      "accessibility": "step_free_access"
-    },
-    {
-      "from_station": "London Waterloo",
-      "to_station": "Farnborough North",
-      "connection_type": "INTERCHANGE",
-      "time_minutes": 71,
-      "description": "London Waterloo to Guildford (Portsmouth Direct Line), then Guildford to Farnborough North (North Downs Line)",
-      "lines_used": ["Portsmouth Direct Line", "North Downs Line"],
-      "walking_distance_m": 100,
-      "accessibility": "step_free_access"
-    },
-    {
-      "from_station": "Farnborough North",
-      "to_station": "London Waterloo",
-      "connection_type": "INTERCHANGE",
-      "time_minutes": 71,
-      "description": "Farnborough North to Guildford (North Downs Line), then Guildford to London Waterloo (Portsmouth Direct Line)",
-      "lines_used": ["North Downs Line", "Portsmouth Direct Line"],
-      "walking_distance_m": 100,
-      "accessibility": "step_free_access"
-    },
-    {
       "from_station": "Reading",
       "to_station": "Farnborough North",
       "connection_type": "North Downs Line",
@@ -572,6 +543,15 @@
     "description": "Automatically generate walking connections between stations within max_distance using Haversine calculation"
   },
   "direct_connections": [
+    {
+      "from_station": "Reading",
+      "to_station": "London Paddington",
+      "connection_type": "Great Western Main Line",
+      "time_minutes": 25,
+      "description": "Direct train on Great Western Main Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
     {
       "from_station": "London Kings Cross",
       "to_station": "Edinburgh",

@@ -1302,10 +1302,6 @@ class RouteService(IRouteService):
                 walking_distance_m = conn.get('walking_distance_m', 500)
                 description = conn.get('description', '')
                 
-                # Special logging for Farnborough connections
-                if ('Farnborough' in from_station and 'Farnborough' in to_station):
-                    self.logger.warning(f"Found Farnborough connection: {from_station} → {to_station}, type: {connection_type}")
-                
                 # Only add if both stations exist in the graph
                 if from_station in graph and to_station in graph:
                     # Calculate distance in km
