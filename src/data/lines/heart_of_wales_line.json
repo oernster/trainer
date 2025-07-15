@@ -1,828 +1,448 @@
 {
-  "metadata": {
-    "line_name": "Heart of Wales Line",
-    "description": "Shrewsbury to Swansea via Llandrindod Wells",
-    "operator": "Transport for Wales",
-    "total_stations": 34,
-    "frequency": {
-      "weekday_peak": "Every 4 hours",
-      "weekday_off_peak": "Every 4 hours",
-      "weekend": "Every 4 hours",
-      "night": "No service"
-    }
-  },
+  "id": "heart_of_wales_line",
+  "name": "Heart of Wales Line",
   "stations": [
     {
-      "name": "Shrewsbury",
+      "id": "swansea",
+      "name": "Swansea",
       "coordinates": {
-        "lat": 52.7081,
-        "lng": -2.7531
+        "lat": 51.6254,
+        "lng": -3.9433
       },
-      "interchange": [
-        "Welsh Marches Line",
-        "Cambrian Line"
+      "connections": [
+        {
+          "to": "llanelli",
+          "type": "rail",
+          "duration": 15
+        }
       ],
-      "times": {
-        "morning": [
-          "05:30",
-          "09:30"
-        ],
-        "afternoon": [
-          "13:30",
-          "17:30"
-        ],
-        "evening": [
-          "21:30"
-        ],
-        "night": []
-      }
+      "interchanges": [
+        {
+          "line": "great_western_main_line",
+          "station": "swansea"
+        }
+      ]
     },
     {
-      "name": "Church Stretton",
+      "id": "llanelli",
+      "name": "Llanelli",
       "coordinates": {
-        "lat": 52.5381,
-        "lng": -2.8031
+        "lat": 51.6839,
+        "lng": -4.1628
       },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "05:45",
-          "09:45"
-        ],
-        "afternoon": [
-          "13:45",
-          "17:45"
-        ],
-        "evening": [
-          "21:45"
-        ],
-        "night": []
-      }
+      "connections": [
+        {
+          "to": "swansea",
+          "type": "rail",
+          "duration": 15
+        },
+        {
+          "to": "pontarddulais",
+          "type": "rail",
+          "duration": 11
+        }
+      ]
     },
     {
-      "name": "Craven Arms",
+      "id": "pontarddulais",
+      "name": "Pontarddulais",
       "coordinates": {
-        "lat": 52.4381,
-        "lng": -2.8381
+        "lat": 51.7204,
+        "lng": -4.0411
       },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "06:00",
-          "10:00"
-        ],
-        "afternoon": [
-          "14:00",
-          "18:00"
-        ],
-        "evening": [
-          "22:00"
-        ],
-        "night": []
-      }
+      "connections": [
+        {
+          "to": "llanelli",
+          "type": "rail",
+          "duration": 11
+        },
+        {
+          "to": "pantyffynnon",
+          "type": "rail",
+          "duration": 7
+        }
+      ]
     },
     {
-      "name": "Broome",
+      "id": "pantyffynnon",
+      "name": "Pantyffynnon",
       "coordinates": {
-        "lat": 52.3681,
-        "lng": -2.8731
+        "lat": 51.7897,
+        "lng": -3.9984
       },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "06:10",
-          "10:10"
-        ],
-        "afternoon": [
-          "14:10",
-          "18:10"
-        ],
-        "evening": [
-          "22:10"
-        ],
-        "night": []
-      }
+      "connections": [
+        {
+          "to": "pontarddulais",
+          "type": "rail",
+          "duration": 7
+        },
+        {
+          "to": "ammanford",
+          "type": "rail",
+          "duration": 5
+        }
+      ]
     },
     {
-      "name": "Hopton Heath",
+      "id": "ammanford",
+      "name": "Ammanford",
       "coordinates": {
-        "lat": 52.3481,
-        "lng": -2.9231
+        "lat": 51.7950,
+        "lng": -3.9899
       },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "06:20",
-          "10:20"
-        ],
-        "afternoon": [
-          "14:20",
-          "18:20"
-        ],
-        "evening": [
-          "22:20"
-        ],
-        "night": []
-      }
+      "connections": [
+        {
+          "to": "pantyffynnon",
+          "type": "rail",
+          "duration": 5
+        },
+        {
+          "to": "llandybie",
+          "type": "rail",
+          "duration": 6
+        }
+      ]
     },
     {
-      "name": "Bucknell",
+      "id": "llandybie",
+      "name": "Llandybie",
       "coordinates": {
-        "lat": 52.3581,
-        "lng": -2.9981
+        "lat": 51.8268,
+        "lng": -3.9820
       },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "06:30",
-          "10:30"
-        ],
-        "afternoon": [
-          "14:30",
-          "18:30"
-        ],
-        "evening": [
-          "22:30"
-        ],
-        "night": []
-      }
+      "connections": [
+        {
+          "to": "ammanford",
+          "type": "rail",
+          "duration": 6
+        },
+        {
+          "to": "llandeilo",
+          "type": "rail",
+          "duration": 12
+        }
+      ]
     },
     {
-      "name": "Knighton",
+      "id": "llandeilo",
+      "name": "Llandeilo",
       "coordinates": {
-        "lat": 52.3431,
-        "lng": -3.0481
+        "lat": 51.8868,
+        "lng": -3.9911
       },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "06:40",
-          "10:40"
-        ],
-        "afternoon": [
-          "14:40",
-          "18:40"
-        ],
-        "evening": [
-          "22:40"
-        ],
-        "night": []
-      }
+      "connections": [
+        {
+          "to": "llandybie",
+          "type": "rail",
+          "duration": 12
+        },
+        {
+          "to": "llangadog",
+          "type": "rail",
+          "duration": 14
+        }
+      ]
     },
     {
-      "name": "Knucklas",
-      "coordinates": {
-        "lat": 52.3231,
-        "lng": -3.1231
-      },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "06:50",
-          "10:50"
-        ],
-        "afternoon": [
-          "14:50",
-          "18:50"
-        ],
-        "evening": [
-          "22:50"
-        ],
-        "night": []
-      }
-    },
-    {
-      "name": "Llangunllo",
-      "coordinates": {
-        "lat": 52.2981,
-        "lng": -3.1681
-      },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "07:00",
-          "11:00"
-        ],
-        "afternoon": [
-          "15:00",
-          "19:00"
-        ],
-        "evening": [
-          "23:00"
-        ],
-        "night": []
-      }
-    },
-    {
-      "name": "Llanbister Road",
-      "coordinates": {
-        "lat": 52.2731,
-        "lng": -3.2431
-      },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "07:10",
-          "11:10"
-        ],
-        "afternoon": [
-          "15:10",
-          "19:10"
-        ],
-        "evening": [
-          "23:10"
-        ],
-        "night": []
-      }
-    },
-    {
-      "name": "Dolau",
-      "coordinates": {
-        "lat": 52.2581,
-        "lng": -3.3031
-      },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "07:20",
-          "11:20"
-        ],
-        "afternoon": [
-          "15:20",
-          "19:20"
-        ],
-        "evening": [
-          "23:20"
-        ],
-        "night": []
-      }
-    },
-    {
-      "name": "Penybont",
-      "coordinates": {
-        "lat": 52.2431,
-        "lng": -3.3431
-      },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "07:30",
-          "11:30"
-        ],
-        "afternoon": [
-          "15:30",
-          "19:30"
-        ],
-        "evening": [
-          "23:30"
-        ],
-        "night": []
-      }
-    },
-    {
-      "name": "Llandrindod Wells",
-      "coordinates": {
-        "lat": 52.2431,
-        "lng": -3.3831
-      },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "07:40",
-          "11:40"
-        ],
-        "afternoon": [
-          "15:40",
-          "19:40"
-        ],
-        "evening": [
-          "23:40"
-        ],
-        "night": []
-      }
-    },
-    {
-      "name": "Builth Road",
-      "coordinates": {
-        "lat": 52.1581,
-        "lng": -3.4031
-      },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "07:50",
-          "11:50"
-        ],
-        "afternoon": [
-          "15:50",
-          "19:50"
-        ],
-        "evening": [
-          "23:50"
-        ],
-        "night": []
-      }
-    },
-    {
-      "name": "Cilmeri",
-      "coordinates": {
-        "lat": 52.1331,
-        "lng": -3.4331
-      },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "08:00",
-          "12:00"
-        ],
-        "afternoon": [
-          "16:00",
-          "20:00"
-        ],
-        "evening": [
-          "00:00"
-        ],
-        "night": []
-      }
-    },
-    {
-      "name": "Garth",
-      "coordinates": {
-        "lat": 52.1081,
-        "lng": -3.4781
-      },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "08:10",
-          "12:10"
-        ],
-        "afternoon": [
-          "16:10",
-          "20:10"
-        ],
-        "evening": [
-          "00:10"
-        ],
-        "night": []
-      }
-    },
-    {
-      "name": "Llangammarch",
-      "coordinates": {
-        "lat": 52.1131,
-        "lng": -3.5531
-      },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "08:20",
-          "12:20"
-        ],
-        "afternoon": [
-          "16:20",
-          "20:20"
-        ],
-        "evening": [
-          "00:20"
-        ],
-        "night": []
-      }
-    },
-    {
-      "name": "Llanwrtyd",
-      "coordinates": {
-        "lat": 52.1031,
-        "lng": -3.6331
-      },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "08:30",
-          "12:30"
-        ],
-        "afternoon": [
-          "16:30",
-          "20:30"
-        ],
-        "evening": [
-          "00:30"
-        ],
-        "night": []
-      }
-    },
-    {
-      "name": "Sugar Loaf",
-      "coordinates": {
-        "lat": 52.0581,
-        "lng": -3.7231
-      },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "08:40",
-          "12:40"
-        ],
-        "afternoon": [
-          "16:40",
-          "20:40"
-        ],
-        "evening": [
-          "00:40"
-        ],
-        "night": []
-      }
-    },
-    {
-      "name": "Cynghordy",
-      "coordinates": {
-        "lat": 52.0231,
-        "lng": -3.7981
-      },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "08:50",
-          "12:50"
-        ],
-        "afternoon": [
-          "16:50",
-          "20:50"
-        ],
-        "evening": [
-          "00:50"
-        ],
-        "night": []
-      }
-    },
-    {
-      "name": "Llandovery",
-      "coordinates": {
-        "lat": 51.9981,
-        "lng": -3.8031
-      },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "09:00",
-          "13:00"
-        ],
-        "afternoon": [
-          "17:00",
-          "21:00"
-        ],
-        "evening": [
-          "01:00"
-        ],
-        "night": []
-      }
-    },
-    {
-      "name": "Llanwrda",
-      "coordinates": {
-        "lat": 51.9731,
-        "lng": -3.8531
-      },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "09:10",
-          "13:10"
-        ],
-        "afternoon": [
-          "17:10",
-          "21:10"
-        ],
-        "evening": [
-          "01:10"
-        ],
-        "night": []
-      }
-    },
-    {
+      "id": "llangadog",
       "name": "Llangadog",
       "coordinates": {
         "lat": 51.9481,
-        "lng": -3.8981
+        "lng": -3.8929
       },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "09:20",
-          "13:20"
-        ],
-        "afternoon": [
-          "17:20",
-          "21:20"
-        ],
-        "evening": [
-          "01:20"
-        ],
-        "night": []
-      }
+      "connections": [
+        {
+          "to": "llandeilo",
+          "type": "rail",
+          "duration": 14
+        },
+        {
+          "to": "llanwrtyd",
+          "type": "rail",
+          "duration": 32
+        }
+      ]
     },
     {
-      "name": "Llandeilo",
+      "id": "llanwrtyd",
+      "name": "Llanwrtyd",
       "coordinates": {
-        "lat": 51.8831,
-        "lng": -3.9881
+        "lat": 52.1066,
+        "lng": -3.6405
       },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "09:30",
-          "13:30"
-        ],
-        "afternoon": [
-          "17:30",
-          "21:30"
-        ],
-        "evening": [
-          "01:30"
-        ],
-        "night": []
-      }
+      "connections": [
+        {
+          "to": "llangadog",
+          "type": "rail",
+          "duration": 32
+        },
+        {
+          "to": "sugar_loaf",
+          "type": "rail",
+          "duration": 10
+        }
+      ]
     },
     {
-      "name": "Ffairfach",
+      "id": "sugar_loaf",
+      "name": "Sugar Loaf",
       "coordinates": {
-        "lat": 51.8731,
-        "lng": -4.0031
+        "lat": 52.1457,
+        "lng": -3.5481
       },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "09:35",
-          "13:35"
-        ],
-        "afternoon": [
-          "17:35",
-          "21:35"
-        ],
-        "evening": [
-          "01:35"
-        ],
-        "night": []
-      }
+      "connections": [
+        {
+          "to": "llanwrtyd",
+          "type": "rail",
+          "duration": 10
+        },
+        {
+          "to": "llandrindod",
+          "type": "rail",
+          "duration": 24
+        }
+      ]
     },
     {
-      "name": "Llandybie",
+      "id": "llandrindod",
+      "name": "Llandrindod",
       "coordinates": {
-        "lat": 51.8131,
-        "lng": -4.0331
+        "lat": 52.2426,
+        "lng": -3.3792
       },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "09:45",
-          "13:45"
-        ],
-        "afternoon": [
-          "17:45",
-          "21:45"
-        ],
-        "evening": [
-          "01:45"
-        ],
-        "night": []
-      }
+      "connections": [
+        {
+          "to": "sugar_loaf",
+          "type": "rail",
+          "duration": 24
+        },
+        {
+          "to": "pen_y_bont",
+          "type": "rail",
+          "duration": 15
+        }
+      ]
     },
     {
-      "name": "Ammanford",
+      "id": "pen_y_bont",
+      "name": "Pen-y-Bont",
       "coordinates": {
-        "lat": 51.7931,
-        "lng": -4.0031
+        "lat": 52.2665,
+        "lng": -3.3206
       },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "09:55",
-          "13:55"
-        ],
-        "afternoon": [
-          "17:55",
-          "21:55"
-        ],
-        "evening": [
-          "01:55"
-        ],
-        "night": []
-      }
+      "connections": [
+        {
+          "to": "llandrindod",
+          "type": "rail",
+          "duration": 15
+        },
+        {
+          "to": "dolau",
+          "type": "rail",
+          "duration": 8
+        }
+      ]
     },
     {
-      "name": "Pantyffynnon",
+      "id": "dolau",
+      "name": "Dolau",
       "coordinates": {
-        "lat": 51.7731,
-        "lng": -4.0331
+        "lat": 52.3077,
+        "lng": -3.2921
       },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "10:00",
-          "14:00"
-        ],
-        "afternoon": [
-          "18:00",
-          "22:00"
-        ],
-        "evening": [
-          "02:00"
-        ],
-        "night": []
-      }
+      "connections": [
+        {
+          "to": "pen_y_bont",
+          "type": "rail",
+          "duration": 8
+        },
+        {
+          "to": "llanbister_road",
+          "type": "rail",
+          "duration": 9
+        }
+      ]
     },
     {
-      "name": "Pontarddulais",
+      "id": "llanbister_road",
+      "name": "Llanbister Road",
       "coordinates": {
-        "lat": 51.7231,
-        "lng": -4.0481
+        "lat": 52.3493,
+        "lng": -3.2677
       },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "10:10",
-          "14:10"
-        ],
-        "afternoon": [
-          "18:10",
-          "22:10"
-        ],
-        "evening": [
-          "02:10"
-        ],
-        "night": []
-      }
+      "connections": [
+        {
+          "to": "dolau",
+          "type": "rail",
+          "duration": 9
+        },
+        {
+          "to": "knighton",
+          "type": "rail",
+          "duration": 20
+        }
+      ]
     },
     {
-      "name": "Llangennech",
+      "id": "knighton",
+      "name": "Knighton",
       "coordinates": {
-        "lat": 51.6831,
-        "lng": -4.0881
+        "lat": 52.3435,
+        "lng": -3.0476
       },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "10:20",
-          "14:20"
-        ],
-        "afternoon": [
-          "18:20",
-          "22:20"
-        ],
-        "evening": [
-          "02:20"
-        ],
-        "night": []
-      }
+      "connections": [
+        {
+          "to": "llanbister_road",
+          "type": "rail",
+          "duration": 20
+        },
+        {
+          "to": "knucklas",
+          "type": "rail",
+          "duration": 7
+        }
+      ]
     },
     {
-      "name": "Bynea",
+      "id": "knucklas",
+      "name": "Knucklas",
       "coordinates": {
-        "lat": 51.6631,
-        "lng": -4.1231
+        "lat": 52.3564,
+        "lng": -3.0803
       },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "10:25",
-          "14:25"
-        ],
-        "afternoon": [
-          "18:25",
-          "22:25"
-        ],
-        "evening": [
-          "02:25"
-        ],
-        "night": []
-      }
+      "connections": [
+        {
+          "to": "knighton",
+          "type": "rail",
+          "duration": 7
+        },
+        {
+          "to": "llangunllo",
+          "type": "rail",
+          "duration": 12
+        }
+      ]
     },
     {
-      "name": "Llanelli",
+      "id": "llangunllo",
+      "name": "Llangunllo",
       "coordinates": {
-        "lat": 51.6731,
-        "lng": -4.1631
+        "lat": 52.3771,
+        "lng": -3.1583
       },
-      "interchange": [
-        "West Wales Line"
+      "connections": [
+        {
+          "to": "knucklas",
+          "type": "rail",
+          "duration": 12
+        },
+        {
+          "to": "hopton_heath",
+          "type": "rail",
+          "duration": 9
+        }
+      ]
+    },
+    {
+      "id": "hopton_heath",
+      "name": "Hopton Heath",
+      "coordinates": {
+        "lat": 52.4121,
+        "lng": -2.9967
+      },
+      "connections": [
+        {
+          "to": "llangunllo",
+          "type": "rail",
+          "duration": 9
+        },
+        {
+          "to": "bucknell",
+          "type": "rail",
+          "duration": 11
+        }
+      ]
+    },
+    {
+      "id": "bucknell",
+      "name": "Bucknell",
+      "coordinates": {
+        "lat": 52.3611,
+        "lng": -2.9042
+      },
+      "connections": [
+        {
+          "to": "hopton_heath",
+          "type": "rail",
+          "duration": 11
+        },
+        {
+          "to": "craven_arms",
+          "type": "rail",
+          "duration": 19
+        }
+      ]
+    },
+    {
+      "id": "craven_arms",
+      "name": "Craven Arms",
+      "coordinates": {
+        "lat": 52.4388,
+        "lng": -2.8349
+      },
+      "connections": [
+        {
+          "to": "bucknell",
+          "type": "rail",
+          "duration": 19
+        },
+        {
+          "to": "church_stretton",
+          "type": "rail",
+          "duration": 14
+        }
+      ]
+    },
+    {
+      "id": "church_stretton",
+      "name": "Church Stretton",
+      "coordinates": {
+        "lat": 52.5366,
+        "lng": -2.8000
+      },
+      "connections": [
+        {
+          "to": "craven_arms",
+          "type": "rail",
+          "duration": 14
+        },
+        {
+          "to": "shrewsbury",
+          "type": "rail",
+          "duration": 20
+        }
+      ]
+    },
+    {
+      "id": "shrewsbury",
+      "name": "Shrewsbury",
+      "coordinates": {
+        "lat": 52.7077,
+        "lng": -2.7541
+      },
+      "connections": [
+        {
+          "to": "church_stretton",
+          "type": "rail",
+          "duration": 20
+        }
       ],
-      "times": {
-        "morning": [
-          "10:35",
-          "14:35"
-        ],
-        "afternoon": [
-          "18:35",
-          "22:35"
-        ],
-        "evening": [
-          "02:35"
-        ],
-        "night": []
-      }
-    },
-    {
-      "name": "Gowerton",
-      "coordinates": {
-        "lat": 51.6431,
-        "lng": -4.0431
-      },
-      "interchange": [],
-      "times": {
-        "morning": [
-          "10:45",
-          "14:45"
-        ],
-        "afternoon": [
-          "18:45",
-          "22:45"
-        ],
-        "evening": [
-          "02:45"
-        ],
-        "night": []
-      }
-    },
-    {
-      "name": "Swansea",
-      "coordinates": {
-        "lat": 51.6231,
-        "lng": -3.9431
-      },
-      "interchange": [
-        "South Wales Main Line",
-        "West Wales Line"
-      ],
-      "times": {
-        "morning": [
-          "11:00",
-          "15:00"
-        ],
-        "afternoon": [
-          "19:00",
-          "23:00"
-        ],
-        "evening": [
-          "03:00"
-        ],
-        "night": []
-      }
+      "interchanges": [
+        {
+          "line": "west_midlands_railway",
+          "station": "shrewsbury"
+        }
+      ]
     }
-  ],
-  "service_patterns": {
-    "stopping": {
-      "stations": "all",
-      "description": "Stopping service calling at all stations"
-    },
-    "semi_fast": {
-      "stations": [
-        "SSH",
-        "CTT",
-        "BME",
-        "HPT",
-        "KNI",
-        "KNU",
-        "LLT",
-        "DOL",
-        "LLW",
-        "BHR",
-        "GTH",
-        "LNW",
-        "SUG",
-        "LDV",
-        "LNR",
-        "LLL",
-        "FFA",
-        "AMF",
-        "PTF",
-        "LLH",
-        "BYE",
-        "GWN",
-        "Swanwick"
-      ],
-      "description": "Semi-fast service calling at major stations"
-    },
-    "fast": {
-      "stations": [
-        "SSH",
-        "CRV",
-        "HPT",
-        "KNI",
-        "LGO",
-        "DOL",
-        "LLW",
-        "CIM",
-        "LNW",
-        "CYN",
-        "LNR",
-        "LLL",
-        "LLI",
-        "PTF",
-        "LLH",
-        "LLE",
-        "Swanwick"
-      ],
-      "description": "Fast service calling at principal stations"
-    }
-  }
+  ]
 }

@@ -325,9 +325,45 @@ class TrainManager(QObject):
         # if they exist before accessing them
         preferences = {}
         if hasattr(self.config, 'avoid_walking'):
+            # For when avoid_walking is enabled, make it a hard constraint
+            # This will fully exclude walking connections from route calculation
             preferences['avoid_walking'] = self.config.avoid_walking
+            # Don't use a weight - let the algorithm actually find a non-walking route
+            if self.config.avoid_walking:
+                preferences['exclude_walking'] = True
+            else:
+                # When avoid_walking is disabled, just use a weight to prefer non-walking routes
+                preferences['walking_weight'] = 10.0  # High weight to prefer non-walking connections
+        
         if hasattr(self.config, 'prefer_direct'):
             preferences['prefer_direct'] = self.config.prefer_direct
+            
+        # Check for current location - safely with getattr
+        # Try to look for location data in various potential attributes
+        try:
+            # Dynamically check for any location-related properties
+            for location_attr in ['current_location', 'user_location', 'location']:
+                if hasattr(self.config, location_attr):
+                    location_value = getattr(self.config, location_attr)
+                    if location_value:
+                        preferences['near_location'] = location_value
+                        logger.info(f"Using user location from config.{location_attr}")
+                        break
+            
+            # If we have location settings in station config
+            if hasattr(self.config, 'stations'):
+                stations_config = self.config.stations
+                # Look for location in stations config
+                for location_attr in ['current_location', 'user_location', 'location']:
+                    if hasattr(stations_config, location_attr):
+                        location_value = getattr(stations_config, location_attr)
+                        if location_value:
+                            preferences['near_location'] = location_value
+                            logger.info(f"Using user location from config.stations.{location_attr}")
+                            break
+        except Exception as e:
+            # Don't let location errors affect the main functionality
+            logger.warning(f"Error processing location data: {e}")
             
         # Calculate route using core services with preferences
         route_result = self.route_service.calculate_route(
@@ -415,8 +451,397 @@ class TrainManager(QObject):
                 logger.error(f"Error processing route path: {e}")
         
         if not route_result:
-            logger.error(f"No route found from {self.from_station} to {self.to_station} using core services")
-            return []
+            logger.warning(f"No route found from {self.from_station} to {self.to_station} using core services")
+            
+            # Check if we're trying to avoid walking
+            avoid_walking = False
+            if hasattr(self.config, 'avoid_walking'):
+                avoid_walking = self.config.avoid_walking
+            
+            # Known stations that require walking connections
+            walking_connections = {
+                ("Farnborough North", "Farnborough (Main)"): {"distance_km": 0.9, "time_minutes": 12},
+                ("Farnborough (Main)", "Farnborough North"): {"distance_km": 0.9, "time_minutes": 12},
+                # Add any other known walking connections here
+            }
+            
+            logger.info(f"Avoid walking preference is set to: {avoid_walking}")
+            
+            # Use SimpleRouteFinder as a fallback with appropriate settings
+            from ..managers.simple_route_finder import simple_finder
+            
+            # Make sure SimpleRouteFinder is loaded
+            if not simple_finder.loaded:
+                simple_finder.load_data()
+            
+            # Implementation that focuses on finding routes ONLY through rail connections in the JSON data
+            logger.info(f"Finding route with avoid_walking={avoid_walking}")
+            
+            # Verify the simple_finder is loaded
+            if not simple_finder.loaded:
+                simple_finder.load_data()
+                if not simple_finder.loaded:
+                    logger.error("Could not load data for SimpleRouteFinder - cannot find routes")
+                    route_path = [self.from_station, self.to_station]
+                else:
+                    logger.info("Successfully loaded SimpleRouteFinder data")
+            
+            # Method to verify if two stations are connected by rail according to JSON data
+            def is_rail_connected(station1, station2):
+                # Get all lines for both stations
+                station1_lines = simple_finder.get_lines_for_station(station1)
+                station2_lines = simple_finder.get_lines_for_station(station2)
+                
+                # Find common lines
+                common_lines = set(station1_lines) & set(station2_lines)
+                
+                for line in common_lines:
+                    stations_on_line = simple_finder.get_stations_on_line(line)
+                    
+                    try:
+                        idx1 = stations_on_line.index(station1)
+                        idx2 = stations_on_line.index(station2)
+                        
+                        # Check if stations are adjacent on this line
+                        if abs(idx1 - idx2) == 1:
+                            return True
+                    except ValueError:
+                        continue
+                
+                return False
+            
+            # Method to verify if a route only uses rail connections
+            def is_valid_rail_route(route):
+                if not route or len(route) < 2:
+                    return False
+                    
+                for i in range(len(route) - 1):
+                    # Check if this segment is a walking connection
+                    station_pair = (route[i], route[i+1])
+                    reverse_pair = (route[i+1], route[i])
+                    
+                    # If it's a known walking connection, the route is invalid
+                    if station_pair in walking_connections or reverse_pair in walking_connections:
+                        logger.debug(f"Found walking segment: {route[i]} → {route[i+1]}")
+                        return False
+                    
+                    # Verify stations are directly connected by rail
+                    if avoid_walking and not is_rail_connected(route[i], route[i+1]):
+                        logger.debug(f"Segment not directly connected by rail: {route[i]} → {route[i+1]}")
+                        return False
+                
+                return True
+            
+            # Analyze route complexity based on distance and network
+            def estimate_min_changes(from_station, to_station):
+                """Estimate minimum changes needed based on network analysis"""
+                # Check if stations are on the same line
+                from_lines = simple_finder.get_lines_for_station(from_station)
+                to_lines = simple_finder.get_lines_for_station(to_station)
+                
+                # If they share a line, likely 0-1 changes
+                if set(from_lines) & set(to_lines):
+                    return 0
+                
+                # Known hubs that often require changes
+                hubs = ["London", "Birmingham", "Manchester", "Edinburgh", "Glasgow", "Leeds", "Bristol"]
+                
+                # If one station is a hub and the other isn't, likely at least 1 change
+                is_from_hub = any(hub in from_station for hub in hubs)
+                is_to_hub = any(hub in to_station for hub in hubs)
+                
+                if is_from_hub != is_to_hub:
+                    return 1
+                
+                # Get all interchange stations
+                interchanges = simple_finder.find_interchange_stations()
+                
+                # If both stations are interchanges but not on same line, likely 1-2 changes
+                if from_station in interchanges and to_station in interchanges:
+                    return 1
+                
+                # Otherwise assume 2+ changes for disconnected stations
+                return 2
+            
+            # Analyze if a candidate route is realistic given the UK rail network
+            def is_realistic_route(route, min_expected_changes):
+                if not route or len(route) < 2:
+                    return False
+                
+                # For routes that should have multiple changes, reject suspiciously short routes
+                actual_changes = len(route) - 2  # Number of intermediate stations
+                
+                if min_expected_changes > 0 and actual_changes < min_expected_changes:
+                    logger.warning(f"Route with {actual_changes} changes rejected - expected at least {min_expected_changes}")
+                    return False
+                
+                return True
+            
+            # Search for a valid route using SimpleRouteFinder with increasing change limits
+            route_path = None
+            best_route = None
+            
+            # Estimate minimum changes needed
+            min_expected_changes = estimate_min_changes(self.from_station, self.to_station)
+            logger.info(f"Estimated minimum changes needed: {min_expected_changes}")
+            
+            # Try finding routes with various numbers of changes
+            # Start with min_expected_changes and go up to 9
+            for max_changes in range(max(1, min_expected_changes), 10):
+                logger.debug(f"Trying SimpleRouteFinder with max_changes={max_changes}")
+                
+                # Get a candidate route
+                candidate_route = simple_finder.find_route_with_changes(
+                    self.from_station, self.to_station, max_changes=max_changes
+                )
+                
+                # Skip invalid routes
+                if not candidate_route or len(candidate_route) < 2:
+                    continue
+                
+                # Verify the route doesn't contain walking segments when avoid_walking is enabled
+                valid_route = True
+                if avoid_walking:
+                    valid_route = is_valid_rail_route(candidate_route)
+                
+                # Store as best route if valid (even if we continue searching)
+                if valid_route and (not best_route or len(candidate_route) < len(best_route)):
+                    best_route = candidate_route
+                    logger.debug(f"Updated best route: {len(best_route)} stations with {max_changes} max changes")
+                
+                # Check if route is realistic based on network analysis
+                if valid_route and is_realistic_route(candidate_route, min_expected_changes):
+                    route_path = candidate_route
+                    logger.info(f"Found valid {'rail-only ' if avoid_walking else ''}route with {len(route_path)} stations and {max_changes} max changes")
+                    break
+                    
+                # If we've found a valid route but it wasn't realistic, keep searching
+                # but only up to a reasonable limit
+                if max_changes >= min_expected_changes + 3:
+                    # We've tried enough additional changes, use the best route found so far
+                    if best_route:
+                        route_path = best_route
+                        logger.info(f"Using best route found after trying {max_changes} max changes")
+                        break
+            
+            # If we couldn't find a route, use the best route found or create a minimal direct path
+            if not route_path:
+                if best_route:
+                    route_path = best_route
+                    logger.info(f"Using best route found: {len(route_path)} stations")
+                else:
+                    logger.warning(f"Could not find a valid {'rail-only' if avoid_walking else ''} route - using direct path")
+                    route_path = [self.from_station, self.to_station]
+            
+            logger.info(f"Final route: {' → '.join(route_path)}")
+            
+            # Create a minimal route object with the essential properties needed
+            from ..core.models.route import Route, RouteSegment
+            
+            # Use a dataclass-like approach to create a route object
+            class MinimalRoute:
+                def __init__(self, path, avoid_walking=False):
+                    self.full_path = path
+                    self.from_station = path[0]
+                    self.to_station = path[-1]
+                    self.total_journey_time_minutes = 0
+                    self.total_distance_km = 0
+                    self.changes_required = 0
+                    self.segments = []
+                    self._is_valid = True
+                    
+                    # Create segments between each pair of stations
+                    for i in range(len(path) - 1):
+                        from_stn = path[i]
+                        to_stn = path[i+1]
+                        
+                        # Check if this is a walking connection
+                        station_pair = (from_stn, to_stn)
+                        is_walking = False
+                        distance_km = 10  # Default distance
+                        time_minutes = 15  # Default time
+                        
+                        if station_pair in walking_connections:
+                            is_walking = True
+                            conn_info = walking_connections[station_pair]
+                            distance_km = conn_info.get("distance_km", distance_km)
+                            time_minutes = conn_info.get("time_minutes", time_minutes)
+                        
+                        # If avoid_walking is enabled and this is a walking connection, mark route as invalid
+                        if avoid_walking and is_walking:
+                            # Mark as invalid but still create the segment for display
+                            self._is_valid = False
+                        
+                        # Create segment
+                        segment = MinimalSegment(
+                            from_station=from_stn,
+                            to_station=to_stn,
+                            is_walking=is_walking,
+                            distance_km=distance_km,
+                            time_minutes=time_minutes
+                        )
+                        
+                        self.segments.append(segment)
+                        self.total_journey_time_minutes += time_minutes
+                        self.total_distance_km += distance_km
+                        
+                        # Count changes (each walking segment is a change)
+                        if i > 0 and is_walking:
+                            self.changes_required += 1
+                
+                @property
+                def intermediate_stations(self):
+                    # Return all stations except first and last
+                    return self.full_path[1:-1] if len(self.full_path) > 2 else []
+                    
+                @property
+                def is_valid(self):
+                    return self._is_valid
+            
+            # Helper class for segments
+            class MinimalSegment:
+                def __init__(self, from_station, to_station, is_walking=False, distance_km=10, time_minutes=15):
+                    self.from_station = from_station
+                    self.to_station = to_station
+                    self.line_name = "WALKING" if is_walking else "National Rail"
+                    self.journey_time_minutes = time_minutes
+                    self.distance_km = distance_km
+                    self.is_walking_connection = is_walking
+            
+            # Check if avoid_walking is enabled
+            avoid_walking = False
+            if hasattr(self.config, 'avoid_walking'):
+                avoid_walking = self.config.avoid_walking
+            
+            # If avoid_walking is enabled and we found a route that might contain walking segments,
+            # try to find an alternative route that doesn't require any walking
+            if avoid_walking and any(pair in walking_connections for i in range(len(route_path) - 1)
+                                   for pair in [(route_path[i], route_path[i+1])]):
+                logger.info("Route contains potential walking segments with avoid_walking enabled, searching for alternative...")
+                
+                # Implement Dijkstra's algorithm to find a route that avoids walking connections
+                # Build a weighted graph with high penalties for walking segments
+                graph = {}
+                
+                # Make sure SimpleRouteFinder is loaded to get the network
+                if not simple_finder.loaded:
+                    simple_finder.load_data()
+                
+                # Build a graph based on potential routes with various change counts
+                # First, get several potential routes with different numbers of changes
+                all_routes = []
+                for max_changes in range(2, 7):  # Try with up to 6 changes for maximum coverage
+                    potential_route = simple_finder.find_route_with_changes(
+                        self.from_station, self.to_station, max_changes=max_changes
+                    )
+                    if potential_route and len(potential_route) >= 2:
+                        all_routes.append(potential_route)
+                        logger.debug(f"Found potential route with {len(potential_route)} stations and {max_changes} max changes")
+                
+                # Extract all station pairs from these routes
+                for route in all_routes:
+                    for i in range(len(route) - 1):
+                        from_stn = route[i]
+                        to_stn = route[i+1]
+                        
+                        # Initialize if not already in graph
+                        if from_stn not in graph:
+                            graph[from_stn] = {}
+                        if to_stn not in graph:
+                            graph[to_stn] = {}
+                        
+                        # Check if this is a walking connection
+                        is_walking = (from_stn, to_stn) in walking_connections or (to_stn, from_stn) in walking_connections
+                        
+                        # If avoid_walking is true, completely exclude walking connections from the graph
+                        if avoid_walking and is_walking:
+                            logger.debug(f"Excluding walking connection {from_stn} → {to_stn} from routing graph")
+                            continue
+                        
+                        # For non-walking connections or if avoid_walking is false, add to graph
+                        weight = 1 # All connections now have the same weight since walking is excluded
+                        
+                        # Add to graph (bidirectional)
+                        graph[from_stn][to_stn] = weight
+                        graph[to_stn][from_stn] = weight
+                
+                # Run Dijkstra's algorithm to find path with lowest weight (avoiding walking)
+                import heapq
+                
+                def dijkstra(graph, start, end):
+                    # Initialize
+                    distances = {node: float('infinity') for node in graph}
+                    distances[start] = 0
+                    priority_queue = [(0, start)]
+                    previous = {node: None for node in graph}
+                    
+                    while priority_queue:
+                        current_distance, current_node = heapq.heappop(priority_queue)
+                        
+                        # If we reached the end, we're done
+                        if current_node == end:
+                            break
+                            
+                        # If we've found a better path to the current node, skip
+                        if current_distance > distances[current_node]:
+                            continue
+                            
+                        # Check all neighbors
+                        for neighbor, weight in graph[current_node].items():
+                            distance = current_distance + weight
+                            
+                            # If this path is better, update distance and previous
+                            if distance < distances[neighbor]:
+                                distances[neighbor] = distance
+                                previous[neighbor] = current_node
+                                heapq.heappush(priority_queue, (distance, neighbor))
+                    
+                    # Reconstruct path
+                    if distances[end] == float('infinity'):
+                        return None  # No path found
+                    
+                    path = []
+                    current = end
+                    while current:
+                        path.append(current)
+                        current = previous[current]
+                    
+                    # Reverse to get start->end
+                    path.reverse()
+                    return path
+                
+                # Find a path using the graph (which now excludes walking connections if avoid_walking=true)
+                alternative_path = dijkstra(graph, self.from_station, self.to_station)
+                
+                if alternative_path and len(alternative_path) >= 2:
+                    # Double-check that this alternative path contains no walking segments
+                    contains_walking = False
+                    for i in range(len(alternative_path) - 1):
+                        station_pair = (alternative_path[i], alternative_path[i+1])
+                        reverse_pair = (alternative_path[i+1], alternative_path[i])
+                        if station_pair in walking_connections or reverse_pair in walking_connections:
+                            contains_walking = True
+                            logger.warning(f"Walking segment detected: {station_pair[0]} → {station_pair[1]}")
+                            break
+                    
+                    if not contains_walking:
+                        # We found a valid route without walking!
+                        route_path = alternative_path
+                        logger.info(f"Found alternative non-walking route with {len(route_path)} stations using Dijkstra's algorithm")
+                        
+                        # Log the complete route for debugging
+                        logger.info(f"Non-walking route: {' → '.join(route_path)}")
+                    else:
+                        logger.warning("Alternative route still contains walking connections - this should not happen!")
+                else:
+                    logger.warning("Could not find alternative route without walking connections")
+            
+            # Create the route, respecting avoid_walking preference
+            route_result = MinimalRoute(route_path, avoid_walking)
+            logger.info(f"Created minimal route with {len(route_path)} stations (valid: {route_result.is_valid})")
+            
+            # If route is invalid with avoid_walking enabled, but user insisted on this preference,
+            # we'll still return the route but it will be marked as invalid for UI display
 
         # Generate realistic train services based on the calculated route
         departure_time = datetime.now()
@@ -585,18 +1010,43 @@ class TrainManager(QObject):
                                     
                                     break
                 
-                # Create station name with walking info if needed
+                # Keep original station name
                 display_name = station_name
+                
+                # If this is a walking connection, we'll add a separate walking info station BETWEEN
+                # this station and the previous one in the final list
                 if is_walking:
-                    # Format walking connection with HTML-style tags for red text
-                    if walking_distance and walking_time:
-                        display_name = f"<font color='#f44336'>{station_name} → Walk {walking_distance:.1f}km ({walking_time}min)</font>"
-                    elif walking_distance:
-                        display_name = f"<font color='#f44336'>{station_name} → Walk {walking_distance:.1f}km</font>"
-                    else:
-                        display_name = f"<font color='#f44336'>{station_name} → Walking connection</font>"
+                    # Find previous station to connect with walking
+                    prev_station = None
+                    if len(calling_points) > 0:
+                        prev_station = calling_points[-1].station_name
                     
-                    logger.info(f"Added walking connection info to station: {display_name}")
+                    # Create walking info text
+                    walking_text = ""
+                    if walking_distance and walking_time:
+                        walking_text = f"<font color='#f44336'>Walk {walking_distance:.1f}km ({walking_time}min)</font>"
+                    elif walking_distance:
+                        walking_text = f"<font color='#f44336'>Walk {walking_distance:.1f}km</font>"
+                    else:
+                        walking_text = f"<font color='#f44336'>Walking connection</font>"
+                    
+                    # Insert a special "walking info" calling point between stations
+                    if prev_station:
+                        # Calculate time for the walking segment
+                        walk_time = station_time - timedelta(minutes=int(walking_time or 10))
+                        
+                        walking_point = CallingPoint(
+                            station_name=walking_text,
+                            scheduled_arrival=walk_time,
+                            scheduled_departure=walk_time,
+                            expected_arrival=walk_time,
+                            expected_departure=walk_time,
+                            platform=None,
+                            is_origin=False,
+                            is_destination=False
+                        )
+                        calling_points.append(walking_point)
+                        logger.info(f"Added walking text between {prev_station} and {station_name}")
                 
                 intermediate_point = CallingPoint(
                     station_name=display_name,

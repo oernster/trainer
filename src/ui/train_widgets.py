@@ -460,29 +460,74 @@ class TrainItemWidget(QFrame):
                     current_line_layout.addWidget(indent_label)
                     stations_in_current_line = 0
                 
-                # Check if this is a walking connection (station name contains HTML formatting)
-                is_walking = "<font color='#f44336'" in station_name
+                # Check if this is a walking connection
+                # There are two types:
+                # 1. A special standalone walking text entry (station name itself is the walking text)
+                # 2. A station name that contains HTML formatting for walking
+                is_standalone_walking = station_name.startswith("<font color='#f44336'>Walk ")
+                is_embedded_walking = "<font color='#f44336'" in station_name and not is_standalone_walking
                 walking_info = ""
                 display_name = station_name
                 
-                # We don't need to extract walking info anymore since it's already formatted in HTML
+                # For standalone walking entries, we'll just display the text as is
                 
-                # Add arrow between stations (no special handling for walking connections needed)
+                # Add arrow between stations with special handling for walking connections
                 if i > 0:
-                    # Regular arrow for all connections
-                    arrow_label = QLabel("→")
-                    arrow_font = QFont()
-                    arrow_font.setPointSize(9)
-                    arrow_label.setFont(arrow_font)
-                    arrow_label.setStyleSheet("""
-                        QLabel {
-                            background-color: transparent;
-                            color: #1976d2;
-                            border: none;
-                            margin: 0px;
-                            padding: 0px;
-                        }
-                    """)
+                    # Find the previous station for checking walking connection
+                    prev_station = filtered_calling_points[i-1].station_name
+                    
+                    # Check if this is a walking connection
+                    is_walking_connection = False
+                    walking_info = ""
+                    
+                    # Look for walking connections in segments
+                    if hasattr(self.train_data, 'route_segments'):
+                        for segment in getattr(self.train_data, 'route_segments', []):
+                            if (hasattr(segment, 'from_station') and hasattr(segment, 'to_station') and
+                                (segment.from_station == prev_station and segment.to_station == station_name or
+                                 segment.from_station == station_name and segment.to_station == prev_station)):
+                                if getattr(segment, 'line_name', '') == 'WALKING':
+                                    is_walking_connection = True
+                                    walking_distance = getattr(segment, 'distance_km', None)
+                                    walking_time = getattr(segment, 'journey_time_minutes', None)
+                                    
+                                    if walking_distance and walking_time:
+                                        walking_info = f"Walk {walking_distance:.1f}km ({walking_time}min)"
+                                    elif walking_distance:
+                                        walking_info = f"Walk {walking_distance:.1f}km"
+                                    else:
+                                        walking_info = "Walking connection"
+                                    break
+                    
+                    # Special case for Farnborough stations
+                    if ('Farnborough North' in prev_station and 'Farnborough (Main)' in station_name or
+                        'Farnborough (Main)' in prev_station and 'Farnborough North' in station_name):
+                        is_walking_connection = True
+                        walking_info = "Walk 0.9km (12min)"
+                    
+                    # Create arrow with walking info if needed
+                    if is_walking_connection and walking_info:
+                        # Special red walking arrow with info
+                        arrow_label = QLabel(f"→ <font color='#f44336'>{walking_info}</font> →")
+                        arrow_font = QFont()
+                        arrow_font.setPointSize(9)
+                        arrow_label.setFont(arrow_font)
+                        arrow_label.setTextFormat(Qt.TextFormat.RichText)  # Enable HTML
+                    else:
+                        # Regular arrow
+                        arrow_label = QLabel("→")
+                        arrow_font = QFont()
+                        arrow_font.setPointSize(9)
+                        arrow_label.setFont(arrow_font)
+                        arrow_label.setStyleSheet("""
+                            QLabel {
+                                background-color: transparent;
+                                color: #1976d2;
+                                border: none;
+                                margin: 0px;
+                                padding: 0px;
+                            }
+                        """)
                     current_line_layout.addWidget(arrow_label)
                 
                 # Create station label with the station name, enabling HTML rendering
@@ -503,6 +548,9 @@ class TrainItemWidget(QFrame):
                 
                 # No need for special styling for walking connections anymore
                 # since we're using HTML formatting directly in the station name
+                
+                # Define combined walking detection
+                is_walking = is_standalone_walking or is_embedded_walking
                 
                 # Only apply stylesheet if this is not a walking connection
                 # This ensures the HTML formatting for walking connections is not overridden
@@ -1301,12 +1349,12 @@ class RouteDisplayDialog(QDialog):
 
         # Display all stations in the route
         for i, calling_point in enumerate(filtered_calling_points):
-            # Check if this is a walking connection (station name contains HTML formatting)
+            # Check if this is a walking connection
             station_name = calling_point.station_name
-            is_walking = "<font color='#f44336'" in station_name
+            is_standalone_walking = station_name.startswith("<font color='#f44336'>Walk ")
+            is_embedded_walking = "<font color='#f44336'" in station_name and not is_standalone_walking
+            is_walking = is_standalone_walking or is_embedded_walking
             display_name = station_name
-            
-            # We don't need to extract walking info anymore since it's already formatted in HTML
             
             # We don't need to add a separate walking indicator anymore
             # since the walking information is already included in the station name with HTML formatting

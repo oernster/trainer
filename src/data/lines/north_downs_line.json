@@ -1,0 +1,238 @@
+{
+  "metadata": {
+    "line_name": "North Downs Line",
+    "description": "Railway line connecting Reading and Gatwick Airport via Guildford and Redhill",
+    "operator": "Great Western Railway",
+    "total_stations": 14,
+    "line_color": "#0A5F38",
+    "average_speed_mph": 55,
+    "frequency_minutes": 60
+  },
+  "stations": [
+    {
+      "name": "Reading",
+      "coordinates": {
+        "lat": 51.4593,
+        "lng": -0.9726
+      },
+      "zone": 4,
+      "interchange": [
+        "Great Western Main Line",
+        "Elizabeth Line",
+        "Reading to Basingstoke Line"
+      ],
+      "timetable": {
+        "departures": ["05:32", "06:38", "07:32", "08:38", "09:32", "10:38", "11:32", "12:38", "13:32", "14:38", "15:32", "16:38", "17:32", "18:38", "19:32", "20:38", "21:32", "22:38"]
+      }
+    },
+    {
+      "name": "Wokingham",
+      "coordinates": {
+        "lat": 51.4118,
+        "lng": -0.8348
+      },
+      "zone": 6,
+      "timetable": {
+        "departures": ["05:42", "06:48", "07:42", "08:48", "09:42", "10:48", "11:42", "12:48", "13:42", "14:48", "15:42", "16:48", "17:42", "18:48", "19:42", "20:48", "21:42", "22:48"]
+      }
+    },
+    {
+      "name": "Crowthorne",
+      "coordinates": {
+        "lat": 51.3671,
+        "lng": -0.7932
+      },
+      "zone": 6,
+      "timetable": {
+        "departures": ["05:47", "06:53", "07:47", "08:53", "09:47", "10:53", "11:47", "12:53", "13:47", "14:53", "15:47", "16:53", "17:47", "18:53", "19:47", "20:53", "21:47", "22:53"]
+      }
+    },
+    {
+      "name": "Sandhurst",
+      "coordinates": {
+        "lat": 51.3425,
+        "lng": -0.7834
+      },
+      "zone": 6,
+      "timetable": {
+        "departures": ["05:51", "06:57", "07:51", "08:57", "09:51", "10:57", "11:51", "12:57", "13:51", "14:57", "15:51", "16:57", "17:51", "18:57", "19:51", "20:57", "21:51", "22:57"]
+      }
+    },
+    {
+      "name": "Blackwater",
+      "coordinates": {
+        "lat": 51.3277,
+        "lng": -0.7760
+      },
+      "zone": 6,
+      "timetable": {
+        "departures": ["05:55", "07:01", "07:55", "09:01", "09:55", "11:01", "11:55", "13:01", "13:55", "15:01", "15:55", "17:01", "17:55", "19:01", "19:55", "21:01", "21:55", "23:01"]
+      }
+    },
+    {
+      "name": "Farnborough North",
+      "coordinates": {
+        "lat": 51.3021,
+        "lng": -0.7543
+      },
+      "zone": 6,
+      "interchange": [
+        "Farnborough North Line"
+      ],
+      "timetable": {
+        "departures": ["06:01", "07:07", "08:01", "09:07", "10:01", "11:07", "12:01", "13:07", "14:01", "15:07", "16:01", "17:07", "18:01", "19:07", "20:01", "21:07", "22:01", "23:07"]
+      }
+    },
+    {
+      "name": "North Camp",
+      "coordinates": {
+        "lat": 51.2884,
+        "lng": -0.7415
+      },
+      "zone": 6,
+      "timetable": {
+        "departures": ["06:05", "07:11", "08:05", "09:11", "10:05", "11:11", "12:05", "13:11", "14:05", "15:11", "16:05", "17:11", "18:05", "19:11", "20:05", "21:11", "22:05", "23:11"]
+      }
+    },
+    {
+      "name": "Ash",
+      "coordinates": {
+        "lat": 51.2504,
+        "lng": -0.7311
+      },
+      "zone": 6,
+      "timetable": {
+        "departures": ["06:10", "07:16", "08:10", "09:16", "10:10", "11:16", "12:10", "13:16", "14:10", "15:16", "16:10", "17:16", "18:10", "19:16", "20:10", "21:16", "22:10", "23:16"]
+      }
+    },
+    {
+      "name": "Guildford",
+      "coordinates": {
+        "lat": 51.2362,
+        "lng": -0.5800
+      },
+      "zone": 6,
+      "interchange": [
+        "South Western Main Line",
+        "Portsmouth Direct Line"
+      ],
+      "timetable": {
+        "departures": ["06:20", "07:26", "08:20", "09:26", "10:20", "11:26", "12:20", "13:26", "14:20", "15:26", "16:20", "17:26", "18:20", "19:26", "20:20", "21:26", "22:20", "23:26"]
+      }
+    },
+    {
+      "name": "Shalford",
+      "coordinates": {
+        "lat": 51.2175,
+        "lng": -0.5581
+      },
+      "zone": 6,
+      "timetable": {
+        "departures": ["06:25", "07:31", "08:25", "09:31", "10:25", "11:31", "12:25", "13:31", "14:25", "15:31", "16:25", "17:31", "18:25", "19:31", "20:25", "21:31", "22:25", "23:31"]
+      }
+    },
+    {
+      "name": "Chilworth",
+      "coordinates": {
+        "lat": 51.2100,
+        "lng": -0.5300
+      },
+      "zone": 6,
+      "timetable": {
+        "departures": ["06:29", "07:35", "08:29", "09:35", "10:29", "11:35", "12:29", "13:35", "14:29", "15:35", "16:29", "17:35", "18:29", "19:35", "20:29", "21:35", "22:29", "23:35"]
+      }
+    },
+    {
+      "name": "Gomshall",
+      "coordinates": {
+        "lat": 51.2191,
+        "lng": -0.4500
+      },
+      "zone": 6,
+      "timetable": {
+        "departures": ["06:34", "07:40", "08:34", "09:40", "10:34", "11:40", "12:34", "13:40", "14:34", "15:40", "16:34", "17:40", "18:34", "19:40", "20:34", "21:40", "22:34", "23:40"]
+      }
+    },
+    {
+      "name": "Dorking West",
+      "coordinates": {
+        "lat": 51.2311,
+        "lng": -0.3500
+      },
+      "zone": 6,
+      "timetable": {
+        "departures": ["06:40", "07:46", "08:40", "09:46", "10:40", "11:46", "12:40", "13:46", "14:40", "15:46", "16:40", "17:46", "18:40", "19:46", "20:40", "21:46", "22:40", "23:46"]
+      }
+    },
+    {
+      "name": "Dorking Deepdene",
+      "coordinates": {
+        "lat": 51.2385,
+        "lng": -0.3300
+      },
+      "zone": 6,
+      "interchange": [
+        "Mole Valley Line"
+      ],
+      "timetable": {
+        "departures": ["06:44", "07:50", "08:44", "09:50", "10:44", "11:50", "12:44", "13:50", "14:44", "15:50", "16:44", "17:50", "18:44", "19:50", "20:44", "21:50", "22:44", "23:50"]
+      }
+    },
+    {
+      "name": "Reigate",
+      "coordinates": {
+        "lat": 51.2391,
+        "lng": -0.2058
+      },
+      "zone": 6,
+      "timetable": {
+        "departures": ["06:52", "07:58", "08:52", "09:58", "10:52", "11:58", "12:52", "13:58", "14:52", "15:58", "16:52", "17:58", "18:52", "19:58", "20:52", "21:58", "22:52", "23:58"]
+      }
+    },
+    {
+      "name": "Redhill",
+      "coordinates": {
+        "lat": 51.2404,
+        "lng": -0.1652
+      },
+      "zone": 6,
+      "interchange": [
+        "Brighton Main Line"
+      ],
+      "timetable": {
+        "departures": ["06:58", "08:04", "08:58", "10:04", "10:58", "12:04", "12:58", "14:04", "14:58", "16:04", "16:58", "18:04", "18:58", "20:04", "20:58", "22:04", "22:58", "00:04"]
+      }
+    },
+    {
+      "name": "Gatwick Airport",
+      "coordinates": {
+        "lat": 51.1564,
+        "lng": -0.1618
+      },
+      "zone": 5,
+      "interchange": [
+        "Brighton Main Line",
+        "Gatwick Express"
+      ],
+      "timetable": {
+        "departures": ["07:10", "08:16", "09:10", "10:16", "11:10", "12:16", "13:10", "14:16", "15:10", "16:16", "17:10", "18:16", "19:10", "20:16", "21:10", "22:16", "23:10", "00:16"]
+      }
+    }
+  ],
+  "service_patterns": {
+    "all_stations": {
+      "service_type": "stopping",
+      "stations": "all",
+      "description": "Regular service between Reading and Gatwick Airport via Guildford and Redhill",
+      "typical_journey_time": 95,
+      "frequency": "Hourly"
+    }
+  },
+  "typical_journey_times": {
+    "Reading-Gatwick Airport": 95,
+    "Reading-Guildford": 45,
+    "Guildford-Redhill": 35,
+    "Redhill-Gatwick Airport": 15,
+    "Farnborough North-Guildford": 20
+  }
+}

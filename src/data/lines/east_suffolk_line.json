@@ -1,0 +1,242 @@
+{
+  "id": "east_suffolk_line",
+  "name": "East Suffolk Line",
+  "stations": [
+    {
+      "id": "ipswich",
+      "name": "Ipswich",
+      "coordinates": {
+        "lat": 52.0522,
+        "lng": 1.1457
+      },
+      "connections": [
+        {
+          "to": "westerfield",
+          "type": "rail",
+          "duration": 5
+        }
+      ],
+      "interchanges": [
+        {
+          "line": "great_eastern_main_line",
+          "station": "ipswich"
+        }
+      ]
+    },
+    {
+      "id": "westerfield",
+      "name": "Westerfield",
+      "coordinates": {
+        "lat": 52.0691,
+        "lng": 1.1527
+      },
+      "connections": [
+        {
+          "to": "ipswich",
+          "type": "rail",
+          "duration": 5
+        },
+        {
+          "to": "woodbridge",
+          "type": "rail",
+          "duration": 12
+        }
+      ]
+    },
+    {
+      "id": "woodbridge",
+      "name": "Woodbridge",
+      "coordinates": {
+        "lat": 52.0935,
+        "lng": 1.3240
+      },
+      "connections": [
+        {
+          "to": "westerfield",
+          "type": "rail",
+          "duration": 12
+        },
+        {
+          "to": "melton",
+          "type": "rail",
+          "duration": 3
+        }
+      ]
+    },
+    {
+      "id": "melton",
+      "name": "Melton",
+      "coordinates": {
+        "lat": 52.1043,
+        "lng": 1.3407
+      },
+      "connections": [
+        {
+          "to": "woodbridge",
+          "type": "rail",
+          "duration": 3
+        },
+        {
+          "to": "wickham_market",
+          "type": "rail",
+          "duration": 8
+        }
+      ]
+    },
+    {
+      "id": "wickham_market",
+      "name": "Wickham Market",
+      "coordinates": {
+        "lat": 52.1385,
+        "lng": 1.3544
+      },
+      "connections": [
+        {
+          "to": "melton",
+          "type": "rail",
+          "duration": 8
+        },
+        {
+          "to": "saxmundham",
+          "type": "rail",
+          "duration": 10
+        }
+      ]
+    },
+    {
+      "id": "saxmundham",
+      "name": "Saxmundham",
+      "coordinates": {
+        "lat": 52.2146,
+        "lng": 1.4907
+      },
+      "connections": [
+        {
+          "to": "wickham_market",
+          "type": "rail",
+          "duration": 10
+        },
+        {
+          "to": "darsham",
+          "type": "rail",
+          "duration": 6
+        }
+      ]
+    },
+    {
+      "id": "darsham",
+      "name": "Darsham",
+      "coordinates": {
+        "lat": 52.2775,
+        "lng": 1.5561
+      },
+      "connections": [
+        {
+          "to": "saxmundham",
+          "type": "rail",
+          "duration": 6
+        },
+        {
+          "to": "halesworth",
+          "type": "rail",
+          "duration": 7
+        }
+      ]
+    },
+    {
+      "id": "halesworth",
+      "name": "Halesworth",
+      "coordinates": {
+        "lat": 52.3411,
+        "lng": 1.5000
+      },
+      "connections": [
+        {
+          "to": "darsham",
+          "type": "rail",
+          "duration": 7
+        },
+        {
+          "to": "brampton",
+          "type": "rail",
+          "duration": 5
+        }
+      ]
+    },
+    {
+      "id": "brampton",
+      "name": "Brampton",
+      "coordinates": {
+        "lat": 52.3702,
+        "lng": 1.5562
+      },
+      "connections": [
+        {
+          "to": "halesworth",
+          "type": "rail",
+          "duration": 5
+        },
+        {
+          "to": "beccles",
+          "type": "rail",
+          "duration": 7
+        }
+      ]
+    },
+    {
+      "id": "beccles",
+      "name": "Beccles",
+      "coordinates": {
+        "lat": 52.4563,
+        "lng": 1.5609
+      },
+      "connections": [
+        {
+          "to": "brampton",
+          "type": "rail",
+          "duration": 7
+        },
+        {
+          "to": "oulton_broad_south",
+          "type": "rail",
+          "duration": 9
+        }
+      ]
+    },
+    {
+      "id": "oulton_broad_south",
+      "name": "Oulton Broad South",
+      "coordinates": {
+        "lat": 52.4656,
+        "lng": 1.7108
+      },
+      "connections": [
+        {
+          "to": "beccles",
+          "type": "rail",
+          "duration": 9
+        },
+        {
+          "to": "lowestoft",
+          "type": "rail",
+          "duration": 5
+        }
+      ]
+    },
+    {
+      "id": "lowestoft",
+      "name": "Lowestoft",
+      "coordinates": {
+        "lat": 52.4761,
+        "lng": 1.7533
+      },
+      "connections": [
+        {
+          "to": "oulton_broad_south",
+          "type": "rail",
+          "duration": 5
+        }
+      ]
+    }
+  ]
+}

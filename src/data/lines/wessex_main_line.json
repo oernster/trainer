@@ -1,0 +1,200 @@
+{
+  "id": "wessex_main_line",
+  "name": "Wessex Main Line",
+  "stations": [
+    {
+      "id": "london_waterloo",
+      "name": "London Waterloo",
+      "coordinates": {
+        "lat": 51.5031,
+        "lng": -0.1132
+      },
+      "connections": [
+        {
+          "to": "clapham_junction",
+          "type": "rail",
+          "duration": 7
+        }
+      ],
+      "interchanges": [
+        {
+          "line": "portsmouth_direct_line",
+          "station": "london_waterloo"
+        },
+        {
+          "line": "west_of_england_line",
+          "station": "london_waterloo"
+        },
+        {
+          "line": "mole_valley_line",
+          "station": "london_waterloo"
+        }
+      ]
+    },
+    {
+      "id": "clapham_junction",
+      "name": "Clapham Junction",
+      "coordinates": {
+        "lat": 51.4642,
+        "lng": -0.1697
+      },
+      "connections": [
+        {
+          "to": "london_waterloo",
+          "type": "rail",
+          "duration": 7
+        },
+        {
+          "to": "woking",
+          "type": "rail",
+          "duration": 21
+        }
+      ],
+      "interchanges": [
+        {
+          "line": "north_london_line",
+          "station": "clapham_junction"
+        }
+      ]
+    },
+    {
+      "id": "woking",
+      "name": "Woking",
+      "coordinates": {
+        "lat": 51.3178,
+        "lng": -0.5568
+      },
+      "connections": [
+        {
+          "to": "clapham_junction",
+          "type": "rail",
+          "duration": 21
+        },
+        {
+          "to": "basingstoke",
+          "type": "rail",
+          "duration": 18
+        }
+      ],
+      "interchanges": [
+        {
+          "line": "portsmouth_direct_line",
+          "station": "woking"
+        }
+      ]
+    },
+    {
+      "id": "basingstoke",
+      "name": "Basingstoke",
+      "coordinates": {
+        "lat": 51.2683,
+        "lng": -1.0874
+      },
+      "connections": [
+        {
+          "to": "woking",
+          "type": "rail",
+          "duration": 18
+        },
+        {
+          "to": "andover",
+          "type": "rail",
+          "duration": 23
+        }
+      ],
+      "interchanges": [
+        {
+          "line": "west_of_england_line",
+          "station": "basingstoke"
+        }
+      ]
+    },
+    {
+      "id": "andover",
+      "name": "Andover",
+      "coordinates": {
+        "lat": 51.2108,
+        "lng": -1.4803
+      },
+      "connections": [
+        {
+          "to": "basingstoke",
+          "type": "rail",
+          "duration": 23
+        },
+        {
+          "to": "salisbury",
+          "type": "rail",
+          "duration": 24
+        }
+      ]
+    },
+    {
+      "id": "salisbury",
+      "name": "Salisbury",
+      "coordinates": {
+        "lat": 51.0689,
+        "lng": -1.7947
+      },
+      "connections": [
+        {
+          "to": "andover",
+          "type": "rail",
+          "duration": 24
+        },
+        {
+          "to": "yeovil_junction",
+          "type": "rail",
+          "duration": 47
+        }
+      ],
+      "interchanges": [
+        {
+          "line": "west_of_england_line",
+          "station": "salisbury"
+        }
+      ]
+    },
+    {
+      "id": "yeovil_junction",
+      "name": "Yeovil Junction",
+      "coordinates": {
+        "lat": 50.9332,
+        "lng": -2.6356
+      },
+      "connections": [
+        {
+          "to": "salisbury",
+          "type": "rail",
+          "duration": 47
+        },
+        {
+          "to": "exeter_st_davids",
+          "type": "rail",
+          "duration": 53
+        }
+      ]
+    },
+    {
+      "id": "exeter_st_davids",
+      "name": "Exeter St Davids",
+      "coordinates": {
+        "lat": 50.7293,
+        "lng": -3.5437
+      },
+      "connections": [
+        {
+          "to": "yeovil_junction",
+          "type": "rail",
+          "duration": 53
+        }
+      ],
+      "interchanges": [
+        {
+          "line": "west_of_england_line",
+          "station": "exeter_st_davids"
+        }
+      ]
+    }
+  ]
+}

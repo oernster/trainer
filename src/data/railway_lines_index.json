@@ -2,9 +2,9 @@
   "metadata": {
     "version": "3.1",
     "description": "Comprehensive index of all UK railway line data files",
-    "last_updated": "2025-07-12",
-    "total_lines": 47,
-    "total_stations": 2571
+    "last_updated": "2025-07-15",
+    "total_lines": 51,
+    "total_stations": 2620
   },
   "lines": [
     {
@@ -684,7 +684,139 @@
         "Fort William",
         "Mallaig"
       ]
+    },
+    {
+      "name": "Portsmouth Direct Line",
+      "file": "portsmouth_direct_line.json",
+      "operator": "South Western Railway",
+      "terminus_stations": [
+        "London Waterloo",
+        "Portsmouth Harbour"
+      ],
+      "major_stations": [
+        "London Waterloo",
+        "Clapham Junction",
+        "Woking",
+        "Guildford",
+        "Havant",
+        "Portsmouth Harbour"
+      ]
+    },
+    {
+      "name": "North Downs Line",
+      "file": "north_downs_line.json",
+      "operator": "Great Western Railway",
+      "terminus_stations": [
+        "Reading",
+        "Gatwick Airport"
+      ],
+      "major_stations": [
+        "Reading",
+        "Wokingham",
+        "Farnborough North",
+        "Guildford",
+        "Dorking Deepdene",
+        "Redhill",
+        "Gatwick Airport"
+      ]
+    },
+    {
+      "name": "Mole Valley Line",
+      "file": "mole_valley_line.json",
+      "operator": "Southern",
+      "terminus_stations": [
+        "London Waterloo",
+        "Dorking"
+      ],
+      "major_stations": [
+        "London Waterloo",
+        "Epsom",
+        "Leatherhead",
+        "Dorking"
+      ]
+    },
+    {
+      "name": "West of England Line",
+      "file": "west_of_england_line.json",
+      "operator": "South Western Railway",
+      "terminus_stations": [
+        "London Waterloo",
+        "Exeter St Davids"
+      ],
+      "major_stations": [
+        "London Waterloo",
+        "Basingstoke",
+        "Salisbury",
+        "Exeter St Davids"
+      ]
+    },
+    {
+      "name": "Wessex Main Line",
+      "file": "wessex_main_line.json",
+      "operator": "Great Western Railway",
+      "terminus_stations": [
+        "London Waterloo",
+        "Exeter St Davids"
+      ],
+      "major_stations": [
+        "London Waterloo",
+        "Clapham Junction",
+        "Basingstoke",
+        "Salisbury",
+        "Yeovil Junction",
+        "Exeter St Davids"
+      ]
+    },
+    {
+      "name": "East Suffolk Line",
+      "file": "east_suffolk_line.json",
+      "operator": "Greater Anglia",
+      "terminus_stations": [
+        "Ipswich",
+        "Lowestoft"
+      ],
+      "major_stations": [
+        "Ipswich",
+        "Woodbridge",
+        "Saxmundham",
+        "Halesworth",
+        "Beccles",
+        "Lowestoft"
+      ]
+    },
+    {
+      "name": "Tyne Valley Line",
+      "file": "tyne_valley_line.json",
+      "operator": "Northern",
+      "terminus_stations": [
+        "Newcastle",
+        "Carlisle"
+      ],
+      "major_stations": [
+        "Newcastle",
+        "MetroCentre",
+        "Hexham",
+        "Haltwhistle",
+        "Carlisle"
+      ]
+    },
+    {
+      "name": "Heart of Wales Line",
+      "file": "heart_of_wales_line.json",
+      "operator": "Transport for Wales",
+      "terminus_stations": [
+        "Swansea",
+        "Shrewsbury"
+      ],
+      "major_stations": [
+        "Swansea",
+        "Llanelli",
+        "Llandrindod",
+        "Knighton",
+        "Craven Arms",
+        "Shrewsbury"
+      ]
     }
   ],
-  "total_lines": 42
+  "total_lines": 51
 }

@@ -125,6 +125,9 @@
         "lng": -0.7543
       },
       "zone": 5,
+      "interchange": [
+        "North Downs Line"
+      ],
       "times": {
         "weekday": [
           "06:20",
