@@ -3,8 +3,8 @@
     "version": "3.1",
     "description": "Comprehensive index of all UK railway line data files",
     "last_updated": "2025-07-12",
-    "total_lines": 47,
-    "total_stations": 2571
+    "total_lines": 65,
+    "total_stations": 2891
   },
   "lines": [
     {
@@ -684,7 +684,290 @@
         "Fort William",
         "Mallaig"
       ]
+    },
+    {
+      "name": "Portsmouth Direct Line",
+      "file": "portsmouth_direct_line.json",
+      "operator": "South Western Railway",
+      "terminus_stations": [
+        "London Waterloo",
+        "Portsmouth Harbour"
+      ],
+      "major_stations": [
+        "London Waterloo",
+        "Clapham Junction",
+        "Woking",
+        "Guildford",
+        "Haslemere",
+        "Portsmouth Harbour"
+      ]
+    },
+    {
+      "name": "North Downs Line",
+      "file": "north_downs_line.json",
+      "operator": "Great Western Railway",
+      "terminus_stations": [
+        "Reading",
+        "Gatwick Airport"
+      ],
+      "major_stations": [
+        "Reading",
+        "Guildford",
+        "Dorking",
+        "Reigate",
+        "Redhill",
+        "Gatwick Airport"
+      ]
+    },
+    {
+      "name": "Mole Valley Line",
+      "file": "mole_valley_line.json",
+      "operator": "Southern",
+      "terminus_stations": [
+        "London Waterloo",
+        "Dorking"
+      ],
+      "major_stations": [
+        "London Waterloo",
+        "Raynes Park",
+        "Epsom",
+        "Leatherhead",
+        "Dorking"
+      ]
+    },
+    {
+      "name": "West of England Line",
+      "file": "west_of_england_line.json",
+      "operator": "South Western Railway",
+      "terminus_stations": [
+        "London Waterloo",
+        "Exeter St Davids"
+      ],
+      "major_stations": [
+        "London Waterloo",
+        "Clapham Junction",
+        "Woking",
+        "Basingstoke",
+        "Salisbury",
+        "Exeter St Davids"
+      ]
+    },
+    {
+      "name": "Wessex Main Line",
+      "file": "wessex_main_line.json",
+      "operator": "South Western Railway",
+      "terminus_stations": [
+        "London Waterloo",
+        "Weymouth"
+      ],
+      "major_stations": [
+        "London Waterloo",
+        "Clapham Junction",
+        "Basingstoke",
+        "Winchester",
+        "Southampton Central",
+        "Bournemouth",
+        "Weymouth"
+      ]
+    },
+    {
+      "name": "East Suffolk Line",
+      "file": "east_suffolk_line.json",
+      "operator": "Greater Anglia",
+      "terminus_stations": [
+        "Ipswich",
+        "Lowestoft"
+      ],
+      "major_stations": [
+        "Ipswich",
+        "Woodbridge",
+        "Saxmundham",
+        "Halesworth",
+        "Beccles",
+        "Lowestoft"
+      ]
+    },
+    {
+      "name": "Tyne Valley Line",
+      "file": "tyne_valley_line.json",
+      "operator": "Northern Rail",
+      "terminus_stations": [
+        "Newcastle",
+        "Carlisle"
+      ],
+      "major_stations": [
+        "Newcastle",
+        "Hexham",
+        "Haltwhistle",
+        "Carlisle"
+      ]
+    },
+    {
+      "name": "Heart of Wales Line",
+      "file": "heart_of_wales_line.json",
+      "operator": "Transport for Wales",
+      "terminus_stations": [
+        "Swansea",
+        "Shrewsbury"
+      ],
+      "major_stations": [
+        "Swansea",
+        "Llanelli",
+        "Llandrindod",
+        "Knighton",
+        "Craven Arms",
+        "Shrewsbury"
+      ]
+    },
+    {
+      "name": "Looe Valley Line",
+      "file": "looe_valley_line.json",
+      "operator": "Great Western Railway",
+      "terminus_stations": [
+        "Liskeard",
+        "Looe"
+      ],
+      "major_stations": [
+        "Liskeard",
+        "St Keyne Wishing Well Halt",
+        "Looe"
+      ]
+    },
+    {
+      "name": "St Ives Bay Line",
+      "file": "st_ives_bay_line.json",
+      "operator": "Great Western Railway",
+      "terminus_stations": [
+        "St Erth",
+        "St Ives"
+      ],
+      "major_stations": [
+        "St Erth",
+        "Lelant",
+        "Carbis Bay",
+        "St Ives"
+      ]
+    },
+    {
+      "name": "Falmouth Branch Line",
+      "file": "falmouth_branch_line.json",
+      "operator": "Great Western Railway",
+      "terminus_stations": [
+        "Truro",
+        "Falmouth Docks"
+      ],
+      "major_stations": [
+        "Truro",
+        "Penryn",
+        "Falmouth Town",
+        "Falmouth Docks"
+      ]
+    },
+    {
+      "name": "Bittern Line",
+      "file": "bittern_line.json",
+      "operator": "Greater Anglia",
+      "terminus_stations": [
+        "Norwich",
+        "Sheringham"
+      ],
+      "major_stations": [
+        "Norwich",
+        "North Walsham",
+        "Cromer",
+        "Sheringham"
+      ]
+    },
+    {
+      "name": "Wherry Lines",
+      "file": "wherry_lines.json",
+      "operator": "Greater Anglia",
+      "terminus_stations": [
+        "Norwich",
+        "Great Yarmouth",
+        "Lowestoft"
+      ],
+      "major_stations": [
+        "Norwich",
+        "Reedham",
+        "Great Yarmouth",
+        "Lowestoft"
+      ]
+    },
+    {
+      "name": "Felixstowe Branch Line",
+      "file": "felixstowe_branch_line.json",
+      "operator": "Greater Anglia",
+      "terminus_stations": [
+        "Ipswich",
+        "Felixstowe"
+      ],
+      "major_stations": [
+        "Ipswich",
+        "Derby Road",
+        "Trimley",
+        "Felixstowe"
+      ]
+    },
+    {
+      "name": "Gainsborough Line",
+      "file": "gainsborough_line.json",
+      "operator": "Northern Rail",
+      "terminus_stations": [
+        "Sheffield",
+        "Cleethorpes"
+      ],
+      "major_stations": [
+        "Sheffield",
+        "Gainsborough Central",
+        "Grimsby Town",
+        "Cleethorpes"
+      ]
+    },
+    {
+      "name": "Harrogate Line",
+      "file": "harrogate_line.json",
+      "operator": "Northern Rail",
+      "terminus_stations": [
+        "Leeds",
+        "York"
+      ],
+      "major_stations": [
+        "Leeds",
+        "Harrogate",
+        "Knaresborough",
+        "York"
+      ]
+    },
+    {
+      "name": "Airedale Line",
+      "file": "airedale_line.json",
+      "operator": "Northern Rail",
+      "terminus_stations": [
+        "Leeds",
+        "Skipton"
+      ],
+      "major_stations": [
+        "Leeds",
+        "Shipley",
+        "Keighley",
+        "Skipton"
+      ]
+    },
+    {
+      "name": "Wharfedale Line",
+      "file": "wharfedale_line.json",
+      "operator": "Northern Rail",
+      "terminus_stations": [
+        "Shipley",
+        "Ilkley"
+      ],
+      "major_stations": [
+        "Shipley",
+        "Guiseley",
+        "Ilkley"
+      ]
     }
   ],
-  "total_lines": 47
+  "total_lines": 65
 }

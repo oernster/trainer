@@ -1,200 +1,329 @@
 {
-  "id": "wessex_main_line",
-  "name": "Wessex Main Line",
+  "metadata": {
+    "line_name": "Wessex Main Line",
+    "description": "London Waterloo to Weymouth via Southampton and Bournemouth",
+    "operator": "South Western Railway",
+    "total_stations": 18,
+    "typical_frequency": "Every 60 minutes",
+    "peak_hours": "07:00-09:30, 17:00-19:30",
+    "frequency": {
+      "weekday_peak": "Every 60 minutes",
+      "weekday_off_peak": "Every 60 minutes",
+      "weekend": "Every 60 minutes",
+      "night": "No service"
+    }
+  },
+  "typical_journey_times": {
+    "London Waterloo-Southampton Central": 79,
+    "London Waterloo-Bournemouth": 110,
+    "London Waterloo-Weymouth": 150,
+    "Southampton Central-Bournemouth": 31,
+    "Bournemouth-Weymouth": 40
+  },
+  "typical_services": {
+    "peak_frequency": "Every 60 minutes",
+    "off_peak_frequency": "Every 60 minutes",
+    "evening_frequency": "Every 60 minutes",
+    "weekend_frequency": "Every 60 minutes",
+    "first_train": "06:00",
+    "last_train": "22:30"
+  },
   "stations": [
     {
-      "id": "london_waterloo",
       "name": "London Waterloo",
       "coordinates": {
-        "lat": 51.5031,
-        "lng": -0.1132
+        "lat": 51.5036,
+        "lng": -0.1144
       },
-      "connections": [
-        {
-          "to": "clapham_junction",
-          "type": "rail",
-          "duration": 7
-        }
+      "zone": 1,
+      "interchange": [
+        "Jubilee Line",
+        "Northern Line",
+        "Bakerloo Line",
+        "Waterloo & City Line"
       ],
-      "interchanges": [
-        {
-          "line": "portsmouth_direct_line",
-          "station": "london_waterloo"
-        },
-        {
-          "line": "west_of_england_line",
-          "station": "london_waterloo"
-        },
-        {
-          "line": "mole_valley_line",
-          "station": "london_waterloo"
-        }
-      ]
+      "times": {
+        "morning": ["06:00", "07:00", "08:00", "09:00", "10:00", "11:00"],
+        "afternoon": ["12:00", "13:00", "14:00", "15:00", "16:00"],
+        "evening": ["17:00", "18:00", "19:00", "20:00", "21:00", "22:00"],
+        "night": []
+      }
     },
     {
-      "id": "clapham_junction",
       "name": "Clapham Junction",
       "coordinates": {
         "lat": 51.4642,
-        "lng": -0.1697
+        "lng": -0.1705
       },
-      "connections": [
-        {
-          "to": "london_waterloo",
-          "type": "rail",
-          "duration": 7
-        },
-        {
-          "to": "woking",
-          "type": "rail",
-          "duration": 21
-        }
+      "zone": 2,
+      "interchange": [
+        "Brighton Main Line",
+        "West London Line",
+        "South Western Main Line"
       ],
-      "interchanges": [
-        {
-          "line": "north_london_line",
-          "station": "clapham_junction"
-        }
-      ]
+      "times": {
+        "morning": ["06:04", "07:04", "08:04", "09:04", "10:04", "11:04"],
+        "afternoon": ["12:04", "13:04", "14:04", "15:04", "16:04"],
+        "evening": ["17:04", "18:04", "19:04", "20:04", "21:04", "22:04"],
+        "night": []
+      }
     },
     {
-      "id": "woking",
-      "name": "Woking",
-      "coordinates": {
-        "lat": 51.3178,
-        "lng": -0.5568
-      },
-      "connections": [
-        {
-          "to": "clapham_junction",
-          "type": "rail",
-          "duration": 21
-        },
-        {
-          "to": "basingstoke",
-          "type": "rail",
-          "duration": 18
-        }
-      ],
-      "interchanges": [
-        {
-          "line": "portsmouth_direct_line",
-          "station": "woking"
-        }
-      ]
-    },
-    {
-      "id": "basingstoke",
       "name": "Basingstoke",
       "coordinates": {
-        "lat": 51.2683,
-        "lng": -1.0874
+        "lat": 51.2667,
+        "lng": -1.0833
       },
-      "connections": [
-        {
-          "to": "woking",
-          "type": "rail",
-          "duration": 18
-        },
-        {
-          "to": "andover",
-          "type": "rail",
-          "duration": 23
-        }
+      "interchange": [
+        "South Western Main Line",
+        "Reading to Basingstoke Line"
       ],
-      "interchanges": [
-        {
-          "line": "west_of_england_line",
-          "station": "basingstoke"
-        }
-      ]
+      "times": {
+        "morning": ["06:47", "07:47", "08:47", "09:47", "10:47", "11:47"],
+        "afternoon": ["12:47", "13:47", "14:47", "15:47", "16:47"],
+        "evening": ["17:47", "18:47", "19:47", "20:47", "21:47", "22:47"],
+        "night": []
+      }
     },
     {
-      "id": "andover",
-      "name": "Andover",
+      "name": "Winchester",
       "coordinates": {
-        "lat": 51.2108,
-        "lng": -1.4803
+        "lat": 51.0667,
+        "lng": -1.3167
       },
-      "connections": [
-        {
-          "to": "basingstoke",
-          "type": "rail",
-          "duration": 23
-        },
-        {
-          "to": "salisbury",
-          "type": "rail",
-          "duration": 24
-        }
-      ]
+      "times": {
+        "morning": ["07:03", "08:03", "09:03", "10:03", "11:03"],
+        "afternoon": ["12:03", "13:03", "14:03", "15:03", "16:03"],
+        "evening": ["17:03", "18:03", "19:03", "20:03", "21:03", "22:03"],
+        "night": []
+      }
     },
     {
-      "id": "salisbury",
-      "name": "Salisbury",
+      "name": "Eastleigh",
       "coordinates": {
-        "lat": 51.0689,
-        "lng": -1.7947
+        "lat": 50.9667,
+        "lng": -1.35
       },
-      "connections": [
-        {
-          "to": "andover",
-          "type": "rail",
-          "duration": 24
-        },
-        {
-          "to": "yeovil_junction",
-          "type": "rail",
-          "duration": 47
-        }
+      "interchange": [
+        "Eastleigh to Fareham Line"
       ],
-      "interchanges": [
-        {
-          "line": "west_of_england_line",
-          "station": "salisbury"
-        }
-      ]
+      "times": {
+        "morning": ["07:15", "08:15", "09:15", "10:15", "11:15"],
+        "afternoon": ["12:15", "13:15", "14:15", "15:15", "16:15"],
+        "evening": ["17:15", "18:15", "19:15", "20:15", "21:15", "22:15"],
+        "night": []
+      }
     },
     {
-      "id": "yeovil_junction",
-      "name": "Yeovil Junction",
+      "name": "Southampton Central",
       "coordinates": {
-        "lat": 50.9332,
-        "lng": -2.6356
+        "lat": 50.9083,
+        "lng": -1.4167
       },
-      "connections": [
-        {
-          "to": "salisbury",
-          "type": "rail",
-          "duration": 47
-        },
-        {
-          "to": "exeter_st_davids",
-          "type": "rail",
-          "duration": 53
-        }
-      ]
-    },
-    {
-      "id": "exeter_st_davids",
-      "name": "Exeter St Davids",
-      "coordinates": {
-        "lat": 50.7293,
-        "lng": -3.5437
-      },
-      "connections": [
-        {
-          "to": "yeovil_junction",
-          "type": "rail",
-          "duration": 53
-        }
+      "interchange": [
+        "South Western Main Line",
+        "West Coastway Line"
       ],
-      "interchanges": [
-        {
-          "line": "west_of_england_line",
-          "station": "exeter_st_davids"
-        }
-      ]
+      "times": {
+        "morning": ["07:19", "08:19", "09:19", "10:19", "11:19"],
+        "afternoon": ["12:19", "13:19", "14:19", "15:19", "16:19"],
+        "evening": ["17:19", "18:19", "19:19", "20:19", "21:19", "22:19"],
+        "night": []
+      }
+    },
+    {
+      "name": "Totton",
+      "coordinates": {
+        "lat": 50.9167,
+        "lng": -1.4833
+      },
+      "times": {
+        "morning": ["07:25", "08:25", "09:25", "10:25", "11:25"],
+        "afternoon": ["12:25", "13:25", "14:25", "15:25", "16:25"],
+        "evening": ["17:25", "18:25", "19:25", "20:25", "21:25", "22:25"],
+        "night": []
+      }
+    },
+    {
+      "name": "Ashurst New Forest",
+      "coordinates": {
+        "lat": 50.8833,
+        "lng": -1.5333
+      },
+      "times": {
+        "morning": ["07:30", "08:30", "09:30", "10:30", "11:30"],
+        "afternoon": ["12:30", "13:30", "14:30", "15:30", "16:30"],
+        "evening": ["17:30", "18:30", "19:30", "20:30", "21:30", "22:30"],
+        "night": []
+      }
+    },
+    {
+      "name": "Beaulieu Road",
+      "coordinates": {
+        "lat": 50.8333,
+        "lng": -1.5833
+      },
+      "times": {
+        "morning": ["07:35", "08:35", "09:35", "10:35", "11:35"],
+        "afternoon": ["12:35", "13:35", "14:35", "15:35", "16:35"],
+        "evening": ["17:35", "18:35", "19:35", "20:35", "21:35", "22:35"],
+        "night": []
+      }
+    },
+    {
+      "name": "Brockenhurst",
+      "coordinates": {
+        "lat": 50.8167,
+        "lng": -1.5833
+      },
+      "times": {
+        "morning": ["07:40", "08:40", "09:40", "10:40", "11:40"],
+        "afternoon": ["12:40", "13:40", "14:40", "15:40", "16:40"],
+        "evening": ["17:40", "18:40", "19:40", "20:40", "21:40", "22:40"],
+        "night": []
+      }
+    },
+    {
+      "name": "Sway",
+      "coordinates": {
+        "lat": 50.7667,
+        "lng": -1.6167
+      },
+      "times": {
+        "morning": ["07:45", "08:45", "09:45", "10:45", "11:45"],
+        "afternoon": ["12:45", "13:45", "14:45", "15:45", "16:45"],
+        "evening": ["17:45", "18:45", "19:45", "20:45", "21:45", "22:45"],
+        "night": []
+      }
+    },
+    {
+      "name": "New Milton",
+      "coordinates": {
+        "lat": 50.7583,
+        "lng": -1.6583
+      },
+      "times": {
+        "morning": ["07:48", "08:48", "09:48", "10:48", "11:48"],
+        "afternoon": ["12:48", "13:48", "14:48", "15:48", "16:48"],
+        "evening": ["17:48", "18:48", "19:48", "20:48", "21:48", "22:48"],
+        "night": []
+      }
+    },
+    {
+      "name": "Hinton Admiral",
+      "coordinates": {
+        "lat": 50.7417,
+        "lng": -1.7
+      },
+      "times": {
+        "morning": ["07:52", "08:52", "09:52", "10:52", "11:52"],
+        "afternoon": ["12:52", "13:52", "14:52", "15:52", "16:52"],
+        "evening": ["17:52", "18:52", "19:52", "20:52", "21:52", "22:52"],
+        "night": []
+      }
+    },
+    {
+      "name": "Christchurch",
+      "coordinates": {
+        "lat": 50.7333,
+        "lng": -1.7833
+      },
+      "times": {
+        "morning": ["07:56", "08:56", "09:56", "10:56", "11:56"],
+        "afternoon": ["12:56", "13:56", "14:56", "15:56", "16:56"],
+        "evening": ["17:56", "18:56", "19:56", "20:56", "21:56", "22:56"],
+        "night": []
+      }
+    },
+    {
+      "name": "Bournemouth",
+      "coordinates": {
+        "lat": 50.7278,
+        "lng": -1.8806
+      },
+      "times": {
+        "morning": ["07:50", "08:50", "09:50", "10:50", "11:50"],
+        "afternoon": ["12:50", "13:50", "14:50", "15:50", "16:50"],
+        "evening": ["17:50", "18:50", "19:50", "20:50", "21:50", "22:50"],
+        "night": []
+      }
+    },
+    {
+      "name": "Poole",
+      "coordinates": {
+        "lat": 50.7194,
+        "lng": -1.9889
+      },
+      "times": {
+        "morning": ["08:05", "09:05", "10:05", "11:05"],
+        "afternoon": ["12:05", "13:05", "14:05", "15:05", "16:05"],
+        "evening": ["17:05", "18:05", "19:05", "20:05", "21:05", "22:05"],
+        "night": []
+      }
+    },
+    {
+      "name": "Wareham",
+      "coordinates": {
+        "lat": 50.6833,
+        "lng": -2.1167
+      },
+      "times": {
+        "morning": ["08:15", "09:15", "10:15", "11:15"],
+        "afternoon": ["12:15", "13:15", "14:15", "15:15", "16:15"],
+        "evening": ["17:15", "18:15", "19:15", "20:15", "21:15", "22:15"],
+        "night": []
+      }
+    },
+    {
+      "name": "Weymouth",
+      "coordinates": {
+        "lat": 50.6139,
+        "lng": -2.4556
+      },
+      "times": {
+        "morning": ["08:30", "09:30", "10:30", "11:30"],
+        "afternoon": ["12:30", "13:30", "14:30", "15:30", "16:30"],
+        "evening": ["17:30", "18:30", "19:30", "20:30", "21:30", "22:30"],
+        "night": []
+      }
     }
-  ]
+  ],
+  "service_patterns": {
+    "fast": {
+      "service_type": "fast",
+      "description": "Fast service - major stations only",
+      "typical_journey_time": 150,
+      "frequency": "Every 60 minutes",
+      "stations": [
+        "London Waterloo",
+        "Clapham Junction",
+        "Basingstoke",
+        "Winchester",
+        "Southampton Central",
+        "Brockenhurst",
+        "Bournemouth",
+        "Poole",
+        "Weymouth"
+      ],
+      "peak_frequency": "Every 60 minutes",
+      "off_peak_frequency": "Every 60 minutes",
+      "weekend_frequency": "Every 60 minutes",
+      "first_service": "06:00",
+      "last_service": "22:30",
+      "operates_on": ["daily"]
+    },
+    "stopping": {
+      "service_type": "stopping",
+      "description": "Stopping service - all stations",
+      "typical_journey_time": 180,
+      "frequency": "Every 60 minutes",
+      "stations": "all",
+      "peak_frequency": "Every 60 minutes",
+      "off_peak_frequency": "Every 60 minutes",
+      "weekend_frequency": "Every 60 minutes",
+      "first_service": "06:00",
+      "last_service": "22:30",
+      "operates_on": ["daily"]
+    }
+  }
 }

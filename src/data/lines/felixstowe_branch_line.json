@@ -1,0 +1,129 @@
+{
+  "metadata": {
+    "line_name": "Felixstowe Branch Line",
+    "description": "Ipswich to Felixstowe via Derby Road and Trimley",
+    "operator": "Greater Anglia",
+    "total_stations": 6,
+    "typical_frequency": "Every 120 minutes",
+    "peak_hours": "07:00-09:30, 17:00-19:30",
+    "frequency": {
+      "weekday_peak": "Every 120 minutes",
+      "weekday_off_peak": "Every 120 minutes",
+      "weekend": "Every 120 minutes",
+      "night": "No service"
+    }
+  },
+  "typical_journey_times": {
+    "Ipswich-Felixstowe": 25,
+    "Ipswich-Derby Road": 8,
+    "Derby Road-Trimley": 10,
+    "Trimley-Felixstowe": 7
+  },
+  "typical_services": {
+    "peak_frequency": "Every 120 minutes",
+    "off_peak_frequency": "Every 120 minutes",
+    "evening_frequency": "Every 120 minutes",
+    "weekend_frequency": "Every 120 minutes",
+    "first_train": "06:30",
+    "last_train": "21:30"
+  },
+  "stations": [
+    {
+      "name": "Ipswich",
+      "coordinates": {
+        "lat": 52.0444,
+        "lng": 1.1456
+      },
+      "interchange": [
+        "Great Eastern Main Line",
+        "East Suffolk Line"
+      ],
+      "times": {
+        "morning": ["06:30", "08:30", "10:30"],
+        "afternoon": ["12:30", "14:30", "16:30"],
+        "evening": ["18:30", "20:30"],
+        "night": []
+      }
+    },
+    {
+      "name": "Derby Road",
+      "coordinates": {
+        "lat": 52.0333,
+        "lng": 1.1833
+      },
+      "times": {
+        "morning": ["06:38", "08:38", "10:38"],
+        "afternoon": ["12:38", "14:38", "16:38"],
+        "evening": ["18:38", "20:38"],
+        "night": []
+      }
+    },
+    {
+      "name": "Westerfield",
+      "coordinates": {
+        "lat": 52.0667,
+        "lng": 1.1833
+      },
+      "times": {
+        "morning": ["06:42", "08:42", "10:42"],
+        "afternoon": ["12:42", "14:42", "16:42"],
+        "evening": ["18:42", "20:42"],
+        "night": []
+      }
+    },
+    {
+      "name": "Trimley",
+      "coordinates": {
+        "lat": 51.9667,
+        "lng": 1.2833
+      },
+      "times": {
+        "morning": ["06:48", "08:48", "10:48"],
+        "afternoon": ["12:48", "14:48", "16:48"],
+        "evening": ["18:48", "20:48"],
+        "night": []
+      }
+    },
+    {
+      "name": "Felixstowe Town",
+      "coordinates": {
+        "lat": 51.9583,
+        "lng": 1.3500
+      },
+      "times": {
+        "morning": ["06:52", "08:52", "10:52"],
+        "afternoon": ["12:52", "14:52", "16:52"],
+        "evening": ["18:52", "20:52"],
+        "night": []
+      }
+    },
+    {
+      "name": "Felixstowe",
+      "coordinates": {
+        "lat": 51.9667,
+        "lng": 1.3667
+      },
+      "times": {
+        "morning": ["06:55", "08:55", "10:55"],
+        "afternoon": ["12:55", "14:55", "16:55"],
+        "evening": ["18:55", "20:55"],
+        "night": []
+      }
+    }
+  ],
+  "service_patterns": {
+    "stopping": {
+      "service_type": "stopping",
+      "description": "Stopping service - all stations",
+      "typical_journey_time": 25,
+      "frequency": "Every 120 minutes",
+      "stations": "all",
+      "peak_frequency": "Every 120 minutes",
+      "off_peak_frequency": "Every 120 minutes",
+      "weekend_frequency": "Every 120 minutes",
+      "first_service": "06:30",
+      "last_service": "21:30",
+      "operates_on": ["daily"]
+    }
+  }
+}

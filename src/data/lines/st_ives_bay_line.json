@@ -1,0 +1,114 @@
+{
+  "metadata": {
+    "line_name": "St Ives Bay Line",
+    "description": "St Erth to St Ives branch line in Cornwall",
+    "operator": "Great Western Railway",
+    "total_stations": 5,
+    "typical_frequency": "Every 60 minutes",
+    "peak_hours": "07:00-09:30, 17:00-19:30",
+    "frequency": {
+      "weekday_peak": "Every 60 minutes",
+      "weekday_off_peak": "Every 60 minutes",
+      "weekend": "Every 60 minutes",
+      "night": "No service"
+    }
+  },
+  "typical_journey_times": {
+    "St Erth-St Ives": 11,
+    "St Erth-Lelant": 3,
+    "Lelant Saltings-St Ives": 6
+  },
+  "typical_services": {
+    "peak_frequency": "Every 60 minutes",
+    "off_peak_frequency": "Every 60 minutes",
+    "evening_frequency": "Every 60 minutes",
+    "weekend_frequency": "Every 60 minutes",
+    "first_train": "07:00",
+    "last_train": "22:00"
+  },
+  "stations": [
+    {
+      "name": "St Erth",
+      "coordinates": {
+        "lat": 50.1833,
+        "lng": -5.4333
+      },
+      "interchange": [
+        "Great Western Main Line"
+      ],
+      "times": {
+        "morning": ["07:00", "08:00", "09:00", "10:00", "11:00"],
+        "afternoon": ["12:00", "13:00", "14:00", "15:00", "16:00"],
+        "evening": ["17:00", "18:00", "19:00", "20:00", "21:00", "22:00"],
+        "night": []
+      }
+    },
+    {
+      "name": "Lelant",
+      "coordinates": {
+        "lat": 50.1917,
+        "lng": -5.4500
+      },
+      "times": {
+        "morning": ["07:03", "08:03", "09:03", "10:03", "11:03"],
+        "afternoon": ["12:03", "13:03", "14:03", "15:03", "16:03"],
+        "evening": ["17:03", "18:03", "19:03", "20:03", "21:03", "22:03"],
+        "night": []
+      }
+    },
+    {
+      "name": "Lelant Saltings",
+      "coordinates": {
+        "lat": 50.2000,
+        "lng": -5.4667
+      },
+      "times": {
+        "morning": ["07:05", "08:05", "09:05", "10:05", "11:05"],
+        "afternoon": ["12:05", "13:05", "14:05", "15:05", "16:05"],
+        "evening": ["17:05", "18:05", "19:05", "20:05", "21:05", "22:05"],
+        "night": []
+      }
+    },
+    {
+      "name": "Carbis Bay",
+      "coordinates": {
+        "lat": 50.2083,
+        "lng": -5.4833
+      },
+      "times": {
+        "morning": ["07:08", "08:08", "09:08", "10:08", "11:08"],
+        "afternoon": ["12:08", "13:08", "14:08", "15:08", "16:08"],
+        "evening": ["17:08", "18:08", "19:08", "20:08", "21:08", "22:08"],
+        "night": []
+      }
+    },
+    {
+      "name": "St Ives",
+      "coordinates": {
+        "lat": 50.2167,
+        "lng": -5.4833
+      },
+      "times": {
+        "morning": ["07:11", "08:11", "09:11", "10:11", "11:11"],
+        "afternoon": ["12:11", "13:11", "14:11", "15:11", "16:11"],
+        "evening": ["17:11", "18:11", "19:11", "20:11", "21:11", "22:11"],
+        "night": []
+      }
+    }
+  ],
+  "service_patterns": {
+    "stopping": {
+      "service_type": "stopping",
+      "description": "Stopping service - all stations",
+      "typical_journey_time": 11,
+      "frequency": "Every 60 minutes",
+      "stations": "all",
+      "peak_frequency": "Every 60 minutes",
+      "off_peak_frequency": "Every 60 minutes",
+      "weekend_frequency": "Every 60 minutes",
+      "first_service": "07:00",
+      "last_service": "22:00",
+      "operates_on": ["daily"]
+    }
+  }
+}

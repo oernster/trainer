@@ -1,0 +1,211 @@
+{
+  "metadata": {
+    "line_name": "Harrogate Line",
+    "description": "Leeds to York via Harrogate and Knaresborough",
+    "operator": "Northern Rail",
+    "total_stations": 12,
+    "typical_frequency": "Every 60 minutes",
+    "peak_hours": "07:00-09:30, 17:00-19:30",
+    "frequency": {
+      "weekday_peak": "Every 60 minutes",
+      "weekday_off_peak": "Every 60 minutes",
+      "weekend": "Every 60 minutes",
+      "night": "No service"
+    }
+  },
+  "typical_journey_times": {
+    "Leeds-York": 75,
+    "Leeds-Harrogate": 35,
+    "Harrogate-Knaresborough": 8,
+    "Knaresborough-York": 32
+  },
+  "typical_services": {
+    "peak_frequency": "Every 60 minutes",
+    "off_peak_frequency": "Every 60 minutes",
+    "evening_frequency": "Every 60 minutes",
+    "weekend_frequency": "Every 60 minutes",
+    "first_train": "06:00",
+    "last_train": "22:00"
+  },
+  "stations": [
+    {
+      "name": "Leeds",
+      "coordinates": {
+        "lat": 53.7958,
+        "lng": -1.5491
+      },
+      "interchange": [
+        "East Coast Main Line",
+        "TransPennine Express"
+      ],
+      "times": {
+        "morning": ["06:00", "07:00", "08:00", "09:00", "10:00", "11:00"],
+        "afternoon": ["12:00", "13:00", "14:00", "15:00", "16:00"],
+        "evening": ["17:00", "18:00", "19:00", "20:00", "21:00", "22:00"],
+        "night": []
+      }
+    },
+    {
+      "name": "Horsforth",
+      "coordinates": {
+        "lat": 53.8333,
+        "lng": -1.6333
+      },
+      "times": {
+        "morning": ["06:08", "07:08", "08:08", "09:08", "10:08", "11:08"],
+        "afternoon": ["12:08", "13:08", "14:08", "15:08", "16:08"],
+        "evening": ["17:08", "18:08", "19:08", "20:08", "21:08", "22:08"],
+        "night": []
+      }
+    },
+    {
+      "name": "Weeton",
+      "coordinates": {
+        "lat": 53.9000,
+        "lng": -1.6500
+      },
+      "times": {
+        "morning": ["06:15", "07:15", "08:15", "09:15", "10:15", "11:15"],
+        "afternoon": ["12:15", "13:15", "14:15", "15:15", "16:15"],
+        "evening": ["17:15", "18:15", "19:15", "20:15", "21:15", "22:15"],
+        "night": []
+      }
+    },
+    {
+      "name": "Pannal",
+      "coordinates": {
+        "lat": 53.9333,
+        "lng": -1.5833
+      },
+      "times": {
+        "morning": ["06:25", "07:25", "08:25", "09:25", "10:25", "11:25"],
+        "afternoon": ["12:25", "13:25", "14:25", "15:25", "16:25"],
+        "evening": ["17:25", "18:25", "19:25", "20:25", "21:25", "22:25"],
+        "night": []
+      }
+    },
+    {
+      "name": "Harrogate",
+      "coordinates": {
+        "lat": 53.9917,
+        "lng": -1.5375
+      },
+      "times": {
+        "morning": ["06:35", "07:35", "08:35", "09:35", "10:35", "11:35"],
+        "afternoon": ["12:35", "13:35", "14:35", "15:35", "16:35"],
+        "evening": ["17:35", "18:35", "19:35", "20:35", "21:35", "22:35"],
+        "night": []
+      }
+    },
+    {
+      "name": "Starbeck",
+      "coordinates": {
+        "lat": 54.0167,
+        "lng": -1.5167
+      },
+      "times": {
+        "morning": ["06:40", "07:40", "08:40", "09:40", "10:40", "11:40"],
+        "afternoon": ["12:40", "13:40", "14:40", "15:40", "16:40"],
+        "evening": ["17:40", "18:40", "19:40", "20:40", "21:40", "22:40"],
+        "night": []
+      }
+    },
+    {
+      "name": "Knaresborough",
+      "coordinates": {
+        "lat": 54.0083,
+        "lng": -1.4667
+      },
+      "times": {
+        "morning": ["06:43", "07:43", "08:43", "09:43", "10:43", "11:43"],
+        "afternoon": ["12:43", "13:43", "14:43", "15:43", "16:43"],
+        "evening": ["17:43", "18:43", "19:43", "20:43", "21:43", "22:43"],
+        "night": []
+      }
+    },
+    {
+      "name": "Goldsborough",
+      "coordinates": {
+        "lat": 54.0333,
+        "lng": -1.4167
+      },
+      "times": {
+        "morning": ["06:50", "07:50", "08:50", "09:50", "10:50", "11:50"],
+        "afternoon": ["12:50", "13:50", "14:50", "15:50", "16:50"],
+        "evening": ["17:50", "18:50", "19:50", "20:50", "21:50", "22:50"],
+        "night": []
+      }
+    },
+    {
+      "name": "Cattal",
+      "coordinates": {
+        "lat": 54.0500,
+        "lng": -1.3500
+      },
+      "times": {
+        "morning": ["06:58", "07:58", "08:58", "09:58", "10:58", "11:58"],
+        "afternoon": ["12:58", "13:58", "14:58", "15:58", "16:58"],
+        "evening": ["17:58", "18:58", "19:58", "20:58", "21:58", "22:58"],
+        "night": []
+      }
+    },
+    {
+      "name": "Hammerton",
+      "coordinates": {
+        "lat": 54.0667,
+        "lng": -1.2833
+      },
+      "times": {
+        "morning": ["07:05", "08:05", "09:05", "10:05", "11:05"],
+        "afternoon": ["12:05", "13:05", "14:05", "15:05", "16:05"],
+        "evening": ["17:05", "18:05", "19:05", "20:05", "21:05", "22:05"],
+        "night": []
+      }
+    },
+    {
+      "name": "Poppleton",
+      "coordinates": {
+        "lat": 53.9833,
+        "lng": -1.1500
+      },
+      "times": {
+        "morning": ["07:10", "08:10", "09:10", "10:10", "11:10"],
+        "afternoon": ["12:10", "13:10", "14:10", "15:10", "16:10"],
+        "evening": ["17:10", "18:10", "19:10", "20:10", "21:10", "22:10"],
+        "night": []
+      }
+    },
+    {
+      "name": "York",
+      "coordinates": {
+        "lat": 53.9583,
+        "lng": -1.0933
+      },
+      "interchange": [
+        "East Coast Main Line",
+        "TransPennine Express"
+      ],
+      "times": {
+        "morning": ["07:15", "08:15", "09:15", "10:15", "11:15"],
+        "afternoon": ["12:15", "13:15", "14:15", "15:15", "16:15"],
+        "evening": ["17:15", "18:15", "19:15", "20:15", "21:15", "22:15"],
+        "night": []
+      }
+    }
+  ],
+  "service_patterns": {
+    "stopping": {
+      "service_type": "stopping",
+      "description": "Stopping service - all stations",
+      "typical_journey_time": 75,
+      "frequency": "Every 60 minutes",
+      "stations": "all",
+      "peak_frequency": "Every 60 minutes",
+      "off_peak_frequency": "Every 60 minutes",
+      "weekend_frequency": "Every 60 minutes",
+      "first_service": "06:00",
+      "last_service": "22:00",
+      "operates_on": ["daily"]
+    }
+  }
+}

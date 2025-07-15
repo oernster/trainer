@@ -1,0 +1,180 @@
+{
+  "metadata": {
+    "line_name": "Bittern Line",
+    "description": "Norwich to Sheringham via North Walsham and Cromer",
+    "operator": "Greater Anglia",
+    "total_stations": 11,
+    "typical_frequency": "Every 120 minutes",
+    "peak_hours": "07:00-09:30, 17:00-19:30",
+    "frequency": {
+      "weekday_peak": "Every 120 minutes",
+      "weekday_off_peak": "Every 120 minutes",
+      "weekend": "Every 120 minutes",
+      "night": "No service"
+    }
+  },
+  "typical_journey_times": {
+    "Norwich-Sheringham": 65,
+    "Norwich-North Walsham": 35,
+    "North Walsham-Cromer": 15,
+    "Cromer-Sheringham": 15
+  },
+  "typical_services": {
+    "peak_frequency": "Every 120 minutes",
+    "off_peak_frequency": "Every 120 minutes",
+    "evening_frequency": "Every 120 minutes",
+    "weekend_frequency": "Every 120 minutes",
+    "first_train": "06:30",
+    "last_train": "21:30"
+  },
+  "stations": [
+    {
+      "name": "Norwich",
+      "coordinates": {
+        "lat": 52.6267,
+        "lng": 1.3067
+      },
+      "interchange": [
+        "Great Eastern Main Line"
+      ],
+      "times": {
+        "morning": ["06:30", "08:30", "10:30"],
+        "afternoon": ["12:30", "14:30", "16:30"],
+        "evening": ["18:30", "20:30"],
+        "night": []
+      }
+    },
+    {
+      "name": "Salhouse",
+      "coordinates": {
+        "lat": 52.6833,
+        "lng": 1.3833
+      },
+      "times": {
+        "morning": ["06:40", "08:40", "10:40"],
+        "afternoon": ["12:40", "14:40", "16:40"],
+        "evening": ["18:40", "20:40"],
+        "night": []
+      }
+    },
+    {
+      "name": "Hoveton & Wroxham",
+      "coordinates": {
+        "lat": 52.7333,
+        "lng": 1.4167
+      },
+      "times": {
+        "morning": ["06:45", "08:45", "10:45"],
+        "afternoon": ["12:45", "14:45", "16:45"],
+        "evening": ["18:45", "20:45"],
+        "night": []
+      }
+    },
+    {
+      "name": "Worstead",
+      "coordinates": {
+        "lat": 52.7833,
+        "lng": 1.4333
+      },
+      "times": {
+        "morning": ["06:52", "08:52", "10:52"],
+        "afternoon": ["12:52", "14:52", "16:52"],
+        "evening": ["18:52", "20:52"],
+        "night": []
+      }
+    },
+    {
+      "name": "North Walsham",
+      "coordinates": {
+        "lat": 52.8167,
+        "lng": 1.3833
+      },
+      "times": {
+        "morning": ["07:05", "09:05", "11:05"],
+        "afternoon": ["13:05", "15:05", "17:05"],
+        "evening": ["19:05", "21:05"],
+        "night": []
+      }
+    },
+    {
+      "name": "Gunton",
+      "coordinates": {
+        "lat": 52.8500,
+        "lng": 1.3500
+      },
+      "times": {
+        "morning": ["07:12", "09:12", "11:12"],
+        "afternoon": ["13:12", "15:12", "17:12"],
+        "evening": ["19:12", "21:12"],
+        "night": []
+      }
+    },
+    {
+      "name": "Roughton Road",
+      "coordinates": {
+        "lat": 52.9000,
+        "lng": 1.3167
+      },
+      "times": {
+        "morning": ["07:16", "09:16", "11:16"],
+        "afternoon": ["13:16", "15:16", "17:16"],
+        "evening": ["19:16", "21:16"],
+        "night": []
+      }
+    },
+    {
+      "name": "Cromer",
+      "coordinates": {
+        "lat": 52.9333,
+        "lng": 1.3000
+      },
+      "times": {
+        "morning": ["07:20", "09:20", "11:20"],
+        "afternoon": ["13:20", "15:20", "17:20"],
+        "evening": ["19:20", "21:20"],
+        "night": []
+      }
+    },
+    {
+      "name": "West Runton",
+      "coordinates": {
+        "lat": 52.9500,
+        "lng": 1.2667
+      },
+      "times": {
+        "morning": ["07:25", "09:25", "11:25"],
+        "afternoon": ["13:25", "15:25", "17:25"],
+        "evening": ["19:25", "21:25"],
+        "night": []
+      }
+    },
+    {
+      "name": "Sheringham",
+      "coordinates": {
+        "lat": 52.9417,
+        "lng": 1.2083
+      },
+      "times": {
+        "morning": ["07:35", "09:35", "11:35"],
+        "afternoon": ["13:35", "15:35", "17:35"],
+        "evening": ["19:35", "21:35"],
+        "night": []
+      }
+    }
+  ],
+  "service_patterns": {
+    "stopping": {
+      "service_type": "stopping",
+      "description": "Stopping service - all stations",
+      "typical_journey_time": 65,
+      "frequency": "Every 120 minutes",
+      "stations": "all",
+      "peak_frequency": "Every 120 minutes",
+      "off_peak_frequency": "Every 120 minutes",
+      "weekend_frequency": "Every 120 minutes",
+      "first_service": "06:30",
+      "last_service": "21:30",
+      "operates_on": ["daily"]
+    }
+  }
+}

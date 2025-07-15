@@ -1,0 +1,239 @@
+{
+  "metadata": {
+    "line_name": "Gainsborough Line",
+    "description": "Sheffield to Cleethorpes via Gainsborough and Grimsby",
+    "operator": "Northern Rail",
+    "total_stations": 14,
+    "typical_frequency": "Every 120 minutes",
+    "peak_hours": "07:00-09:30, 17:00-19:30",
+    "frequency": {
+      "weekday_peak": "Every 120 minutes",
+      "weekday_off_peak": "Every 120 minutes",
+      "weekend": "Every 120 minutes",
+      "night": "No service"
+    }
+  },
+  "typical_journey_times": {
+    "Sheffield-Cleethorpes": 120,
+    "Sheffield-Gainsborough Central": 60,
+    "Gainsborough Central-Grimsby Town": 45,
+    "Grimsby Town-Cleethorpes": 15
+  },
+  "typical_services": {
+    "peak_frequency": "Every 120 minutes",
+    "off_peak_frequency": "Every 120 minutes",
+    "evening_frequency": "Every 120 minutes",
+    "weekend_frequency": "Every 120 minutes",
+    "first_train": "06:00",
+    "last_train": "21:00"
+  },
+  "stations": [
+    {
+      "name": "Sheffield",
+      "coordinates": {
+        "lat": 53.3781,
+        "lng": -1.4900
+      },
+      "interchange": [
+        "Midland Main Line",
+        "Hope Valley Line"
+      ],
+      "times": {
+        "morning": ["06:00", "08:00", "10:00"],
+        "afternoon": ["12:00", "14:00", "16:00"],
+        "evening": ["18:00", "20:00"],
+        "night": []
+      }
+    },
+    {
+      "name": "Worksop",
+      "coordinates": {
+        "lat": 53.3000,
+        "lng": -1.1167
+      },
+      "times": {
+        "morning": ["06:30", "08:30", "10:30"],
+        "afternoon": ["12:30", "14:30", "16:30"],
+        "evening": ["18:30", "20:30"],
+        "night": []
+      }
+    },
+    {
+      "name": "Retford",
+      "coordinates": {
+        "lat": 53.3167,
+        "lng": -0.9500
+      },
+      "interchange": [
+        "East Coast Main Line"
+      ],
+      "times": {
+        "morning": ["06:45", "08:45", "10:45"],
+        "afternoon": ["12:45", "14:45", "16:45"],
+        "evening": ["18:45", "20:45"],
+        "night": []
+      }
+    },
+    {
+      "name": "Gainsborough Lea Road",
+      "coordinates": {
+        "lat": 53.3833,
+        "lng": -0.7667
+      },
+      "times": {
+        "morning": ["06:55", "08:55", "10:55"],
+        "afternoon": ["12:55", "14:55", "16:55"],
+        "evening": ["18:55", "20:55"],
+        "night": []
+      }
+    },
+    {
+      "name": "Gainsborough Central",
+      "coordinates": {
+        "lat": 53.3967,
+        "lng": -0.7733
+      },
+      "times": {
+        "morning": ["07:00", "09:00", "11:00"],
+        "afternoon": ["13:00", "15:00", "17:00"],
+        "evening": ["19:00", "21:00"],
+        "night": []
+      }
+    },
+    {
+      "name": "Kirton in Lindsey",
+      "coordinates": {
+        "lat": 53.4667,
+        "lng": -0.6000
+      },
+      "times": {
+        "morning": ["07:10", "09:10", "11:10"],
+        "afternoon": ["13:10", "15:10", "17:10"],
+        "evening": ["19:10", "21:10"],
+        "night": []
+      }
+    },
+    {
+      "name": "Brigg",
+      "coordinates": {
+        "lat": 53.5500,
+        "lng": -0.4833
+      },
+      "times": {
+        "morning": ["07:20", "09:20", "11:20"],
+        "afternoon": ["13:20", "15:20", "17:20"],
+        "evening": ["19:20", "21:20"],
+        "night": []
+      }
+    },
+    {
+      "name": "Scunthorpe",
+      "coordinates": {
+        "lat": 53.5833,
+        "lng": -0.6500
+      },
+      "times": {
+        "morning": ["07:30", "09:30", "11:30"],
+        "afternoon": ["13:30", "15:30", "17:30"],
+        "evening": ["19:30", "21:30"],
+        "night": []
+      }
+    },
+    {
+      "name": "Barnetby",
+      "coordinates": {
+        "lat": 53.6167,
+        "lng": -0.4167
+      },
+      "interchange": [
+        "Hull to Doncaster Line"
+      ],
+      "times": {
+        "morning": ["07:40", "09:40", "11:40"],
+        "afternoon": ["13:40", "15:40", "17:40"],
+        "evening": ["19:40", "21:40"],
+        "night": []
+      }
+    },
+    {
+      "name": "Habrough",
+      "coordinates": {
+        "lat": 53.5833,
+        "lng": -0.2167
+      },
+      "times": {
+        "morning": ["07:50", "09:50", "11:50"],
+        "afternoon": ["13:50", "15:50", "17:50"],
+        "evening": ["19:50", "21:50"],
+        "night": []
+      }
+    },
+    {
+      "name": "Stallingborough",
+      "coordinates": {
+        "lat": 53.5667,
+        "lng": -0.1667
+      },
+      "times": {
+        "morning": ["07:55", "09:55", "11:55"],
+        "afternoon": ["13:55", "15:55", "17:55"],
+        "evening": ["19:55", "21:55"],
+        "night": []
+      }
+    },
+    {
+      "name": "Healing",
+      "coordinates": {
+        "lat": 53.5833,
+        "lng": -0.1167
+      },
+      "times": {
+        "morning": ["08:00", "10:00", "12:00"],
+        "afternoon": ["14:00", "16:00", "18:00"],
+        "evening": ["20:00", "22:00"],
+        "night": []
+      }
+    },
+    {
+      "name": "Grimsby Town",
+      "coordinates": {
+        "lat": 53.5667,
+        "lng": -0.0833
+      },
+      "times": {
+        "morning": ["08:05", "10:05", "12:05"],
+        "afternoon": ["14:05", "16:05", "18:05"],
+        "evening": ["20:05", "22:05"],
+        "night": []
+      }
+    },
+    {
+      "name": "Cleethorpes",
+      "coordinates": {
+        "lat": 53.5500,
+        "lng": -0.0333
+      },
+      "times": {
+        "morning": ["08:15", "10:15", "12:15"],
+        "afternoon": ["14:15", "16:15", "18:15"],
+        "evening": ["20:15", "22:15"],
+        "night": []
+      }
+    }
+  ],
+  "service_patterns": {
+    "stopping": {
+      "service_type": "stopping",
+      "description": "Stopping service - all stations",
+      "typical_journey_time": 120,
+      "frequency": "Every 120 minutes",
+      "stations": "all",
+      "peak_frequency": "Every 120 minutes",
+      "off_peak_frequency": "Every 120 minutes",
+      "weekend_frequency": "Every 120 minutes",
+      "first_service": "06:00",
+      "last_service": "21:00",
+      "operates_on": ["daily"]
+    }
+  }
+}

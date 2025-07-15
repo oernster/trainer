@@ -1,308 +1,266 @@
 {
-  "id": "tyne_valley_line",
-  "name": "Tyne Valley Line",
+  "metadata": {
+    "line_name": "Tyne Valley Line",
+    "description": "Newcastle to Carlisle via Hexham and Haltwhistle",
+    "operator": "Northern Rail",
+    "total_stations": 16,
+    "typical_frequency": "Every 120 minutes",
+    "peak_hours": "07:00-09:30, 17:00-19:30",
+    "frequency": {
+      "weekday_peak": "Every 120 minutes",
+      "weekday_off_peak": "Every 120 minutes",
+      "weekend": "Every 120 minutes",
+      "night": "No service"
+    }
+  },
+  "typical_journey_times": {
+    "Newcastle-Hexham": 35,
+    "Newcastle-Haltwhistle": 65,
+    "Newcastle-Carlisle": 90,
+    "Hexham-Haltwhistle": 30,
+    "Haltwhistle-Carlisle": 25
+  },
+  "typical_services": {
+    "peak_frequency": "Every 120 minutes",
+    "off_peak_frequency": "Every 120 minutes",
+    "evening_frequency": "Every 120 minutes",
+    "weekend_frequency": "Every 120 minutes",
+    "first_train": "06:00",
+    "last_train": "22:00"
+  },
   "stations": [
     {
-      "id": "newcastle",
       "name": "Newcastle",
       "coordinates": {
-        "lat": 54.9683,
-        "lng": -1.6174
+        "lat": 54.9689,
+        "lng": -1.6176
       },
-      "connections": [
-        {
-          "to": "metrocentre",
-          "type": "rail",
-          "duration": 8
-        }
+      "interchange": [
+        "East Coast Main Line",
+        "Tyne and Wear Metro",
+        "Durham Coast Line"
       ],
-      "interchanges": [
-        {
-          "line": "east_coast_main_line",
-          "station": "newcastle"
-        }
-      ]
+      "times": {
+        "morning": ["06:00", "08:00", "10:00"],
+        "afternoon": ["12:00", "14:00", "16:00"],
+        "evening": ["18:00", "20:00", "22:00"],
+        "night": []
+      }
     },
     {
-      "id": "metrocentre",
-      "name": "MetroCentre",
+      "name": "Metrocentre",
       "coordinates": {
-        "lat": 54.9596,
-        "lng": -1.6637
+        "lat": 54.9583,
+        "lng": -1.6667
       },
-      "connections": [
-        {
-          "to": "newcastle",
-          "type": "rail",
-          "duration": 8
-        },
-        {
-          "to": "blaydon",
-          "type": "rail",
-          "duration": 3
-        }
-      ]
+      "times": {
+        "morning": ["06:05", "08:05", "10:05"],
+        "afternoon": ["12:05", "14:05", "16:05"],
+        "evening": ["18:05", "20:05", "22:05"],
+        "night": []
+      }
     },
     {
-      "id": "blaydon",
       "name": "Blaydon",
       "coordinates": {
-        "lat": 54.9637,
-        "lng": -1.7121
+        "lat": 54.9667,
+        "lng": -1.7167
       },
-      "connections": [
-        {
-          "to": "metrocentre",
-          "type": "rail",
-          "duration": 3
-        },
-        {
-          "to": "wylam",
-          "type": "rail",
-          "duration": 5
-        }
-      ]
+      "times": {
+        "morning": ["06:10", "08:10", "10:10"],
+        "afternoon": ["12:10", "14:10", "16:10"],
+        "evening": ["18:10", "20:10", "22:10"],
+        "night": []
+      }
     },
     {
-      "id": "wylam",
       "name": "Wylam",
       "coordinates": {
-        "lat": 54.9753,
-        "lng": -1.8152
+        "lat": 54.9750,
+        "lng": -1.8167
       },
-      "connections": [
-        {
-          "to": "blaydon",
-          "type": "rail",
-          "duration": 5
-        },
-        {
-          "to": "prudhoe",
-          "type": "rail",
-          "duration": 6
-        }
-      ]
+      "times": {
+        "morning": ["06:15", "08:15", "10:15"],
+        "afternoon": ["12:15", "14:15", "16:15"],
+        "evening": ["18:15", "20:15", "22:15"],
+        "night": []
+      }
     },
     {
-      "id": "prudhoe",
       "name": "Prudhoe",
       "coordinates": {
-        "lat": 54.9642,
-        "lng": -1.8522
+        "lat": 54.9667,
+        "lng": -1.8667
       },
-      "connections": [
-        {
-          "to": "wylam",
-          "type": "rail",
-          "duration": 6
-        },
-        {
-          "to": "stocksfield",
-          "type": "rail",
-          "duration": 5
-        }
-      ]
+      "times": {
+        "morning": ["06:20", "08:20", "10:20"],
+        "afternoon": ["12:20", "14:20", "16:20"],
+        "evening": ["18:20", "20:20", "22:20"],
+        "night": []
+      }
     },
     {
-      "id": "stocksfield",
       "name": "Stocksfield",
       "coordinates": {
-        "lat": 54.9450,
-        "lng": -1.9060
+        "lat": 54.9417,
+        "lng": -1.9167
       },
-      "connections": [
-        {
-          "to": "prudhoe",
-          "type": "rail",
-          "duration": 5
-        },
-        {
-          "to": "riding_mill",
-          "type": "rail",
-          "duration": 4
-        }
-      ]
+      "times": {
+        "morning": ["06:25", "08:25", "10:25"],
+        "afternoon": ["12:25", "14:25", "16:25"],
+        "evening": ["18:25", "20:25", "22:25"],
+        "night": []
+      }
     },
     {
-      "id": "riding_mill",
       "name": "Riding Mill",
       "coordinates": {
-        "lat": 54.9473,
-        "lng": -1.9636
+        "lat": 54.9333,
+        "lng": -1.9833
       },
-      "connections": [
-        {
-          "to": "stocksfield",
-          "type": "rail",
-          "duration": 4
-        },
-        {
-          "to": "corbridge",
-          "type": "rail",
-          "duration": 7
-        }
-      ]
+      "times": {
+        "morning": ["06:28", "08:28", "10:28"],
+        "afternoon": ["12:28", "14:28", "16:28"],
+        "evening": ["18:28", "20:28", "22:28"],
+        "night": []
+      }
     },
     {
-      "id": "corbridge",
       "name": "Corbridge",
       "coordinates": {
-        "lat": 54.9726,
-        "lng": -2.0163
+        "lat": 54.9667,
+        "lng": -2.0167
       },
-      "connections": [
-        {
-          "to": "riding_mill",
-          "type": "rail",
-          "duration": 7
-        },
-        {
-          "to": "hexham",
-          "type": "rail",
-          "duration": 10
-        }
-      ]
+      "times": {
+        "morning": ["06:32", "08:32", "10:32"],
+        "afternoon": ["12:32", "14:32", "16:32"],
+        "evening": ["18:32", "20:32", "22:32"],
+        "night": []
+      }
     },
     {
-      "id": "hexham",
       "name": "Hexham",
       "coordinates": {
-        "lat": 54.9707,
-        "lng": -2.1023
+        "lat": 54.9722,
+        "lng": -2.1028
       },
-      "connections": [
-        {
-          "to": "corbridge",
-          "type": "rail",
-          "duration": 10
-        },
-        {
-          "to": "haydon_bridge",
-          "type": "rail",
-          "duration": 12
-        }
-      ]
+      "times": {
+        "morning": ["06:35", "08:35", "10:35"],
+        "afternoon": ["12:35", "14:35", "16:35"],
+        "evening": ["18:35", "20:35", "22:35"],
+        "night": []
+      }
     },
     {
-      "id": "haydon_bridge",
       "name": "Haydon Bridge",
       "coordinates": {
-        "lat": 54.9732,
-        "lng": -2.2568
+        "lat": 54.9750,
+        "lng": -2.2500
       },
-      "connections": [
-        {
-          "to": "hexham",
-          "type": "rail",
-          "duration": 12
-        },
-        {
-          "to": "bardon_mill",
-          "type": "rail",
-          "duration": 6
-        }
-      ]
+      "times": {
+        "morning": ["06:45", "08:45", "10:45"],
+        "afternoon": ["12:45", "14:45", "16:45"],
+        "evening": ["18:45", "20:45", "22:45"],
+        "night": []
+      }
     },
     {
-      "id": "bardon_mill",
       "name": "Bardon Mill",
       "coordinates": {
-        "lat": 54.9840,
-        "lng": -2.3586
+        "lat": 54.9833,
+        "lng": -2.3333
       },
-      "connections": [
-        {
-          "to": "haydon_bridge",
-          "type": "rail",
-          "duration": 6
-        },
-        {
-          "to": "haltwhistle",
-          "type": "rail",
-          "duration": 8
-        }
-      ]
+      "times": {
+        "morning": ["06:50", "08:50", "10:50"],
+        "afternoon": ["12:50", "14:50", "16:50"],
+        "evening": ["18:50", "20:50", "22:50"],
+        "night": []
+      }
     },
     {
-      "id": "haltwhistle",
       "name": "Haltwhistle",
       "coordinates": {
-        "lat": 54.9701,
-        "lng": -2.4593
+        "lat": 54.9667,
+        "lng": -2.4667
       },
-      "connections": [
-        {
-          "to": "bardon_mill",
-          "type": "rail",
-          "duration": 8
-        },
-        {
-          "to": "brampton",
-          "type": "rail",
-          "duration": 14
-        }
-      ]
+      "times": {
+        "morning": ["07:05", "09:05", "11:05"],
+        "afternoon": ["13:05", "15:05", "17:05"],
+        "evening": ["19:05", "21:05"],
+        "night": []
+      }
     },
     {
-      "id": "brampton_cumbria",
-      "name": "Brampton (Cumbria)",
+      "name": "Greenhead",
       "coordinates": {
-        "lat": 54.9432,
-        "lng": -2.6962
+        "lat": 54.9833,
+        "lng": -2.5333
       },
-      "connections": [
-        {
-          "to": "haltwhistle",
-          "type": "rail",
-          "duration": 14
-        },
-        {
-          "to": "wetheral",
-          "type": "rail",
-          "duration": 12
-        }
-      ]
+      "times": {
+        "morning": ["07:10", "09:10", "11:10"],
+        "afternoon": ["13:10", "15:10", "17:10"],
+        "evening": ["19:10", "21:10"],
+        "night": []
+      }
     },
     {
-      "id": "wetheral",
-      "name": "Wetheral",
+      "name": "Gilsland",
       "coordinates": {
-        "lat": 54.8891,
-        "lng": -2.8326
+        "lat": 54.9833,
+        "lng": -2.6167
       },
-      "connections": [
-        {
-          "to": "brampton_cumbria",
-          "type": "rail",
-          "duration": 12
-        },
-        {
-          "to": "carlisle",
-          "type": "rail",
-          "duration": 10
-        }
-      ]
+      "times": {
+        "morning": ["07:15", "09:15", "11:15"],
+        "afternoon": ["13:15", "15:15", "17:15"],
+        "evening": ["19:15", "21:15"],
+        "night": []
+      }
     },
     {
-      "id": "carlisle",
+      "name": "Brampton",
+      "coordinates": {
+        "lat": 54.9333,
+        "lng": -2.7167
+      },
+      "times": {
+        "morning": ["07:20", "09:20", "11:20"],
+        "afternoon": ["13:20", "15:20", "17:20"],
+        "evening": ["19:20", "21:20"],
+        "night": []
+      }
+    },
+    {
       "name": "Carlisle",
       "coordinates": {
-        "lat": 54.8917,
+        "lat": 54.8944,
         "lng": -2.9333
       },
-      "connections": [
-        {
-          "to": "wetheral",
-          "type": "rail",
-          "duration": 10
-        }
+      "interchange": [
+        "West Coast Main Line",
+        "Cumbrian Coast Line",
+        "Glasgow South Western Line"
       ],
-      "interchanges": [
-        {
-          "line": "west_coast_main_line",
-          "station": "carlisle"
-        }
-      ]
+      "times": {
+        "morning": ["07:30", "09:30", "11:30"],
+        "afternoon": ["13:30", "15:30", "17:30"],
+        "evening": ["19:30", "21:30"],
+        "night": []
+      }
     }
-  ]
+  ],
+  "service_patterns": {
+    "stopping": {
+      "service_type": "stopping",
+      "description": "Stopping service - all stations",
+      "typical_journey_time": 90,
+      "frequency": "Every 120 minutes",
+      "stations": "all",
+      "peak_frequency": "Every 120 minutes",
+      "off_peak_frequency": "Every 120 minutes",
+      "weekend_frequency": "Every 120 minutes",
+      "first_service": "06:00",
+      "last_service": "22:00",
+      "operates_on": ["daily"]
+    }
+  }
 }

@@ -255,6 +255,159 @@
       "description": "Direct train on South Western Main Line",
       "walking_distance_m": 0,
       "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Guildford",
+      "to_station": "London Waterloo",
+      "connection_type": "Portsmouth Direct Line",
+      "time_minutes": 45,
+      "description": "Direct train on Portsmouth Direct Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Portsmouth Harbour",
+      "to_station": "London Waterloo",
+      "connection_type": "Portsmouth Direct Line",
+      "time_minutes": 90,
+      "description": "Direct train on Portsmouth Direct Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Guildford",
+      "to_station": "Reading",
+      "connection_type": "North Downs Line",
+      "time_minutes": 35,
+      "description": "Direct train on North Downs Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Gatwick Airport",
+      "to_station": "Reading",
+      "connection_type": "North Downs Line",
+      "time_minutes": 65,
+      "description": "Direct train on North Downs Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Dorking",
+      "to_station": "London Waterloo",
+      "connection_type": "Mole Valley Line",
+      "time_minutes": 50,
+      "description": "Direct train on Mole Valley Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Epsom",
+      "to_station": "London Waterloo",
+      "connection_type": "Mole Valley Line",
+      "time_minutes": 35,
+      "description": "Direct train on Mole Valley Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Exeter St Davids",
+      "to_station": "London Waterloo",
+      "connection_type": "West of England Line",
+      "time_minutes": 180,
+      "description": "Direct train on West of England Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Salisbury",
+      "to_station": "London Waterloo",
+      "connection_type": "West of England Line",
+      "time_minutes": 90,
+      "description": "Direct train on West of England Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Weymouth",
+      "to_station": "London Waterloo",
+      "connection_type": "Wessex Main Line",
+      "time_minutes": 150,
+      "description": "Direct train on Wessex Main Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Bournemouth",
+      "to_station": "London Waterloo",
+      "connection_type": "Wessex Main Line",
+      "time_minutes": 110,
+      "description": "Direct train on Wessex Main Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Southampton Central",
+      "to_station": "London Waterloo",
+      "connection_type": "Wessex Main Line",
+      "time_minutes": 79,
+      "description": "Direct train on Wessex Main Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Lowestoft",
+      "to_station": "Ipswich",
+      "connection_type": "East Suffolk Line",
+      "time_minutes": 75,
+      "description": "Direct train on East Suffolk Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Saxmundham",
+      "to_station": "Ipswich",
+      "connection_type": "East Suffolk Line",
+      "time_minutes": 35,
+      "description": "Direct train on East Suffolk Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Aldeburgh",
+      "to_station": "Saxmundham",
+      "connection_type": "East Suffolk Line",
+      "time_minutes": 15,
+      "description": "Branch line connection on East Suffolk Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Carlisle",
+      "to_station": "Newcastle",
+      "connection_type": "Tyne Valley Line",
+      "time_minutes": 90,
+      "description": "Direct train on Tyne Valley Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Hexham",
+      "to_station": "Newcastle",
+      "connection_type": "Tyne Valley Line",
+      "time_minutes": 35,
+      "description": "Direct train on Tyne Valley Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Haltwhistle",
+      "to_station": "Newcastle",
+      "connection_type": "Tyne Valley Line",
+      "time_minutes": 65,
+      "description": "Direct train on Tyne Valley Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
     }
   ],
   "auto_walking_connections": {
@@ -279,6 +432,69 @@
       "connection_type": "ScotRail Network",
       "time_minutes": 150,
       "description": "Direct train on ScotRail Network",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "London Waterloo",
+      "to_station": "Portsmouth Harbour",
+      "connection_type": "Portsmouth Direct Line",
+      "time_minutes": 90,
+      "description": "Direct train on Portsmouth Direct Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Reading",
+      "to_station": "Gatwick Airport",
+      "connection_type": "North Downs Line",
+      "time_minutes": 65,
+      "description": "Direct train on North Downs Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "London Waterloo",
+      "to_station": "Dorking",
+      "connection_type": "Mole Valley Line",
+      "time_minutes": 50,
+      "description": "Direct train on Mole Valley Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "London Waterloo",
+      "to_station": "Exeter St Davids",
+      "connection_type": "West of England Line",
+      "time_minutes": 180,
+      "description": "Direct train on West of England Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "London Waterloo",
+      "to_station": "Weymouth",
+      "connection_type": "Wessex Main Line",
+      "time_minutes": 150,
+      "description": "Direct train on Wessex Main Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Ipswich",
+      "to_station": "Lowestoft",
+      "connection_type": "East Suffolk Line",
+      "time_minutes": 75,
+      "description": "Direct train on East Suffolk Line",
+      "walking_distance_m": 0,
+      "accessibility": "step_free_access"
+    },
+    {
+      "from_station": "Newcastle",
+      "to_station": "Carlisle",
+      "connection_type": "Tyne Valley Line",
+      "time_minutes": 90,
+      "description": "Direct train on Tyne Valley Line",
       "walking_distance_m": 0,
       "accessibility": "step_free_access"
     }

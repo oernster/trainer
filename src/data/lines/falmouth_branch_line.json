@@ -1,0 +1,128 @@
+{
+  "metadata": {
+    "line_name": "Falmouth Branch Line",
+    "description": "Truro to Falmouth Docks via Penryn",
+    "operator": "Great Western Railway",
+    "total_stations": 6,
+    "typical_frequency": "Every 60 minutes",
+    "peak_hours": "07:00-09:30, 17:00-19:30",
+    "frequency": {
+      "weekday_peak": "Every 60 minutes",
+      "weekday_off_peak": "Every 60 minutes",
+      "weekend": "Every 60 minutes",
+      "night": "No service"
+    }
+  },
+  "typical_journey_times": {
+    "Truro-Falmouth Docks": 28,
+    "Truro-Penryn": 18,
+    "Penryn-Falmouth Town": 8,
+    "Falmouth Town-Falmouth Docks": 2
+  },
+  "typical_services": {
+    "peak_frequency": "Every 60 minutes",
+    "off_peak_frequency": "Every 60 minutes",
+    "evening_frequency": "Every 60 minutes",
+    "weekend_frequency": "Every 60 minutes",
+    "first_train": "06:30",
+    "last_train": "22:30"
+  },
+  "stations": [
+    {
+      "name": "Truro",
+      "coordinates": {
+        "lat": 50.2667,
+        "lng": -5.0500
+      },
+      "interchange": [
+        "Great Western Main Line"
+      ],
+      "times": {
+        "morning": ["06:30", "07:30", "08:30", "09:30", "10:30", "11:30"],
+        "afternoon": ["12:30", "13:30", "14:30", "15:30", "16:30"],
+        "evening": ["17:30", "18:30", "19:30", "20:30", "21:30", "22:30"],
+        "night": []
+      }
+    },
+    {
+      "name": "Perranwell",
+      "coordinates": {
+        "lat": 50.2500,
+        "lng": -5.1000
+      },
+      "times": {
+        "morning": ["06:35", "07:35", "08:35", "09:35", "10:35", "11:35"],
+        "afternoon": ["12:35", "13:35", "14:35", "15:35", "16:35"],
+        "evening": ["17:35", "18:35", "19:35", "20:35", "21:35", "22:35"],
+        "night": []
+      }
+    },
+    {
+      "name": "Penryn",
+      "coordinates": {
+        "lat": 50.1667,
+        "lng": -5.1000
+      },
+      "times": {
+        "morning": ["06:48", "07:48", "08:48", "09:48", "10:48", "11:48"],
+        "afternoon": ["12:48", "13:48", "14:48", "15:48", "16:48"],
+        "evening": ["17:48", "18:48", "19:48", "20:48", "21:48", "22:48"],
+        "night": []
+      }
+    },
+    {
+      "name": "Penmere",
+      "coordinates": {
+        "lat": 50.1500,
+        "lng": -5.0833
+      },
+      "times": {
+        "morning": ["06:52", "07:52", "08:52", "09:52", "10:52", "11:52"],
+        "afternoon": ["12:52", "13:52", "14:52", "15:52", "16:52"],
+        "evening": ["17:52", "18:52", "19:52", "20:52", "21:52", "22:52"],
+        "night": []
+      }
+    },
+    {
+      "name": "Falmouth Town",
+      "coordinates": {
+        "lat": 50.1500,
+        "lng": -5.0667
+      },
+      "times": {
+        "morning": ["06:56", "07:56", "08:56", "09:56", "10:56", "11:56"],
+        "afternoon": ["12:56", "13:56", "14:56", "15:56", "16:56"],
+        "evening": ["17:56", "18:56", "19:56", "20:56", "21:56", "22:56"],
+        "night": []
+      }
+    },
+    {
+      "name": "Falmouth Docks",
+      "coordinates": {
+        "lat": 50.1500,
+        "lng": -5.0500
+      },
+      "times": {
+        "morning": ["06:58", "07:58", "08:58", "09:58", "10:58", "11:58"],
+        "afternoon": ["12:58", "13:58", "14:58", "15:58", "16:58"],
+        "evening": ["17:58", "18:58", "19:58", "20:58", "21:58", "22:58"],
+        "night": []
+      }
+    }
+  ],
+  "service_patterns": {
+    "stopping": {
+      "service_type": "stopping",
+      "description": "Stopping service - all stations",
+      "typical_journey_time": 28,
+      "frequency": "Every 60 minutes",
+      "stations": "all",
+      "peak_frequency": "Every 60 minutes",
+      "off_peak_frequency": "Every 60 minutes",
+      "weekend_frequency": "Every 60 minutes",
+      "first_service": "06:30",
+      "last_service": "22:30",
+      "operates_on": ["daily"]
+    }
+  }
+}

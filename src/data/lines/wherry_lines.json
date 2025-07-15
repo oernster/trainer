@@ -1,0 +1,244 @@
+{
+  "metadata": {
+    "line_name": "Wherry Lines",
+    "description": "Norwich to Great Yarmouth and Lowestoft via Reedham",
+    "operator": "Greater Anglia",
+    "total_stations": 16,
+    "typical_frequency": "Every 120 minutes",
+    "peak_hours": "07:00-09:30, 17:00-19:30",
+    "frequency": {
+      "weekday_peak": "Every 120 minutes",
+      "weekday_off_peak": "Every 120 minutes",
+      "weekend": "Every 120 minutes",
+      "night": "No service"
+    }
+  },
+  "typical_journey_times": {
+    "Norwich-Great Yarmouth": 45,
+    "Norwich-Lowestoft": 55,
+    "Norwich-Reedham": 25,
+    "Reedham-Great Yarmouth": 20,
+    "Reedham-Lowestoft": 30
+  },
+  "typical_services": {
+    "peak_frequency": "Every 120 minutes",
+    "off_peak_frequency": "Every 120 minutes",
+    "evening_frequency": "Every 120 minutes",
+    "weekend_frequency": "Every 120 minutes",
+    "first_train": "06:00",
+    "last_train": "22:00"
+  },
+  "stations": [
+    {
+      "name": "Norwich",
+      "coordinates": {
+        "lat": 52.6267,
+        "lng": 1.3067
+      },
+      "interchange": [
+        "Great Eastern Main Line",
+        "Bittern Line"
+      ],
+      "times": {
+        "morning": ["06:00", "08:00", "10:00"],
+        "afternoon": ["12:00", "14:00", "16:00"],
+        "evening": ["18:00", "20:00", "22:00"],
+        "night": []
+      }
+    },
+    {
+      "name": "Brundall",
+      "coordinates": {
+        "lat": 52.6167,
+        "lng": 1.4167
+      },
+      "times": {
+        "morning": ["06:08", "08:08", "10:08"],
+        "afternoon": ["12:08", "14:08", "16:08"],
+        "evening": ["18:08", "20:08", "22:08"],
+        "night": []
+      }
+    },
+    {
+      "name": "Brundall Gardens",
+      "coordinates": {
+        "lat": 52.6083,
+        "lng": 1.4333
+      },
+      "times": {
+        "morning": ["06:10", "08:10", "10:10"],
+        "afternoon": ["12:10", "14:10", "16:10"],
+        "evening": ["18:10", "20:10", "22:10"],
+        "night": []
+      }
+    },
+    {
+      "name": "Lingwood",
+      "coordinates": {
+        "lat": 52.6000,
+        "lng": 1.4833
+      },
+      "times": {
+        "morning": ["06:15", "08:15", "10:15"],
+        "afternoon": ["12:15", "14:15", "16:15"],
+        "evening": ["18:15", "20:15", "22:15"],
+        "night": []
+      }
+    },
+    {
+      "name": "Acle",
+      "coordinates": {
+        "lat": 52.6167,
+        "lng": 1.5333
+      },
+      "times": {
+        "morning": ["06:20", "08:20", "10:20"],
+        "afternoon": ["12:20", "14:20", "16:20"],
+        "evening": ["18:20", "20:20", "22:20"],
+        "night": []
+      }
+    },
+    {
+      "name": "Reedham",
+      "coordinates": {
+        "lat": 52.5667,
+        "lng": 1.5833
+      },
+      "interchange": [
+        "Lowestoft Branch"
+      ],
+      "times": {
+        "morning": ["06:25", "08:25", "10:25"],
+        "afternoon": ["12:25", "14:25", "16:25"],
+        "evening": ["18:25", "20:25", "22:25"],
+        "night": []
+      }
+    },
+    {
+      "name": "Berney Arms",
+      "coordinates": {
+        "lat": 52.5500,
+        "lng": 1.6167
+      },
+      "times": {
+        "morning": ["06:30", "08:30", "10:30"],
+        "afternoon": ["12:30", "14:30", "16:30"],
+        "evening": ["18:30", "20:30", "22:30"],
+        "night": []
+      }
+    },
+    {
+      "name": "Great Yarmouth",
+      "coordinates": {
+        "lat": 52.6083,
+        "lng": 1.7333
+      },
+      "times": {
+        "morning": ["06:45", "08:45", "10:45"],
+        "afternoon": ["12:45", "14:45", "16:45"],
+        "evening": ["18:45", "20:45", "22:45"],
+        "night": []
+      }
+    }
+  ],
+  "branch_lines": {
+    "lowestoft_branch": {
+      "description": "Branch from Reedham to Lowestoft",
+      "stations": [
+        {
+          "name": "Reedham",
+          "coordinates": {
+            "lat": 52.5667,
+            "lng": 1.5833
+          },
+          "times": {
+            "morning": ["06:30", "08:30", "10:30"],
+            "afternoon": ["12:30", "14:30", "16:30"],
+            "evening": ["18:30", "20:30", "22:30"],
+            "night": []
+          }
+        },
+        {
+          "name": "Haddiscoe",
+          "coordinates": {
+            "lat": 52.5333,
+            "lng": 1.6167
+          },
+          "times": {
+            "morning": ["06:35", "08:35", "10:35"],
+            "afternoon": ["12:35", "14:35", "16:35"],
+            "evening": ["18:35", "20:35", "22:35"],
+            "night": []
+          }
+        },
+        {
+          "name": "Somerleyton",
+          "coordinates": {
+            "lat": 52.5167,
+            "lng": 1.6333
+          },
+          "times": {
+            "morning": ["06:40", "08:40", "10:40"],
+            "afternoon": ["12:40", "14:40", "16:40"],
+            "evening": ["18:40", "20:40", "22:40"],
+            "night": []
+          }
+        },
+        {
+          "name": "Oulton Broad South",
+          "coordinates": {
+            "lat": 52.4667,
+            "lng": 1.7167
+          },
+          "times": {
+            "morning": ["06:50", "08:50", "10:50"],
+            "afternoon": ["12:50", "14:50", "16:50"],
+            "evening": ["18:50", "20:50", "22:50"],
+            "night": []
+          }
+        },
+        {
+          "name": "Lowestoft",
+          "coordinates": {
+            "lat": 52.4778,
+            "lng": 1.7528
+          },
+          "times": {
+            "morning": ["06:55", "08:55", "10:55"],
+            "afternoon": ["12:55", "14:55", "16:55"],
+            "evening": ["18:55", "20:55", "22:55"],
+            "night": []
+          }
+        }
+      ]
+    }
+  },
+  "service_patterns": {
+    "great_yarmouth": {
+      "service_type": "stopping",
+      "description": "Norwich to Great Yarmouth - all stations",
+      "typical_journey_time": 45,
+      "frequency": "Every 120 minutes",
+      "stations": ["Norwich", "Brundall", "Brundall Gardens", "Lingwood", "Acle", "Reedham", "Berney Arms", "Great Yarmouth"],
+      "peak_frequency": "Every 120 minutes",
+      "off_peak_frequency": "Every 120 minutes",
+      "weekend_frequency": "Every 120 minutes",
+      "first_service": "06:00",
+      "last_service": "22:00",
+      "operates_on": ["daily"]
+    },
+    "lowestoft_branch": {
+      "service_type": "branch",
+      "description": "Norwich to Lowestoft via Reedham",
+      "typical_journey_time": 55,
+      "frequency": "Every 120 minutes",
+      "stations": ["Norwich", "Brundall", "Brundall Gardens", "Lingwood", "Acle", "Reedham", "Haddiscoe", "Somerleyton", "Oulton Broad South", "Lowestoft"],
+      "peak_frequency": "Every 120 minutes",
+      "off_peak_frequency": "Every 120 minutes",
+      "weekend_frequency": "Every 120 minutes",
+      "first_service": "06:00",
+      "last_service": "22:00",
+      "operates_on": ["daily"]
+    }
+  }
+}

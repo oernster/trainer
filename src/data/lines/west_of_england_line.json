@@ -1,277 +1,245 @@
 {
   "metadata": {
     "line_name": "West of England Line",
-    "description": "Railway line connecting London Waterloo to Exeter St Davids via Basingstoke and Salisbury",
+    "description": "London Waterloo to Exeter St Davids via Salisbury",
     "operator": "South Western Railway",
-    "total_stations": 18,
-    "line_color": "#0019A8",
-    "average_speed_mph": 70,
-    "frequency_minutes": 60
+    "total_stations": 12,
+    "typical_frequency": "Every 60 minutes",
+    "peak_hours": "07:00-09:30, 17:00-19:30",
+    "frequency": {
+      "weekday_peak": "Every 60 minutes",
+      "weekday_off_peak": "Every 60 minutes",
+      "weekend": "Every 60 minutes",
+      "night": "No service"
+    }
+  },
+  "typical_journey_times": {
+    "London Waterloo-Basingstoke": 47,
+    "London Waterloo-Salisbury": 90,
+    "London Waterloo-Exeter St Davids": 180,
+    "Basingstoke-Salisbury": 43,
+    "Salisbury-Exeter St Davids": 90
+  },
+  "typical_services": {
+    "peak_frequency": "Every 60 minutes",
+    "off_peak_frequency": "Every 60 minutes",
+    "evening_frequency": "Every 60 minutes",
+    "weekend_frequency": "Every 60 minutes",
+    "first_train": "06:00",
+    "last_train": "22:00"
   },
   "stations": [
     {
       "name": "London Waterloo",
       "coordinates": {
-        "lat": 51.5031,
-        "lng": -0.1132
+        "lat": 51.5036,
+        "lng": -0.1144
       },
       "zone": 1,
       "interchange": [
-        "South Western Main Line",
-        "Portsmouth Direct Line",
-        "Mole Valley Line",
-        "London Underground"
+        "Jubilee Line",
+        "Northern Line",
+        "Bakerloo Line",
+        "Waterloo & City Line"
       ],
-      "timetable": {
-        "departures": ["05:25", "06:25", "07:25", "08:25", "09:25", "10:25", "11:25", "12:25", "13:25", "14:25", "15:25", "16:25", "17:25", "18:25", "19:25", "20:25", "21:25", "22:25"]
-      }
-    },
-    {
-      "name": "Clapham Junction",
-      "coordinates": {
-        "lat": 51.4646,
-        "lng": -0.1702
-      },
-      "zone": 2,
-      "interchange": [
-        "South Western Main Line",
-        "Portsmouth Direct Line",
-        "Brighton Main Line",
-        "London Overground"
-      ],
-      "timetable": {
-        "departures": ["05:31", "06:31", "07:31", "08:31", "09:31", "10:31", "11:31", "12:31", "13:31", "14:31", "15:31", "16:31", "17:31", "18:31", "19:31", "20:31", "21:31", "22:31"]
-      }
-    },
-    {
-      "name": "Woking",
-      "coordinates": {
-        "lat": 51.3179,
-        "lng": -0.5575
-      },
-      "zone": 6,
-      "interchange": [
-        "South Western Main Line",
-        "Portsmouth Direct Line"
-      ],
-      "timetable": {
-        "departures": ["05:47", "06:47", "07:47", "08:47", "09:47", "10:47", "11:47", "12:47", "13:47", "14:47", "15:47", "16:47", "17:47", "18:47", "19:47", "20:47", "21:47", "22:47"]
+      "times": {
+        "morning": ["06:00", "07:00", "08:00", "09:00", "10:00", "11:00"],
+        "afternoon": ["12:00", "13:00", "14:00", "15:00", "16:00"],
+        "evening": ["17:00", "18:00", "19:00", "20:00", "21:00", "22:00"],
+        "night": []
       }
     },
     {
       "name": "Basingstoke",
       "coordinates": {
-        "lat": 51.2687,
-        "lng": -1.0877
+        "lat": 51.2667,
+        "lng": -1.0833
       },
-      "zone": 6,
       "interchange": [
         "South Western Main Line",
         "Reading to Basingstoke Line"
       ],
-      "timetable": {
-        "departures": ["06:05", "07:05", "08:05", "09:05", "10:05", "11:05", "12:05", "13:05", "14:05", "15:05", "16:05", "17:05", "18:05", "19:05", "20:05", "21:05", "22:05", "23:05"]
+      "times": {
+        "morning": ["06:47", "07:47", "08:47", "09:47", "10:47", "11:47"],
+        "afternoon": ["12:47", "13:47", "14:47", "15:47", "16:47"],
+        "evening": ["17:47", "18:47", "19:47", "20:47", "21:47", "22:47"],
+        "night": []
       }
     },
     {
       "name": "Overton",
       "coordinates": {
-        "lat": 51.2558,
-        "lng": -1.2467
+        "lat": 51.2333,
+        "lng": -1.2667
       },
-      "zone": 6,
-      "timetable": {
-        "departures": ["06:12", "07:12", "08:12", "09:12", "10:12", "11:12", "12:12", "13:12", "14:12", "15:12", "16:12", "17:12", "18:12", "19:12", "20:12", "21:12", "22:12", "23:12"]
+      "times": {
+        "morning": ["06:55", "07:55", "08:55", "09:55", "10:55", "11:55"],
+        "afternoon": ["12:55", "13:55", "14:55", "15:55", "16:55"],
+        "evening": ["17:55", "18:55", "19:55", "20:55", "21:55", "22:55"],
+        "night": []
       }
     },
     {
-      "name": "Whitchurch (Hampshire)",
+      "name": "Whitchurch",
       "coordinates": {
-        "lat": 51.2342,
-        "lng": -1.3404
+        "lat": 51.2333,
+        "lng": -1.3333
       },
-      "zone": 6,
-      "timetable": {
-        "departures": ["06:18", "07:18", "08:18", "09:18", "10:18", "11:18", "12:18", "13:18", "14:18", "15:18", "16:18", "17:18", "18:18", "19:18", "20:18", "21:18", "22:18", "23:18"]
+      "times": {
+        "morning": ["07:00", "08:00", "09:00", "10:00", "11:00"],
+        "afternoon": ["12:00", "13:00", "14:00", "15:00", "16:00"],
+        "evening": ["17:00", "18:00", "19:00", "20:00", "21:00", "22:00"],
+        "night": []
       }
     },
     {
       "name": "Andover",
       "coordinates": {
-        "lat": 51.2088,
-        "lng": -1.4795
+        "lat": 51.2083,
+        "lng": -1.4833
       },
-      "zone": 6,
-      "timetable": {
-        "departures": ["06:26", "07:26", "08:26", "09:26", "10:26", "11:26", "12:26", "13:26", "14:26", "15:26", "16:26", "17:26", "18:26", "19:26", "20:26", "21:26", "22:26", "23:26"]
+      "times": {
+        "morning": ["07:10", "08:10", "09:10", "10:10", "11:10"],
+        "afternoon": ["12:10", "13:10", "14:10", "15:10", "16:10"],
+        "evening": ["17:10", "18:10", "19:10", "20:10", "21:10", "22:10"],
+        "night": []
       }
     },
     {
       "name": "Grateley",
       "coordinates": {
-        "lat": 51.1649,
-        "lng": -1.6135
+        "lat": 51.1667,
+        "lng": -1.5833
       },
-      "zone": 6,
-      "timetable": {
-        "departures": ["06:33", "07:33", "08:33", "09:33", "10:33", "11:33", "12:33", "13:33", "14:33", "15:33", "16:33", "17:33", "18:33", "19:33", "20:33", "21:33", "22:33", "23:33"]
+      "times": {
+        "morning": ["07:18", "08:18", "09:18", "10:18", "11:18"],
+        "afternoon": ["12:18", "13:18", "14:18", "15:18", "16:18"],
+        "evening": ["17:18", "18:18", "19:18", "20:18", "21:18", "22:18"],
+        "night": []
       }
     },
     {
       "name": "Salisbury",
       "coordinates": {
-        "lat": 51.0699,
-        "lng": -1.8061
+        "lat": 51.0667,
+        "lng": -1.7833
       },
-      "zone": 6,
       "interchange": [
         "Wessex Main Line"
       ],
-      "timetable": {
-        "departures": ["06:46", "07:46", "08:46", "09:46", "10:46", "11:46", "12:46", "13:46", "14:46", "15:46", "16:46", "17:46", "18:46", "19:46", "20:46", "21:46", "22:46", "23:46"]
+      "times": {
+        "morning": ["07:30", "08:30", "09:30", "10:30", "11:30"],
+        "afternoon": ["12:30", "13:30", "14:30", "15:30", "16:30"],
+        "evening": ["17:30", "18:30", "19:30", "20:30", "21:30", "22:30"],
+        "night": []
       }
     },
     {
-      "name": "Tisbury",
+      "name": "Gillingham",
       "coordinates": {
-        "lat": 51.0643,
-        "lng": -2.0851
+        "lat": 51.0333,
+        "lng": -2.2667
       },
-      "zone": 6,
-      "timetable": {
-        "departures": ["06:56", "07:56", "08:56", "09:56", "10:56", "11:56", "12:56", "13:56", "14:56", "15:56", "16:56", "17:56", "18:56", "19:56", "20:56", "21:56", "22:56", "23:56"]
-      }
-    },
-    {
-      "name": "Gillingham (Dorset)",
-      "coordinates": {
-        "lat": 51.0383,
-        "lng": -2.2783
-      },
-      "zone": 6,
-      "timetable": {
-        "departures": ["07:04", "08:04", "09:04", "10:04", "11:04", "12:04", "13:04", "14:04", "15:04", "16:04", "17:04", "18:04", "19:04", "20:04", "21:04", "22:04", "23:04", "00:04"]
-      }
-    },
-    {
-      "name": "Templecombe",
-      "coordinates": {
-        "lat": 50.9962,
-        "lng": -2.4176
-      },
-      "zone": 6,
-      "timetable": {
-        "departures": ["07:10", "08:10", "09:10", "10:10", "11:10", "12:10", "13:10", "14:10", "15:10", "16:10", "17:10", "18:10", "19:10", "20:10", "21:10", "22:10", "23:10", "00:10"]
+      "times": {
+        "morning": ["07:50", "08:50", "09:50", "10:50", "11:50"],
+        "afternoon": ["12:50", "13:50", "14:50", "15:50", "16:50"],
+        "evening": ["17:50", "18:50", "19:50", "20:50", "21:50", "22:50"],
+        "night": []
       }
     },
     {
       "name": "Sherborne",
       "coordinates": {
-        "lat": 50.9474,
-        "lng": -2.5178
+        "lat": 50.9472,
+        "lng": -2.5167
       },
-      "zone": 6,
-      "timetable": {
-        "departures": ["07:17", "08:17", "09:17", "10:17", "11:17", "12:17", "13:17", "14:17", "15:17", "16:17", "17:17", "18:17", "19:17", "20:17", "21:17", "22:17", "23:17", "00:17"]
+      "times": {
+        "morning": ["08:05", "09:05", "10:05", "11:05"],
+        "afternoon": ["12:05", "13:05", "14:05", "15:05", "16:05"],
+        "evening": ["17:05", "18:05", "19:05", "20:05", "21:05", "22:05"],
+        "night": []
       }
     },
     {
       "name": "Yeovil Junction",
       "coordinates": {
-        "lat": 50.9246,
-        "lng": -2.6381
+        "lat": 50.9167,
+        "lng": -2.6333
       },
-      "zone": 6,
-      "timetable": {
-        "departures": ["07:24", "08:24", "09:24", "10:24", "11:24", "12:24", "13:24", "14:24", "15:24", "16:24", "17:24", "18:24", "19:24", "20:24", "21:24", "22:24", "23:24", "00:24"]
+      "interchange": [
+        "Heart of Wessex Line"
+      ],
+      "times": {
+        "morning": ["08:15", "09:15", "10:15", "11:15"],
+        "afternoon": ["12:15", "13:15", "14:15", "15:15", "16:15"],
+        "evening": ["17:15", "18:15", "19:15", "20:15", "21:15", "22:15"],
+        "night": []
       }
     },
     {
       "name": "Crewkerne",
       "coordinates": {
-        "lat": 50.8789,
-        "lng": -2.7927
+        "lat": 50.8833,
+        "lng": -2.7833
       },
-      "zone": 6,
-      "timetable": {
-        "departures": ["07:32", "08:32", "09:32", "10:32", "11:32", "12:32", "13:32", "14:32", "15:32", "16:32", "17:32", "18:32", "19:32", "20:32", "21:32", "22:32", "23:32", "00:32"]
-      }
-    },
-    {
-      "name": "Axminster",
-      "coordinates": {
-        "lat": 50.7810,
-        "lng": -2.9984
-      },
-      "zone": 6,
-      "timetable": {
-        "departures": ["07:44", "08:44", "09:44", "10:44", "11:44", "12:44", "13:44", "14:44", "15:44", "16:44", "17:44", "18:44", "19:44", "20:44", "21:44", "22:44", "23:44", "00:44"]
-      }
-    },
-    {
-      "name": "Honiton",
-      "coordinates": {
-        "lat": 50.7957,
-        "lng": -3.1877
-      },
-      "zone": 6,
-      "timetable": {
-        "departures": ["07:54", "08:54", "09:54", "10:54", "11:54", "12:54", "13:54", "14:54", "15:54", "16:54", "17:54", "18:54", "19:54", "20:54", "21:54", "22:54", "23:54", "00:54"]
-      }
-    },
-    {
-      "name": "Exeter Central",
-      "coordinates": {
-        "lat": 50.7280,
-        "lng": -3.5320
-      },
-      "zone": 6,
-      "interchange": [
-        "Avocet Line"
-      ],
-      "timetable": {
-        "departures": ["08:10", "09:10", "10:10", "11:10", "12:10", "13:10", "14:10", "15:10", "16:10", "17:10", "18:10", "19:10", "20:10", "21:10", "22:10", "23:10", "00:10", "01:10"]
+      "times": {
+        "morning": ["08:25", "09:25", "10:25", "11:25"],
+        "afternoon": ["12:25", "13:25", "14:25", "15:25", "16:25"],
+        "evening": ["17:25", "18:25", "19:25", "20:25", "21:25", "22:25"],
+        "night": []
       }
     },
     {
       "name": "Exeter St Davids",
       "coordinates": {
-        "lat": 50.7292,
-        "lng": -3.5435
+        "lat": 50.7306,
+        "lng": -3.5444
       },
-      "zone": 6,
       "interchange": [
         "Great Western Main Line",
-        "Cross Country Line",
-        "Avocet Line",
         "Tarka Line"
       ],
-      "timetable": {
-        "departures": ["08:15", "09:15", "10:15", "11:15", "12:15", "13:15", "14:15", "15:15", "16:15", "17:15", "18:15", "19:15", "20:15", "21:15", "22:15", "23:15", "00:15", "01:15"]
+      "times": {
+        "morning": ["09:00", "10:00", "11:00"],
+        "afternoon": ["12:00", "13:00", "14:00", "15:00", "16:00"],
+        "evening": ["17:00", "18:00", "19:00", "20:00", "21:00", "22:00"],
+        "night": []
       }
     }
   ],
   "service_patterns": {
-    "fast": {
+    "express": {
       "service_type": "express",
-      "stations": ["London Waterloo", "Clapham Junction", "Basingstoke", "Salisbury", "Yeovil Junction", "Exeter St Davids"],
-      "description": "Express service stopping only at major stations",
-      "typical_journey_time": 170,
-      "frequency": "Every 2 hours"
+      "description": "Express service - major stations only",
+      "typical_journey_time": 180,
+      "frequency": "Every 60 minutes",
+      "stations": [
+        "London Waterloo",
+        "Basingstoke",
+        "Andover",
+        "Salisbury",
+        "Yeovil Junction",
+        "Exeter St Davids"
+      ],
+      "peak_frequency": "Every 60 minutes",
+      "off_peak_frequency": "Every 60 minutes",
+      "weekend_frequency": "Every 60 minutes",
+      "first_service": "06:00",
+      "last_service": "22:00",
+      "operates_on": ["daily"]
     },
     "stopping": {
       "service_type": "stopping",
-      "stations": "all",
-      "description": "Regular service stopping at all stations",
+      "description": "Stopping service - all stations",
       "typical_journey_time": 210,
-      "frequency": "Every 2 hours"
+      "frequency": "Every 60 minutes",
+      "stations": "all",
+      "peak_frequency": "Every 60 minutes",
+      "off_peak_frequency": "Every 60 minutes",
+      "weekend_frequency": "Every 60 minutes",
+      "first_service": "06:00",
+      "last_service": "22:00",
+      "operates_on": ["daily"]
     }
-  },
-  "typical_journey_times": {
-    "London Waterloo-Exeter St Davids": 210,
-    "London Waterloo-Salisbury": 90,
-    "Salisbury-Exeter St Davids": 120,
-    "London Waterloo-Basingstoke": 45,
-    "Basingstoke-Salisbury": 45
   }
 }
