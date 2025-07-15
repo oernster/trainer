@@ -190,12 +190,13 @@ class RouteService(IRouteService):
         prefer_direct = preferences.get('prefer_direct', False)
         max_walking_distance_km = preferences.get('max_walking_distance_km', 0.1)  # Get configurable threshold
         
-        self.logger.info(f"Starting Dijkstra pathfinding from '{start}' to '{end}' using {weight_func} optimization")
+        self.logger.critical(f"Starting Dijkstra pathfinding from '{start}' to '{end}' using {weight_func} optimization")
+        self.logger.critical(f"PREFERENCES: avoid_walking={avoid_walking}, prefer_direct={prefer_direct}, max_walking_distance_km={max_walking_distance_km}")
         if avoid_walking:
-            self.logger.info("Preference: Avoiding walking connections when possible")
-            self.logger.info(f"Maximum walking distance threshold: {max_walking_distance_km}km")
+            self.logger.critical("AVOID_WALKING ENABLED: Will strictly avoid all walking connections")
+            self.logger.critical(f"Maximum walking distance threshold: {max_walking_distance_km}km")
         if prefer_direct:
-            self.logger.info("Preference: Preferring direct connections")
+            self.logger.critical("Preference: Preferring direct connections")
         
         # Priority queue: (weight, node)
         pq = [PathNode(start, 0.0, 0, 0, [start], [])]
@@ -337,29 +338,59 @@ class RouteService(IRouteService):
                         (ic.get('from_station') == to_station and ic.get('to_station') == from_station)):
                         if ic.get('connection_type') == 'WALKING':
                             is_walking = True
+                            self.logger.critical(f"WALKING CONNECTION DETECTED: {from_station} -> {to_station} (from interchange_connections.json)")
                             break
                 
                 if not is_walking:
-                    # Check if they're on the same line
-                    same_line = False
-                    for line in self.data_repository.load_railway_lines():
-                        # Handle parentheses in station names
-                        line_stations = [s.replace(" (Main)", "").replace(" (Cross Country Line)", "")
-                                        for s in line.stations]
-                        clean_from = from_station.replace(" (Main)", "").replace(" (Cross Country Line)", "")
-                        clean_to = to_station.replace(" (Main)", "").replace(" (Cross Country Line)", "")
+                    # Use Haversine distance calculation to determine if this is a walking connection
+                    # Get coordinates from the interchange connections if available
+                    from_coords = None
+                    to_coords = None
+                    
+                    for ic in interchange_connections.get('connections', []):
+                        if ((ic.get('from_station') == from_station and ic.get('to_station') == to_station) or
+                            (ic.get('from_station') == to_station and ic.get('to_station') == from_station)):
+                            coords = ic.get('coordinates', {})
+                            if coords:
+                                if ic.get('from_station') == from_station:
+                                    from_coords = coords.get('from')
+                                    to_coords = coords.get('to')
+                                else:
+                                    from_coords = coords.get('to')
+                                    to_coords = coords.get('from')
+                                break
+                    
+                    # If we have coordinates, use Haversine distance to determine walking connection
+                    if from_coords and to_coords:
+                        haversine_distance_km = self._calculate_haversine_distance(from_coords, to_coords)
+                        self.logger.critical(f"HAVERSINE DISTANCE: {from_station} -> {to_station} = {haversine_distance_km:.3f}km")
                         
-                        if clean_from in line_stations and clean_to in line_stations:
-                            # Found both stations on the same line
-                            same_line = True
-                            break
-                    
-                    # Calculate haversine distance
-                    distance_km = best_connection.get('distance', 0)
-                    
-                    # Apply the logic: not same line AND distance > max_walking_distance_km = walking connection
-                    if not same_line and distance_km > max_walking_distance_km:
-                        is_walking = True
+                        # If distance > threshold, it's a walking connection
+                        if haversine_distance_km > max_walking_distance_km:
+                            is_walking = True
+                            self.logger.critical(f"WALKING CONNECTION BY DISTANCE: {from_station} -> {to_station} ({haversine_distance_km:.3f}km > {max_walking_distance_km}km)")
+                    else:
+                        # Fallback: Check if they're on the same line
+                        same_line = False
+                        for line in self.data_repository.load_railway_lines():
+                            # Handle parentheses in station names
+                            line_stations = [s.replace(" (Main)", "").replace(" (Cross Country Line)", "")
+                                            for s in line.stations]
+                            clean_from = from_station.replace(" (Main)", "").replace(" (Cross Country Line)", "")
+                            clean_to = to_station.replace(" (Main)", "").replace(" (Cross Country Line)", "")
+                            
+                            if clean_from in line_stations and clean_to in line_stations:
+                                # Found both stations on the same line
+                                same_line = True
+                                break
+                        
+                        # Calculate distance from connection data
+                        distance_km = best_connection.get('distance', 0)
+                        
+                        # Apply the logic: not same line AND distance > max_walking_distance_km = walking connection
+                        if not same_line and distance_km > max_walking_distance_km:
+                            is_walking = True
+                            self.logger.critical(f"WALKING CONNECTION BY FALLBACK: {from_station} -> {to_station} (not same line, distance: {distance_km:.3f}km)")
                 
                 # Also check the explicit flags
                 if is_walking or best_connection.get('line') == 'WALKING' or best_connection.get('is_walking_connection', False):
@@ -367,17 +398,21 @@ class RouteService(IRouteService):
                     if avoid_walking:
                         # If avoid_walking is true, strictly avoid all walking connections
                         # Skip this connection completely
-                        self.logger.warning(f"Skipping walking connection: {current.station} -> {next_station}")
+                        self.logger.critical(f"AVOID_WALKING: Skipping walking connection: {current.station} -> {next_station} (distance: {best_connection.get('distance', 0):.3f}km)")
                         continue
                     else:
-                        # If "prefer not to walk" is NOT selected, use a small penalty
-                        # This will prioritize non-walking connections but allow walking within threshold
+                        # If avoid_walking is false, allow walking connections but mark them properly
+                        # Mark the connection as walking for UI display
+                        best_connection['is_walking_connection'] = True
+                        best_connection['line'] = 'WALKING'
+                        
+                        # Use a small penalty to prioritize non-walking connections but allow walking
                         penalty_multiplier = best_connection.get('walking_penalty', 2)
                         
                         # Apply penalty
                         original_weight = weight
                         weight = weight * penalty_multiplier
-                        self.logger.debug(f"Applied walking penalty: {original_weight} -> {weight}")
+                        self.logger.critical(f"WALKING CONNECTION ALLOWED: {current.station} -> {next_station} (penalty applied: {original_weight} -> {weight})")
                 
                 # Only add to queue if we found a better path
                 if next_station not in distances or weight < distances[next_station]:
@@ -406,6 +441,9 @@ class RouteService(IRouteService):
         current_line = None
         segment_start_idx = 0
         
+        # Get the network graph to check for walking connections
+        graph = self._build_network_graph()
+        
         # Group consecutive stations on the same line into segments
         for i in range(len(path_node.lines_used)):
             line = path_node.lines_used[i]
@@ -421,6 +459,7 @@ class RouteService(IRouteService):
                     # Calculate distance for this segment using Haversine if possible
                     segment_distance = 0.0
                     segment_time = 0
+                    is_walking_segment = (current_line == 'WALKING')
                     
                     # Sum up distances and times for all hops in this segment
                     for j in range(segment_start_idx, i):
@@ -428,7 +467,6 @@ class RouteService(IRouteService):
                         hop_to = path_node.path[j + 1]
                         
                         # Get distance from network graph
-                        graph = self._build_network_graph()
                         if hop_from in graph and hop_to in graph[hop_from]:
                             connections = graph[hop_from][hop_to]
                             if connections:
@@ -437,14 +475,23 @@ class RouteService(IRouteService):
                                 # Use the actual time for the segment (not the penalized time)
                                 segment_time += line_connection.get('time', 0)
                                 segment_distance += line_connection.get('distance', 0)
+                                
+                                # Check if this connection is marked as walking
+                                if (line_connection.get('is_walking_connection', False) or
+                                    line_connection.get('line') == 'WALKING' or
+                                    current_line == 'WALKING'):
+                                    is_walking_segment = True
+                                    self.logger.critical(f"MARKING SEGMENT AS WALKING: {hop_from} -> {hop_to} (line: {current_line})")
                     
                     segment = RouteSegment(
                         from_station=segment_from,
                         to_station=segment_to,
                         line_name=current_line,
                         distance_km=segment_distance,
-                        journey_time_minutes=segment_time
+                        journey_time_minutes=segment_time,
+                        service_pattern="WALKING" if is_walking_segment else None
                     )
+                    
                     segments.append(segment)
                 
                 current_line = line
@@ -458,6 +505,7 @@ class RouteService(IRouteService):
             # Calculate distance and time for final segment
             segment_distance = 0.0
             segment_time = 0
+            is_walking_segment = (current_line == 'WALKING')
             
             # Sum up distances and times for all hops in this final segment
             for j in range(segment_start_idx, len(path_node.path) - 1):
@@ -465,7 +513,6 @@ class RouteService(IRouteService):
                 hop_to = path_node.path[j + 1]
                 
                 # Get distance from network graph
-                graph = self._build_network_graph()
                 if hop_from in graph and hop_to in graph[hop_from]:
                     connections = graph[hop_from][hop_to]
                     if connections:
@@ -474,14 +521,23 @@ class RouteService(IRouteService):
                         # Use the actual time for the segment (not the penalized time)
                         segment_time += line_connection.get('time', 0)
                         segment_distance += line_connection.get('distance', 0)
+                        
+                        # Check if this connection is marked as walking
+                        if (line_connection.get('is_walking_connection', False) or
+                            line_connection.get('line') == 'WALKING' or
+                            current_line == 'WALKING'):
+                            is_walking_segment = True
+                            self.logger.critical(f"MARKING FINAL SEGMENT AS WALKING: {hop_from} -> {hop_to} (line: {current_line})")
             
             segment = RouteSegment(
                 from_station=segment_from,
                 to_station=segment_to,
                 line_name=current_line,
                 distance_km=segment_distance,
-                journey_time_minutes=segment_time
+                journey_time_minutes=segment_time,
+                service_pattern="WALKING" if is_walking_segment else None
             )
+            
             segments.append(segment)
         
         # Create route with enhanced intermediate stations calculation

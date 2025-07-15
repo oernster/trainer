@@ -92,12 +92,23 @@ class TrainManager(QObject):
 
     def update_config(self, config: ConfigData):
         """Update the configuration and refresh if needed."""
-        old_time_window = self.config.display.time_window_hours if self.config else None
+        # Get old time window from configurable preference, fallback to display config
+        old_time_window = None
+        if self.config:
+            old_time_window = getattr(self.config, 'train_lookahead_hours', None)
+            if old_time_window is None:
+                old_time_window = self.config.display.time_window_hours
+        
         self.config = config
         
+        # Get new time window from configurable preference, fallback to display config
+        new_time_window = getattr(config, 'train_lookahead_hours', None)
+        if new_time_window is None:
+            new_time_window = config.display.time_window_hours
+        
         # If time window changed, log it
-        if old_time_window != config.display.time_window_hours:
-            logger.info(f"Time window updated from {old_time_window} to {config.display.time_window_hours} hours")
+        if old_time_window != new_time_window:
+            logger.info(f"Time window updated from {old_time_window} to {new_time_window} hours")
 
     # Reference to config_manager for direct access
     config_manager = None
@@ -450,12 +461,8 @@ class TrainManager(QObject):
             if hasattr(self.config, 'avoid_walking'):
                 avoid_walking = self.config.avoid_walking
             
-            # Known stations that require walking connections
-            walking_connections = {
-                ("Farnborough North", "Farnborough (Main)"): {"distance_km": 0.9, "time_minutes": 12},
-                ("Farnborough (Main)", "Farnborough North"): {"distance_km": 0.9, "time_minutes": 12},
-                # Add any other known walking connections here
-            }
+            # Load walking connections dynamically from interchange_connections.json
+            walking_connections = self._load_walking_connections()
             
             logger.info(f"Avoid walking preference is set to: {avoid_walking}")
             
@@ -837,7 +844,12 @@ class TrainManager(QObject):
 
         # Generate realistic train services based on the calculated route
         departure_time = datetime.now()
-        time_window_hours = self.config.display.time_window_hours
+        
+        # Use configurable look-ahead time from preferences, fallback to display config
+        time_window_hours = getattr(self.config, 'train_lookahead_hours', None)
+        if time_window_hours is None:
+            time_window_hours = self.config.display.time_window_hours
+        
         # Use a reasonable default that allows for comprehensive coverage
         max_trains = 100  # Allow enough trains for all railway lines
         
@@ -922,8 +934,26 @@ class TrainManager(QObject):
                 train_uid=train_uid,
                 service_id=service_id,
                 calling_points=calling_points,
-                route_segments=route_result.segments if hasattr(route_result, 'segments') else None
+                route_segments=getattr(route_result, 'segments', [])
             )
+            
+            # Debug: Log the route segments that are being attached to the train
+            if train_data.route_segments:
+                logger.critical(f"TRAIN MANAGER: Attached {len(train_data.route_segments)} route segments to train {service_id}")
+                for i, segment in enumerate(train_data.route_segments):
+                    segment_from = getattr(segment, 'from_station', 'UNKNOWN')
+                    segment_to = getattr(segment, 'to_station', 'UNKNOWN')
+                    line_name = getattr(segment, 'line_name', 'UNKNOWN')
+                    service_pattern = getattr(segment, 'service_pattern', 'NONE')
+                    logger.critical(f"  Segment {i}: {segment_from} -> {segment_to} (line: {line_name}, service_pattern: {service_pattern})")
+                    
+                    # Additional debug: Check the actual segment object type and attributes
+                    logger.critical(f"    Segment type: {type(segment)}")
+                    logger.critical(f"    Segment attributes: {dir(segment)}")
+                    if hasattr(segment, '__dict__'):
+                        logger.critical(f"    Segment dict: {segment.__dict__}")
+            else:
+                logger.critical(f"TRAIN MANAGER: No route segments attached to train {service_id}")
             
             return train_data
             
@@ -1044,10 +1074,10 @@ class TrainManager(QObject):
                                 
                                 break
                 
-                # Also check for connections marked with is_walking_connection flag
+                # Also check for connections marked with service_pattern="WALKING"
                 if not is_walking:
                     for segment in segments:
-                        if hasattr(segment, 'is_walking_connection') and segment.is_walking_connection:
+                        if hasattr(segment, 'service_pattern') and segment.service_pattern == 'WALKING':
                             if hasattr(segment, 'from_station') and hasattr(segment, 'to_station'):
                                 if segment.from_station == station_name or segment.to_station == station_name:
                                     is_walking = True
@@ -1064,9 +1094,13 @@ class TrainManager(QObject):
                 # Keep original station name
                 display_name = station_name
                 
-                # If this is a walking connection, we'll add a separate walking info station BETWEEN
-                # this station and the previous one in the final list
-                if is_walking:
+                # Check if avoid_walking preference is enabled
+                avoid_walking = False
+                if hasattr(self.config, 'avoid_walking'):
+                    avoid_walking = self.config.avoid_walking
+                
+                # If this is a walking connection and avoid_walking is disabled, add walking info
+                if is_walking and not avoid_walking:
                     # Find previous station to connect with walking
                     prev_station = None
                     if len(calling_points) > 0:
@@ -1098,6 +1132,8 @@ class TrainManager(QObject):
                         )
                         calling_points.append(walking_point)
                         logger.info(f"Added walking text between {prev_station} and {station_name}")
+                elif is_walking and avoid_walking:
+                    logger.info(f"Skipping walking connection display for {station_name} due to avoid_walking preference")
                 
                 intermediate_point = CallingPoint(
                     station_name=display_name,
@@ -2727,11 +2763,40 @@ class TrainManager(QObject):
                     # Update the route result with the corrected path and segments
                     if route_result:
                         object.__setattr__(route_result, 'full_path', corrected_path)
-                        # Create proper route segments with line change information
-                        corrected_segments = self._create_route_segments_from_path(corrected_path, line_data)
-                        object.__setattr__(route_result, 'segments', corrected_segments)
+                        # Use the route service to create proper segments instead of our local method
+                        # This ensures that walking segments are properly marked with service_pattern="WALKING"
+                        if self.route_service:
+                            try:
+                                # Calculate a new route with the corrected path to get proper segments
+                                preferences = {}
+                                if hasattr(self.config, 'avoid_walking'):
+                                    preferences['avoid_walking'] = self.config.avoid_walking
+                                if hasattr(self.config, 'prefer_direct'):
+                                    preferences['prefer_direct'] = self.config.prefer_direct
+                                
+                                # Get a fresh route calculation with proper segments
+                                fresh_route = self.route_service.calculate_route(
+                                    corrected_path[0], corrected_path[-1], preferences=preferences
+                                )
+                                
+                                if fresh_route and fresh_route.segments:
+                                    object.__setattr__(route_result, 'segments', fresh_route.segments)
+                                    logger.debug(f"Updated route with {len(fresh_route.segments)} fresh route service segments")
+                                else:
+                                    # Fallback to creating segments manually
+                                    corrected_segments = self._create_route_segments_from_path(corrected_path, line_data)
+                                    object.__setattr__(route_result, 'segments', corrected_segments)
+                            except Exception as e:
+                                logger.error(f"Error getting fresh route segments: {e}")
+                                # Fallback to creating segments manually
+                                corrected_segments = self._create_route_segments_from_path(corrected_path, line_data)
+                                object.__setattr__(route_result, 'segments', corrected_segments)
+                        else:
+                            # Fallback to creating segments manually
+                            corrected_segments = self._create_route_segments_from_path(corrected_path, line_data)
+                            object.__setattr__(route_result, 'segments', corrected_segments)
                         logger.debug(f"Updated route with {len(corrected_path)} stations")
-                        logger.debug(f"Created {len(corrected_segments)} route segments")
+                        logger.debug(f"Updated route segments for corrected path")
                     else:
                         # Create a minimal route object if none exists
                         class CorrectedRoute:
@@ -2858,12 +2923,13 @@ class TrainManager(QObject):
         
         # Define RouteSegment class once at the top
         class RouteSegment:
-            def __init__(self, from_station, to_station, line_name, station_count=1):
+            def __init__(self, from_station, to_station, line_name, station_count=1, service_pattern=None):
                 self.from_station = from_station
                 self.to_station = to_station
                 self.line_name = line_name
                 self.distance_km = 15 * station_count  # Rough estimate
                 self.journey_time_minutes = 10 * station_count  # Rough estimate
+                self.service_pattern = service_pattern  # Add service_pattern support
         
         # Load station to lines mapping
         station_to_lines = {}
@@ -2910,9 +2976,11 @@ class TrainManager(QObject):
                     station_count = segment_end - segment_start
                     
                     # Create segment for the previous line
-                    segment = RouteSegment(from_station, to_station, current_line, station_count)
+                    # Check if this is a walking segment
+                    service_pattern = "WALKING" if current_line == 'WALKING' else None
+                    segment = RouteSegment(from_station, to_station, current_line, station_count, service_pattern)
                     segments.append(segment)
-                    logger.debug(f"Created segment: {from_station} → {to_station}")
+                    logger.debug(f"Created segment: {from_station} → {to_station} (service_pattern: {service_pattern})")
                 
                 # Start new segment from previous station (the interchange point)
                 segment_start = i - 1
@@ -2941,9 +3009,11 @@ class TrainManager(QObject):
             to_station = path[-1]
             station_count = len(path) - 1 - segment_start
             
-            segment = RouteSegment(from_station, to_station, current_line, station_count)
+            # Check if this is a walking segment
+            service_pattern = "WALKING" if current_line == 'WALKING' else None
+            segment = RouteSegment(from_station, to_station, current_line, station_count, service_pattern)
             segments.append(segment)
-            logger.debug(f"Final segment: {from_station} → {to_station}")
+            logger.debug(f"Final segment: {from_station} → {to_station} (service_pattern: {service_pattern})")
 
         logger.debug(f"Created {len(segments)} route segments")
         return segments
@@ -2980,5 +3050,51 @@ class TrainManager(QObject):
         
         # Fallback: direct connection
         return [start_station, end_station]
+    
+    def _load_walking_connections(self) -> dict:
+        """Load walking connections dynamically from interchange_connections.json."""
+        try:
+            import json
+            from pathlib import Path
+            
+            # Load interchange connections file
+            connections_file = Path(__file__).parent.parent / "data" / "interchange_connections.json"
+            
+            if not connections_file.exists():
+                logger.warning(f"Interchange connections file not found: {connections_file}")
+                return {}
+            
+            with open(connections_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            
+            walking_connections = {}
+            
+            # Extract walking connections from the JSON data
+            for connection in data.get('connections', []):
+                if connection.get('connection_type') == 'WALKING':
+                    from_station = connection.get('from_station')
+                    to_station = connection.get('to_station')
+                    # Convert walking_distance_m to distance_km
+                    walking_distance_m = connection.get('walking_distance_m', 1000)
+                    distance_km = walking_distance_m / 1000.0  # Convert meters to kilometers
+                    time_minutes = connection.get('time_minutes', 10)
+                    
+                    if from_station and to_station:
+                        # Add both directions
+                        walking_connections[(from_station, to_station)] = {
+                            "distance_km": distance_km,
+                            "time_minutes": time_minutes
+                        }
+                        walking_connections[(to_station, from_station)] = {
+                            "distance_km": distance_km,
+                            "time_minutes": time_minutes
+                        }
+            
+            logger.info(f"Loaded {len(walking_connections)} walking connections from interchange_connections.json")
+            return walking_connections
+            
+        except Exception as e:
+            logger.error(f"Error loading walking connections: {e}")
+            return {}
     
     # Auto-refresh methods removed as obsolete

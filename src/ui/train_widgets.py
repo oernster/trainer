@@ -24,6 +24,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont, QCursor
 from ..models.train_data import TrainData, TrainStatus
+from ..core.services.interchange_detection_service import InterchangeDetectionService
 
 logger = logging.getLogger(__name__)
 
@@ -483,12 +484,32 @@ class TrainItemWidget(QFrame):
                     walking_info = ""
                     
                     # Look for walking connections in segments
-                    if hasattr(self.train_data, 'route_segments'):
-                        for segment in getattr(self.train_data, 'route_segments', []):
-                            if (hasattr(segment, 'from_station') and hasattr(segment, 'to_station') and
-                                (segment.from_station == prev_station and segment.to_station == station_name or
-                                 segment.from_station == station_name and segment.to_station == prev_station)):
-                                if getattr(segment, 'line_name', '') == 'WALKING':
+                    if hasattr(self.train_data, 'route_segments') and self.train_data.route_segments:
+                        logger.debug(f"TRAIN WIDGET: Checking {len(self.train_data.route_segments)} route segments for walking connections")
+                        for j, segment in enumerate(self.train_data.route_segments):
+                            # Check if this segment connects the previous station to current station
+                            segment_from = getattr(segment, 'from_station', '')
+                            segment_to = getattr(segment, 'to_station', '')
+                            
+                            logger.debug(f"TRAIN WIDGET: Segment {j}: {segment_from} -> {segment_to}")
+                            
+                            # Check both directions for the connection
+                            connects_stations = ((segment_from == prev_station and segment_to == station_name) or
+                                               (segment_from == station_name and segment_to == prev_station))
+                            
+                            if connects_stations:
+                                # Check for walking connections by multiple indicators
+                                line_name = getattr(segment, 'line_name', '')
+                                service_pattern = getattr(segment, 'service_pattern', '')
+                                is_walking_attr = getattr(segment, 'is_walking_connection', False)
+                                
+                                logger.debug(f"TRAIN WIDGET: Segment connects {prev_station} <-> {station_name}: line_name='{line_name}', service_pattern='{service_pattern}'")
+                                
+                                # Multiple ways to detect walking connections
+                                is_walking_segment = (line_name == 'WALKING' or
+                                                    service_pattern == 'WALKING')
+                                
+                                if is_walking_segment:
                                     is_walking_connection = True
                                     walking_distance = getattr(segment, 'distance_km', None)
                                     walking_time = getattr(segment, 'journey_time_minutes', None)
@@ -499,13 +520,14 @@ class TrainItemWidget(QFrame):
                                         walking_info = f"Walk {walking_distance:.1f}km"
                                     else:
                                         walking_info = "Walking connection"
+                                    
+                                    logger.debug(f"TRAIN WIDGET: Found walking connection: {prev_station} -> {station_name} ({walking_info})")
                                     break
+                    else:
+                        logger.debug(f"TRAIN WIDGET: No route segments available for train {getattr(self.train_data, 'service_id', 'UNKNOWN')}")
                     
-                    # Special case for Farnborough stations
-                    if ('Farnborough North' in prev_station and 'Farnborough (Main)' in station_name or
-                        'Farnborough (Main)' in prev_station and 'Farnborough North' in station_name):
-                        is_walking_connection = True
-                        walking_info = "Walk 0.9km (12min)"
+                    # Walking connections should be determined from route segments data only
+                    # No hardcoded walking connections
                     
                     # Create arrow with walking info if needed
                     if is_walking_connection and walking_info:
@@ -793,385 +815,23 @@ class TrainItemWidget(QFrame):
         
         # Check if we have route_segments data for line changes
         if hasattr(self.train_data, 'route_segments') and self.train_data.route_segments:
-            segments = self.train_data.route_segments
-            logger.debug(f"Found {len(segments)} segments for interchange analysis")
+            # Use the new InterchangeDetectionService for intelligent detection
+            interchange_service = InterchangeDetectionService()
+            interchanges = interchange_service.detect_user_journey_interchanges(self.train_data.route_segments)
             
-            # Look for consecutive segments where the passenger changes between different JSON files
-            for i in range(len(segments) - 1):
-                current_segment = segments[i]
-                next_segment = segments[i + 1]
-                
-                current_from = getattr(current_segment, 'from_station', '')
-                current_to = getattr(current_segment, 'to_station', '')
-                next_from = getattr(next_segment, 'from_station', '')
-                current_line = getattr(current_segment, 'line_name', '')
-                next_line = getattr(next_segment, 'line_name', '')
-                
-                logger.debug(f"Analyzing segments {i} and {i+1} for line changes")
-                
-                # Only consider this an interchange if:
-                # 1. This station is where one segment ends and the next begins
-                # 2. Both segments are actual train lines (not walking)
-                # 3. The passenger changes between different JSON file lines
-                # 4. Geographic validation confirms this is a legitimate interchange
-                if (current_to == clean_name and next_from == clean_name and
-                    current_line != 'WALKING' and next_line != 'WALKING' and
-                    current_line != next_line):
-                    
-                    logger.debug(f"Potential interchange at {clean_name}: {current_line} -> {next_line}")
-                    
-                    json_change = self._is_json_file_line_change(current_line, next_line)
-                    geo_valid = self._is_valid_interchange_geographically(current_from, current_to, current_line, next_line)
-                    
-                    if json_change and geo_valid:
-                        logger.debug(f"Station {clean_name} is a valid interchange")
-                        return True
-                    else:
-                        logger.debug(f"Station {clean_name} rejected as interchange")
+            # Check if this station is marked as a user journey change
+            for interchange in interchanges:
+                if interchange.station_name == clean_name and interchange.is_user_journey_change:
+                    logger.debug(f"Station {clean_name} is a valid user journey interchange")
+                    return True
             
-            logger.debug(f"Station {clean_name} is not an interchange")
+            logger.debug(f"Station {clean_name} is not a user journey interchange")
             return False
         else:
             logger.debug(f"No route segments available for {clean_name}")
             # If no route data is available, return False (conservative approach)
             return False
     
-    def _is_json_file_line_change(self, line1: str, line2: str) -> bool:
-        """Check if a line change represents a change between different JSON files (different railway lines)."""
-        # Get the station-to-JSON-files mapping
-        station_to_files = self._get_station_to_json_files_mapping()
-        
-        # Map line names to their corresponding JSON files
-        line_to_file = self._get_line_to_json_file_mapping()
-        
-        # Get the JSON file for each line
-        file1 = line_to_file.get(line1)
-        file2 = line_to_file.get(line2)
-        
-        # If we can't find the files, fall back to simple line name comparison
-        if not file1 or not file2:
-            return line1 != line2
-        
-        # Lines are different if they come from different JSON files
-        return file1 != file2
-    
-    def _is_valid_interchange_geographically(self, from_station: str, to_station: str,
-                                           from_line: str, to_line: str) -> bool:
-        """
-        Use geographic distance (Haversine) to validate if an interchange is legitimate.
-        
-        Args:
-            from_station: Station where passenger is coming from
-            to_station: Station where passenger is going to (potential interchange)
-            from_line: Line name from route segment
-            to_line: Line name to route segment
-            
-        Returns:
-            True if this is a valid interchange based on geographic constraints
-        """
-        try:
-            # The interchange station is the to_station (where the line change occurs)
-            interchange_station = to_station
-            
-            # Check if this is a known through service first
-            if self._is_known_through_service(from_line, to_line, interchange_station):
-                logger.debug(f"Known through service detected at {interchange_station}: {from_line} -> {to_line}")
-                return False  # Not a real interchange - through service
-            
-            # Get station coordinates from JSON files
-            station_coordinates = self._get_station_coordinates()
-            
-            # Check if we have coordinates for the interchange station
-            if interchange_station not in station_coordinates:
-                logger.debug(f"Missing coordinates for interchange station: {interchange_station}")
-                return True  # Conservative: allow if we can't validate
-            
-            # For a valid interchange, the station should exist in both line's JSON files
-            # and be at the same geographic location (within reasonable tolerance)
-            
-            # Get the line-to-file mapping to find which JSON files contain each line
-            line_to_file = self._get_line_to_json_file_mapping()
-            
-            file1 = line_to_file.get(from_line)
-            file2 = line_to_file.get(to_line)
-            
-            if not file1 or not file2:
-                logger.debug(f"Could not find JSON files for lines: {from_line} -> {file1}, {to_line} -> {file2}")
-                return True  # Conservative: allow if we can't validate
-            
-            # Check if the interchange station appears in both JSON files
-            station_to_files = self._get_station_to_json_files_mapping()
-            station_files = station_to_files.get(interchange_station, [])
-            
-            if file1 in station_files and file2 in station_files:
-                logger.debug(f"Valid interchange: {interchange_station} appears in both {file1} and {file2}")
-                return True
-            else:
-                logger.debug(f"Invalid interchange: {interchange_station} not in both files. Found in: {station_files}")
-                return False
-            
-        except Exception as e:
-            logger.error(f"Error in geographic validation: {e}")
-            return True  # Conservative: allow if validation fails
-    
-    def _is_known_through_service(self, line1: str, line2: str, station_name: str) -> bool:
-        """Check if this represents a known through service where passengers don't change trains."""
-        # Hook is a known through station for South Western services
-        if station_name == "Hook":
-            if ((line1 == "South Western Main Line" and line2 == "Reading to Basingstoke Line") or
-                (line1 == "Reading to Basingstoke Line" and line2 == "South Western Main Line")):
-                return True
-        
-        # Fleet is also a through station for South Western services
-        if station_name == "Fleet":
-            if ((line1 == "South Western Main Line" and line2 == "Reading to Basingstoke Line") or
-                (line1 == "Reading to Basingstoke Line" and line2 == "South Western Main Line")):
-                return True
-        
-        # Add other known through services here
-        return False
-    
-    def _get_station_coordinates(self) -> dict:
-        """Get station coordinates from JSON files."""
-        # Use instance-level cache to avoid reloading data repeatedly
-        if not hasattr(self, '_station_coordinates_cache'):
-            self._station_coordinates_cache = self._build_station_coordinates_mapping()
-        
-        return self._station_coordinates_cache
-    
-    def _build_station_coordinates_mapping(self) -> dict:
-        """Build the mapping of station names to their coordinates."""
-        station_coordinates = {}
-        
-        # Load all JSON files from the lines directory
-        import json
-        from pathlib import Path
-        
-        lines_dir = Path(__file__).parent.parent / "data" / "lines"
-        
-        if not lines_dir.exists():
-            logger.error(f"Lines directory not found: {lines_dir}")
-            return {}
-        
-        try:
-            for json_file in lines_dir.glob("*.json"):
-                with open(json_file, 'r', encoding='utf-8') as f:
-                    data = json.load(f)
-                    
-                    # Get stations from this JSON file
-                    stations = data.get('stations', [])
-                    
-                    for station in stations:
-                        station_name = station.get('name', '')
-                        coordinates = station.get('coordinates', {})
-                        
-                        if station_name and coordinates and 'lat' in coordinates and 'lng' in coordinates:
-                            station_coordinates[station_name] = coordinates
-            
-            logger.debug(f"Built station coordinates mapping with {len(station_coordinates)} stations")
-            return station_coordinates
-            
-        except Exception as e:
-            logger.error(f"Failed to build station coordinates mapping: {e}")
-            return {}
-    
-    def _calculate_haversine_distance(self, coord1: dict, coord2: dict) -> float:
-        """Calculate the Haversine distance between two coordinates in kilometers."""
-        import math
-        
-        # Extract coordinates (using 'lat' and 'lng' keys from JSON data)
-        lat1 = math.radians(coord1['lat'])
-        lon1 = math.radians(coord1['lng'])
-        lat2 = math.radians(coord2['lat'])
-        lon2 = math.radians(coord2['lng'])
-        
-        # Haversine formula
-        dlat = lat2 - lat1
-        dlon = lon2 - lon1
-        
-        a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2)**2
-        c = 2 * math.asin(math.sqrt(a))
-        
-        # Earth's radius in kilometers
-        earth_radius_km = 6371.0
-        
-        return earth_radius_km * c
-    
-    def _get_station_to_json_files_mapping(self) -> dict:
-        """Create a mapping of station names to the JSON files they appear in."""
-        # Use instance-level cache to avoid reloading data repeatedly
-        if not hasattr(self, '_station_to_files_cache'):
-            self._station_to_files_cache = self._build_station_to_files_mapping()
-        
-        return self._station_to_files_cache
-    
-    def _get_line_to_json_file_mapping(self) -> dict:
-        """Create a mapping of line names to their JSON file names."""
-        # Use instance-level cache to avoid reloading data repeatedly
-        if not hasattr(self, '_line_to_file_cache'):
-            self._line_to_file_cache = self._build_line_to_file_mapping()
-        
-        return self._line_to_file_cache
-    
-    def _build_station_to_files_mapping(self) -> dict:
-        """Build the mapping of stations to JSON files by loading all line data."""
-        station_to_files = {}
-        
-        # Load all JSON files from the lines directory
-        import json
-        from pathlib import Path
-        
-        lines_dir = Path(__file__).parent.parent / "data" / "lines"
-        
-        if not lines_dir.exists():
-            logger.error(f"Lines directory not found: {lines_dir}")
-            return {}
-        
-        try:
-            for json_file in lines_dir.glob("*.json"):
-                with open(json_file, 'r', encoding='utf-8') as f:
-                    data = json.load(f)
-                    
-                    # Get stations from this JSON file
-                    stations = data.get('stations', [])
-                    file_name = json_file.stem  # Get filename without extension
-                    
-                    for station in stations:
-                        station_name = station.get('name', '')
-                        if station_name:
-                            if station_name not in station_to_files:
-                                station_to_files[station_name] = []
-                            station_to_files[station_name].append(file_name)
-            
-            logger.debug(f"Built station-to-files mapping with {len(station_to_files)} stations")
-            return station_to_files
-            
-        except Exception as e:
-            logger.error(f"Failed to build station-to-files mapping: {e}")
-            return {}
-    
-    def _build_line_to_file_mapping(self) -> dict:
-        """Build the mapping of line names to JSON file names."""
-        line_to_file = {}
-        
-        # Load all JSON files from the lines directory
-        import json
-        from pathlib import Path
-        
-        lines_dir = Path(__file__).parent.parent / "data" / "lines"
-        
-        if not lines_dir.exists():
-            logger.error(f"Lines directory not found: {lines_dir}")
-            return {}
-        
-        try:
-            for json_file in lines_dir.glob("*.json"):
-                with open(json_file, 'r', encoding='utf-8') as f:
-                    data = json.load(f)
-                    
-                    # Get line name from metadata
-                    line_name = data.get('metadata', {}).get('line_name', '')
-                    operator = data.get('metadata', {}).get('operator', '')
-                    file_name = json_file.stem  # Get filename without extension
-                    
-                    if line_name:
-                        line_to_file[line_name] = file_name
-                    
-                    # Add operator name mappings for common cases
-                    if operator:
-                        line_to_file[operator] = file_name
-                    
-                    # Add specific mappings for known operator/service variations
-                    if 'south_western' in file_name:
-                        line_to_file['South Western Railway'] = file_name
-                        line_to_file['South Western Main Line'] = file_name
-                    elif 'cross_country' in file_name:
-                        line_to_file['CrossCountry'] = file_name
-                        line_to_file['Cross Country'] = file_name
-                        line_to_file['Cross Country Line'] = file_name
-                    elif 'reading_to_basingstoke' in file_name:
-                        line_to_file['Reading to Basingstoke Line'] = file_name
-            
-            logger.debug(f"Built line-to-file mapping with {len(line_to_file)} lines")
-            logger.debug(f"Line mappings: {list(line_to_file.keys())}")
-            return line_to_file
-            
-        except Exception as e:
-            logger.error(f"Failed to build line-to-file mapping: {e}")
-            return {}
-
-    def _is_meaningful_line_change(self, line1: str, line2: str) -> bool:
-        """Check if a line change represents a meaningful train change (not just different names for same physical line)."""
-        # Normalize line names to detect same physical lines with different names
-        def normalize_line_name(line_name: str) -> str:
-            line_lower = line_name.lower()
-            
-            # Be more specific about line groupings to avoid false negatives
-            # Only group lines that are truly the same train service
-            
-            # South Western Railway network - group all SW services together
-            # This includes the main line and its extensions/branches that use the same trains
-            if any(keyword in line_lower for keyword in [
-                'south western main line', 'waterloo to woking', 'waterloo to basingstoke',
-                'reading to basingstoke', 'basingstoke to reading'
-            ]):
-                return 'south_western_network_group'
-            
-            # Portsmouth Direct Line (Woking to Portsmouth/Guildford direction) - separate from SW network
-            elif any(keyword in line_lower for keyword in [
-                'portsmouth direct line', 'woking to portsmouth', 'woking to guildford'
-            ]):
-                return 'portsmouth_direct_group'
-            
-            # North Downs Line (Guildford area)
-            elif any(keyword in line_lower for keyword in ['north downs', 'guildford']):
-                return 'north_downs_group'
-            
-            # Great Western Railway group (includes Reading, Paddington routes, West of England)
-            elif any(keyword in line_lower for keyword in ['great western', 'paddington', 'gwr', 'west of england']):
-                return 'great_western_group'
-            
-            elif any(keyword in line_lower for keyword in ['brighton', 'south coast']):
-                return 'brighton_group'
-            
-            # If it contains "main line" or "line", try to group by the main route name
-            elif 'main line' in line_lower:
-                # Extract the main part before "main line"
-                main_part = line_lower.split('main line')[0].strip()
-                return f'{main_part}_main_line_group'
-            
-            elif 'line' in line_lower and len(line_lower.split()) > 1:
-                # For other lines, use the first significant word
-                words = line_lower.replace('line', '').strip().split()
-                if words:
-                    return f'{words[0]}_line_group'
-            
-            # Default: return the original name (different lines)
-            return line_name.lower()
-        
-        # If the normalized names are the same, it's not a meaningful change
-        normalized1 = normalize_line_name(line1)
-        normalized2 = normalize_line_name(line2)
-        
-        # Debug logging for specific stations and routes
-        if any(station in line1.lower() or station in line2.lower() for station in ['hook', 'woking', 'farnborough', 'guildford', 'brookwood', 'worplesdon']):
-            logger.debug(f"Line normalization: '{line1}' -> '{normalized1}', '{line2}' -> '{normalized2}'")
-            logger.debug(f"Meaningful change: {normalized1 != normalized2}")
-        
-        return normalized1 != normalized2
-    
-    def _is_continuous_train_service(self, line1: str, line2: str, station_name: str) -> bool:
-        """Check if this represents a continuous train service where passengers don't change trains."""
-        # Generic pattern: South Western Main Line continuing as Reading to Basingstoke Line
-        # This represents the same physical train continuing its journey with different line designations
-        if ((line1 == "South Western Main Line" and line2 == "Reading to Basingstoke Line") or
-            (line1 == "Reading to Basingstoke Line" and line2 == "South Western Main Line")):
-            return True
-        
-        # Add other continuous service patterns here as needed
-        # For example, other lines where the same train continues with different designations
-        
-        return False
 
 
 class TrainListWidget(QScrollArea):
@@ -1937,48 +1597,17 @@ class RouteDisplayDialog(QDialog):
         
         # Check if we have route_segments data for line changes
         if hasattr(self.train_data, 'route_segments') and self.train_data.route_segments:
-            segments = self.train_data.route_segments
-            logger.debug(f"[RouteDialog] Checking {len(segments)} segments for {clean_name}")
+            # Use the new InterchangeDetectionService for intelligent detection
+            interchange_service = InterchangeDetectionService()
+            interchanges = interchange_service.detect_user_journey_interchanges(self.train_data.route_segments)
             
-            # Look for consecutive segments where the passenger changes between different JSON files
-            for i in range(len(segments) - 1):
-                current_segment = segments[i]
-                next_segment = segments[i + 1]
-                
-                current_from = getattr(current_segment, 'from_station', '')
-                current_to = getattr(current_segment, 'to_station', '')
-                next_from = getattr(next_segment, 'from_station', '')
-                current_line = getattr(current_segment, 'line_name', '')
-                next_line = getattr(next_segment, 'line_name', '')
-                
-                logger.debug(f"[RouteDialog] Segment {i}: {current_from} -> {current_to} ({current_line})")
-                logger.debug(f"[RouteDialog] Segment {i+1}: {next_from} -> {next_segment.to_station} ({next_line})")
-                
-                # Only consider this an interchange if:
-                # 1. This station is where one segment ends and the next begins
-                # 2. Both segments are actual train lines (not walking)
-                # 3. The passenger changes between different JSON file lines
-                # 4. Geographic validation confirms this is a legitimate interchange
-                if (current_to == clean_name and next_from == clean_name and
-                    current_line != 'WALKING' and next_line != 'WALKING' and
-                    current_line != next_line):
-                    
-                    logger.debug(f"[RouteDialog] Found potential interchange at {clean_name}: {current_line} -> {next_line}")
-                    
-                    json_change = self._is_json_file_line_change(current_line, next_line)
-                    geo_valid = self._is_valid_interchange_geographically(current_from, current_to, current_line, next_line)
-                    
-                    logger.debug(f"[RouteDialog] JSON file line change: {json_change}, Geographic validation: {geo_valid}")
-                    logger.debug(f"[RouteDialog] Line to file mapping: {current_line} -> {self._get_line_to_json_file_mapping().get(current_line)}")
-                    logger.debug(f"[RouteDialog] Line to file mapping: {next_line} -> {self._get_line_to_json_file_mapping().get(next_line)}")
-                    
-                    if json_change and geo_valid:
-                        logger.debug(f"[RouteDialog] Station {clean_name} is a valid interchange")
-                        return True
-                    else:
-                        logger.debug(f"[RouteDialog] Station {clean_name} rejected - JSON change: {json_change}, Geo valid: {geo_valid}")
+            # Check if this station is marked as a user journey change
+            for interchange in interchanges:
+                if interchange.station_name == clean_name and interchange.is_user_journey_change:
+                    logger.debug(f"[RouteDialog] Station {clean_name} is a valid user journey interchange")
+                    return True
             
-            logger.debug(f"[RouteDialog] Station {clean_name} is not an interchange")
+            logger.debug(f"[RouteDialog] Station {clean_name} is not a user journey interchange")
             return False
         else:
             logger.debug(f"[RouteDialog] No route segments available for {clean_name}")

@@ -121,6 +121,11 @@ class APIManager:
         """
         await self.rate_limiter.wait_if_needed()
 
+        # Use configurable look-ahead time from preferences, fallback to display config
+        time_window_hours = getattr(self.config, 'train_lookahead_hours', None)
+        if time_window_hours is None:
+            time_window_hours = self.config.display.time_window_hours
+        
         params = {
             "app_id": self.config.api.app_id,
             "app_key": self.config.api.app_key,
@@ -129,7 +134,7 @@ class APIManager:
             "darwin": "true",  # Include real-time data
             "calling_at": self.config.stations.to_name,
             "from_offset": "PT0H",  # Start from now
-            "to_offset": f"PT{self.config.display.time_window_hours}H",  # End at specified hours ahead
+            "to_offset": f"PT{time_window_hours}H",  # End at specified hours ahead
         }
 
         url = f"{self.config.api.base_url}/train/station/{self.config.stations.from_name}/live.json"

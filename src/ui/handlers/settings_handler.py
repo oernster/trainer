@@ -90,6 +90,10 @@ class SettingsHandler(QObject):
                 preferences['max_changes'] = config.max_changes
             if hasattr(config, 'max_journey_time'):
                 preferences['max_journey_time'] = config.max_journey_time
+            if hasattr(config, 'train_lookahead_hours'):
+                preferences['train_lookahead_hours'] = config.train_lookahead_hours
+            if hasattr(config, 'max_walking_distance_km'):
+                preferences['max_walking_distance_km'] = config.max_walking_distance_km
             
             settings['preferences'] = preferences
             
@@ -173,6 +177,7 @@ class SettingsHandler(QObject):
             for key, value in preferences.items():
                 if hasattr(config, key):
                     setattr(config, key, value)
+                    logger.debug(f"Updated preference {key}: {value}")
             
             # Update departure time
             if hasattr(config, 'departure_time'):
@@ -326,7 +331,9 @@ class SettingsHandler(QObject):
                 'prefer_direct': False,
                 'avoid_walking': False,
                 'max_changes': 3,
-                'max_journey_time': 8
+                'max_journey_time': 8,
+                'train_lookahead_hours': 16,
+                'max_walking_distance_km': 1.0
             }
         }
     

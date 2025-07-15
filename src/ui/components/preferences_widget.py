@@ -44,6 +44,8 @@ class PreferencesWidget(QWidget):
         self.avoid_walking_checkbox = None
         self.max_walking_distance_spin = None
         self.max_walking_distance_label = None
+        self.train_lookahead_hours_spin = None
+        self.train_lookahead_hours_label = None
         
         # Button group for radio buttons
         self.optimization_group = None
@@ -129,6 +131,23 @@ class PreferencesWidget(QWidget):
         walking_layout.addWidget(self.max_walking_distance_spin, 0, 1)
         layout.addLayout(walking_layout)
         
+        # Add train look-ahead time configuration
+        lookahead_layout = QGridLayout()
+        self.train_lookahead_hours_label = QLabel("Train look-ahead time:")
+        self.train_lookahead_hours_spin = HorizontalSpinWidget(
+            minimum=1,
+            maximum=48,
+            initial_value=16,
+            step=1,
+            suffix="h",
+            parent=self,
+            theme_manager=self.theme_manager
+        )
+        
+        lookahead_layout.addWidget(self.train_lookahead_hours_label, 0, 0)
+        lookahead_layout.addWidget(self.train_lookahead_hours_spin, 0, 1)
+        layout.addLayout(lookahead_layout)
+        
         return group
     def _connect_signals(self):
         """Connect signals and slots."""
@@ -148,9 +167,11 @@ class PreferencesWidget(QWidget):
             # Also connect to update visibility of max walking distance control
             self.avoid_walking_checkbox.toggled.connect(self._update_walking_distance_visibility)
         
-        # Spin widget
+        # Spin widgets
         if self.max_walking_distance_spin:
             self.max_walking_distance_spin.valueChanged.connect(self._on_preferences_changed)
+        if self.train_lookahead_hours_spin:
+            self.train_lookahead_hours_spin.valueChanged.connect(self._on_preferences_changed)
         
         # Initialize visibility
         self._update_walking_distance_visibility()
@@ -175,6 +196,9 @@ class PreferencesWidget(QWidget):
         # Get walking distance in km (convert from meters)
         walking_distance_km = self.max_walking_distance_spin.value() / 1000.0 if self.max_walking_distance_spin else 0.1
         
+        # Get train look-ahead time in hours
+        train_lookahead_hours = self.train_lookahead_hours_spin.value() if self.train_lookahead_hours_spin else 16
+        
         return {
             'optimize_for_speed': self.optimize_for_speed_radio.isChecked() if self.optimize_for_speed_radio else True,
             'show_intermediate_stations': self.show_intermediate_checkbox.isChecked() if self.show_intermediate_checkbox else True,
@@ -182,6 +206,7 @@ class PreferencesWidget(QWidget):
             'prefer_direct': self.prefer_direct_checkbox.isChecked() if self.prefer_direct_checkbox else False,
             'avoid_walking': self.avoid_walking_checkbox.isChecked() if self.avoid_walking_checkbox else False,
             'max_walking_distance_km': walking_distance_km,
+            'train_lookahead_hours': train_lookahead_hours,
         }
     
     def set_preferences(self, preferences: Dict[str, Any]):
@@ -213,6 +238,9 @@ class PreferencesWidget(QWidget):
                 meters = int(preferences['max_walking_distance_km'] * 1000)
                 self.max_walking_distance_spin.setValue(meters)
             
+            if 'train_lookahead_hours' in preferences and self.train_lookahead_hours_spin:
+                self.train_lookahead_hours_spin.setValue(preferences['train_lookahead_hours'])
+            
             # Update visibility based on avoid_walking setting
             self._update_walking_distance_visibility()
             
@@ -230,6 +258,7 @@ class PreferencesWidget(QWidget):
             'prefer_direct': False,
             'avoid_walking': False,
             'max_walking_distance_km': 1.0,
+            'train_lookahead_hours': 16,
         }
         self.set_preferences(defaults)
         logger.debug("Preferences reset to defaults")
@@ -252,6 +281,10 @@ class PreferencesWidget(QWidget):
             self.max_walking_distance_spin.setEnabled(enabled)
         if self.max_walking_distance_label:
             self.max_walking_distance_label.setEnabled(enabled)
+        if self.train_lookahead_hours_spin:
+            self.train_lookahead_hours_spin.setEnabled(enabled)
+        if self.train_lookahead_hours_label:
+            self.train_lookahead_hours_label.setEnabled(enabled)
     
     def apply_theme(self, theme_manager):
         """Apply theme to the widget."""

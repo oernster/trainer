@@ -98,6 +98,7 @@ class ConfigData(BaseModel):
     max_walking_distance_km: float = 1.0  # Default threshold of 1.0km
     max_changes: int = 3
     max_journey_time: int = 8
+    train_lookahead_hours: int = 16  # Configurable train look-ahead time in hours
 
     def __init__(self, **data):
         """Initialize ConfigData with optional weather, astronomy, and UI config."""

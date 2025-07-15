@@ -1083,6 +1083,10 @@ class MainWindow(QMainWindow):
             station_db = getattr(self.train_manager, 'station_database', None) if hasattr(self, 'train_manager') else None
             dialog = StationsSettingsDialog(self, station_db, self.config_manager, self.theme_manager)
             dialog.settings_changed.connect(self.on_settings_saved)
+            
+            # Connect dialog signals for immediate UI updates during preference changes
+            if hasattr(dialog, 'route_updated'):
+                dialog.route_updated.connect(self._on_dialog_route_updated)
             dialog.exec()
         except Exception as e:
             logger.error(f"Failed to show stations settings dialog: {e}")
@@ -1102,10 +1106,22 @@ class MainWindow(QMainWindow):
     def on_settings_saved(self):
         """Handle settings saved event."""
         try:
-            # Store old time window for comparison
+            # Store old settings for comparison
             old_time_window = None
-            if self.config and hasattr(self.config, 'display'):
-                old_time_window = self.config.display.time_window_hours
+            old_train_lookahead = None
+            old_avoid_walking = None
+            old_max_walking_distance = None
+            old_prefer_direct = None
+            old_max_changes = None
+            
+            if self.config:
+                if hasattr(self.config, 'display'):
+                    old_time_window = self.config.display.time_window_hours
+                old_train_lookahead = getattr(self.config, 'train_lookahead_hours', None)
+                old_avoid_walking = getattr(self.config, 'avoid_walking', None)
+                old_max_walking_distance = getattr(self.config, 'max_walking_distance_km', None)
+                old_prefer_direct = getattr(self.config, 'prefer_direct', None)
+                old_max_changes = getattr(self.config, 'max_changes', None)
             
             # Reload configuration
             self.config = self.config_manager.load_config()
@@ -1117,16 +1133,47 @@ class MainWindow(QMainWindow):
                 # Emit config updated signal to update train manager
                 self.config_updated.emit(self.config)
                 
-                # Update time window display if changed
+                # Check for changes that require train data refresh
+                needs_refresh = False
+                
+                # Check display time window change
                 if hasattr(self.config, 'display') and self.config.display:
                     new_time_window = self.config.display.time_window_hours
                     if old_time_window != new_time_window:
-                        # Header removed - time window no longer shown in UI, only logged
-                        logger.info(f"Time window changed from {old_time_window} to {new_time_window} hours")
-                        
-                        # Trigger refresh to reload trains with new time window
-                        self.refresh_requested.emit()
-                        logger.info(f"Refreshing train data for new time window")
+                        logger.info(f"Display time window changed from {old_time_window} to {new_time_window} hours")
+                        needs_refresh = True
+                
+                # Check train lookahead time change
+                new_train_lookahead = getattr(self.config, 'train_lookahead_hours', None)
+                if old_train_lookahead != new_train_lookahead:
+                    logger.info(f"Train look-ahead time changed from {old_train_lookahead} to {new_train_lookahead} hours")
+                    needs_refresh = True
+                
+                # Check route preference changes that affect route calculation
+                new_avoid_walking = getattr(self.config, 'avoid_walking', None)
+                if old_avoid_walking != new_avoid_walking:
+                    logger.info(f"Avoid walking preference changed from {old_avoid_walking} to {new_avoid_walking}")
+                    needs_refresh = True
+                
+                new_max_walking_distance = getattr(self.config, 'max_walking_distance_km', None)
+                if old_max_walking_distance != new_max_walking_distance:
+                    logger.info(f"Max walking distance changed from {old_max_walking_distance} to {new_max_walking_distance} km")
+                    needs_refresh = True
+                
+                new_prefer_direct = getattr(self.config, 'prefer_direct', None)
+                if old_prefer_direct != new_prefer_direct:
+                    logger.info(f"Prefer direct routes changed from {old_prefer_direct} to {new_prefer_direct}")
+                    needs_refresh = True
+                
+                new_max_changes = getattr(self.config, 'max_changes', None)
+                if old_max_changes != new_max_changes:
+                    logger.info(f"Max changes preference changed from {old_max_changes} to {new_max_changes}")
+                    needs_refresh = True
+                
+                # Trigger refresh if any setting that affects train data changed
+                if needs_refresh:
+                    self.refresh_requested.emit()
+                    logger.info("Refreshing train data for new preference settings")
                 
                 # Update train manager route if stations changed
                 # This signal will be connected from main.py
@@ -1302,6 +1349,24 @@ class MainWindow(QMainWindow):
             self.show_error_message(
                 "Configuration Error", f"Failed to reload settings: {e}"
             )
+    
+    def _on_dialog_route_updated(self, route_data: dict):
+        """Handle route updates from the settings dialog during preference changes."""
+        try:
+            logger.info("Route updated from settings dialog - triggering immediate refresh")
+            
+            # Trigger immediate refresh of train data
+            self.refresh_requested.emit()
+            
+            # Also emit route_changed signal if we have the route data
+            if route_data and 'full_path' in route_data and len(route_data['full_path']) >= 2:
+                from_station = route_data['full_path'][0]
+                to_station = route_data['full_path'][-1]
+                self.route_changed.emit(from_station, to_station)
+                logger.info(f"Emitted route_changed signal: {from_station} → {to_station}")
+            
+        except Exception as e:
+            logger.error(f"Error handling dialog route update: {e}")
 
     def show_about_dialog(self):
         """Show about dialog using centralized version system."""

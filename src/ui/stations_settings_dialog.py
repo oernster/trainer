@@ -398,6 +398,12 @@ class StationsSettingsDialog(QDialog):
         if self.route_details_widget:
             self.route_details_widget.update_route_data(route_data)
         self._update_status("Route found successfully")
+        
+        # Emit route_updated signal for main window connection
+        self.route_updated.emit(route_data)
+        
+        # Immediately update the main UI with the new route
+        self._update_main_ui_with_route(route_data)
     
     def _on_route_calculation_failed(self, error_message: str):
         """Handle failed route calculation."""
@@ -434,6 +440,51 @@ class StationsSettingsDialog(QDialog):
                 self._find_route()
             else:
                 logger.debug("Skipping route recalculation - stations not properly set")
+    
+    def _update_main_ui_with_route(self, route_data: Dict[str, Any]):
+        """Update the main UI immediately with the calculated route."""
+        try:
+            if not self.station_selection_widget:
+                return
+            
+            from_station = self.station_selection_widget.get_from_station()
+            to_station = self.station_selection_widget.get_to_station()
+            
+            if not from_station or not to_station:
+                return
+            
+            # Extract route path from route_data
+            route_path = None
+            if route_data and 'full_path' in route_data:
+                route_path = route_data['full_path']
+                logger.info(f"Updating main UI with route path: {' → '.join(route_path)}")
+            
+            # Update train manager directly
+            if (self.parent_window and
+                hasattr(self.parent_window, 'train_manager') and
+                self.parent_window.train_manager):
+                
+                train_manager = self.parent_window.train_manager
+                train_manager.set_route(from_station, to_station, route_path)
+                
+                # Share config_manager for persistence
+                if self.config_manager and hasattr(train_manager.__class__, 'config_manager'):
+                    train_manager.__class__.config_manager = self.config_manager
+                
+                logger.info(f"Updated main UI train manager with route: {from_station} → {to_station}")
+            
+            # Emit signals to refresh the main UI
+            if self.parent_window:
+                if hasattr(self.parent_window, 'refresh_requested'):
+                    self.parent_window.refresh_requested.emit()
+                    logger.info("Emitted refresh_requested signal to main UI")
+                
+                if hasattr(self.parent_window, 'route_changed'):
+                    self.parent_window.route_changed.emit(from_station, to_station)
+                    logger.info("Emitted route_changed signal to main UI")
+            
+        except Exception as e:
+            logger.error(f"Error updating main UI with route: {e}")
     
     def _save_settings(self):
         """Save settings and close dialog."""
