@@ -260,35 +260,35 @@ class InterchangeDetectionService:
         Returns:
             True if this is a meaningful change requiring user action, False otherwise
         """
-        self.logger.critical(f"WOKING DEBUG: Analyzing {station_name}: {from_line} -> {to_line}")
+        self.logger.debug(f"Analyzing {station_name}: {from_line} -> {to_line}")
         
         # First check if this represents a change between different JSON files (different railway networks)
         is_json_change = self._is_json_file_line_change(from_line, to_line)
-        self.logger.critical(f"WOKING DEBUG: {station_name} JSON file change: {is_json_change}")
+        self.logger.debug(f"{station_name} JSON file change: {is_json_change}")
         
         if not is_json_change:
-            self.logger.critical(f"WOKING DEBUG: Same network detected at {station_name}: {from_line} -> {to_line}")
+            self.logger.debug(f"Same network detected at {station_name}: {from_line} -> {to_line}")
             return False
         
         # Check if this is a continuous service where the same train continues with different line names
         is_continuous = self._is_continuous_train_service(from_line, to_line, station_name)
-        self.logger.critical(f"WOKING DEBUG: {station_name} continuous service: {is_continuous}")
+        self.logger.debug(f"{station_name} continuous service: {is_continuous}")
         
         if is_continuous:
-            self.logger.critical(f"WOKING DEBUG: Continuous train service at {station_name}: {from_line} -> {to_line}")
+            self.logger.debug(f"Continuous train service at {station_name}: {from_line} -> {to_line}")
             return False
         
         # Check if the station is actually a terminus or origin for one of the lines
         # If the user is just passing through on the same train, it's not a meaningful change
         is_through = self._is_through_station_for_journey(station_name, from_line, to_line, current_segment, next_segment)
-        self.logger.critical(f"WOKING DEBUG: {station_name} through station: {is_through}")
+        self.logger.debug(f"{station_name} through station: {is_through}")
         
         if is_through:
-            self.logger.critical(f"WOKING DEBUG: Through station for journey at {station_name}: {from_line} -> {to_line}")
+            self.logger.debug(f"Through station for journey at {station_name}: {from_line} -> {to_line}")
             return False
         
         # If we get here, it's likely a real interchange requiring user action
-        self.logger.critical(f"WOKING DEBUG: {station_name} marked as REAL INTERCHANGE requiring user action")
+        self.logger.debug(f"{station_name} marked as REAL INTERCHANGE requiring user action")
         return True
     
     def _is_continuous_train_service(self, from_line: str, to_line: str, station_name: str) -> bool:
@@ -317,27 +317,21 @@ class InterchangeDetectionService:
         Check if this station is just a through station for the user's journey,
         meaning they don't need to change trains here.
         """
-        self.logger.critical(f"WOKING DEBUG: Checking through station for {station_name}")
-        
         # Check if both segments have the same service pattern or train ID
         # This would indicate it's the same physical train continuing
         current_service = getattr(current_segment, 'service_pattern', None)
         next_service = getattr(next_segment, 'service_pattern', None)
         
-        self.logger.critical(f"WOKING DEBUG: {station_name} service patterns - current: {current_service}, next: {next_service}")
-        
         if current_service and next_service and current_service == next_service:
-            self.logger.critical(f"WOKING DEBUG: Same service pattern detected: {current_service}")
+            self.logger.debug(f"Same service pattern detected: {current_service}")
             return True
         
         # Check train IDs if available
         current_train_id = getattr(current_segment, 'train_id', None)
         next_train_id = getattr(next_segment, 'train_id', None)
         
-        self.logger.critical(f"WOKING DEBUG: {station_name} train IDs - current: {current_train_id}, next: {next_train_id}")
-        
         if current_train_id and next_train_id and current_train_id == next_train_id:
-            self.logger.critical(f"WOKING DEBUG: Same train ID detected: {current_train_id}")
+            self.logger.debug(f"Same train ID detected: {current_train_id}")
             return True
         
         # Check if this is a known through station for specific line combinations
@@ -360,20 +354,12 @@ class InterchangeDetectionService:
             ]
         }
         
-        self.logger.critical(f"WOKING DEBUG: {station_name} checking known through stations")
-        
         if station_name in through_stations:
-            self.logger.critical(f"WOKING DEBUG: {station_name} found in through stations list")
             for through_from, through_to in through_stations[station_name]:
-                self.logger.critical(f"WOKING DEBUG: Checking {station_name}: {through_from} <-> {through_to} vs {from_line} <-> {to_line}")
                 if ((from_line == through_from and to_line == through_to) or
                     (from_line == through_to and to_line == through_from)):
-                    self.logger.critical(f"WOKING DEBUG: {station_name} MATCHED as through station!")
                     return True
-        else:
-            self.logger.critical(f"WOKING DEBUG: {station_name} NOT found in through stations list")
         
-        self.logger.critical(f"WOKING DEBUG: {station_name} NOT identified as through station")
         return False
     
     def _is_json_file_line_change(self, line1: str, line2: str) -> bool:
@@ -383,17 +369,12 @@ class InterchangeDetectionService:
         file1 = line_to_file.get(line1)
         file2 = line_to_file.get(line2)
         
-        self.logger.critical(f"WOKING DEBUG: Line mapping - {line1} -> {file1}, {line2} -> {file2}")
-        
         # If we can't find the files, assume it's a change
         if not file1 or not file2:
-            self.logger.critical(f"WOKING DEBUG: Missing file mapping, assuming change: {line1}={file1}, {line2}={file2}")
             return True
         
         # Lines are different if they come from different JSON files
-        result = file1 != file2
-        self.logger.critical(f"WOKING DEBUG: JSON file change result: {result} ({file1} != {file2})")
-        return result
+        return file1 != file2
     
     def _is_valid_interchange_geographically(self, station_name: str, from_line: str, to_line: str) -> bool:
         """
