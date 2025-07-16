@@ -190,8 +190,16 @@ class RouteService(IRouteService):
         prefer_direct = preferences.get('prefer_direct', False)
         max_walking_distance_km = preferences.get('max_walking_distance_km', 0.1)  # Get configurable threshold
         
+        # CRITICAL FIX: Check if both stations are on the same line
+        # If so, force the algorithm to only use connections on that line
+        common_lines = set()
+        for line in self.data_repository.load_railway_lines():
+            if start in line.stations and end in line.stations:
+                common_lines.add(line.name)
+        
         self.logger.debug(f"Starting Dijkstra pathfinding from '{start}' to '{end}' using {weight_func} optimization")
         self.logger.debug(f"Preferences: avoid_walking={avoid_walking}, prefer_direct={prefer_direct}, max_walking_distance_km={max_walking_distance_km}")
+        self.logger.debug(f"Common lines between {start} and {end}: {common_lines}")
         
         # Priority queue: (weight, node)
         pq = [PathNode(start, 0.0, 0, 0, [start], [])]
@@ -222,6 +230,20 @@ class RouteService(IRouteService):
             for next_station, connections in neighbors.items():
                 if next_station in visited:
                     continue
+                
+                # CRITICAL FIX: If both start and end are on common lines, ONLY allow connections on those lines
+                # This prevents the algorithm from ever switching to other lines when a direct service exists
+                if common_lines:
+                    # Filter connections to ONLY use common lines - this is the key fix
+                    common_line_connections = [c for c in connections if c['line'] in common_lines]
+                    if common_line_connections:
+                        connections = common_line_connections
+                        self.logger.debug(f"RESTRICTING to common line connections only: {[c['line'] for c in connections]}")
+                    else:
+                        # If no common line connections exist, skip this neighbor entirely
+                        # This prevents the algorithm from using other lines when both stations are on the same line
+                        self.logger.debug(f"Skipping {next_station} - no common line connections available")
+                        continue
                 
                 # Check if there's a direct connection
                 direct_connections = [c for c in connections if c.get('is_direct', False)]
@@ -280,16 +302,80 @@ class RouteService(IRouteService):
                         self.logger.warning(f"No non-walking alternatives found from {current.station} to {next_station}")
                         self.logger.warning(f"Network may be disconnected if walking is strictly avoided")
                 
-                # Find best connection based on weight function
+                # Find best connection based on weight function with same-line prioritization
+                def get_connection_priority(conn):
+                    """Calculate connection priority - lower is better"""
+                    base_weight = conn['time'] if weight_func == 'time' else conn.get('distance', conn['time'])
+                    
+                    # CRITICAL FIX: Check if both start and end stations are on the same line
+                    # If so, heavily prioritize staying on that line for the entire journey
+                    start_lines = set()
+                    end_lines = set()
+                    
+                    # Get lines serving start and end stations
+                    for line in self.data_repository.load_railway_lines():
+                        if start in line.stations:
+                            start_lines.add(line.name)
+                        if end in line.stations:
+                            end_lines.add(line.name)
+                    
+                    # Find common lines between start and end
+                    common_lines = start_lines.intersection(end_lines)
+                    
+                    # If this connection uses a line that serves both start and end stations,
+                    # give it massive priority to prevent line switching
+                    if conn['line'] in common_lines:
+                        return base_weight - 10000  # Massive bonus for same-line direct service
+                    
+                    # Strong preference for staying on the same line as the current path
+                    if current.lines_used:
+                        current_line = current.lines_used[-1]
+                        if conn['line'] == current_line:
+                            # Large bonus for staying on the same line
+                            return base_weight - 1000
+                    
+                    # Secondary preference for direct connections
+                    if conn.get('is_direct', False):
+                        return base_weight - 100
+                    
+                    return base_weight
+                
                 if weight_func == 'time':
-                    best_connection = min(connections_to_check, key=lambda x: x['time'])
+                    best_connection = min(connections_to_check, key=get_connection_priority)
                 elif weight_func == 'distance':
-                    best_connection = min(connections_to_check, key=lambda x: x['distance'])
+                    best_connection = min(connections_to_check, key=get_connection_priority)
                 elif weight_func == 'changes':
-                    # For changes, prioritize direct connections even more
-                    best_connection = min(connections_to_check, key=lambda x: (0 if x.get('is_direct', False) else 1, x['time']))
+                    # For changes, prioritize same-line connections even more aggressively
+                    def changes_priority(conn):
+                        # CRITICAL FIX: Check if both start and end stations are on the same line
+                        start_lines = set()
+                        end_lines = set()
+                        
+                        # Get lines serving start and end stations
+                        for line in self.data_repository.load_railway_lines():
+                            if start in line.stations:
+                                start_lines.add(line.name)
+                            if end in line.stations:
+                                end_lines.add(line.name)
+                        
+                        # Find common lines between start and end
+                        common_lines = start_lines.intersection(end_lines)
+                        
+                        # If this connection uses a line that serves both start and end stations,
+                        # give it massive priority to prevent line switching
+                        if conn['line'] in common_lines:
+                            return (0, conn['time'] - 20000)  # Massive bonus for same-line direct service
+                        
+                        # Massive preference for staying on current line
+                        if current.lines_used and conn['line'] == current.lines_used[-1]:
+                            return (0, conn['time'] - 2000)  # Same line = no change + huge bonus
+                        elif conn.get('is_direct', False):
+                            return (0, conn['time'] - 1000)  # Direct connection
+                        else:
+                            return (1, conn['time'])  # Requires change
+                    best_connection = min(connections_to_check, key=changes_priority)
                 else:
-                    best_connection = min(connections_to_check, key=lambda x: x['time'])  # Default to time
+                    best_connection = min(connections_to_check, key=get_connection_priority)  # Default with prioritization
                 
                 # Calculate new weights using Haversine distance if coordinates available
                 new_distance = current.distance + best_connection['distance']
