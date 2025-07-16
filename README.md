@@ -55,9 +55,6 @@ python build.py
 - **[🎨 Design Patterns](docs/design-patterns.md)** - Implemented patterns and their usage
 - **[🌐 API Integration](docs/api-integration.md)** - External service integration patterns
 
-### Refactoring Documentation
-- **[📋 Refactoring Overview](REFACTORING_DOCUMENTATION.md)** - Complete refactoring process and results
-
 ## ✨ Key Features
 
 ### 🚂 Train Information
