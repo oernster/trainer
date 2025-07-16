@@ -36,19 +36,12 @@ class PreferencesWidget(QWidget):
         self.theme_manager = theme_manager
         
         # UI elements
-        self.optimize_for_speed_radio = None
-        self.optimize_for_changes_radio = None
         self.show_intermediate_checkbox = None
-        self.avoid_london_checkbox = None
-        self.prefer_direct_checkbox = None
         self.avoid_walking_checkbox = None
         self.max_walking_distance_spin = None
         self.max_walking_distance_label = None
         self.train_lookahead_hours_spin = None
         self.train_lookahead_hours_label = None
-        
-        # Button group for radio buttons
-        self.optimization_group = None
         
         self._setup_ui()
         self._connect_signals()
@@ -60,10 +53,6 @@ class PreferencesWidget(QWidget):
         layout = QVBoxLayout(self)
         layout.setSpacing(15)
         
-        # Route optimization preferences
-        optimization_group = self._create_optimization_group()
-        layout.addWidget(optimization_group)
-        
         # Route preferences
         preferences_group = self._create_preferences_group()
         layout.addWidget(preferences_group)
@@ -71,46 +60,18 @@ class PreferencesWidget(QWidget):
         # Add stretch
         layout.addStretch()
     
-    def _create_optimization_group(self) -> QGroupBox:
-        """Create the route optimization group box."""
-        group = QGroupBox("Route Optimization")
-        layout = QVBoxLayout(group)
-        
-        # Create button group for mutual exclusion
-        self.optimization_group = QButtonGroup(self)
-        
-        # Optimization strategy
-        self.optimize_for_speed_radio = QRadioButton("Optimize for speed (shortest journey time)")
-        self.optimize_for_changes_radio = QRadioButton("Optimize for fewer changes")
-        
-        # Add to button group
-        self.optimization_group.addButton(self.optimize_for_speed_radio, 0)
-        self.optimization_group.addButton(self.optimize_for_changes_radio, 1)
-        
-        # Set default
-        self.optimize_for_speed_radio.setChecked(True)
-        
-        layout.addWidget(self.optimize_for_speed_radio)
-        layout.addWidget(self.optimize_for_changes_radio)
-        
-        return group
-    
     def _create_preferences_group(self) -> QGroupBox:
         """Create the route preferences group box."""
         group = QGroupBox("Route Preferences")
         layout = QVBoxLayout(group)
         
         self.show_intermediate_checkbox = QCheckBox("Show intermediate stations in route")
-        self.avoid_london_checkbox = QCheckBox("Avoid routes through London when possible")
-        self.prefer_direct_checkbox = QCheckBox("Prefer direct routes over faster alternatives")
         self.avoid_walking_checkbox = QCheckBox("Avoid walking between stations when possible")
         
         # Set defaults
         self.show_intermediate_checkbox.setChecked(True)
         
         layout.addWidget(self.show_intermediate_checkbox)
-        layout.addWidget(self.avoid_london_checkbox)
-        layout.addWidget(self.prefer_direct_checkbox)
         layout.addWidget(self.avoid_walking_checkbox)
         
         # Add max walking distance configuration
@@ -151,17 +112,9 @@ class PreferencesWidget(QWidget):
         return group
     def _connect_signals(self):
         """Connect signals and slots."""
-        # Optimization radio buttons
-        if self.optimization_group:
-            self.optimization_group.buttonClicked.connect(self._on_preferences_changed)
-        
         # Checkboxes
         if self.show_intermediate_checkbox:
             self.show_intermediate_checkbox.toggled.connect(self._on_preferences_changed)
-        if self.avoid_london_checkbox:
-            self.avoid_london_checkbox.toggled.connect(self._on_preferences_changed)
-        if self.prefer_direct_checkbox:
-            self.prefer_direct_checkbox.toggled.connect(self._on_preferences_changed)
         if self.avoid_walking_checkbox:
             self.avoid_walking_checkbox.toggled.connect(self._on_preferences_changed)
             # Also connect to update visibility of max walking distance control
@@ -200,10 +153,7 @@ class PreferencesWidget(QWidget):
         train_lookahead_hours = self.train_lookahead_hours_spin.value() if self.train_lookahead_hours_spin else 16
         
         return {
-            'optimize_for_speed': self.optimize_for_speed_radio.isChecked() if self.optimize_for_speed_radio else True,
             'show_intermediate_stations': self.show_intermediate_checkbox.isChecked() if self.show_intermediate_checkbox else True,
-            'avoid_london': self.avoid_london_checkbox.isChecked() if self.avoid_london_checkbox else False,
-            'prefer_direct': self.prefer_direct_checkbox.isChecked() if self.prefer_direct_checkbox else False,
             'avoid_walking': self.avoid_walking_checkbox.isChecked() if self.avoid_walking_checkbox else False,
             'max_walking_distance_km': walking_distance_km,
             'train_lookahead_hours': train_lookahead_hours,
@@ -212,23 +162,9 @@ class PreferencesWidget(QWidget):
     def set_preferences(self, preferences: Dict[str, Any]):
         """Set preferences from a dictionary."""
         try:
-            # Optimization strategy
-            if 'optimize_for_speed' in preferences:
-                optimize_for_speed = preferences['optimize_for_speed']
-                if self.optimize_for_speed_radio:
-                    self.optimize_for_speed_radio.setChecked(optimize_for_speed)
-                if self.optimize_for_changes_radio:
-                    self.optimize_for_changes_radio.setChecked(not optimize_for_speed)
-            
             # Checkboxes
             if 'show_intermediate_stations' in preferences and self.show_intermediate_checkbox:
                 self.show_intermediate_checkbox.setChecked(preferences['show_intermediate_stations'])
-            
-            if 'avoid_london' in preferences and self.avoid_london_checkbox:
-                self.avoid_london_checkbox.setChecked(preferences['avoid_london'])
-            
-            if 'prefer_direct' in preferences and self.prefer_direct_checkbox:
-                self.prefer_direct_checkbox.setChecked(preferences['prefer_direct'])
                 
             if 'avoid_walking' in preferences and self.avoid_walking_checkbox:
                 self.avoid_walking_checkbox.setChecked(preferences['avoid_walking'])
@@ -252,10 +188,7 @@ class PreferencesWidget(QWidget):
     def reset_to_defaults(self):
         """Reset all preferences to their default values."""
         defaults = {
-            'optimize_for_speed': True,
             'show_intermediate_stations': True,
-            'avoid_london': False,
-            'prefer_direct': False,
             'avoid_walking': False,
             'max_walking_distance_km': 1.0,
             'train_lookahead_hours': 16,
@@ -265,16 +198,8 @@ class PreferencesWidget(QWidget):
     
     def set_enabled(self, enabled: bool):
         """Enable or disable the widget."""
-        if self.optimize_for_speed_radio:
-            self.optimize_for_speed_radio.setEnabled(enabled)
-        if self.optimize_for_changes_radio:
-            self.optimize_for_changes_radio.setEnabled(enabled)
         if self.show_intermediate_checkbox:
             self.show_intermediate_checkbox.setEnabled(enabled)
-        if self.avoid_london_checkbox:
-            self.avoid_london_checkbox.setEnabled(enabled)
-        if self.prefer_direct_checkbox:
-            self.prefer_direct_checkbox.setEnabled(enabled)
         if self.avoid_walking_checkbox:
             self.avoid_walking_checkbox.setEnabled(enabled)
         if self.max_walking_distance_spin:

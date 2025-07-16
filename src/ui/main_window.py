@@ -243,7 +243,9 @@ class MainWindow(QMainWindow):
             logger.debug("Astronomy widget shown (astronomy enabled or no config)")
 
         # Train list with extended capacity and reduced top margin for compact layout
-        self.train_list_widget = TrainListWidget(max_trains=50)
+        # Get current preferences from config
+        current_preferences = self._get_current_preferences()
+        self.train_list_widget = TrainListWidget(max_trains=50, preferences=current_preferences)
         self.train_list_widget.setContentsMargins(0, 5, 0, 0)  # Reduced top margin from 15 to 5
         
         # Removed maximum height constraint to allow window to be taller
@@ -1171,6 +1173,12 @@ class MainWindow(QMainWindow):
                     logger.info(f"Max changes preference changed from {old_max_changes} to {new_max_changes}")
                     needs_refresh = True
                 
+                # Update train list widget preferences if they changed
+                if self.train_list_widget:
+                    current_preferences = self._get_current_preferences()
+                    self.train_list_widget.set_preferences(current_preferences)
+                    logger.info("Updated train list widget preferences")
+                
                 # Trigger refresh if any setting that affects train data changed
                 if needs_refresh:
                     self.refresh_requested.emit()
@@ -2029,3 +2037,28 @@ class MainWindow(QMainWindow):
         self.setVisible(True)
         super().show()
         logger.debug("Main window shown with all invisible attributes removed")
+
+    def _get_current_preferences(self) -> dict:
+        """Get current preferences from configuration."""
+        default_preferences = {
+            'show_intermediate_stations': True,
+            'avoid_walking': False,
+            'max_walking_distance_km': 1.0,
+            'train_lookahead_hours': 16
+        }
+        
+        if not self.config:
+            return default_preferences
+        
+        # Extract preferences from config
+        preferences = {}
+        
+        # Get show_intermediate_stations from config if available
+        preferences['show_intermediate_stations'] = getattr(self.config, 'show_intermediate_stations', default_preferences['show_intermediate_stations'])
+        
+        # Get route calculation preferences
+        preferences['avoid_walking'] = getattr(self.config, 'avoid_walking', default_preferences['avoid_walking'])
+        preferences['max_walking_distance_km'] = getattr(self.config, 'max_walking_distance_km', default_preferences['max_walking_distance_km'])
+        preferences['train_lookahead_hours'] = getattr(self.config, 'train_lookahead_hours', default_preferences['train_lookahead_hours'])
+        
+        return preferences

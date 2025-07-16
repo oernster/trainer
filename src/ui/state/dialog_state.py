@@ -32,13 +32,10 @@ class DialogState(QObject):
         
         # Preferences state
         self.preferences = {
-            'optimize_for_speed': True,
             'show_intermediate_stations': True,
-            'avoid_london': False,
-            'prefer_direct': False,
             'avoid_walking': False,
-            'max_changes': 3,
-            'max_journey_time': 8
+            'max_walking_distance_km': 1.0,
+            'train_lookahead_hours': 16,
         }
         
         logger.debug("DialogState initialized")

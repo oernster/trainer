@@ -33,7 +33,7 @@ class TrainItemWidget(QFrame):
     route_clicked = Signal(TrainData)
 
     def __init__(self, train_data: TrainData, theme: str = "dark",
-                 train_manager=None, parent: Optional[QWidget] = None):
+                 train_manager=None, preferences: Optional[dict] = None, parent: Optional[QWidget] = None):
         """
         Initialize train item widget.
 
@@ -41,6 +41,7 @@ class TrainItemWidget(QFrame):
             train_data: Train information to display
             theme: Current theme ("dark" or "light")
             train_manager: Train manager instance for accessing route data
+            preferences: User preferences dictionary
             parent: Parent widget
         """
         super().__init__(parent)
@@ -51,6 +52,7 @@ class TrainItemWidget(QFrame):
         
         self.train_data = train_data
         self.train_manager = train_manager
+        self.preferences = preferences or {}
 
         self._setup_ui()
         self._apply_theme_styles()
@@ -173,11 +175,18 @@ class TrainItemWidget(QFrame):
         calling_points_main_layout.setContentsMargins(0, 0, 0, 0)
         calling_points_main_layout.setSpacing(2)
         
+        # Check if we should show intermediate stations
+        show_intermediate = self.preferences.get('show_intermediate_stations', True)
+        
         # Get all calling points to show complete journey
         all_calling_points = self.train_data.calling_points
         
         # Remove duplicate stations while preserving order and keeping the most important one
         filtered_calling_points = self._filter_calling_points(all_calling_points)
+        
+        if not show_intermediate:
+            # When intermediate stations are hidden, only show origin, destination, and interchange stations
+            filtered_calling_points = self._filter_for_essential_stations_only(filtered_calling_points)
         
         if filtered_calling_points and len(filtered_calling_points) >= 2:
             self._create_calling_points_display(calling_points_main_layout, filtered_calling_points)
@@ -207,6 +216,50 @@ class TrainItemWidget(QFrame):
                         break
         
         return filtered_calling_points
+
+    def _filter_for_essential_stations_only(self, calling_points: List) -> List:
+        """Filter calling points to show only origin, destination, and interchange stations."""
+        essential_calling_points = []
+        
+        for calling_point in calling_points:
+            # Always include origin and destination
+            if calling_point.is_origin or calling_point.is_destination:
+                essential_calling_points.append(calling_point)
+            # Include interchange stations (where user changes trains)
+            elif self._is_major_interchange(calling_point.station_name):
+                essential_calling_points.append(calling_point)
+        
+        return essential_calling_points
+
+    def set_preferences(self, preferences: dict) -> None:
+        """
+        Update preferences and refresh the display.
+        
+        Args:
+            preferences: Updated preferences dictionary
+        """
+        self.preferences = preferences or {}
+        # Refresh the UI to apply new preferences
+        self._refresh_calling_points_display()
+
+    def _refresh_calling_points_display(self) -> None:
+        """Refresh the calling points display with current preferences."""
+        # Find the calling points widget and recreate it
+        layout = self.layout()
+        if layout and isinstance(layout, QVBoxLayout):
+            # Find and remove the existing calling points widget (it's the 3rd widget)
+            for i in range(layout.count()):
+                item = layout.itemAt(i)
+                if item and item.widget():
+                    widget = item.widget()
+                    # Check if this is the calling points widget by looking for the specific styling
+                    if hasattr(widget, 'styleSheet') and 'background-color: transparent' in widget.styleSheet():
+                        layout.removeWidget(widget)
+                        widget.deleteLater()
+                        break
+            
+            # Recreate the calling points section
+            self._create_calling_points_section(layout)
 
     def _create_calling_points_display(self, layout: QVBoxLayout, calling_points: List) -> None:
         """Create the display for calling points."""

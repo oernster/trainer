@@ -277,6 +277,9 @@ class StationsSettingsDialog(QDialog):
                 
                 if self.preferences_widget and 'preferences' in settings:
                     self.preferences_widget.set_preferences(settings['preferences'])
+                    # Also update route details widget with preferences
+                    if self.route_details_widget:
+                        self.route_details_widget.set_preferences(settings['preferences'])
                 
                 # Load route data if available
                 if 'route_data' in settings and settings['route_data']:

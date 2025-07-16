@@ -42,8 +42,9 @@ class RouteDetailsWidget(QWidget):
         self.distance_label = None
         self.route_details_label = None
         
-        # Current route data
+        # Current route data and preferences
         self.route_data = {}
+        self.preferences = {}
         
         self._setup_ui()
         self._connect_signals()
@@ -147,6 +148,12 @@ class RouteDetailsWidget(QWidget):
         self._calculate_arrival_time()
         logger.debug(f"Route data updated: {len(self.route_data)} keys")
     
+    def set_preferences(self, preferences: Dict[str, Any]):
+        """Set preferences and refresh display."""
+        self.preferences = preferences.copy() if preferences else {}
+        self._update_route_info()  # Refresh display with new preferences
+        logger.debug(f"Preferences updated: {list(self.preferences.keys())}")
+    
     def clear_route_data(self):
         """Clear all route data."""
         self.route_data = {}
@@ -202,12 +209,35 @@ class RouteDetailsWidget(QWidget):
             # From and To stations on one line
             from_station = self.route_data.get('from_station', 'N/A')
             to_station = self.route_data.get('to_station', 'N/A')
-            route_line = f"{from_station} → {to_station}"
             
-            # Via stations if any
-            via_stations = self.route_data.get('via_stations', [])
-            if via_stations:
-                route_line = f"{from_station} → {' → '.join(via_stations)} → {to_station}"
+            # Check if we should show intermediate stations
+            show_intermediate = self.preferences.get('show_intermediate_stations', True)
+            
+            if show_intermediate:
+                # Show full route with intermediate stations
+                full_path = self.route_data.get('full_path', [])
+                if full_path and len(full_path) > 2:
+                    # Use full path which includes all intermediate stations
+                    route_line = ' → '.join(full_path)
+                else:
+                    # Fallback to via stations if full_path not available
+                    via_stations = self.route_data.get('via_stations', [])
+                    if via_stations:
+                        route_line = f"{from_station} → {' → '.join(via_stations)} → {to_station}"
+                    else:
+                        route_line = f"{from_station} → {to_station}"
+            else:
+                # Show only origin, destination, and change stations (yellow stations)
+                interchange_stations = self.route_data.get('interchange_stations', [])
+                if interchange_stations:
+                    # Show route with only change stations
+                    route_parts = [from_station]
+                    route_parts.extend(interchange_stations)
+                    route_parts.append(to_station)
+                    route_line = ' → '.join(route_parts)
+                else:
+                    # No changes, just origin to destination
+                    route_line = f"{from_station} → {to_station}"
             
             details = [route_line]
             

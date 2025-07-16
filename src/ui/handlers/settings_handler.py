@@ -76,20 +76,10 @@ class SettingsHandler(QObject):
             
             # Load preferences
             preferences = {}
-            if hasattr(config, 'optimize_for_speed'):
-                preferences['optimize_for_speed'] = config.optimize_for_speed
             if hasattr(config, 'show_intermediate_stations'):
                 preferences['show_intermediate_stations'] = config.show_intermediate_stations
-            if hasattr(config, 'avoid_london'):
-                preferences['avoid_london'] = config.avoid_london
-            if hasattr(config, 'prefer_direct'):
-                preferences['prefer_direct'] = config.prefer_direct
             if hasattr(config, 'avoid_walking'):
                 preferences['avoid_walking'] = config.avoid_walking
-            if hasattr(config, 'max_changes'):
-                preferences['max_changes'] = config.max_changes
-            if hasattr(config, 'max_journey_time'):
-                preferences['max_journey_time'] = config.max_journey_time
             if hasattr(config, 'train_lookahead_hours'):
                 preferences['train_lookahead_hours'] = config.train_lookahead_hours
             if hasattr(config, 'max_walking_distance_km'):

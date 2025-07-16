@@ -30,13 +30,14 @@ class TrainListWidget(QScrollArea):
     # Signal emitted when a route button is clicked
     route_selected = Signal(TrainData)
 
-    def __init__(self, max_trains: int = 50, train_manager=None, parent: Optional[QWidget] = None):
+    def __init__(self, max_trains: int = 50, train_manager=None, preferences: Optional[dict] = None, parent: Optional[QWidget] = None):
         """
         Initialize train list widget.
 
         Args:
             max_trains: Maximum number of trains to display
             train_manager: Train manager instance for accessing route data
+            preferences: User preferences dictionary
             parent: Parent widget
         """
         super().__init__(parent)
@@ -47,6 +48,7 @@ class TrainListWidget(QScrollArea):
         
         self.max_trains = max_trains
         self.train_manager = train_manager
+        self.preferences = preferences or {}
         self.train_items: List[TrainItemWidget] = []
 
         self._setup_ui()
@@ -167,9 +169,10 @@ class TrainListWidget(QScrollArea):
             train_data: Train data to add
         """
         train_item = TrainItemWidget(
-            train_data, 
-            self.current_theme, 
-            train_manager=self.train_manager
+            train_data,
+            self.current_theme,
+            train_manager=self.train_manager,
+            preferences=self.preferences
         )
         train_item.train_clicked.connect(self.train_selected.emit)
         train_item.route_clicked.connect(self.route_selected.emit)
@@ -188,6 +191,22 @@ class TrainListWidget(QScrollArea):
         """
         self.train_manager = train_manager
         self.log_debug("Train manager set on TrainListWidget")
+
+    def set_preferences(self, preferences: dict) -> None:
+        """
+        Set preferences and update all train items.
+        
+        Args:
+            preferences: Updated preferences dictionary
+        """
+        self.preferences = preferences or {}
+        
+        # Update all existing train items with new preferences
+        for train_item in self.train_items:
+            if hasattr(train_item, 'set_preferences'):
+                train_item.set_preferences(self.preferences)
+        
+        self.log_debug(f"Preferences updated for {len(self.train_items)} train items")
 
     def get_train_count(self) -> int:
         """
