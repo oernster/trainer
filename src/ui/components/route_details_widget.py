@@ -132,11 +132,14 @@ class RouteDetailsWidget(QWidget):
         # Platform-specific minimum height
         if sys.platform.startswith('linux'):
             if self.is_small_screen:
-                # Increased minimum height for Linux small screens to prevent truncation
-                self.route_details_label.setMinimumHeight(120)
+                # Further increased minimum height for Linux small screens to prevent truncation
+                self.route_details_label.setMinimumHeight(150)
+                # Add padding to ensure text doesn't touch the border
+                self.route_details_label.setStyleSheet("padding: 5px;")
             else:
                 # Slightly increased for Linux normal screens
-                self.route_details_label.setMinimumHeight(100)
+                self.route_details_label.setMinimumHeight(120)
+                self.route_details_label.setStyleSheet("padding: 3px;")
         else:
             # Original height for Windows/Mac
             self.route_details_label.setMinimumHeight(80)

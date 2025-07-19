@@ -10,7 +10,7 @@ import sys
 from typing import Optional, Dict, Any
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
-    QTabWidget, QWidget, QGroupBox, QMessageBox
+    QTabWidget, QWidget, QGroupBox, QMessageBox, QApplication
 )
 from PySide6.QtCore import Qt, Signal, QTimer
 from PySide6.QtGui import QFont
@@ -119,9 +119,22 @@ class StationsSettingsDialog(QDialog):
         
         # Platform-specific sizing
         if sys.platform.startswith('linux'):
-            # Linux needs more vertical space to prevent text truncation
-            self.setMinimumSize(850, 650)
-            self.resize(950, 750)
+            # Detect small screen
+            screen = QApplication.primaryScreen()
+            if screen:
+                screen_geometry = screen.availableGeometry()
+                is_small_screen = screen_geometry.width() <= 1440 or screen_geometry.height() <= 900
+            else:
+                is_small_screen = False
+            
+            if is_small_screen:
+                # Even more vertical space for Linux small screens to prevent truncation
+                self.setMinimumSize(850, 700)
+                self.resize(950, 800)
+            else:
+                # Linux normal screens
+                self.setMinimumSize(850, 650)
+                self.resize(950, 750)
         else:
             # Windows/Mac sizing remains unchanged
             self.setMinimumSize(800, 600)
