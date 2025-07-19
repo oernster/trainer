@@ -10,7 +10,7 @@ import sys
 from typing import Optional, Dict, Any
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
-    QTabWidget, QWidget, QGroupBox, QMessageBox, QApplication
+    QTabWidget, QWidget, QGroupBox, QMessageBox, QApplication, QSizePolicy
 )
 from PySide6.QtCore import Qt, Signal, QTimer
 from PySide6.QtGui import QFont
@@ -211,10 +211,24 @@ class StationsSettingsDialog(QDialog):
         
         self.route_details_widget = RouteDetailsWidget(self, self.theme_manager)
         details_layout.addWidget(self.route_details_widget)
-        layout.addWidget(details_group)
         
-        # Add stretch to push everything to the top
-        layout.addStretch()
+        # Platform-specific sizing for the details group
+        if sys.platform.startswith('linux'):
+            # Detect small screen
+            screen = QApplication.primaryScreen()
+            if screen:
+                screen_geometry = screen.availableGeometry()
+                is_small_screen = screen_geometry.width() <= 1440 or screen_geometry.height() <= 900
+            else:
+                is_small_screen = False
+            
+            if is_small_screen:
+                # Make the Route Details group expand to fill available space
+                details_group.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        
+        layout.addWidget(details_group, 1)  # Add with stretch factor of 1 to allow expansion
+        
+        # Don't add stretch - let the Route Details expand to fill space
     
     def _create_preferences_tab(self):
         """Create the preferences tab."""
