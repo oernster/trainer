@@ -119,15 +119,16 @@ class TimePickerWidget(QWidget):
             disabled_bg = "#424242"
             disabled_text = "#9e9e9e"
 
-        # Button styling
+        # Button styling with larger font for arrows
         button_style = f"""
             QPushButton {{
                 background-color: {primary_accent};
                 border: 1px solid {primary_accent};
                 border-radius: 3px;
                 font-weight: bold;
-                font-size: 16px;
+                font-size: 20px;
                 color: #ffffff;
+                padding: 2px;
             }}
             QPushButton:hover {{
                 background-color: {background_hover};
