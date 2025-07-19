@@ -299,4 +299,55 @@ class ThemeManager(QObject):
         QScrollBar::handle:vertical:hover {{
             background-color: {colors['text_secondary']};
         }}
+        
+        QComboBox {{
+            background-color: {colors['background_secondary']};
+            color: {colors['text_primary']};
+            border: 1px solid {colors['border_primary']};
+            border-radius: 4px;
+            padding: 5px;
+            min-height: 30px;
+        }}
+        
+        QComboBox::drop-down {{
+            width: 20px;
+            border-left: 1px solid {colors['border_primary']};
+        }}
+        
+        QComboBox::down-arrow {{
+            image: none;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 6px solid {colors['text_primary']};
+            margin-right: 5px;
+        }}
+        
+        QComboBox:hover {{
+            border-color: {colors['primary_accent']};
+        }}
+        
+        QComboBox QAbstractItemView {{
+            background-color: {colors['background_secondary']};
+            color: {colors['text_primary']};
+            selection-background-color: {colors['primary_accent']};
+            selection-color: {colors['text_primary']};
+            border: 1px solid {colors['border_primary']};
+        }}
+        
+        QComboBox QLineEdit {{
+            background-color: {colors['background_secondary']};
+            color: {colors['text_primary']};
+            selection-background-color: {colors['primary_accent']};
+            selection-color: {colors['text_primary']};
+        }}
         """
+
+    def apply_theme_to_widget(self, widget):
+        """
+        Apply the current theme stylesheet to a widget.
+        
+        Args:
+            widget: The widget to apply the theme to
+        """
+        stylesheet = self.get_widget_stylesheet()
+        widget.setStyleSheet(stylesheet)
