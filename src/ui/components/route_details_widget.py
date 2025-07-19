@@ -125,6 +125,11 @@ class RouteDetailsWidget(QWidget):
         group = QGroupBox("Route Information")
         layout = QVBoxLayout(group)
         
+        # Platform-specific layout margins
+        if sys.platform.startswith('linux') and self.is_small_screen:
+            # Add margins to center the scroll area better in the group box
+            layout.setContentsMargins(5, 10, 5, 10)
+        
         # Create scroll area for route details
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
@@ -139,17 +144,18 @@ class RouteDetailsWidget(QWidget):
         # Platform-specific settings
         if sys.platform.startswith('linux'):
             if self.is_small_screen:
-                # Set scroll area height for Linux small screens
-                scroll_area.setMinimumHeight(100)
-                scroll_area.setMaximumHeight(120)
+                # Increased scroll area height for Linux small screens
+                # to show at least first line and center better in border
+                scroll_area.setMinimumHeight(140)
+                scroll_area.setMaximumHeight(160)
                 # Smaller font for Linux small screens
                 font = self.route_details_label.font()
                 font.setPointSize(font.pointSize() - 1)
                 self.route_details_label.setFont(font)
             else:
                 # Linux normal screens
-                scroll_area.setMinimumHeight(80)
-                scroll_area.setMaximumHeight(100)
+                scroll_area.setMinimumHeight(100)
+                scroll_area.setMaximumHeight(120)
         else:
             # Original height for Windows/Mac
             scroll_area.setMinimumHeight(80)
