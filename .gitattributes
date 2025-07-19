@@ -1,0 +1,6 @@
+# Set Unix line endings for Flatpak build scripts
+build_flatpak.sh text eol=lf
+build_flatpak_trainer.sh text eol=lf
+
+# Keep default line endings for other files
+* text=auto
