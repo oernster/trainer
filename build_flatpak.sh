@@ -249,7 +249,7 @@ cat > com.oliverernster.Trainer.json << 'EOL'
                 "install -Dm644 com.oliverernster.Trainer.desktop ${FLATPAK_DEST}/share/applications/com.oliverernster.Trainer.desktop",
                 "install -Dm644 com.oliverernster.Trainer.metainfo.xml ${FLATPAK_DEST}/share/metainfo/com.oliverernster.Trainer.metainfo.xml",
                 "if [ -f assets/train_emoji.svg ]; then install -Dm644 assets/train_emoji.svg ${FLATPAK_DEST}/share/icons/hicolor/scalable/apps/com.oliverernster.Trainer.svg; fi",
-                "if [ -f assets/train_emoji.ico ]; then echo 'Converting ICO to PNG...'; python3 -c \"import imageio.v3 as iio; img = iio.imread('assets/train_emoji.ico'); iio.imwrite('/tmp/train_icon.png', img[0] if hasattr(img, '__len__') else img)\" && install -Dm644 /tmp/train_icon.png ${FLATPAK_DEST}/share/icons/hicolor/256x256/apps/com.oliverernster.Trainer.png || echo 'Icon conversion failed'; fi"
+                "if [ -f assets/trainer_icon.png ]; then install -Dm644 assets/trainer_icon.png ${FLATPAK_DEST}/share/icons/hicolor/256x256/apps/com.oliverernster.Trainer.png; elif [ -f assets/train_emoji.ico ]; then echo 'Converting ICO to PNG...'; python3 -c \"import imageio.v3 as iio; img = iio.imread('assets/train_emoji.ico'); iio.imwrite('/tmp/train_icon.png', img[0] if hasattr(img, '__len__') else img)\" && install -Dm644 /tmp/train_icon.png ${FLATPAK_DEST}/share/icons/hicolor/256x256/apps/com.oliverernster.Trainer.png || echo 'Icon conversion failed'; fi"
             ],
             "sources": [
                 {
@@ -273,7 +273,7 @@ Comment=Train times application with integrated weather forecasting and astronom
 Icon=com.oliverernster.Trainer
 Exec=trainer
 Terminal=false
-Categories=Utility;Travel;Qt;
+Categories=Utility;Education;
 Keywords=train;railway;times;schedule;weather;astronomy;transport;
 StartupNotify=true
 StartupWMClass=trainer
@@ -557,7 +557,10 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
             mkdir -p ~/.local/share/icons/hicolor/256x256/apps/
             
             # Try to extract icon from flatpak
-            if [ -f "$SOURCE_DIR/assets/train_emoji.ico" ]; then
+            if [ -f "$SOURCE_DIR/assets/trainer_icon.png" ]; then
+                # Copy the PNG icon directly
+                cp "$SOURCE_DIR/assets/trainer_icon.png" "$HOME/.local/share/icons/hicolor/256x256/apps/com.oliverernster.Trainer.png"
+            elif [ -f "$SOURCE_DIR/assets/train_emoji.ico" ]; then
                 # Convert ICO to PNG if possible
                 python3 -c "import imageio.v3 as iio; img = iio.imread('$SOURCE_DIR/assets/train_emoji.ico'); iio.imwrite('$HOME/.local/share/icons/hicolor/256x256/apps/com.oliverernster.Trainer.png', img[0] if hasattr(img, '__len__') else img)" 2>/dev/null || echo "Icon conversion failed"
             fi
