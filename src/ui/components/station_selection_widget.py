@@ -74,6 +74,27 @@ class StationSelectionWidget(QWidget):
         self.from_station_combo.setInsertPolicy(QComboBox.InsertPolicy.NoInsert)
         self.from_station_combo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.from_station_combo.setMinimumWidth(200)
+        
+        # Ensure editability on Linux
+        if sys.platform.startswith('linux'):
+            # Get the line edit component
+            line_edit = self.from_station_combo.lineEdit()
+            if line_edit:
+                # Make sure it's not read-only
+                line_edit.setReadOnly(False)
+                # Set explicit style to ensure visibility
+                line_edit.setStyleSheet("""
+                    QLineEdit {
+                        background-color: #2d2d2d;
+                        color: white;
+                        border: 1px solid #555;
+                        padding: 5px;
+                        font-size: 12px;
+                    }
+                """)
+                # Log for debugging
+                logger.info(f"From station combo - Editable: {self.from_station_combo.isEditable()}, LineEdit ReadOnly: {line_edit.isReadOnly()}")
+        
         layout.addWidget(self.from_station_combo, 0, 1)
         
         # To station
@@ -89,6 +110,27 @@ class StationSelectionWidget(QWidget):
         self.to_station_combo.setInsertPolicy(QComboBox.InsertPolicy.NoInsert)
         self.to_station_combo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.to_station_combo.setMinimumWidth(200)
+        
+        # Ensure editability on Linux
+        if sys.platform.startswith('linux'):
+            # Get the line edit component
+            line_edit = self.to_station_combo.lineEdit()
+            if line_edit:
+                # Make sure it's not read-only
+                line_edit.setReadOnly(False)
+                # Set explicit style to ensure visibility
+                line_edit.setStyleSheet("""
+                    QLineEdit {
+                        background-color: #2d2d2d;
+                        color: white;
+                        border: 1px solid #555;
+                        padding: 5px;
+                        font-size: 12px;
+                    }
+                """)
+                # Log for debugging
+                logger.info(f"To station combo - Editable: {self.to_station_combo.isEditable()}, LineEdit ReadOnly: {line_edit.isReadOnly()}")
+        
         layout.addWidget(self.to_station_combo, 1, 1)
         
         # Swap button
@@ -261,5 +303,23 @@ class StationSelectionWidget(QWidget):
         if theme_manager:
             try:
                 theme_manager.apply_theme_to_widget(self)
+                # On Linux, ensure combo boxes remain editable after theme application
+                if sys.platform.startswith('linux'):
+                    self._ensure_linux_editability()
             except Exception as e:
                 logger.error(f"Error applying theme: {e}")
+    
+    def _ensure_linux_editability(self):
+        """Ensure combo boxes remain editable on Linux after theme changes."""
+        for combo in [self.from_station_combo, self.to_station_combo]:
+            if combo:
+                # Re-enable editing
+                combo.setEditable(True)
+                line_edit = combo.lineEdit()
+                if line_edit:
+                    line_edit.setReadOnly(False)
+                    line_edit.setEnabled(True)
+                    # Force focus to be accepted
+                    line_edit.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+                    # Log the state
+                    logger.info(f"Combo {combo.objectName() if combo.objectName() else 'unnamed'} - Editable: {combo.isEditable()}, LineEdit exists: {line_edit is not None}, ReadOnly: {line_edit.isReadOnly() if line_edit else 'N/A'}")
