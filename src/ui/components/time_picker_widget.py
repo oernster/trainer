@@ -44,7 +44,7 @@ class TimePickerWidget(QWidget):
         main_layout.setSpacing(2)
 
         # Hour controls
-        self.hour_down_button = QPushButton("⬅")  # Left arrow emoji
+        self.hour_down_button = QPushButton("⬅️")  # Left arrow emoji (matching style)
         self.hour_down_button.setFixedSize(40, 32)
         self.hour_down_button.clicked.connect(self.decrement_hour)
 
@@ -53,7 +53,7 @@ class TimePickerWidget(QWidget):
         self.hour_label.setMinimumWidth(30)
         self.hour_label.setFixedHeight(32)
 
-        self.hour_up_button = QPushButton("➡")  # Right arrow emoji
+        self.hour_up_button = QPushButton("➡️")  # Right arrow emoji (matching style)
         self.hour_up_button.setFixedSize(40, 32)
         self.hour_up_button.clicked.connect(self.increment_hour)
 
@@ -64,7 +64,7 @@ class TimePickerWidget(QWidget):
         colon_label.setStyleSheet("font-weight: bold; font-size: 16px;")
 
         # Minute controls
-        self.minute_down_button = QPushButton("⬅")  # Left arrow emoji
+        self.minute_down_button = QPushButton("⬅️")  # Left arrow emoji (matching style)
         self.minute_down_button.setFixedSize(40, 32)
         self.minute_down_button.clicked.connect(self.decrement_minute)
 
@@ -73,7 +73,7 @@ class TimePickerWidget(QWidget):
         self.minute_label.setMinimumWidth(30)
         self.minute_label.setFixedHeight(32)
 
-        self.minute_up_button = QPushButton("➡")  # Right arrow emoji
+        self.minute_up_button = QPushButton("➡️")  # Right arrow emoji (matching style)
         self.minute_up_button.setFixedSize(40, 32)
         self.minute_up_button.clicked.connect(self.increment_minute)
 
