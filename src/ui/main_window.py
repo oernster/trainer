@@ -216,11 +216,11 @@ class MainWindow(QMainWindow):
         # Platform-specific window sizing
         if sys.platform.startswith('linux'):
             if self.is_small_screen:
-                # Much smaller default size for Linux small screens
-                self.resize(int(1100 * 0.65), int(1200 * 0.65))  # 715x780
+                # Smaller default size for Linux small screens - reduced height to fit train widgets
+                self.resize(int(1100 * 0.65), int(1100 * 0.65))  # 715x715 - reduced from 780
             else:
                 # Slightly reduced for Linux normal screens
-                self.resize(int(1100 * 0.85), int(1200 * 0.85))  # 935x1020
+                self.resize(int(1100 * 0.85), int(1100 * 0.85))  # 935x935 - reduced from 1020
         else:
             # Windows/Mac sizing
             self.resize(1100, 1200)  # Original size for Windows/Mac
@@ -1569,25 +1569,25 @@ class MainWindow(QMainWindow):
             if sys.platform.startswith('linux'):
                 # Reduced sizes for Linux
                 if self.is_small_screen:
-                    # Much smaller for Linux small screens
+                    # Smaller for Linux small screens - reduced heights to fit train widgets
                     if weather_visible and astronomy_visible:
-                        return (int(1100 * 0.65), int(1200 * 0.65))  # 715x780
+                        return (int(1100 * 0.65), int(1100 * 0.65))  # 715x715 - reduced from 780
                     elif weather_visible:
-                        return (int(1100 * 0.65), int(800 * 0.65))   # 715x520
+                        return (int(1100 * 0.65), int(750 * 0.65))   # 715x488 - reduced from 520
                     elif astronomy_visible:
-                        return (int(1100 * 0.65), int(900 * 0.65))   # 715x585
+                        return (int(1100 * 0.65), int(850 * 0.65))   # 715x553 - reduced from 585
                     else:
-                        return (int(1100 * 0.65), int(600 * 0.65))   # 715x390
+                        return (int(1100 * 0.65), int(550 * 0.65))   # 715x358 - reduced from 390
                 else:
                     # Slightly reduced for Linux normal screens
                     if weather_visible and astronomy_visible:
-                        return (int(1100 * 0.85), int(1200 * 0.85))  # 935x1020
+                        return (int(1100 * 0.85), int(1100 * 0.85))  # 935x935 - reduced from 1020
                     elif weather_visible:
-                        return (int(1100 * 0.85), int(800 * 0.85))   # 935x680
+                        return (int(1100 * 0.85), int(750 * 0.85))   # 935x638 - reduced from 680
                     elif astronomy_visible:
-                        return (int(1100 * 0.85), int(900 * 0.85))   # 935x765
+                        return (int(1100 * 0.85), int(850 * 0.85))   # 935x723 - reduced from 765
                     else:
-                        return (int(1100 * 0.85), int(600 * 0.85))   # 935x510
+                        return (int(1100 * 0.85), int(550 * 0.85))   # 935x468 - reduced from 510
             else:
                 # Windows/Mac sizes
                 if weather_visible and astronomy_visible:
