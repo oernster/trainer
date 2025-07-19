@@ -153,31 +153,35 @@ class RouteDetailsWidget(QWidget):
         # Platform-specific settings
         if sys.platform.startswith('linux'):
             if self.is_small_screen:
-                # Make the label MUCH taller for Linux small screens - INCREASED
-                self.route_details_label.setMinimumHeight(350)  # Increased from 200
+                # Make the label MUCH taller for Linux small screens - INCREASED MORE
+                self.route_details_label.setMinimumHeight(400)  # Increased from 350
                 # Add internal padding to keep text at top with proper spacing
                 self.route_details_label.setStyleSheet("""
                     QLabel {
                         padding-top: 10px;
                         padding-left: 10px;
                         padding-right: 10px;
-                        padding-bottom: 10px;
+                        padding-bottom: 20px;
                         background-color: transparent;
                     }
                 """)
-                # Smaller font for Linux small screens
+                # Even smaller font for Linux small screens
                 font = self.route_details_label.font()
-                font.setPointSize(font.pointSize() - 1)
+                font.setPointSize(font.pointSize() - 2)  # Reduced by 2 points instead of 1
                 self.route_details_label.setFont(font)
             else:
                 # Linux normal screens
-                self.route_details_label.setMinimumHeight(250)  # Increased from 150
+                self.route_details_label.setMinimumHeight(300)  # Increased from 250
                 self.route_details_label.setStyleSheet("""
                     QLabel {
-                        padding: 8px;
+                        padding: 10px;
                         background-color: transparent;
                     }
                 """)
+                # Also reduce font for normal Linux screens
+                font = self.route_details_label.font()
+                font.setPointSize(font.pointSize() - 1)
+                self.route_details_label.setFont(font)
         else:
             # Original height for Windows/Mac
             self.route_details_label.setMinimumHeight(80)
