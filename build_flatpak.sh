@@ -496,16 +496,23 @@ no_progress_count=0
 while kill -0 $BUNDLE_PID 2>/dev/null; do
     # Check for milestones in the log
     if [ -f /tmp/flatpak-bundle.log ]; then
-        # Look for key progress indicators
-        if grep -q "Exporting" /tmp/flatpak-bundle.log && [ "$last_milestone" != "exporting" ]; then
-            echo "📂 Exporting files..."
+        # Look for key progress indicators with case-insensitive matching
+        if grep -qi "export" /tmp/flatpak-bundle.log && [ "$last_milestone" != "exporting" ]; then
+            echo ""
+            echo "[1/4] Exporting files..."
             last_milestone="exporting"
-        elif grep -q "Writing" /tmp/flatpak-bundle.log && [ "$last_milestone" != "writing" ]; then
-            echo "✍️  Writing bundle data..."
+        elif grep -qi "writ" /tmp/flatpak-bundle.log && [ "$last_milestone" != "writing" ]; then
+            echo ""
+            echo "[2/4] Writing bundle data..."
             last_milestone="writing"
-        elif grep -q "Committing" /tmp/flatpak-bundle.log && [ "$last_milestone" != "committing" ]; then
-            echo "💾 Committing changes..."
+        elif grep -qi "commit" /tmp/flatpak-bundle.log && [ "$last_milestone" != "committing" ]; then
+            echo ""
+            echo "[3/4] Committing changes..."
             last_milestone="committing"
+        elif grep -qi "compress\|pack" /tmp/flatpak-bundle.log && [ "$last_milestone" != "compressing" ]; then
+            echo ""
+            echo "[4/4] Compressing bundle..."
+            last_milestone="compressing"
         fi
     fi
     
@@ -547,10 +554,23 @@ if [ $BUNDLE_EXIT_CODE -eq 0 ] && [ -f "trainer.flatpak" ]; then
     BUNDLE_SIZE=$(du -h trainer.flatpak | cut -f1)
     echo "📦 Final bundle size: $BUNDLE_SIZE"
     
+    # If no milestones were shown, display what was in the log
+    if [ "$last_milestone" = "" ] && [ -f /tmp/flatpak-bundle.log ]; then
+        echo ""
+        echo "Note: Progress milestones were not detected. Log tail:"
+        tail -n 5 /tmp/flatpak-bundle.log
+    fi
 else
     echo "❌ Bundle creation failed"
     echo "You can still install from the repo with: flatpak install --user repo com.oliverernster.Trainer"
     echo "Or try creating the bundle manually with: flatpak build-bundle repo trainer.flatpak com.oliverernster.Trainer"
+    
+    # Show error details from log
+    if [ -f /tmp/flatpak-bundle.log ]; then
+        echo ""
+        echo "Error details from log:"
+        tail -n 10 /tmp/flatpak-bundle.log
+    fi
     # Don't exit - the repo is still valid
 fi
 
