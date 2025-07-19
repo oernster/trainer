@@ -87,11 +87,20 @@ class AstronomyEventIcon(QLabel):
 
     def _setup_interactions(self) -> None:
         """Setup mouse interactions."""
-        # Get current font size from the existing style (scaled) - reasonable size for small screens
-        if self._scale_factor < 1.0:  # Small screens - reasonable icon size
-            base_font_size = 28 if self._event.priority.value >= 3 else 24
-        else:  # Large screens
-            base_font_size = 40 if self._event.priority.value >= 3 else 36
+        # Get current font size from the existing style (scaled) - increased for Linux
+        import sys
+        if sys.platform.startswith('linux'):
+            # Larger sizes for Linux
+            if self._scale_factor < 1.0:  # Small screens
+                base_font_size = 36 if self._event.priority.value >= 3 else 32
+            else:  # Large screens
+                base_font_size = 48 if self._event.priority.value >= 3 else 44
+        else:
+            # Original sizes for Windows/Mac
+            if self._scale_factor < 1.0:  # Small screens
+                base_font_size = 28 if self._event.priority.value >= 3 else 24
+            else:  # Large screens
+                base_font_size = 40 if self._event.priority.value >= 3 else 36
         scaled_font_size = int(base_font_size * self._scale_factor)
         font_size = f"{scaled_font_size}px"
         
@@ -187,11 +196,15 @@ class DailyAstronomyPanel(QFrame):
         
         layout.addWidget(self._icons_widget)
 
-        # Moon phase label - ensure no background styling, reasonable size for small screens (scaled)
+        # Moon phase label - ensure no background styling, increased size for Linux (scaled)
         self._moon_label = QLabel()
         self._moon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        # Use reasonable moon icon size for small screens
-        base_moon_size = 24 if self._scale_factor < 1.0 else 32
+        # Use larger moon icon size for Linux
+        import sys
+        if sys.platform.startswith('linux'):
+            base_moon_size = 32 if self._scale_factor < 1.0 else 40
+        else:
+            base_moon_size = 24 if self._scale_factor < 1.0 else 32
         scaled_moon_size = int(base_moon_size * self._scale_factor)
         self._moon_label.setStyleSheet(
             f"background: transparent; border: none; font-size: {scaled_moon_size}px; font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji';"
@@ -801,12 +814,17 @@ class AstronomyWidget(QWidget):
         self._buttons_layout = QHBoxLayout()
         self._buttons_layout.setSpacing(int(4 * self._scale_factor))
         
-        # Button styling
-        scaled_font_size = int(10 * self._scale_factor)
-        scaled_padding_h = int(8 * self._scale_factor)
-        scaled_padding_v = int(4 * self._scale_factor)
+        # Button styling - increased font size for Linux
+        import sys
+        if sys.platform.startswith('linux'):
+            base_font_size = 14  # Increased from 10 for Linux
+        else:
+            base_font_size = 10
+        scaled_font_size = int(base_font_size * self._scale_factor)
+        scaled_padding_h = int(10 * self._scale_factor)  # Increased from 8
+        scaled_padding_v = int(6 * self._scale_factor)   # Increased from 4
         scaled_border_radius = int(4 * self._scale_factor)
-        scaled_max_height = int(28 * self._scale_factor)
+        scaled_max_height = int(36 * self._scale_factor)  # Increased from 28
         
         button_style = f"""
             QPushButton {{
