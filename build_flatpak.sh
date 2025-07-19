@@ -479,30 +479,40 @@ flatpak-builder --repo=repo --force-clean --user build com.oliverernster.Trainer
 
 echo "Creating single-file bundle..."
 
-# Function to show simple progress dots
+# Function to show progress indicator
 show_progress() {
-    echo -n "Building bundle"
-    while kill -0 $1 2>/dev/null; do
-        echo -n "."
-        sleep 2
+    local pid=$1
+    local delay=0.5
+    local spinstr='|/-\'
+    echo -n "Building bundle "
+    while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
+        local temp=${spinstr#?}
+        printf "[%c]  " "$spinstr"
+        local spinstr=$temp${spinstr%"$temp"}
+        sleep $delay
+        printf "\b\b\b\b\b"
     done
+    printf "    \b\b\b\b"
     echo ""
 }
 
-# Create bundle with simple progress indicator
+# Create bundle with progress indicator
 echo "Running: flatpak build-bundle repo trainer.flatpak com.oliverernster.Trainer"
 echo "This may take a few minutes depending on your system..."
 
-# Run bundle creation with progress output
-flatpak build-bundle --verbose repo trainer.flatpak com.oliverernster.Trainer 2>&1 | while IFS= read -r line; do
-    # Show key progress messages
-    if [[ "$line" == *"Exporting"* ]] || [[ "$line" == *"Writing"* ]] || [[ "$line" == *"Commit"* ]]; then
-        echo "  → $line"
-    fi
-done
+# Start bundle creation in background
+flatpak build-bundle repo trainer.flatpak com.oliverernster.Trainer > /tmp/flatpak-bundle.log 2>&1 &
+BUNDLE_PID=$!
 
-# Check if bundle was created successfully
-if [ -f "trainer.flatpak" ]; then
+# Show progress
+show_progress $BUNDLE_PID
+
+# Wait for completion and get exit code
+wait $BUNDLE_PID
+BUNDLE_EXIT_CODE=$?
+
+# Check result
+if [ $BUNDLE_EXIT_CODE -eq 0 ] && [ -f "trainer.flatpak" ]; then
     echo "✅ Bundle creation completed successfully!"
     
     # Show bundle size if file exists
