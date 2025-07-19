@@ -311,10 +311,9 @@ class MainWindow(QMainWindow):
         else:
             self.train_list_widget.setContentsMargins(0, 5, 0, 0)
         
-        # Removed maximum height constraint to allow window to be taller
         # Train list widget will expand to fill available space
-        
-        layout.addWidget(self.train_list_widget)
+        # Give it a stretch factor to ensure it gets remaining space
+        layout.addWidget(self.train_list_widget, 1)  # stretch factor of 1
 
         # Menu bar
         self.setup_menu_bar()

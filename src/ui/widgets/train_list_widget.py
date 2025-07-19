@@ -7,7 +7,7 @@ with theme support and real-time updates.
 
 import logging
 from typing import List, Optional
-from PySide6.QtWidgets import QScrollArea, QWidget, QVBoxLayout, QApplication
+from PySide6.QtWidgets import QScrollArea, QWidget, QVBoxLayout, QApplication, QSizePolicy
 from PySide6.QtCore import Qt, Signal, QTimer
 from ...models.train_data import TrainData
 from .train_widgets_base import BaseTrainWidget
@@ -71,8 +71,12 @@ class TrainListWidget(QScrollArea):
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         
-        # Set a fixed height to ensure scrolling
-        self.setFixedHeight(400)
+        # Don't set fixed height - let the widget expand to fill available space
+        # This allows proper layout adjustment on different screen sizes
+        self.setSizePolicy(
+            self.sizePolicy().horizontalPolicy(),
+            QSizePolicy.Policy.Expanding
+        )
         
         # Create custom scroll bar
         self.custom_scroll_bar = CustomScrollBar(self)
