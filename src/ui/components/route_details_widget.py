@@ -151,8 +151,8 @@ class RouteDetailsWidget(QWidget):
         # Platform-specific settings
         if sys.platform.startswith('linux'):
             if self.is_small_screen:
-                # Make the label MUCH taller for Linux small screens
-                self.route_details_label.setMinimumHeight(200)
+                # Make the label MUCH taller for Linux small screens - INCREASED
+                self.route_details_label.setMinimumHeight(350)  # Increased from 200
                 # Add internal padding to keep text at top with proper spacing
                 self.route_details_label.setStyleSheet("""
                     QLabel {
@@ -169,7 +169,7 @@ class RouteDetailsWidget(QWidget):
                 self.route_details_label.setFont(font)
             else:
                 # Linux normal screens
-                self.route_details_label.setMinimumHeight(150)
+                self.route_details_label.setMinimumHeight(250)  # Increased from 150
                 self.route_details_label.setStyleSheet("""
                     QLabel {
                         padding: 8px;
