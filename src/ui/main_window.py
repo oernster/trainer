@@ -1188,12 +1188,20 @@ class MainWindow(QMainWindow):
                 old_prefer_direct = getattr(self.config, 'prefer_direct', None)
                 old_max_changes = getattr(self.config, 'max_changes', None)
             
+            # Store current theme before reloading config
+            current_theme = self.theme_manager.current_theme
+            
             # Reload configuration
             self.config = self.config_manager.load_config()
 
-            # Update theme if changed
+            # GUARANTEED FIX: Always preserve the current theme from theme manager
             if self.config:
-                self.theme_manager.set_theme(self.config.display.theme)
+                # Force the theme to be what's currently active in the UI
+                self.config.display.theme = current_theme
+                self.theme_manager.set_theme(current_theme)
+                
+                # Save the config again with the correct theme
+                self.config_manager.save_config(self.config)
                 
                 # Emit config updated signal to update train manager
                 self.config_updated.emit(self.config)
