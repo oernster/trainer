@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Trainer
+Comment=Train Times with Weather Integration & Astronomical Events
+Exec=trainer
+Icon=com.oliverernster.Trainer
+Terminal=false
+Type=Application
+Categories=Utility;Education;
+Keywords=train;railway;schedule;times;weather;astronomy;
+StartupNotify=true
