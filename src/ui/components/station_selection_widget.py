@@ -77,21 +77,39 @@ class StationSelectionWidget(QWidget):
         
         # Ensure editability on Linux
         if sys.platform.startswith('linux'):
+            # Set combo box style to ensure edit field is accessible
+            self.from_station_combo.setStyleSheet("""
+                QComboBox {
+                    background-color: #2d2d2d;
+                    color: white;
+                    border: 1px solid #555;
+                    padding: 5px;
+                    min-height: 30px;
+                }
+                QComboBox::drop-down {
+                    width: 20px;
+                    border-left: 1px solid #555;
+                }
+                QComboBox::down-arrow {
+                    image: none;
+                    border-left: 4px solid transparent;
+                    border-right: 4px solid transparent;
+                    border-top: 6px solid white;
+                    margin-right: 5px;
+                }
+                QComboBox QAbstractItemView {
+                    background-color: #2d2d2d;
+                    color: white;
+                    selection-background-color: #1976d2;
+                }
+            """)
+            
             # Get the line edit component
             line_edit = self.from_station_combo.lineEdit()
             if line_edit:
                 # Make sure it's not read-only
                 line_edit.setReadOnly(False)
-                # Set explicit style to ensure visibility
-                line_edit.setStyleSheet("""
-                    QLineEdit {
-                        background-color: #2d2d2d;
-                        color: white;
-                        border: 1px solid #555;
-                        padding: 5px;
-                        font-size: 12px;
-                    }
-                """)
+                line_edit.setEnabled(True)
                 # Log for debugging
                 logger.info(f"From station combo - Editable: {self.from_station_combo.isEditable()}, LineEdit ReadOnly: {line_edit.isReadOnly()}")
         
@@ -113,21 +131,39 @@ class StationSelectionWidget(QWidget):
         
         # Ensure editability on Linux
         if sys.platform.startswith('linux'):
+            # Set combo box style to ensure edit field is accessible
+            self.to_station_combo.setStyleSheet("""
+                QComboBox {
+                    background-color: #2d2d2d;
+                    color: white;
+                    border: 1px solid #555;
+                    padding: 5px;
+                    min-height: 30px;
+                }
+                QComboBox::drop-down {
+                    width: 20px;
+                    border-left: 1px solid #555;
+                }
+                QComboBox::down-arrow {
+                    image: none;
+                    border-left: 4px solid transparent;
+                    border-right: 4px solid transparent;
+                    border-top: 6px solid white;
+                    margin-right: 5px;
+                }
+                QComboBox QAbstractItemView {
+                    background-color: #2d2d2d;
+                    color: white;
+                    selection-background-color: #1976d2;
+                }
+            """)
+            
             # Get the line edit component
             line_edit = self.to_station_combo.lineEdit()
             if line_edit:
                 # Make sure it's not read-only
                 line_edit.setReadOnly(False)
-                # Set explicit style to ensure visibility
-                line_edit.setStyleSheet("""
-                    QLineEdit {
-                        background-color: #2d2d2d;
-                        color: white;
-                        border: 1px solid #555;
-                        padding: 5px;
-                        font-size: 12px;
-                    }
-                """)
+                line_edit.setEnabled(True)
                 # Log for debugging
                 logger.info(f"To station combo - Editable: {self.to_station_combo.isEditable()}, LineEdit ReadOnly: {line_edit.isReadOnly()}")
         
