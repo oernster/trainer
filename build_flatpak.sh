@@ -245,8 +245,22 @@ cat > com.oliverernster.Trainer.json << 'EOL'
                 "cd ${FLATPAK_DEST} && python3 -c 'import os; print(\"main.py exists:\", os.path.exists(\"main.py\"))'",
                 "install -Dm644 com.oliverernster.Trainer.desktop ${FLATPAK_DEST}/share/applications/com.oliverernster.Trainer.desktop",
                 "install -Dm644 com.oliverernster.Trainer.metainfo.xml ${FLATPAK_DEST}/share/metainfo/com.oliverernster.Trainer.metainfo.xml",
-                "if [ -f assets/train_emoji.svg ]; then install -Dm644 assets/train_emoji.svg ${FLATPAK_DEST}/share/icons/hicolor/scalable/apps/com.oliverernster.Trainer.svg; fi",
-                "if [ -f assets/trainer_icon.png ]; then install -Dm644 assets/trainer_icon.png ${FLATPAK_DEST}/share/icons/hicolor/256x256/apps/com.oliverernster.Trainer.png; elif [ -f assets/train_emoji.ico ]; then echo 'Converting ICO to PNG...'; python3 -c \"import imageio.v3 as iio; img = iio.imread('assets/train_emoji.ico'); iio.imwrite('/tmp/train_icon.png', img[0] if hasattr(img, '__len__') else img)\" && install -Dm644 /tmp/train_icon.png ${FLATPAK_DEST}/share/icons/hicolor/256x256/apps/com.oliverernster.Trainer.png || echo 'Icon conversion failed'; fi"
+                "echo 'Installing application icons...'",
+                "if [ -f assets/train_emoji.ico ]; then",
+                "    echo 'Converting train_emoji.ico to PNG for Flatpak...'",
+                "    python3 -c \"import imageio.v3 as iio; img = iio.imread('assets/train_emoji.ico'); iio.imwrite('/tmp/train_icon_256.png', img[0] if hasattr(img, '__len__') else img)\" || echo 'Icon conversion failed'",
+                "    if [ -f /tmp/train_icon_256.png ]; then",
+                "        install -Dm644 /tmp/train_icon_256.png ${FLATPAK_DEST}/share/icons/hicolor/256x256/apps/com.oliverernster.Trainer.png",
+                "        echo 'Installed 256x256 icon'",
+                "    fi",
+                "fi",
+                "# Install multiple icon sizes if available",
+                "for size in 16 32 64 128; do",
+                "    if [ -f assets/trainer_icon_${size}.png ]; then",
+                "        install -Dm644 assets/trainer_icon_${size}.png ${FLATPAK_DEST}/share/icons/hicolor/${size}x${size}/apps/com.oliverernster.Trainer.png",
+                "        echo \"Installed ${size}x${size} icon\"",
+                "    fi",
+                "done"
             ],
             "sources": [
                 {
@@ -608,14 +622,19 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
             # Copy icon to standard locations
             mkdir -p ~/.local/share/icons/hicolor/256x256/apps/
             
-            # Try to extract icon from flatpak
-            if [ -f "$SOURCE_DIR/assets/trainer_icon.png" ]; then
-                # Copy the PNG icon directly
-                cp "$SOURCE_DIR/assets/trainer_icon.png" "$HOME/.local/share/icons/hicolor/256x256/apps/com.oliverernster.Trainer.png"
-            elif [ -f "$SOURCE_DIR/assets/train_emoji.ico" ]; then
-                # Convert ICO to PNG if possible
+            # Install the train emoji icon
+            if [ -f "$SOURCE_DIR/assets/train_emoji.ico" ]; then
+                # Convert ICO to PNG for desktop integration
                 python3 -c "import imageio.v3 as iio; img = iio.imread('$SOURCE_DIR/assets/train_emoji.ico'); iio.imwrite('$HOME/.local/share/icons/hicolor/256x256/apps/com.oliverernster.Trainer.png', img[0] if hasattr(img, '__len__') else img)" 2>/dev/null || echo "Icon conversion failed"
             fi
+            
+            # Also install other icon sizes if available
+            for size in 16 32 64 128; do
+                if [ -f "$SOURCE_DIR/assets/trainer_icon_${size}.png" ]; then
+                    mkdir -p "$HOME/.local/share/icons/hicolor/${size}x${size}/apps/"
+                    cp "$SOURCE_DIR/assets/trainer_icon_${size}.png" "$HOME/.local/share/icons/hicolor/${size}x${size}/apps/com.oliverernster.Trainer.png"
+                fi
+            done
             
             if command -v gtk-update-icon-cache &> /dev/null; then
                 gtk-update-icon-cache -f -t ~/.local/share/icons/hicolor 2>/dev/null || true
