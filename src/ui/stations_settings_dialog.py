@@ -676,16 +676,23 @@ class StationsSettingsDialog(QDialog):
                         
                         # Force config save to ensure persistence
                         if self.config_manager:
-                            # Get the config from train_manager if available
-                            if hasattr(train_manager, 'config'):
-                                config = train_manager.config
-                                # Use force_flush if available
-                                if hasattr(self.config_manager, 'save_config') and 'force_flush' in self.config_manager.save_config.__code__.co_varnames:
-                                    self.config_manager.save_config(config, force_flush=True)
-                                    logger.info("Forced config save with force_flush=True to ensure route persistence")
-                                else:
-                                    self.config_manager.save_config(config)
-                                    logger.info("Saved config (force_flush not available)")
+                            # Get the current config to preserve theme
+                            config = self.config_manager.load_config()
+                            
+                            # Update route information from train_manager
+                            if hasattr(train_manager, 'config') and hasattr(config, 'stations'):
+                                train_config = train_manager.config
+                                if hasattr(train_config, 'stations'):
+                                    config.stations = train_config.stations
+                                    logger.debug("Updated stations config from train_manager")
+                            
+                            # Use force_flush if available
+                            if hasattr(self.config_manager, 'save_config') and 'force_flush' in self.config_manager.save_config.__code__.co_varnames:
+                                self.config_manager.save_config(config, force_flush=True)
+                                logger.info("Forced config save with force_flush=True to ensure route persistence")
+                            else:
+                                self.config_manager.save_config(config)
+                                logger.info("Saved config (force_flush not available)")
                 
                 self._update_status("Settings saved successfully")
                 self.accept()

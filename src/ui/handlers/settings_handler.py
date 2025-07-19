@@ -150,6 +150,12 @@ class SettingsHandler(QObject):
             # Get current configuration
             config = self.config_manager.load_config()
             
+            # IMPORTANT: Preserve the current theme setting
+            current_theme = None
+            if hasattr(config, 'display') and hasattr(config.display, 'theme'):
+                current_theme = config.display.theme
+                logger.debug(f"Preserving current theme: {current_theme}")
+            
             # Update station settings (with safe attribute setting)
             if hasattr(config, 'stations'):
                 if hasattr(config.stations, 'from_name'):
@@ -195,6 +201,11 @@ class SettingsHandler(QObject):
                         logger.info(f"Saved route path with {len(route_path)} stations: {' → '.join(route_path)}")
                     else:
                         logger.warning("Invalid route path, not saving")
+            
+            # Ensure theme is preserved before saving
+            if current_theme and hasattr(config, 'display') and hasattr(config.display, 'theme'):
+                config.display.theme = current_theme
+                logger.debug(f"Theme preserved in config before save: {current_theme}")
             
             # Save configuration with force_flush to ensure persistence
             if hasattr(self.config_manager, 'save_config') and 'force_flush' in self.config_manager.save_config.__code__.co_varnames:
