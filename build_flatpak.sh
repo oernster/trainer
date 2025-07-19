@@ -479,47 +479,23 @@ flatpak-builder --repo=repo --force-clean --user build com.oliverernster.Trainer
 
 echo "Creating single-file bundle..."
 
-# Function to show progress for bundle creation
-show_bundle_progress() {
-    local pid=$1
-    local chars="⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"
-    local delay=0.1
-    local count=0
-    
-    while kill -0 $pid 2>/dev/null; do
-        local char=${chars:$((count % ${#chars})):1}
-        local elapsed=$((count / 10))
-        printf "\r%s Creating bundle... %02d:%02d elapsed" "$char" $((elapsed / 60)) $((elapsed % 60))
-        sleep $delay
-        ((count++))
-    done
-    
-    # Clear the progress line
-    printf "\r"
-}
-
-# Start bundle creation in background and show progress
-flatpak build-bundle repo trainer.flatpak com.oliverernster.Trainer &
-BUNDLE_PID=$!
-
-# Show progress while bundle is being created
-show_bundle_progress $BUNDLE_PID
-
-# Wait for bundle creation to complete
-wait $BUNDLE_PID
-BUNDLE_EXIT_CODE=$?
-
-if [ $BUNDLE_EXIT_CODE -eq 0 ]; then
+# Create bundle without background process or progress display
+echo "Running: flatpak build-bundle repo trainer.flatpak com.oliverernster.Trainer"
+if flatpak build-bundle repo trainer.flatpak com.oliverernster.Trainer; then
     echo "✅ Bundle creation completed successfully!"
     
     # Show bundle size if file exists
     if [ -f "trainer.flatpak" ]; then
         BUNDLE_SIZE=$(du -h trainer.flatpak | cut -f1)
         echo "📦 Bundle size: $BUNDLE_SIZE"
+    else
+        echo "⚠️  Warning: Bundle file not found after creation"
     fi
 else
-    echo "❌ Bundle creation failed with exit code $BUNDLE_EXIT_CODE"
-    exit 1
+    echo "❌ Bundle creation failed"
+    echo "You can still install from the repo with: flatpak install --user repo com.oliverernster.Trainer"
+    echo "Or try creating the bundle manually with: flatpak build-bundle repo trainer.flatpak com.oliverernster.Trainer"
+    # Don't exit - the repo is still valid
 fi
 
 echo "Done! You can install the Flatpak with:"
