@@ -246,21 +246,8 @@ cat > com.oliverernster.Trainer.json << 'EOL'
                 "install -Dm644 com.oliverernster.Trainer.desktop ${FLATPAK_DEST}/share/applications/com.oliverernster.Trainer.desktop",
                 "install -Dm644 com.oliverernster.Trainer.metainfo.xml ${FLATPAK_DEST}/share/metainfo/com.oliverernster.Trainer.metainfo.xml",
                 "echo 'Installing application icons...'",
-                "if [ -f assets/train_emoji.ico ]; then",
-                "    echo 'Converting train_emoji.ico to PNG for Flatpak...'",
-                "    python3 -c \"import imageio.v3 as iio; img = iio.imread('assets/train_emoji.ico'); iio.imwrite('/tmp/train_icon_256.png', img[0] if hasattr(img, '__len__') else img)\" || echo 'Icon conversion failed'",
-                "    if [ -f /tmp/train_icon_256.png ]; then",
-                "        install -Dm644 /tmp/train_icon_256.png ${FLATPAK_DEST}/share/icons/hicolor/256x256/apps/com.oliverernster.Trainer.png",
-                "        echo 'Installed 256x256 icon'",
-                "    fi",
-                "fi",
-                "# Install multiple icon sizes if available",
-                "for size in 16 32 64 128; do",
-                "    if [ -f assets/trainer_icon_${size}.png ]; then",
-                "        install -Dm644 assets/trainer_icon_${size}.png ${FLATPAK_DEST}/share/icons/hicolor/${size}x${size}/apps/com.oliverernster.Trainer.png",
-                "        echo \"Installed ${size}x${size} icon\"",
-                "    fi",
-                "done"
+                "if [ -f assets/train_emoji.ico ]; then echo 'Converting train_emoji.ico to PNG...'; python3 -c \"import imageio.v3 as iio; img = iio.imread('assets/train_emoji.ico'); iio.imwrite('/tmp/train_icon.png', img[0] if hasattr(img, '__len__') else img)\" && install -Dm644 /tmp/train_icon.png ${FLATPAK_DEST}/share/icons/hicolor/256x256/apps/com.oliverernster.Trainer.png || echo 'Icon conversion failed'; fi",
+                "for size in 16 32 64 128; do if [ -f assets/trainer_icon_${size}.png ]; then install -Dm644 assets/trainer_icon_${size}.png ${FLATPAK_DEST}/share/icons/hicolor/${size}x${size}/apps/com.oliverernster.Trainer.png; fi; done"
             ],
             "sources": [
                 {
