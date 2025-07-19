@@ -156,9 +156,8 @@ class ConfigManager:
         Get the default configuration file path.
 
         On Windows, uses AppData/Roaming/Trainer/config.json
-        On other systems, uses current directory/config.json
-
-        For executable builds, always prefer AppData on Windows to ensure writability.
+        On Linux, uses XDG_CONFIG_HOME/Trainer/config.json or ~/.config/Trainer/config.json
+        For Flatpak, uses the appropriate XDG directory
 
         Returns:
             Path: Default configuration file path
@@ -169,15 +168,15 @@ class ConfigManager:
                 config_dir = Path(appdata) / "Trainer"
                 config_dir.mkdir(parents=True, exist_ok=True)
                 return config_dir / "config.json"
-
-        # For non-Windows or if APPDATA not available, check if we're in an executable
-        # If so, try to use a writable location
-        import sys
-
-        if getattr(sys, "frozen", False):  # Running as executable
-            # Try to use user's home directory
-            home_dir = Path.home()
-            config_dir = home_dir / ".trainer"
+        else:  # Linux/Unix
+            # Check for XDG_CONFIG_HOME (standard for Linux desktop apps)
+            xdg_config = os.environ.get("XDG_CONFIG_HOME")
+            if xdg_config:
+                config_dir = Path(xdg_config) / "Trainer"
+            else:
+                # Fallback to ~/.config/Trainer (Linux standard)
+                config_dir = Path.home() / ".config" / "Trainer"
+            
             config_dir.mkdir(parents=True, exist_ok=True)
             return config_dir / "config.json"
 
