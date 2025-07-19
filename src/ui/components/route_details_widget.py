@@ -9,7 +9,8 @@ import logging
 import sys
 from typing import Dict, Any, List
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QGridLayout, QGroupBox, QLabel, QApplication
+    QWidget, QVBoxLayout, QGridLayout, QGroupBox, QLabel, QApplication,
+    QSizePolicy
 )
 from PySide6.QtCore import Signal, Qt
 from PySide6.QtGui import QFont
@@ -122,13 +123,19 @@ class RouteDetailsWidget(QWidget):
     def _create_route_info_group(self) -> QGroupBox:
         """Create the route information group box."""
         group = QGroupBox("Route Information")
+        
+        # Platform-specific group box sizing
+        if sys.platform.startswith('linux') and self.is_small_screen:
+            # Make the group box expand to fill available space
+            group.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        
         layout = QVBoxLayout(group)
         
         # Platform-specific layout settings
         if sys.platform.startswith('linux') and self.is_small_screen:
-            # Add proper margins to keep text within border
-            layout.setContentsMargins(10, 15, 10, 15)
-            layout.setSpacing(5)
+            # Minimal margins for maximum space usage
+            layout.setContentsMargins(5, 5, 5, 5)
+            layout.setSpacing(0)
         else:
             # Default margins
             layout.setContentsMargins(5, 10, 5, 10)
@@ -138,23 +145,21 @@ class RouteDetailsWidget(QWidget):
         self.route_details_label.setObjectName("routeDetailsLabel")
         self.route_details_label.setWordWrap(True)
         
-        # Platform-specific alignment
-        if sys.platform.startswith('linux') and self.is_small_screen:
-            # Center vertically for Linux small screens
-            self.route_details_label.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
-        else:
-            # Top alignment for others
-            self.route_details_label.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
+        # Always use top alignment for text
+        self.route_details_label.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
         
         # Platform-specific settings
         if sys.platform.startswith('linux'):
             if self.is_small_screen:
-                # Set proper height and padding for Linux small screens
-                self.route_details_label.setMinimumHeight(100)
-                # Add internal padding to keep text away from edges
+                # Make the label MUCH taller for Linux small screens
+                self.route_details_label.setMinimumHeight(200)
+                # Add internal padding to keep text at top with proper spacing
                 self.route_details_label.setStyleSheet("""
                     QLabel {
-                        padding: 8px;
+                        padding-top: 10px;
+                        padding-left: 10px;
+                        padding-right: 10px;
+                        padding-bottom: 10px;
                         background-color: transparent;
                     }
                 """)
@@ -164,10 +169,10 @@ class RouteDetailsWidget(QWidget):
                 self.route_details_label.setFont(font)
             else:
                 # Linux normal screens
-                self.route_details_label.setMinimumHeight(80)
+                self.route_details_label.setMinimumHeight(150)
                 self.route_details_label.setStyleSheet("""
                     QLabel {
-                        padding: 5px;
+                        padding: 8px;
                         background-color: transparent;
                     }
                 """)
