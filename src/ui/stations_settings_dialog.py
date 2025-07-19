@@ -6,6 +6,7 @@ using a modular component-based architecture for better maintainability.
 """
 
 import logging
+import sys
 from typing import Optional, Dict, Any
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
@@ -115,8 +116,16 @@ class StationsSettingsDialog(QDialog):
         """Set up basic dialog properties."""
         self.setWindowTitle("Train Settings")
         self.setModal(True)
-        self.setMinimumSize(800, 600)
-        self.resize(900, 700)
+        
+        # Platform-specific sizing
+        if sys.platform.startswith('linux'):
+            # Linux needs more vertical space to prevent text truncation
+            self.setMinimumSize(850, 650)
+            self.resize(950, 750)
+        else:
+            # Windows/Mac sizing remains unchanged
+            self.setMinimumSize(800, 600)
+            self.resize(900, 700)
         
         # Set window icon if available
         if hasattr(self.parent_window, 'windowIcon') and self.parent_window:
@@ -128,8 +137,16 @@ class StationsSettingsDialog(QDialog):
     def _setup_ui(self):
         """Set up the complete user interface."""
         main_layout = QVBoxLayout(self)
-        main_layout.setSpacing(10)
-        main_layout.setContentsMargins(15, 15, 15, 15)
+        
+        # Platform-specific spacing and margins
+        if sys.platform.startswith('linux'):
+            # Linux needs more spacing to prevent overlap
+            main_layout.setSpacing(12)
+            main_layout.setContentsMargins(20, 20, 20, 20)
+        else:
+            # Windows/Mac spacing remains unchanged
+            main_layout.setSpacing(10)
+            main_layout.setContentsMargins(15, 15, 15, 15)
         
         # Create tab widget for different sections
         self.tab_widget = QTabWidget()
@@ -156,7 +173,12 @@ class StationsSettingsDialog(QDialog):
         self.tab_widget.addTab(route_tab, "Route Planning")
         
         layout = QVBoxLayout(route_tab)
-        layout.setSpacing(15)
+        
+        # Platform-specific spacing
+        if sys.platform.startswith('linux'):
+            layout.setSpacing(20)
+        else:
+            layout.setSpacing(15)
         
         # Station selection section
         station_group = QGroupBox("Station Selection")
@@ -187,7 +209,12 @@ class StationsSettingsDialog(QDialog):
         self.tab_widget.addTab(preferences_tab, "Preferences")
         
         layout = QVBoxLayout(preferences_tab)
-        layout.setSpacing(15)
+        
+        # Platform-specific spacing
+        if sys.platform.startswith('linux'):
+            layout.setSpacing(20)
+        else:
+            layout.setSpacing(15)
         
         # Preferences widget
         self.preferences_widget = PreferencesWidget(self, self.theme_manager)
