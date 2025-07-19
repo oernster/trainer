@@ -137,7 +137,14 @@ class RouteDetailsWidget(QWidget):
         self.route_details_label = QLabel("No route selected")
         self.route_details_label.setObjectName("routeDetailsLabel")
         self.route_details_label.setWordWrap(True)
-        self.route_details_label.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
+        
+        # Platform-specific alignment
+        if sys.platform.startswith('linux') and self.is_small_screen:
+            # Center vertically for Linux small screens
+            self.route_details_label.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
+        else:
+            # Top alignment for others
+            self.route_details_label.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
         
         # Platform-specific settings
         if sys.platform.startswith('linux'):
