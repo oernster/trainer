@@ -7,6 +7,7 @@ in the API-free astronomy system.
 """
 
 import logging
+import sys
 from pathlib import Path
 from typing import Optional
 from PySide6.QtWidgets import (
@@ -92,14 +93,10 @@ class AstronomySettingsDialog(QDialog):
         self.setModal(True)
         self.setMinimumSize(700, 500)
         self.resize(750, 550)
-
-        # Center the dialog on screen
-        from PySide6.QtGui import QGuiApplication
-
-        screen = QGuiApplication.primaryScreen().geometry()
-        x = (screen.width() - 750) // 2
-        y = (screen.height() - 550) // 2
-        self.move(x, y)
+        
+        # Center the dialog on Linux
+        if sys.platform.startswith('linux'):
+            self._center_on_screen()
 
         # Main layout
         layout = QVBoxLayout(self)
@@ -606,3 +603,15 @@ class AstronomySettingsDialog(QDialog):
         self.show()
         # Call parent exec
         return super().exec()
+    
+    def _center_on_screen(self):
+        """Center the dialog on the primary screen."""
+        from PySide6.QtWidgets import QApplication
+        screen = QApplication.primaryScreen()
+        if screen:
+            screen_geometry = screen.availableGeometry()
+            dialog_geometry = self.frameGeometry()
+            x = (screen_geometry.width() - dialog_geometry.width()) // 2
+            y = (screen_geometry.height() - dialog_geometry.height()) // 2
+            self.move(x, y)
+            logger.debug(f"Centered astronomy settings dialog at ({x}, {y})")

@@ -6,8 +6,9 @@ This module provides a splash screen that displays while the application is load
 """
 
 import logging
+import sys
 from pathlib import Path
-from PySide6.QtWidgets import QSplashScreen, QLabel, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QSplashScreen, QLabel, QVBoxLayout, QWidget, QApplication
 from PySide6.QtCore import Qt, QTimer, QPoint
 from PySide6.QtGui import QPixmap, QPainter, QFont
 
@@ -41,8 +42,22 @@ class TrainerSplashScreen(QSplashScreen):
 
         # Apply dark theme styling
         self.apply_styling()
+        
+        # Center the splash screen on Linux
+        if sys.platform.startswith('linux'):
+            self._center_on_screen()
 
         logger.debug("Splash screen initialized")
+    
+    def _center_on_screen(self):
+        """Center the splash screen on the primary screen."""
+        screen = QApplication.primaryScreen()
+        if screen:
+            screen_geometry = screen.availableGeometry()
+            x = (screen_geometry.width() - self.width()) // 2
+            y = (screen_geometry.height() - self.height()) // 2
+            self.move(x, y)
+            logger.debug(f"Centered splash screen at ({x}, {y})")
 
     def setup_ui(self):
         """Setup the splash screen UI."""

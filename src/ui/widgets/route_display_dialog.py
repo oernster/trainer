@@ -7,6 +7,7 @@ with comprehensive station information and interchange detection.
 
 import logging
 import json
+import sys
 from pathlib import Path
 from typing import List, Optional, Dict
 from PySide6.QtWidgets import (
@@ -50,8 +51,24 @@ class RouteDisplayDialog(QDialog):
         self.setModal(True)
         self.resize(450, 400)
         
+        # Center the dialog on Linux
+        if sys.platform.startswith('linux'):
+            self._center_on_screen()
+        
         self._setup_ui()
         self._apply_theme()
+    
+    def _center_on_screen(self):
+        """Center the dialog on the primary screen."""
+        from PySide6.QtWidgets import QApplication
+        screen = QApplication.primaryScreen()
+        if screen:
+            screen_geometry = screen.availableGeometry()
+            dialog_geometry = self.frameGeometry()
+            x = (screen_geometry.width() - dialog_geometry.width()) // 2
+            y = (screen_geometry.height() - dialog_geometry.height()) // 2
+            self.move(x, y)
+            logger.debug(f"Centered route display dialog at ({x}, {y})")
 
     def _setup_ui(self) -> None:
         """Setup the dialog UI."""

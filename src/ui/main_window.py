@@ -1869,6 +1869,11 @@ class MainWindow(QMainWindow):
     def showEvent(self, event):
         """Handle window show event - trigger astronomy data fetch when UI is displayed."""
         super().showEvent(event)
+        
+        # Center window on Linux when first shown
+        if sys.platform.startswith('linux') and not hasattr(self, '_centered'):
+            self._centered = True
+            self._center_on_screen()
 
         # Only fetch astronomy data once when window is first shown
         if not hasattr(self, "_astronomy_data_fetched"):
@@ -2150,3 +2155,14 @@ class MainWindow(QMainWindow):
         preferences['train_lookahead_hours'] = getattr(self.config, 'train_lookahead_hours', default_preferences['train_lookahead_hours'])
         
         return preferences
+    
+    def _center_on_screen(self):
+        """Center the window on the primary screen."""
+        screen = QApplication.primaryScreen()
+        if screen:
+            screen_geometry = screen.availableGeometry()
+            window_geometry = self.frameGeometry()
+            x = (screen_geometry.width() - window_geometry.width()) // 2
+            y = (screen_geometry.height() - window_geometry.height()) // 2
+            self.move(x, y)
+            logger.debug(f"Centered main window at ({x}, {y})")

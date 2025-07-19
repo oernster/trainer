@@ -6,6 +6,7 @@ all calling points, times, and service details.
 """
 
 import logging
+import sys
 from typing import List
 from PySide6.QtWidgets import (
     QDialog,
@@ -162,8 +163,24 @@ class TrainDetailDialog(QDialog):
         self.setModal(True)
         self.resize(500, 600)
         
+        # Center the dialog on Linux
+        if sys.platform.startswith('linux'):
+            self._center_on_screen()
+        
         self.setup_ui()
         self.apply_theme()
+    
+    def _center_on_screen(self):
+        """Center the dialog on the primary screen."""
+        from PySide6.QtWidgets import QApplication
+        screen = QApplication.primaryScreen()
+        if screen:
+            screen_geometry = screen.availableGeometry()
+            dialog_geometry = self.frameGeometry()
+            x = (screen_geometry.width() - dialog_geometry.width()) // 2
+            y = (screen_geometry.height() - dialog_geometry.height()) // 2
+            self.move(x, y)
+            logger.debug(f"Centered train detail dialog at ({x}, {y})")
 
     def setup_ui(self):
         """Setup the dialog UI."""

@@ -140,12 +140,27 @@ class StationsSettingsDialog(QDialog):
             self.setMinimumSize(800, 600)
             self.resize(900, 700)
         
+        # Center the dialog on Linux
+        if sys.platform.startswith('linux'):
+            self._center_on_screen()
+        
         # Set window icon if available
         if hasattr(self.parent_window, 'windowIcon') and self.parent_window:
             try:
                 self.setWindowIcon(self.parent_window.windowIcon())
             except:
                 pass
+    
+    def _center_on_screen(self):
+        """Center the dialog on the primary screen."""
+        screen = QApplication.primaryScreen()
+        if screen:
+            screen_geometry = screen.availableGeometry()
+            dialog_geometry = self.frameGeometry()
+            x = (screen_geometry.width() - dialog_geometry.width()) // 2
+            y = (screen_geometry.height() - dialog_geometry.height()) // 2
+            self.move(x, y)
+            logger.debug(f"Centered stations settings dialog at ({x}, {y})")
     
     def _setup_ui(self):
         """Set up the complete user interface."""
