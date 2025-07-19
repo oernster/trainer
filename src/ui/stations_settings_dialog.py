@@ -212,6 +212,13 @@ class StationsSettingsDialog(QDialog):
         station_group = QGroupBox("Station Selection")
         station_layout = QVBoxLayout(station_group)
         
+        # Platform-specific layout adjustments
+        if sys.platform.startswith('linux'):
+            station_layout.setContentsMargins(5, 5, 5, 5)  # Very tight margins
+            station_layout.setSpacing(0)  # No spacing
+            # Set a maximum height for the station group
+            station_group.setMaximumHeight(150)  # Limit the height
+        
         self.station_selection_widget = StationSelectionWidget(self, self.theme_manager)
         station_layout.addWidget(self.station_selection_widget)
         layout.addWidget(station_group)

@@ -6,9 +6,10 @@ and validation for from/to station selection.
 """
 
 import logging
+import sys
 from typing import Optional, List
 from PySide6.QtWidgets import (
-    QWidget, QGridLayout, QLabel, QComboBox, QPushButton, QSizePolicy
+    QWidget, QGridLayout, QLabel, QComboBox, QPushButton, QSizePolicy, QApplication
 )
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QCompleter
@@ -52,11 +53,20 @@ class StationSelectionWidget(QWidget):
     def _setup_ui(self):
         """Set up the user interface."""
         layout = QGridLayout(self)
-        layout.setSpacing(10)
+        
+        # Platform-specific spacing
+        if sys.platform.startswith('linux'):
+            layout.setSpacing(5)  # Reduced from 10
+            layout.setContentsMargins(5, 5, 5, 5)  # Add tight margins
+        else:
+            layout.setSpacing(10)
         
         # From station
         from_label = QLabel("From:")
-        from_label.setFont(QFont("Arial", 10, QFont.Weight.Bold))
+        if sys.platform.startswith('linux'):
+            from_label.setFont(QFont("Arial", 9, QFont.Weight.Bold))  # Smaller font on Linux
+        else:
+            from_label.setFont(QFont("Arial", 10, QFont.Weight.Bold))
         layout.addWidget(from_label, 0, 0)
         
         self.from_station_combo = QComboBox()
@@ -68,7 +78,10 @@ class StationSelectionWidget(QWidget):
         
         # To station
         to_label = QLabel("To:")
-        to_label.setFont(QFont("Arial", 10, QFont.Weight.Bold))
+        if sys.platform.startswith('linux'):
+            to_label.setFont(QFont("Arial", 9, QFont.Weight.Bold))  # Smaller font on Linux
+        else:
+            to_label.setFont(QFont("Arial", 10, QFont.Weight.Bold))
         layout.addWidget(to_label, 1, 0)
         
         self.to_station_combo = QComboBox()
@@ -80,7 +93,28 @@ class StationSelectionWidget(QWidget):
         
         # Swap button
         self.swap_button = QPushButton("⇅ Swap")
-        self.swap_button.setMaximumWidth(80)
+        
+        # Platform-specific button sizing
+        if sys.platform.startswith('linux'):
+            # Detect small screen
+            screen = QApplication.primaryScreen()
+            if screen:
+                screen_geometry = screen.availableGeometry()
+                is_small_screen = screen_geometry.width() <= 1440 or screen_geometry.height() <= 900
+            else:
+                is_small_screen = False
+            
+            if is_small_screen:
+                self.swap_button.setMinimumWidth(100)  # Larger minimum width
+                self.swap_button.setMinimumHeight(50)  # Taller button
+                self.swap_button.setFont(QFont("Arial", 11, QFont.Weight.Bold))  # Larger font
+            else:
+                self.swap_button.setMinimumWidth(90)
+                self.swap_button.setMinimumHeight(45)
+                self.swap_button.setFont(QFont("Arial", 10))
+        else:
+            self.swap_button.setMaximumWidth(80)
+        
         self.swap_button.setToolTip("Swap From and To stations")
         self.swap_button.setObjectName("swapButton")
         layout.addWidget(self.swap_button, 0, 2, 2, 1)
