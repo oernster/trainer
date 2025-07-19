@@ -14,6 +14,8 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 import random
 
+from ..utils.data_path_resolver import get_data_directory, get_lines_directory, get_data_file_path
+
 logger = logging.getLogger(__name__)
 
 @dataclass
@@ -40,8 +42,15 @@ class TimetableManager:
     
     def __init__(self):
         """Initialize the timetable manager."""
-        self.data_dir = Path(__file__).parent.parent / "data"
-        self.lines_dir = self.data_dir / "lines"
+        try:
+            self.data_dir = get_data_directory()
+            self.lines_dir = get_lines_directory()
+        except FileNotFoundError as e:
+            logger.error(f"Failed to find data directory: {e}")
+            # Fallback to old method
+            self.data_dir = Path(__file__).parent.parent / "data"
+            self.lines_dir = self.data_dir / "lines"
+        
         self.railway_data: Dict[str, Dict] = {}
         self.journey_times: Dict[str, int] = {}  # "FROM-TO" -> minutes
         self.loaded = False

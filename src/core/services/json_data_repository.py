@@ -20,14 +20,20 @@ from ..models.railway_line import RailwayLine, LineType, LineStatus
 class JsonDataRepository(IDataRepository):
     """Repository implementation for JSON-based railway data."""
     
-    def __init__(self, data_directory: str = "src/data"):
+    def __init__(self, data_directory: Optional[str] = None):
         """
         Initialize the JSON data repository.
         
         Args:
             data_directory: Path to directory containing JSON data files
         """
-        self.data_directory = Path(data_directory)
+        from ...utils.data_path_resolver import get_data_directory
+        
+        if data_directory is None:
+            self.data_directory = get_data_directory()
+        else:
+            self.data_directory = Path(data_directory)
+        
         self.lines_directory = self.data_directory / "lines"
         self.logger = logging.getLogger(__name__)
         

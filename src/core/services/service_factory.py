@@ -31,7 +31,13 @@ class ServiceFactory:
         
         # Set default data directory
         if data_directory is None:
-            data_directory = str(Path(__file__).parent.parent.parent / "data")
+            # Try to use data path resolver
+            try:
+                from ...utils.data_path_resolver import get_data_directory
+                data_directory = str(get_data_directory())
+            except (ImportError, FileNotFoundError):
+                # Fallback to old method
+                data_directory = str(Path(__file__).parent.parent.parent / "data")
         
         self.data_directory = data_directory
         

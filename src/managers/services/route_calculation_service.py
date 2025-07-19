@@ -515,8 +515,15 @@ class RouteCalculationService:
         if self._line_data_cache is not None:
             return self._line_data_cache
             
+        # Import data path resolver
+        try:
+            from ...utils.data_path_resolver import get_lines_directory
+            lines_dir = get_lines_directory()
+        except (ImportError, FileNotFoundError):
+            # Fallback to old method
+            lines_dir = Path(__file__).parent.parent.parent / "data" / "lines"
+            
         line_data = {}
-        lines_dir = Path(__file__).parent.parent.parent / "data" / "lines"
         
         if not lines_dir.exists():
             logger.error(f"Lines directory not found: {lines_dir}")
@@ -558,7 +565,13 @@ class RouteCalculationService:
             return self._walking_connections_cache
             
         try:
-            connections_file = Path(__file__).parent.parent.parent / "data" / "interchange_connections.json"
+            # Import data path resolver
+            try:
+                from ...utils.data_path_resolver import get_data_file_path
+                connections_file = get_data_file_path("interchange_connections.json")
+            except (ImportError, FileNotFoundError):
+                # Fallback to old method
+                connections_file = Path(__file__).parent.parent.parent / "data" / "interchange_connections.json"
             
             if not connections_file.exists():
                 logger.warning(f"Interchange connections file not found: {connections_file}")

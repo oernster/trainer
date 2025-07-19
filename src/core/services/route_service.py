@@ -1272,7 +1272,13 @@ class RouteService(IRouteService):
             import json
             from pathlib import Path
             
-            lines_dir = Path("src/data/lines")
+            # Try to use data path resolver
+            try:
+                from ...utils.data_path_resolver import get_lines_directory
+                lines_dir = get_lines_directory()
+            except (ImportError, FileNotFoundError):
+                # Fallback to old method
+                lines_dir = Path("src/data/lines")
             
             # Convert line name to potential file name
             # Remove common suffixes and normalize
@@ -1372,7 +1378,14 @@ class RouteService(IRouteService):
             import json
             from pathlib import Path
             
-            interchange_file = Path("src/data/interchange_connections.json")
+            # Try to use data path resolver
+            try:
+                from ...utils.data_path_resolver import get_data_file_path
+                interchange_file = get_data_file_path("interchange_connections.json")
+            except (ImportError, FileNotFoundError):
+                # Fallback to old method
+                interchange_file = Path("src/data/interchange_connections.json")
+                
             if not interchange_file.exists():
                 self.logger.warning("Interchange connections file not found")
                 return
@@ -1505,7 +1518,14 @@ class RouteService(IRouteService):
             import json
             from pathlib import Path
             
-            interchange_file = Path("src/data/interchange_connections.json")
+            # Try to use data path resolver
+            try:
+                from ...utils.data_path_resolver import get_data_file_path
+                interchange_file = get_data_file_path("interchange_connections.json")
+            except (ImportError, FileNotFoundError):
+                # Fallback to old method
+                interchange_file = Path("src/data/interchange_connections.json")
+                
             if not interchange_file.exists():
                 return
                 
@@ -1649,7 +1669,14 @@ class RouteService(IRouteService):
             import json
             from pathlib import Path
             
-            interchange_file = Path("src/data/interchange_connections.json")
+            # Try to use data path resolver
+            try:
+                from ...utils.data_path_resolver import get_data_file_path
+                interchange_file = get_data_file_path("interchange_connections.json")
+            except (ImportError, FileNotFoundError):
+                # Fallback to old method
+                interchange_file = Path("src/data/interchange_connections.json")
+                
             if not interchange_file.exists():
                 self.logger.warning("Interchange connections file not found")
                 return {}

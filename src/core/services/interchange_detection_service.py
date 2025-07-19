@@ -460,7 +460,25 @@ class InterchangeDetectionService:
         """Build the mapping of station names to their coordinates."""
         station_coordinates = {}
         
-        lines_dir = Path(__file__).parent.parent.parent / "data" / "lines"
+        # Try to use data path resolver
+        try:
+            from ...utils.data_path_resolver import get_lines_directory
+            lines_dir = get_lines_directory()
+        except (ImportError, FileNotFoundError):
+            # Fallback to old method
+            # Try to use data path resolver
+            try:
+                from ...utils.data_path_resolver import get_lines_directory
+                lines_dir = get_lines_directory()
+            except (ImportError, FileNotFoundError):
+                # Fallback to old method
+                # Try to use data path resolver
+                try:
+                    from ...utils.data_path_resolver import get_lines_directory
+                    lines_dir = get_lines_directory()
+                except (ImportError, FileNotFoundError):
+                    # Fallback to old method
+                    lines_dir = Path(__file__).parent.parent.parent / "data" / "lines"
         
         if not lines_dir.exists():
             self.logger.error(f"Lines directory not found: {lines_dir}")

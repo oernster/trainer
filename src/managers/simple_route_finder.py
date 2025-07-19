@@ -10,12 +10,27 @@ import json
 from pathlib import Path
 from typing import List, Dict, Optional
 
+# Import data path resolver
+try:
+    from ..utils.data_path_resolver import get_data_directory, get_lines_directory
+except ImportError:
+    # Fallback if relative import fails
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent.parent))
+    from utils.data_path_resolver import get_data_directory, get_lines_directory
+
 class SimpleRouteFinder:
     """Simple route finder without complex algorithms, using station names only."""
     
     def __init__(self):
-        self.data_dir = Path(__file__).parent.parent / "data"
-        self.lines_dir = self.data_dir / "lines"
+        try:
+            self.data_dir = get_data_directory()
+            self.lines_dir = get_lines_directory()
+        except FileNotFoundError:
+            # Fallback to old method
+            self.data_dir = Path(__file__).parent.parent / "data"
+            self.lines_dir = self.data_dir / "lines"
+            
         self.station_lines = {}  # station_name -> [line_names]
         self.line_stations = {}  # line_name -> [station_names_in_order]
         self.loaded = False
