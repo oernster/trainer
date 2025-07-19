@@ -168,9 +168,9 @@ class StationsSettingsDialog(QDialog):
         
         # Platform-specific spacing and margins
         if sys.platform.startswith('linux'):
-            # Linux needs more spacing to prevent overlap
-            main_layout.setSpacing(12)
-            main_layout.setContentsMargins(20, 20, 20, 20)
+            # Reduced spacing to give more room for content
+            main_layout.setSpacing(8)  # Reduced from 12
+            main_layout.setContentsMargins(15, 15, 15, 15)  # Reduced from 20
         else:
             # Windows/Mac spacing remains unchanged
             main_layout.setSpacing(10)
@@ -204,7 +204,7 @@ class StationsSettingsDialog(QDialog):
         
         # Platform-specific spacing
         if sys.platform.startswith('linux'):
-            layout.setSpacing(20)
+            layout.setSpacing(10)  # Reduced from 20 to save vertical space
         else:
             layout.setSpacing(15)
         
@@ -277,6 +277,11 @@ class StationsSettingsDialog(QDialog):
         self.status_label = QLabel("Ready")
         # Remove hardcoded styles - let theme manager handle it
         self.status_label.setObjectName("statusLabel")
+        
+        # Platform-specific sizing for status label
+        if sys.platform.startswith('linux'):
+            self.status_label.setMaximumHeight(25)  # Limit height on Linux
+            self.status_label.setFont(QFont("Arial", 9))  # Smaller font
     
     def _create_button_bar(self):
         """Create the dialog button bar."""
