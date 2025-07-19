@@ -9,8 +9,7 @@ import logging
 import sys
 from typing import Dict, Any, List
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QGridLayout, QGroupBox, QLabel, QApplication,
-    QScrollArea
+    QWidget, QVBoxLayout, QGridLayout, QGroupBox, QLabel, QApplication
 )
 from PySide6.QtCore import Signal, Qt
 from PySide6.QtGui import QFont
@@ -125,15 +124,14 @@ class RouteDetailsWidget(QWidget):
         group = QGroupBox("Route Information")
         layout = QVBoxLayout(group)
         
-        # Platform-specific layout margins
+        # Platform-specific layout settings
         if sys.platform.startswith('linux') and self.is_small_screen:
-            # Add margins to center the scroll area better in the group box
+            # Add proper margins to keep text within border
+            layout.setContentsMargins(10, 15, 10, 15)
+            layout.setSpacing(5)
+        else:
+            # Default margins
             layout.setContentsMargins(5, 10, 5, 10)
-        
-        # Create scroll area for route details
-        scroll_area = QScrollArea()
-        scroll_area.setWidgetResizable(True)
-        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         
         # Route details
         self.route_details_label = QLabel("No route selected")
@@ -144,26 +142,33 @@ class RouteDetailsWidget(QWidget):
         # Platform-specific settings
         if sys.platform.startswith('linux'):
             if self.is_small_screen:
-                # Increased scroll area height for Linux small screens
-                # to show at least first line and center better in border
-                scroll_area.setMinimumHeight(140)
-                scroll_area.setMaximumHeight(160)
+                # Set proper height and padding for Linux small screens
+                self.route_details_label.setMinimumHeight(100)
+                # Add internal padding to keep text away from edges
+                self.route_details_label.setStyleSheet("""
+                    QLabel {
+                        padding: 8px;
+                        background-color: transparent;
+                    }
+                """)
                 # Smaller font for Linux small screens
                 font = self.route_details_label.font()
                 font.setPointSize(font.pointSize() - 1)
                 self.route_details_label.setFont(font)
             else:
                 # Linux normal screens
-                scroll_area.setMinimumHeight(100)
-                scroll_area.setMaximumHeight(120)
+                self.route_details_label.setMinimumHeight(80)
+                self.route_details_label.setStyleSheet("""
+                    QLabel {
+                        padding: 5px;
+                        background-color: transparent;
+                    }
+                """)
         else:
             # Original height for Windows/Mac
-            scroll_area.setMinimumHeight(80)
-            scroll_area.setMaximumHeight(80)
+            self.route_details_label.setMinimumHeight(80)
         
-        # Set the label as the scroll area's widget
-        scroll_area.setWidget(self.route_details_label)
-        layout.addWidget(scroll_area)
+        layout.addWidget(self.route_details_label)
         
         return group
     
