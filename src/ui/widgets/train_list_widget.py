@@ -88,36 +88,74 @@ class TrainListWidget(QScrollArea):
         """Apply theme styling to the scroll area."""
         colors = self.get_theme_colors(self.current_theme)
         
-        style = f"""
-        QScrollArea {{
-            border: 1px solid {colors['border_primary']};
-            border-radius: 8px;
-            background-color: {colors['background_primary']};
-        }}
-        
-        QScrollBar:vertical {{
-            background-color: {colors['background_secondary']};
-            width: 12px;
-            border-radius: 6px;
-            margin: 0px;
-        }}
-        
-        QScrollBar::handle:vertical {{
-            background-color: {colors['border_secondary']};
-            border-radius: 6px;
-            min-height: 20px;
-            margin: 2px;
-        }}
-        
-        QScrollBar::handle:vertical:hover {{
-            background-color: {colors['background_hover']};
-        }}
-        
-        QScrollBar::add-line:vertical,
-        QScrollBar::sub-line:vertical {{
-            height: 0px;
-        }}
-        """
+        # FORCE light theme styling when in light mode
+        if self.current_theme == "light":
+            style = f"""
+            QScrollArea {{
+                border: 1px solid #e0e0e0 !important;
+                border-radius: 8px !important;
+                background-color: #ffffff !important;
+            }}
+            
+            QWidget {{
+                background-color: #ffffff !important;
+            }}
+            
+            QScrollBar:vertical {{
+                background-color: #f5f5f5 !important;
+                width: 12px !important;
+                border-radius: 6px !important;
+                margin: 0px !important;
+            }}
+            
+            QScrollBar::handle:vertical {{
+                background-color: #e0e0e0 !important;
+                border-radius: 6px !important;
+                min-height: 20px !important;
+                margin: 2px !important;
+            }}
+            
+            QScrollBar::handle:vertical:hover {{
+                background-color: #d0d0d0 !important;
+            }}
+            
+            QScrollBar::add-line:vertical,
+            QScrollBar::sub-line:vertical {{
+                height: 0px !important;
+            }}
+            """
+        else:
+            # Dark theme styling
+            style = f"""
+            QScrollArea {{
+                border: 1px solid {colors['border_primary']};
+                border-radius: 8px;
+                background-color: {colors['background_primary']};
+            }}
+            
+            QScrollBar:vertical {{
+                background-color: {colors['background_secondary']};
+                width: 12px;
+                border-radius: 6px;
+                margin: 0px;
+            }}
+            
+            QScrollBar::handle:vertical {{
+                background-color: {colors['border_secondary']};
+                border-radius: 6px;
+                min-height: 20px;
+                margin: 2px;
+            }}
+            
+            QScrollBar::handle:vertical:hover {{
+                background-color: {colors['background_hover']};
+            }}
+            
+            QScrollBar::add-line:vertical,
+            QScrollBar::sub-line:vertical {{
+                height: 0px;
+            }}
+            """
         
         self.setStyleSheet(style)
 

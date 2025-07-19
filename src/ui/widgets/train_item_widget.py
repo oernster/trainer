@@ -398,43 +398,55 @@ class TrainItemWidget(QFrame):
                 interchange_color = colors["warning"]
                 label.setStyleSheet(f"""
                     QLabel {{
-                        background-color: transparent;
-                        color: {interchange_color};
-                        border: none;
-                        margin: 0px;
-                        padding: 0px;
+                        background-color: transparent !important;
+                        color: {interchange_color} !important;
+                        border: none !important;
+                        margin: 0px !important;
+                        padding: 0px !important;
                     }}
                 """)
             elif calling_point.is_origin or calling_point.is_destination:
-                # Origin and destination in normal text color
-                label.setStyleSheet(f"""
-                    QLabel {{
-                        background-color: transparent;
-                        color: {colors['text_primary']};
-                        border: none;
-                        margin: 0px;
-                        padding: 0px;
-                    }}
-                """)
+                # FORCE light blue for From and To stations in light mode for visibility
+                if self.current_theme == "light":
+                    label.setStyleSheet(f"""
+                        QLabel {{
+                            background-color: transparent !important;
+                            color: #1976d2 !important;
+                            border: none !important;
+                            margin: 0px !important;
+                            padding: 0px !important;
+                        }}
+                    """)
+                else:
+                    # Dark mode: use normal text color
+                    label.setStyleSheet(f"""
+                        QLabel {{
+                            background-color: transparent !important;
+                            color: {colors['text_primary']} !important;
+                            border: none !important;
+                            margin: 0px !important;
+                            padding: 0px !important;
+                        }}
+                    """)
             else:
                 # Regular light blue text for normal intermediate stations
                 label.setStyleSheet(f"""
                     QLabel {{
-                        background-color: transparent;
-                        color: {colors['primary_accent']};
-                        border: none;
-                        margin: 0px;
-                        padding: 0px;
+                        background-color: transparent !important;
+                        color: {colors['primary_accent']} !important;
+                        border: none !important;
+                        margin: 0px !important;
+                        padding: 0px !important;
                     }}
                 """)
         else:
             # For walking connections, preserve HTML formatting
             label.setStyleSheet("""
                 QLabel {
-                    background-color: transparent;
-                    border: none;
-                    margin: 0px;
-                    padding: 0px;
+                    background-color: transparent !important;
+                    border: none !important;
+                    margin: 0px !important;
+                    padding: 0px !important;
                 }
             """)
 
@@ -499,33 +511,64 @@ class TrainItemWidget(QFrame):
         colors = self.get_theme_colors(self.current_theme)
         status_color = self.train_data.get_status_color(self.current_theme)
 
-        style = f"""
-        QFrame {{
-            background-color: {colors['background_secondary']};
-            border: 1px solid {colors['border_primary']};
-            border-left: 4px solid {status_color};
-            border-radius: 8px;
-            margin: 2px;
-            padding: 8px;
-        }}
-        
-        QFrame:hover {{
-            background-color: {colors['background_hover']};
-            border-color: {colors['primary_accent']};
-        }}
-        
-        QLabel {{
-            color: {colors['text_primary']};
-            background-color: transparent;
-            border: none;
-            margin: 0px;
-            padding: 0px;
-        }}
-        
-        QWidget {{
-            background-color: transparent;
-        }}
-        """
+        # FORCE light theme styling when in light mode
+        if self.current_theme == "light":
+            style = f"""
+            QFrame {{
+                background-color: #ffffff !important;
+                border: 1px solid #e0e0e0 !important;
+                border-left: 4px solid {status_color} !important;
+                border-radius: 8px !important;
+                margin: 2px !important;
+                padding: 8px !important;
+            }}
+            
+            QFrame:hover {{
+                background-color: #f5f5f5 !important;
+                border-color: #1976d2 !important;
+            }}
+            
+            QLabel {{
+                color: #212121 !important;
+                background-color: transparent !important;
+                border: none !important;
+                margin: 0px !important;
+                padding: 0px !important;
+            }}
+            
+            QWidget {{
+                background-color: transparent !important;
+            }}
+            """
+        else:
+            # Dark theme styling
+            style = f"""
+            QFrame {{
+                background-color: {colors['background_secondary']};
+                border: 1px solid {colors['border_primary']};
+                border-left: 4px solid {status_color};
+                border-radius: 8px;
+                margin: 2px;
+                padding: 8px;
+            }}
+            
+            QFrame:hover {{
+                background-color: {colors['background_hover']};
+                border-color: {colors['primary_accent']};
+            }}
+            
+            QLabel {{
+                color: {colors['text_primary']};
+                background-color: transparent;
+                border: none;
+                margin: 0px;
+                padding: 0px;
+            }}
+            
+            QWidget {{
+                background-color: transparent;
+            }}
+            """
         
         self.setStyleSheet(style)
 
