@@ -129,7 +129,7 @@ class RouteDetailsWidget(QWidget):
             # Make the group box expand to fill available space
             group.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
             # Set a large minimum height for the entire group box to extend the border
-            group.setMinimumHeight(400)  # This will make the border extend much lower
+            group.setMinimumHeight(450)  # Increased to ensure border is fully visible
         
         layout = QVBoxLayout(group)
         
