@@ -74,12 +74,6 @@ class StationSelectionWidget(QWidget):
         self.from_station_combo.setInsertPolicy(QComboBox.InsertPolicy.NoInsert)
         self.from_station_combo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.from_station_combo.setMinimumWidth(200)
-        # Ensure the line edit is accessible on Linux
-        if sys.platform.startswith('linux'):
-            self.from_station_combo.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
-            line_edit = self.from_station_combo.lineEdit()
-            if line_edit:
-                line_edit.setReadOnly(False)
         layout.addWidget(self.from_station_combo, 0, 1)
         
         # To station
@@ -95,12 +89,6 @@ class StationSelectionWidget(QWidget):
         self.to_station_combo.setInsertPolicy(QComboBox.InsertPolicy.NoInsert)
         self.to_station_combo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.to_station_combo.setMinimumWidth(200)
-        # Ensure the line edit is accessible on Linux
-        if sys.platform.startswith('linux'):
-            self.to_station_combo.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
-            line_edit = self.to_station_combo.lineEdit()
-            if line_edit:
-                line_edit.setReadOnly(False)
         layout.addWidget(self.to_station_combo, 1, 1)
         
         # Swap button
@@ -159,9 +147,6 @@ class StationSelectionWidget(QWidget):
                 from_completer = QCompleter(self.stations, self)
                 from_completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
                 from_completer.setFilterMode(Qt.MatchFlag.MatchContains)
-                # On Linux, ensure completer doesn't interfere with editability
-                if sys.platform.startswith('linux'):
-                    from_completer.setCompletionMode(QCompleter.CompletionMode.PopupCompletion)
                 self.from_station_combo.setCompleter(from_completer)
             
             if self.to_station_combo:
@@ -172,9 +157,6 @@ class StationSelectionWidget(QWidget):
                 to_completer = QCompleter(self.stations, self)
                 to_completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
                 to_completer.setFilterMode(Qt.MatchFlag.MatchContains)
-                # On Linux, ensure completer doesn't interfere with editability
-                if sys.platform.startswith('linux'):
-                    to_completer.setCompletionMode(QCompleter.CompletionMode.PopupCompletion)
                 self.to_station_combo.setCompleter(to_completer)
             
             logger.debug(f"Populated station combos with {len(self.stations)} stations")
