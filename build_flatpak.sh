@@ -3,9 +3,6 @@
 # Exit on error
 set -e
 
-# Enable more verbose output
-set -x
-
 # Function to detect Linux distribution
 detect_distro() {
     if [ -f /etc/os-release ]; then
@@ -478,108 +475,41 @@ echo "Creating repository..."
 flatpak-builder --repo=repo --force-clean --user build com.oliverernster.Trainer.json
 
 echo "Creating single-file bundle..."
+echo "Running: flatpak build-bundle repo trainer.flatpak com.oliverernster.Trainer"
+echo "This may take a few minutes depending on your system..."
 
-# Get repository size to estimate bundle size
-REPO_SIZE=$(du -sb repo 2>/dev/null | cut -f1 || echo "0")
-REPO_SIZE_MB=$(echo "scale=2; $REPO_SIZE / 1048576" | bc 2>/dev/null || echo "0")
-echo "Repository size: ${REPO_SIZE_MB} MB"
-
-# Function to format bytes to human readable
-format_bytes() {
-    local bytes=$1
-    if [ $bytes -lt 1048576 ]; then
-        echo "$(echo "scale=2; $bytes / 1024" | bc) KB"
-    else
-        echo "$(echo "scale=2; $bytes / 1048576" | bc) MB"
-    fi
-}
-
-# Function to monitor bundle creation with detailed progress
-monitor_bundle_progress() {
-    local bundle_file="trainer.flatpak"
-    local pid=$1
-    local start_time=$(date +%s)
-    local last_size=0
-    local stall_count=0
-    local max_stall=15  # 15 seconds with no change
+# Simple progress monitoring
+(
+    # Start bundle creation
+    flatpak build-bundle repo trainer.flatpak com.oliverernster.Trainer > /tmp/flatpak-bundle.log 2>&1 &
+    BUNDLE_PID=$!
     
-    echo "Running: flatpak build-bundle repo trainer.flatpak com.oliverernster.Trainer"
-    echo "Creating bundle from repository..."
-    echo ""
-    
-    # Initial wait for file creation
-    local wait_count=0
-    while [ ! -f "$bundle_file" ] && kill -0 $pid 2>/dev/null; do
-        case $((wait_count % 4)) in
-            0) printf "\rInitializing bundle creation [|]  " ;;
-            1) printf "\rInitializing bundle creation [/]  " ;;
-            2) printf "\rInitializing bundle creation [-]  " ;;
-            3) printf "\rInitializing bundle creation [\\]  " ;;
-        esac
-        wait_count=$((wait_count + 1))
-        sleep 0.5
+    # Simple progress dots
+    echo -n "Building bundle"
+    while kill -0 $BUNDLE_PID 2>/dev/null; do
+        echo -n "."
+        sleep 2
     done
     
-    # Monitor file growth
-    while kill -0 $pid 2>/dev/null; do
-        if [ -f "$bundle_file" ]; then
-            current_size=$(stat -c%s "$bundle_file" 2>/dev/null || stat -f%z "$bundle_file" 2>/dev/null || echo "0")
-            current_time=$(date +%s)
-            elapsed=$((current_time - start_time))
-            
-            if [ "$current_size" != "$last_size" ]; then
-                # Progress is being made
-                size_formatted=$(format_bytes $current_size)
-                
-                # Calculate rate if we have previous size
-                if [ $last_size -gt 0 ] && [ $elapsed -gt 0 ]; then
-                    rate=$((current_size / elapsed))
-                    rate_formatted=$(format_bytes $rate)
-                    printf "\rProgress: %s (%.1f%% of repo) - %s/s - %ds elapsed" \
-                        "$size_formatted" \
-                        "$(echo "scale=1; $current_size * 100 / $REPO_SIZE" | bc 2>/dev/null || echo "0")" \
-                        "$rate_formatted" \
-                        "$elapsed"
-                else
-                    printf "\rProgress: %s - %ds elapsed" "$size_formatted" "$elapsed"
-                fi
-                
-                last_size=$current_size
-                stall_count=0
-            else
-                # No change in size
-                stall_count=$((stall_count + 1))
-                if [ $stall_count -ge $max_stall ]; then
-                    echo ""
-                    echo "Bundle creation completed or stalled."
-                    break
-                fi
-            fi
-        fi
-        sleep 1
-    done
-    
-    echo ""  # New line after progress
-}
+    # Wait for completion
+    wait $BUNDLE_PID
+    echo $? > /tmp/bundle-exit-code
+) &
 
-# Start bundle creation in background
-echo "Starting bundle creation process..."
-flatpak build-bundle repo trainer.flatpak com.oliverernster.Trainer > /tmp/flatpak-bundle.log 2>&1 &
-BUNDLE_PID=$!
+# Wait for the subshell to complete
+wait
 
-# Monitor progress
-monitor_bundle_progress $BUNDLE_PID
+# Get exit code
+BUNDLE_EXIT_CODE=$(cat /tmp/bundle-exit-code 2>/dev/null || echo "1")
+rm -f /tmp/bundle-exit-code
 
-# Wait for completion and get exit code
-wait $BUNDLE_PID
-BUNDLE_EXIT_CODE=$?
+echo ""  # New line after dots
 
 # Check result
 if [ $BUNDLE_EXIT_CODE -eq 0 ] && [ -f "trainer.flatpak" ]; then
-    final_size=$(stat -c%s "trainer.flatpak" 2>/dev/null || stat -f%z "trainer.flatpak" 2>/dev/null || echo "0")
-    final_size_formatted=$(format_bytes $final_size)
     echo "✅ Bundle creation completed successfully!"
-    echo "📦 Final bundle size: $final_size_formatted"
+    BUNDLE_SIZE=$(du -h trainer.flatpak | cut -f1)
+    echo "📦 Bundle size: $BUNDLE_SIZE"
     
 else
     echo "❌ Bundle creation failed"
