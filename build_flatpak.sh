@@ -475,41 +475,77 @@ echo "Creating repository..."
 flatpak-builder --repo=repo --force-clean --user build com.oliverernster.Trainer.json
 
 echo "Creating single-file bundle..."
+
+# Get repository size for estimation
+REPO_SIZE_BYTES=$(du -sb repo 2>/dev/null | cut -f1 || echo "0")
+REPO_SIZE_MB=$(( REPO_SIZE_BYTES / 1048576 ))
+echo "Repository size: ${REPO_SIZE_MB} MB"
+
 echo "Running: flatpak build-bundle repo trainer.flatpak com.oliverernster.Trainer"
-echo "This may take a few minutes depending on your system..."
+echo ""
 
-# Simple progress monitoring
-(
-    # Start bundle creation
-    flatpak build-bundle repo trainer.flatpak com.oliverernster.Trainer > /tmp/flatpak-bundle.log 2>&1 &
-    BUNDLE_PID=$!
+# Start bundle creation with verbose output
+flatpak build-bundle --verbose repo trainer.flatpak com.oliverernster.Trainer > /tmp/flatpak-bundle.log 2>&1 &
+BUNDLE_PID=$!
+
+# Monitor progress
+last_milestone=""
+last_size=0
+no_progress_count=0
+
+while kill -0 $BUNDLE_PID 2>/dev/null; do
+    # Check for milestones in the log
+    if [ -f /tmp/flatpak-bundle.log ]; then
+        # Look for key progress indicators
+        if grep -q "Exporting" /tmp/flatpak-bundle.log && [ "$last_milestone" != "exporting" ]; then
+            echo "📂 Exporting files..."
+            last_milestone="exporting"
+        elif grep -q "Writing" /tmp/flatpak-bundle.log && [ "$last_milestone" != "writing" ]; then
+            echo "✍️  Writing bundle data..."
+            last_milestone="writing"
+        elif grep -q "Committing" /tmp/flatpak-bundle.log && [ "$last_milestone" != "committing" ]; then
+            echo "💾 Committing changes..."
+            last_milestone="committing"
+        fi
+    fi
     
-    # Simple progress dots
-    echo -n "Building bundle"
-    while kill -0 $BUNDLE_PID 2>/dev/null; do
-        echo -n "."
-        sleep 2
-    done
+    # Monitor bundle file size
+    if [ -f "trainer.flatpak" ]; then
+        current_size=$(stat -c%s "trainer.flatpak" 2>/dev/null || echo "0")
+        if [ "$current_size" -gt "$last_size" ]; then
+            size_mb=$(( current_size / 1048576 ))
+            if [ $REPO_SIZE_BYTES -gt 0 ]; then
+                percent=$(( current_size * 100 / REPO_SIZE_BYTES ))
+                printf "\r📦 Bundle progress: %d MB (%d%% of repository size)" "$size_mb" "$percent"
+            else
+                printf "\r📦 Bundle progress: %d MB" "$size_mb"
+            fi
+            last_size=$current_size
+            no_progress_count=0
+        else
+            no_progress_count=$((no_progress_count + 1))
+            if [ $no_progress_count -gt 20 ]; then
+                echo ""
+                echo "⏳ Finalizing bundle..."
+                break
+            fi
+        fi
+    fi
     
-    # Wait for completion
-    wait $BUNDLE_PID
-    echo $? > /tmp/bundle-exit-code
-) &
+    sleep 0.5
+done
 
-# Wait for the subshell to complete
-wait
+# Wait for completion
+wait $BUNDLE_PID
+BUNDLE_EXIT_CODE=$?
 
-# Get exit code
-BUNDLE_EXIT_CODE=$(cat /tmp/bundle-exit-code 2>/dev/null || echo "1")
-rm -f /tmp/bundle-exit-code
-
-echo ""  # New line after dots
+echo ""  # New line after progress
 
 # Check result
 if [ $BUNDLE_EXIT_CODE -eq 0 ] && [ -f "trainer.flatpak" ]; then
     echo "✅ Bundle creation completed successfully!"
     BUNDLE_SIZE=$(du -h trainer.flatpak | cut -f1)
-    echo "📦 Bundle size: $BUNDLE_SIZE"
+    echo "📦 Final bundle size: $BUNDLE_SIZE"
     
 else
     echo "❌ Bundle creation failed"
