@@ -129,12 +129,12 @@ class StationsSettingsDialog(QDialog):
             
             if is_small_screen:
                 # Even more vertical space for Linux small screens to prevent truncation
-                self.setMinimumSize(850, 700)
-                self.resize(950, 800)
+                self.setMinimumSize(900, 750)  # Increased from 850x700
+                self.resize(1000, 850)  # Increased from 950x800
             else:
                 # Linux normal screens
-                self.setMinimumSize(850, 650)
-                self.resize(950, 750)
+                self.setMinimumSize(900, 700)  # Increased from 850x650
+                self.resize(1000, 800)  # Increased from 950x750
         else:
             # Windows/Mac sizing remains unchanged
             self.setMinimumSize(800, 600)
