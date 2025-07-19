@@ -6,9 +6,10 @@ distance, changes, and interchange stations.
 """
 
 import logging
+import sys
 from typing import Dict, Any, List
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QGridLayout, QGroupBox, QLabel
+    QWidget, QVBoxLayout, QGridLayout, QGroupBox, QLabel, QApplication
 )
 from PySide6.QtCore import Signal
 from PySide6.QtGui import QFont
@@ -46,6 +47,14 @@ class RouteDetailsWidget(QWidget):
         self.route_data = {}
         self.preferences = {}
         
+        # Detect small screen for platform-specific adjustments
+        screen = QApplication.primaryScreen()
+        if screen:
+            screen_geometry = screen.availableGeometry()
+            self.is_small_screen = screen_geometry.width() <= 1440 or screen_geometry.height() <= 900
+        else:
+            self.is_small_screen = False
+        
         self._setup_ui()
         self._connect_signals()
         
@@ -54,7 +63,12 @@ class RouteDetailsWidget(QWidget):
     def _setup_ui(self):
         """Set up the user interface."""
         layout = QVBoxLayout(self)
-        layout.setSpacing(15)
+        
+        # Platform-specific spacing
+        if sys.platform.startswith('linux') and self.is_small_screen:
+            layout.setSpacing(10)  # Reduced spacing for Linux small screens
+        else:
+            layout.setSpacing(15)
         
         # Time selection section
         time_group = self._create_time_selection_group()
@@ -114,9 +128,28 @@ class RouteDetailsWidget(QWidget):
         self.route_details_label = QLabel("No route selected")
         self.route_details_label.setObjectName("routeDetailsLabel")
         self.route_details_label.setWordWrap(True)
-        self.route_details_label.setMinimumHeight(80)
+        
+        # Platform-specific minimum height
+        if sys.platform.startswith('linux'):
+            if self.is_small_screen:
+                # Increased minimum height for Linux small screens to prevent truncation
+                self.route_details_label.setMinimumHeight(120)
+            else:
+                # Slightly increased for Linux normal screens
+                self.route_details_label.setMinimumHeight(100)
+        else:
+            # Original height for Windows/Mac
+            self.route_details_label.setMinimumHeight(80)
+        
         from PySide6.QtCore import Qt
         self.route_details_label.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
+        
+        # Platform-specific font size
+        if sys.platform.startswith('linux') and self.is_small_screen:
+            font = self.route_details_label.font()
+            font.setPointSize(font.pointSize() - 1)  # Slightly smaller font
+            self.route_details_label.setFont(font)
+        
         layout.addWidget(self.route_details_label)
         
         return group
