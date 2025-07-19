@@ -246,8 +246,8 @@ cat > com.oliverernster.Trainer.json << 'EOL'
                 "install -Dm644 com.oliverernster.Trainer.desktop ${FLATPAK_DEST}/share/applications/com.oliverernster.Trainer.desktop",
                 "install -Dm644 com.oliverernster.Trainer.metainfo.xml ${FLATPAK_DEST}/share/metainfo/com.oliverernster.Trainer.metainfo.xml",
                 "echo 'Installing application icons...'",
-                "if [ -f assets/train_emoji.ico ]; then echo 'Converting train_emoji.ico to PNG...'; python3 -c \"import imageio.v3 as iio; img = iio.imread('assets/train_emoji.ico'); iio.imwrite('/tmp/train_icon.png', img[0] if hasattr(img, '__len__') else img)\" && install -Dm644 /tmp/train_icon.png ${FLATPAK_DEST}/share/icons/hicolor/256x256/apps/com.oliverernster.Trainer.png || echo 'Icon conversion failed'; fi",
-                "for size in 16 32 64 128; do if [ -f assets/trainer_icon_${size}.png ]; then install -Dm644 assets/trainer_icon_${size}.png ${FLATPAK_DEST}/share/icons/hicolor/${size}x${size}/apps/com.oliverernster.Trainer.png; fi; done"
+                "if [ -f assets/trainer_icon.png ]; then install -Dm644 assets/trainer_icon.png ${FLATPAK_DEST}/share/icons/hicolor/256x256/apps/com.oliverernster.Trainer.png; echo 'Installed 256x256 icon'; fi",
+                "for size in 16 32 64 128; do if [ -f assets/trainer_icon_${size}.png ]; then install -Dm644 assets/trainer_icon_${size}.png ${FLATPAK_DEST}/share/icons/hicolor/${size}x${size}/apps/com.oliverernster.Trainer.png; echo \"Installed ${size}x${size} icon\"; fi; done"
             ],
             "sources": [
                 {
@@ -609,13 +609,12 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
             # Copy icon to standard locations
             mkdir -p ~/.local/share/icons/hicolor/256x256/apps/
             
-            # Install the train emoji icon
-            if [ -f "$SOURCE_DIR/assets/train_emoji.ico" ]; then
-                # Convert ICO to PNG for desktop integration
-                python3 -c "import imageio.v3 as iio; img = iio.imread('$SOURCE_DIR/assets/train_emoji.ico'); iio.imwrite('$HOME/.local/share/icons/hicolor/256x256/apps/com.oliverernster.Trainer.png', img[0] if hasattr(img, '__len__') else img)" 2>/dev/null || echo "Icon conversion failed"
+            # Install the pre-generated PNG icons
+            if [ -f "$SOURCE_DIR/assets/trainer_icon.png" ]; then
+                cp "$SOURCE_DIR/assets/trainer_icon.png" "$HOME/.local/share/icons/hicolor/256x256/apps/com.oliverernster.Trainer.png"
             fi
             
-            # Also install other icon sizes if available
+            # Also install other icon sizes
             for size in 16 32 64 128; do
                 if [ -f "$SOURCE_DIR/assets/trainer_icon_${size}.png" ]; then
                     mkdir -p "$HOME/.local/share/icons/hicolor/${size}x${size}/apps/"

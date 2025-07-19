@@ -1,101 +1,91 @@
 #!/usr/bin/env python3
 """
-Create a simple square icon for the Trainer application.
-This creates a 256x256 PNG icon with a train symbol.
+Convert train_emoji.ico to proper square PNG icons for the Trainer application.
 """
 
-from PIL import Image, ImageDraw, ImageFont
 import os
+import sys
 
-def create_train_icon():
-    # Create a new 256x256 image with a dark background
-    size = 256
-    img = Image.new('RGBA', (size, size), (26, 26, 26, 255))  # Dark background
-    draw = ImageDraw.Draw(img)
-    
-    # Draw a rounded rectangle background
-    margin = 20
-    draw.rounded_rectangle(
-        [margin, margin, size-margin, size-margin],
-        radius=30,
-        fill=(30, 136, 229, 255),  # Blue background
-        outline=(255, 255, 255, 255),
-        width=3
-    )
-    
-    # Draw a simple train representation
-    # Train body
-    train_x = 60
-    train_y = 100
-    train_width = 136
-    train_height = 60
-    
-    # Main train body
-    draw.rectangle(
-        [train_x, train_y, train_x + train_width, train_y + train_height],
-        fill=(255, 255, 255, 255)
-    )
-    
-    # Train windows
-    window_size = 20
-    window_y = train_y + 10
-    for i in range(3):
-        window_x = train_x + 15 + (i * 40)
-        draw.rectangle(
-            [window_x, window_y, window_x + window_size, window_y + window_size],
-            fill=(30, 136, 229, 255)
-        )
-    
-    # Train wheels
-    wheel_radius = 15
-    wheel_y = train_y + train_height + 5
-    for i in range(4):
-        wheel_x = train_x + 20 + (i * 35)
-        draw.ellipse(
-            [wheel_x - wheel_radius, wheel_y - wheel_radius,
-             wheel_x + wheel_radius, wheel_y + wheel_radius],
-            fill=(64, 64, 64, 255),
-            outline=(255, 255, 255, 255),
-            width=2
-        )
-    
-    # Add text "TRAINER" at the bottom
+def create_train_icon_from_ico():
+    """Convert train_emoji.ico to square PNG icons of various sizes."""
     try:
-        # Try to use a built-in font
-        font = ImageFont.truetype("arial.ttf", 24)
-    except:
-        # Fallback to default font
-        font = ImageFont.load_default()
+        import imageio.v3 as iio
+    except ImportError:
+        print("Error: imageio library is required. Install it with: pip install imageio")
+        return False
     
-    text = "TRAINER"
-    # Get text bounding box
-    bbox = draw.textbbox((0, 0), text, font=font)
-    text_width = bbox[2] - bbox[0]
-    text_height = bbox[3] - bbox[1]
+    ico_path = os.path.join('assets', 'train_emoji.ico')
+    if not os.path.exists(ico_path):
+        print(f"Error: {ico_path} not found!")
+        return False
     
-    text_x = (size - text_width) // 2
-    text_y = size - margin - text_height - 10
-    
-    draw.text((text_x, text_y), text, fill=(255, 255, 255, 255), font=font)
-    
-    # Save the icon
-    output_path = os.path.join('assets', 'trainer_icon.png')
-    os.makedirs('assets', exist_ok=True)
-    img.save(output_path, 'PNG')
-    print(f"Icon created successfully at: {output_path}")
-    print(f"Icon size: {img.size}")
-    
-    # Also create smaller versions for different uses
-    for icon_size in [128, 64, 32, 16]:
-        resized = img.resize((icon_size, icon_size), Image.Resampling.LANCZOS)
-        resized_path = os.path.join('assets', f'trainer_icon_{icon_size}.png')
-        resized.save(resized_path, 'PNG')
-        print(f"Created {icon_size}x{icon_size} version at: {resized_path}")
+    try:
+        # Read the ICO file
+        print(f"Reading {ico_path}...")
+        ico_data = iio.imread(ico_path)
+        
+        # Handle multi-frame ICO files
+        if hasattr(ico_data, '__len__') and len(ico_data.shape) > 2:
+            # If it's a multi-frame ICO, use the first frame
+            if len(ico_data.shape) == 4:  # Multiple frames
+                img = ico_data[0]
+            else:
+                img = ico_data
+        else:
+            img = ico_data
+        
+        print(f"Original image shape: {img.shape}")
+        
+        # Import PIL for image processing
+        try:
+            from PIL import Image
+            import numpy as np
+        except ImportError:
+            print("Error: Pillow library is required. Install it with: pip install Pillow")
+            return False
+        
+        # Convert to PIL Image
+        if img.dtype != np.uint8:
+            img = (img * 255).astype(np.uint8)
+        
+        pil_img = Image.fromarray(img)
+        
+        # Ensure it's square by cropping or padding if needed
+        width, height = pil_img.size
+        if width != height:
+            # Make it square by taking the smaller dimension
+            size = min(width, height)
+            # Center crop
+            left = (width - size) // 2
+            top = (height - size) // 2
+            right = left + size
+            bottom = top + size
+            pil_img = pil_img.crop((left, top, right, bottom))
+            print(f"Cropped to square: {size}x{size}")
+        
+        # Create the main 256x256 icon
+        main_icon = pil_img.resize((256, 256), Image.Resampling.LANCZOS)
+        output_path = os.path.join('assets', 'trainer_icon.png')
+        main_icon.save(output_path, 'PNG')
+        print(f"Created main icon: {output_path} (256x256)")
+        
+        # Create smaller versions
+        sizes = [128, 64, 32, 16]
+        for size in sizes:
+            resized = pil_img.resize((size, size), Image.Resampling.LANCZOS)
+            resized_path = os.path.join('assets', f'trainer_icon_{size}.png')
+            resized.save(resized_path, 'PNG')
+            print(f"Created {size}x{size} icon: {resized_path}")
+        
+        print("\nAll icons created successfully!")
+        return True
+        
+    except Exception as e:
+        print(f"Error processing icon: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
 
 if __name__ == "__main__":
-    try:
-        create_train_icon()
-    except ImportError:
-        print("Error: Pillow library is required. Install it with: pip install Pillow")
-    except Exception as e:
-        print(f"Error creating icon: {e}")
+    success = create_train_icon_from_ico()
+    sys.exit(0 if success else 1)
