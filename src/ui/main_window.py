@@ -154,16 +154,11 @@ class MainWindow(QMainWindow):
         # For larger screens, keep full size
         self.is_small_screen = screen_width <= 1440 or screen_height <= 900
         
-        # Platform-specific scaling for Linux
-        if sys.platform.startswith('linux'):
-            # More aggressive scaling for Linux small screens
-            if self.is_small_screen:
-                self.ui_scale_factor = 0.65  # 65% scale for Linux small screens
-            else:
-                self.ui_scale_factor = 0.85  # 85% scale for Linux normal screens
+        # Unified scaling approach (based on proven Linux implementation)
+        if self.is_small_screen:
+            self.ui_scale_factor = 0.65  # 65% scale for all platforms on small screens
         else:
-            # Windows/Mac scaling
-            self.ui_scale_factor = 0.8 if self.is_small_screen else 1.0
+            self.ui_scale_factor = 0.85  # 85% scale for all platforms on normal screens
         
         # Determine initial widget visibility from persisted UI state
         weather_visible = True  # Default
@@ -185,45 +180,29 @@ class MainWindow(QMainWindow):
         default_width, default_height = self._get_target_window_size(weather_visible, astronomy_visible)
         
         if self.is_small_screen:
-            # Apply scaling for small screens
-            if sys.platform.startswith('linux'):
-                # More aggressive minimums for Linux small screens
-                min_width = int(900 * 0.65)  # 585
-                min_height = int(450 * 0.65)  # 292
-                default_width = int(default_width * 0.65)
-                default_height = int(default_height * 0.65)
-            else:
-                min_width = int(900 * 0.8)  # 720
-                min_height = int(450 * 0.8)  # 360
-                default_width = int(default_width * 0.8)
-                default_height = int(default_height * 0.8)
+            # Apply unified scaling for small screens (Linux approach)
+            min_width = int(900 * 0.65)  # 585
+            min_height = int(450 * 0.65)  # 292
+            default_width = int(default_width * 0.65)
+            default_height = int(default_height * 0.65)
             
             logger.info(f"Small screen detected ({screen_width}x{screen_height}), using scaled window size: {default_width}x{default_height} (weather={weather_visible}, astronomy={astronomy_visible})")
         else:
-            # Set reasonable minimums for large screens
-            if sys.platform.startswith('linux'):
-                # Slightly reduced for Linux
-                min_width = int(900 * 0.85)  # 765
-                min_height = int(450 * 0.85)  # 382
-            else:
-                min_width = 900
-                min_height = 450
+            # Set reasonable minimums for large screens (Linux approach)
+            min_width = int(900 * 0.85)  # 765
+            min_height = int(450 * 0.85)  # 382
             
             logger.debug(f"Large screen detected ({screen_width}x{screen_height}), using persisted window size: {default_width}x{default_height} (weather={weather_visible}, astronomy={astronomy_visible})")
         
         self.setMinimumSize(min_width, min_height)
         
-        # Platform-specific window sizing
-        if sys.platform.startswith('linux'):
-            if self.is_small_screen:
-                # Smaller default size for Linux small screens - reduced height to fit train widgets
-                self.resize(int(1100 * 0.65), int(1100 * 0.65))  # 715x715 - reduced from 780
-            else:
-                # Slightly reduced for Linux normal screens
-                self.resize(int(1100 * 0.85), int(1100 * 0.85))  # 935x935 - reduced from 1020
+        # Unified window sizing (based on proven Linux implementation)
+        if self.is_small_screen:
+            # Smaller default size for small screens - reduced height to fit train widgets
+            self.resize(int(1100 * 0.65), int(1100 * 0.65))  # 715x715 - reduced from 780
         else:
-            # Windows/Mac sizing
-            self.resize(1100, 1200)  # Original size for Windows/Mac
+            # Slightly reduced for normal screens
+            self.resize(int(1100 * 0.85), int(1100 * 0.85))  # 935x935 - reduced from 1020
         
         # Center the window on the screen
         self.center_window()
@@ -235,29 +214,19 @@ class MainWindow(QMainWindow):
         # Main layout with minimal spacing for very compact UI
         layout = QVBoxLayout(central_widget)
         
-        # Platform-specific margins and spacing
-        if sys.platform.startswith('linux'):
-            # Even more compact for Linux
-            margin = int(4 * self.ui_scale_factor)
-            layout.setContentsMargins(margin, margin, margin, margin)
-            # Minimal spacing between widgets
-            scaled_spacing = int(3 * self.ui_scale_factor)
-        else:
-            # Windows/Mac margins
-            layout.setContentsMargins(8, 8, 8, 8)
-            scaled_spacing = int(5 * self.ui_scale_factor)
+        # Unified margins and spacing (based on proven Linux implementation)
+        margin = int(4 * self.ui_scale_factor)
+        layout.setContentsMargins(margin, margin, margin, margin)
+        # Minimal spacing between widgets
+        scaled_spacing = int(3 * self.ui_scale_factor)
         
         layout.setSpacing(scaled_spacing)
 
         # Weather widget (always create, show/hide based on config)
         self.weather_widget = WeatherWidget(scale_factor=self.ui_scale_factor)
         
-        # Platform-specific widget margins
-        if sys.platform.startswith('linux') and self.is_small_screen:
-            # No margins for Linux small screens
-            self.weather_widget.setContentsMargins(0, 0, 0, 0)
-        else:
-            self.weather_widget.setContentsMargins(0, 0, 0, 0)
+        # Unified widget margins (based on proven Linux implementation)
+        self.weather_widget.setContentsMargins(0, 0, 0, 0)
         
         layout.addWidget(self.weather_widget)
 
@@ -278,9 +247,9 @@ class MainWindow(QMainWindow):
         # Astronomy widget (create and show by default, hide if disabled)
         self.astronomy_widget = AstronomyWidget(scale_factor=self.ui_scale_factor)
         
-        # Platform-specific widget margins
-        if sys.platform.startswith('linux') and self.is_small_screen:
-            # Minimal margins for Linux small screens
+        # Unified widget margins (based on proven Linux implementation)
+        if self.is_small_screen:
+            # Minimal margins for small screens
             self.astronomy_widget.setContentsMargins(0, 0, 0, 2)
         else:
             self.astronomy_widget.setContentsMargins(0, 0, 0, 5)
@@ -304,9 +273,9 @@ class MainWindow(QMainWindow):
         current_preferences = self._get_current_preferences()
         self.train_list_widget = TrainListWidget(max_trains=50, preferences=current_preferences)
         
-        # Platform-specific widget margins
-        if sys.platform.startswith('linux') and self.is_small_screen:
-            # Minimal top margin for Linux small screens
+        # Unified widget margins (based on proven Linux implementation)
+        if self.is_small_screen:
+            # Minimal top margin for small screens
             self.train_list_widget.setContentsMargins(0, 2, 0, 0)
         else:
             self.train_list_widget.setContentsMargins(0, 5, 0, 0)
@@ -1572,39 +1541,27 @@ class MainWindow(QMainWindow):
                 return self.config.ui.window_size_trains_only
         else:
             # Fallback to default sizes if no config - properly sized for all widgets
-            # Platform-specific default sizes
-            if sys.platform.startswith('linux'):
-                # Reduced sizes for Linux
-                if self.is_small_screen:
-                    # Smaller for Linux small screens - reduced heights to fit train widgets
-                    if weather_visible and astronomy_visible:
-                        return (int(1100 * 0.65), int(1100 * 0.65))  # 715x715 - reduced from 780
-                    elif weather_visible:
-                        return (int(1100 * 0.65), int(750 * 0.65))   # 715x488 - reduced from 520
-                    elif astronomy_visible:
-                        return (int(1100 * 0.65), int(850 * 0.65))   # 715x553 - reduced from 585
-                    else:
-                        return (int(1100 * 0.65), int(550 * 0.65))   # 715x358 - reduced from 390
-                else:
-                    # Slightly reduced for Linux normal screens
-                    if weather_visible and astronomy_visible:
-                        return (int(1100 * 0.85), int(1100 * 0.85))  # 935x935 - reduced from 1020
-                    elif weather_visible:
-                        return (int(1100 * 0.85), int(750 * 0.85))   # 935x638 - reduced from 680
-                    elif astronomy_visible:
-                        return (int(1100 * 0.85), int(850 * 0.85))   # 935x723 - reduced from 765
-                    else:
-                        return (int(1100 * 0.85), int(550 * 0.85))   # 935x468 - reduced from 510
-            else:
-                # Windows/Mac sizes
+            # Unified default sizes (based on proven Linux implementation)
+            if self.is_small_screen:
+                # Smaller for small screens - reduced heights to fit train widgets
                 if weather_visible and astronomy_visible:
-                    return (1100, 1200)  # Proper size for both widgets without overlap
+                    return (int(1100 * 0.65), int(1100 * 0.65))  # 715x715 - reduced from 780
                 elif weather_visible:
-                    return (1100, 800)   # Appropriate size for weather only
+                    return (int(1100 * 0.65), int(750 * 0.65))   # 715x488 - reduced from 520
                 elif astronomy_visible:
-                    return (1100, 900)   # Appropriate size for astronomy only
+                    return (int(1100 * 0.65), int(850 * 0.65))   # 715x553 - reduced from 585
                 else:
-                    return (1100, 600)   # Compact size for trains only
+                    return (int(1100 * 0.65), int(550 * 0.65))   # 715x358 - reduced from 390
+            else:
+                # Slightly reduced for normal screens
+                if weather_visible and astronomy_visible:
+                    return (int(1100 * 0.85), int(1100 * 0.85))  # 935x935 - reduced from 1020
+                elif weather_visible:
+                    return (int(1100 * 0.85), int(750 * 0.85))   # 935x638 - reduced from 680
+                elif astronomy_visible:
+                    return (int(1100 * 0.85), int(850 * 0.85))   # 935x723 - reduced from 765
+                else:
+                    return (int(1100 * 0.85), int(550 * 0.85))   # 935x468 - reduced from 510
 
     def _save_ui_state(self):
         """Save current UI widget visibility states and window size to configuration."""
@@ -1877,8 +1834,8 @@ class MainWindow(QMainWindow):
         """Handle window show event - trigger astronomy data fetch when UI is displayed."""
         super().showEvent(event)
         
-        # Center window on Linux when first shown
-        if sys.platform.startswith('linux') and not hasattr(self, '_centered'):
+        # Center window on all platforms when first shown (unified approach)
+        if not hasattr(self, '_centered'):
             self._centered = True
             self._center_on_screen()
 
