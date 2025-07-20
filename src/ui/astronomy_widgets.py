@@ -817,9 +817,9 @@ class AstronomyWidget(QWidget):
         # Button styling - increased font size for Linux
         import sys
         if sys.platform.startswith('linux'):
-            base_font_size = 14  # Increased from 10 for Linux
+            base_font_size = 24  # Significantly increased for better readability
         else:
-            base_font_size = 10
+            base_font_size = 20  # Significantly increased for better readability
         scaled_font_size = int(base_font_size * self._scale_factor)
         scaled_padding_h = int(10 * self._scale_factor)  # Increased from 8
         scaled_padding_v = int(6 * self._scale_factor)   # Increased from 4
