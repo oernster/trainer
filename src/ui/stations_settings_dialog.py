@@ -144,12 +144,47 @@ class StationsSettingsDialog(QDialog):
         if sys.platform.startswith('linux'):
             self._center_on_screen()
         
-        # Set window icon if available
-        if hasattr(self.parent_window, 'windowIcon') and self.parent_window:
-            try:
-                self.setWindowIcon(self.parent_window.windowIcon())
-            except:
-                pass
+        # Set custom clock icon for stations dialog
+        self._setup_dialog_icon()
+    
+    def _setup_dialog_icon(self):
+        """Setup dialog icon using Unicode alarm clock emoji."""
+        from PySide6.QtGui import QPixmap, QPainter, QFont
+        from PySide6.QtCore import Qt
+        
+        try:
+            # Create a pixmap for the icon
+            pixmap = QPixmap(64, 64)
+            pixmap.fill(Qt.GlobalColor.transparent)
+            
+            # Paint the emoji onto the pixmap
+            painter = QPainter(pixmap)
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+            
+            # Set up font for emoji
+            font = QFont()
+            font.setPointSize(48)
+            painter.setFont(font)
+            painter.setPen(Qt.GlobalColor.black)
+            
+            # Draw the alarm clock emoji centered
+            painter.drawText(pixmap.rect(), Qt.AlignmentFlag.AlignCenter, "⏰")
+            painter.end()
+            
+            # Create icon and set it
+            icon = QIcon(pixmap)
+            self.setWindowIcon(icon)
+            
+            logger.debug("Dialog icon set using Unicode alarm clock emoji")
+            
+        except Exception as e:
+            logger.warning(f"Failed to create emoji dialog icon: {e}")
+            # Fallback to parent window icon if available
+            if hasattr(self.parent_window, 'windowIcon') and self.parent_window:
+                try:
+                    self.setWindowIcon(self.parent_window.windowIcon())
+                except:
+                    pass
     
     def _center_on_screen(self):
         """Center the dialog on the primary screen."""
