@@ -216,14 +216,15 @@ def setup_application_icon(app: QApplication):
         painter = QPainter(pixmap)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         
-        # Set up font for emoji
+        # Set up font for emoji - use system font that supports emojis
         font = QFont()
-        font.setPointSize(48)
+        font.setPointSize(44)  # Slightly smaller to ensure it fits
+        font.setFamily("Apple Color Emoji")  # macOS emoji font
         painter.setFont(font)
         painter.setPen(Qt.GlobalColor.black)
         
-        # Draw the train text centered
-        painter.drawText(pixmap.rect(), Qt.AlignmentFlag.AlignCenter, "TRAIN")
+        # Draw the train emoji centered
+        painter.drawText(pixmap.rect(), Qt.AlignmentFlag.AlignCenter, "🚂")
         painter.end()
         
         # Create icon and set it

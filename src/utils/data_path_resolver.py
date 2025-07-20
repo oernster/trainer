@@ -16,8 +16,25 @@ def get_data_directory() -> Path:
     # Method 1: Check if we're running from a packaged executable
     if getattr(sys, 'frozen', False):
         # We're running from a packaged executable
-        # Data should be in a 'data' directory next to the executable
         exe_dir = Path(sys.executable).parent
+        
+        # CRITICAL FIX: Handle macOS app bundle structure
+        # On macOS, executable is in Contents/MacOS/ but resources are in Contents/Resources/
+        if sys.platform == "darwin" and exe_dir.name == "MacOS":
+            bundle_contents = exe_dir.parent
+            resources_dir = bundle_contents / "Resources"
+            if resources_dir.exists():
+                # Check for src/data structure in Resources directory
+                src_data_dir = resources_dir / "src" / "data"
+                if src_data_dir.exists():
+                    return src_data_dir
+                    
+                # Also check for direct data directory in Resources
+                data_dir = resources_dir / "data"
+                if data_dir.exists():
+                    return data_dir
+        
+        # Standard packaged executable structure (Windows, Linux)
         data_dir = exe_dir / "data"
         if data_dir.exists():
             return data_dir
