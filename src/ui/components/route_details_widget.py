@@ -130,6 +130,10 @@ class RouteDetailsWidget(QWidget):
             group.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
             # Set a large minimum height for the entire group box to extend the border
             group.setMinimumHeight(450)  # Increased to ensure border is fully visible
+        elif sys.platform == "darwin":
+            # CRITICAL FIX: macOS also needs larger group box for route information
+            group.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+            group.setMinimumHeight(250)  # Provide adequate space for route details on macOS
         
         layout = QVBoxLayout(group)
         
@@ -182,8 +186,17 @@ class RouteDetailsWidget(QWidget):
                 font = self.route_details_label.font()
                 font.setPointSize(font.pointSize() - 1)
                 self.route_details_label.setFont(font)
+        elif sys.platform == "darwin":
+            # CRITICAL FIX: macOS needs much more space for route details, especially on 13" laptops
+            self.route_details_label.setMinimumHeight(200)  # Much larger than original 80px
+            self.route_details_label.setStyleSheet("""
+                QLabel {
+                    padding: 10px;
+                    background-color: transparent;
+                }
+            """)
         else:
-            # Original height for Windows/Mac
+            # Original height for Windows only
             self.route_details_label.setMinimumHeight(80)
         
         layout.addWidget(self.route_details_label)

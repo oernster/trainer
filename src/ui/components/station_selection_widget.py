@@ -9,7 +9,7 @@ import logging
 import sys
 from typing import Optional, List
 from PySide6.QtWidgets import (
-    QWidget, QGridLayout, QLabel, QComboBox, QPushButton, QSizePolicy, QApplication
+    QWidget, QGridLayout, QHBoxLayout, QVBoxLayout, QLabel, QComboBox, QPushButton, QSizePolicy, QApplication
 )
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QCompleter
@@ -51,62 +51,48 @@ class StationSelectionWidget(QWidget):
         logger.debug("StationSelectionWidget initialized")
     
     def _setup_ui(self):
-        """Set up the user interface."""
-        layout = QGridLayout(self)
+        """Set up the user interface with grid layout for perfect alignment."""
+        # Create main layout - use grid for precise control
+        main_layout = QGridLayout(self)
         
-        # Platform-specific spacing
-        if sys.platform.startswith('linux'):
-            layout.setSpacing(5)  # Reduced from 10
-            layout.setContentsMargins(5, 5, 5, 5)  # Add tight margins
-        else:
-            layout.setSpacing(10)
+        # Use Linux implementation for all platforms
+        main_layout.setSpacing(8)
+        main_layout.setContentsMargins(8, 8, 8, 8)
         
-        # From station
+        # Create labels with consistent sizing
         from_label = QLabel("From:")
-        if sys.platform.startswith('linux'):
-            from_label.setFont(QFont("Arial", 9, QFont.Weight.Bold))  # Smaller font on Linux
-        else:
-            from_label.setFont(QFont("Arial", 10, QFont.Weight.Bold))
-        layout.addWidget(from_label, 0, 0)
+        to_label = QLabel("To:")
         
+        # Set label properties for alignment with combo box text content
+        from_label.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignBaseline)
+        to_label.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignBaseline)
+        
+        # Set consistent label width with margin to align with combo box text content
+        label_width = 60  # Increased from 50 to give more alignment space
+        from_label.setMinimumWidth(label_width)
+        from_label.setMaximumWidth(label_width)
+        to_label.setMinimumWidth(label_width)
+        to_label.setMaximumWidth(label_width)
+        
+        # Add right margin to labels to align with combo box internal text position
+        label_margin = "margin-right: 8px;" if sys.platform == "darwin" else "margin-right: 6px;"
+        from_label.setStyleSheet(label_margin)
+        to_label.setStyleSheet(label_margin)
+        
+        # Set label font
+        if sys.platform.startswith('linux'):
+            font = QFont("Arial", 9, QFont.Weight.Bold)
+        else:
+            font = QFont("Arial", 10, QFont.Weight.Bold)
+        from_label.setFont(font)
+        to_label.setFont(font)
+        
+        # Create combo boxes
         self.from_station_combo = QComboBox()
         self.from_station_combo.setEditable(True)
         self.from_station_combo.setInsertPolicy(QComboBox.InsertPolicy.NoInsert)
         self.from_station_combo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.from_station_combo.setMinimumWidth(200)
-        
-        # Ensure editability on Linux
-        if sys.platform.startswith('linux'):
-            # Set combo box style to ensure edit field is accessible
-            # Don't hardcode colors - let the theme manager handle it
-            self.from_station_combo.setStyleSheet("""
-                QComboBox {
-                    padding: 5px;
-                    min-height: 30px;
-                }
-                QComboBox::drop-down {
-                    width: 20px;
-                }
-            """)
-            
-            # Get the line edit component
-            line_edit = self.from_station_combo.lineEdit()
-            if line_edit:
-                # Make sure it's not read-only
-                line_edit.setReadOnly(False)
-                line_edit.setEnabled(True)
-                # Log for debugging
-                logger.info(f"From station combo - Editable: {self.from_station_combo.isEditable()}, LineEdit ReadOnly: {line_edit.isReadOnly()}")
-        
-        layout.addWidget(self.from_station_combo, 0, 1)
-        
-        # To station
-        to_label = QLabel("To:")
-        if sys.platform.startswith('linux'):
-            to_label.setFont(QFont("Arial", 9, QFont.Weight.Bold))  # Smaller font on Linux
-        else:
-            to_label.setFont(QFont("Arial", 10, QFont.Weight.Bold))
-        layout.addWidget(to_label, 1, 0)
         
         self.to_station_combo = QComboBox()
         self.to_station_combo.setEditable(True)
@@ -116,31 +102,27 @@ class StationSelectionWidget(QWidget):
         
         # Ensure editability on Linux
         if sys.platform.startswith('linux'):
-            # Set combo box style to ensure edit field is accessible
-            # Don't hardcode colors - let the theme manager handle it
-            self.to_station_combo.setStyleSheet("""
+            # Only minimal styling to ensure editability
+            combo_style = """
                 QComboBox {
-                    padding: 5px;
-                    min-height: 30px;
+                    padding: 4px;
+                    min-height: 24px;
                 }
-                QComboBox::drop-down {
-                    width: 20px;
-                }
-            """)
+            """
+            self.from_station_combo.setStyleSheet(combo_style)
+            self.to_station_combo.setStyleSheet(combo_style)
             
-            # Get the line edit component
-            line_edit = self.to_station_combo.lineEdit()
-            if line_edit:
-                # Make sure it's not read-only
-                line_edit.setReadOnly(False)
-                line_edit.setEnabled(True)
-                # Log for debugging
-                logger.info(f"To station combo - Editable: {self.to_station_combo.isEditable()}, LineEdit ReadOnly: {line_edit.isReadOnly()}")
+            # Ensure line edits are properly configured
+            for combo in [self.from_station_combo, self.to_station_combo]:
+                line_edit = combo.lineEdit()
+                if line_edit:
+                    line_edit.setReadOnly(False)
+                    line_edit.setEnabled(True)
         
-        layout.addWidget(self.to_station_combo, 1, 1)
-        
-        # Swap button
+        # Create swap button
         self.swap_button = QPushButton("⇅ Swap")
+        self.swap_button.setToolTip("Swap From and To stations")
+        self.swap_button.setObjectName("swapButton")
         
         # Platform-specific button sizing
         if sys.platform.startswith('linux'):
@@ -153,19 +135,37 @@ class StationSelectionWidget(QWidget):
                 is_small_screen = False
             
             if is_small_screen:
-                self.swap_button.setMinimumWidth(100)  # Larger minimum width
-                self.swap_button.setMinimumHeight(50)  # Taller button
-                self.swap_button.setFont(QFont("Arial", 11, QFont.Weight.Bold))  # Larger font
+                self.swap_button.setMinimumWidth(100)
+                self.swap_button.setMinimumHeight(50)
+                self.swap_button.setFont(QFont("Arial", 11, QFont.Weight.Bold))
             else:
                 self.swap_button.setMinimumWidth(90)
                 self.swap_button.setMinimumHeight(45)
                 self.swap_button.setFont(QFont("Arial", 10))
+        elif sys.platform == "darwin":
+            # macOS: Widen button to show full "⇅ Swap" text
+            self.swap_button.setMinimumWidth(100)
+            self.swap_button.setMaximumWidth(120)
         else:
+            # Windows: Keep original sizing
             self.swap_button.setMaximumWidth(80)
         
-        self.swap_button.setToolTip("Swap From and To stations")
-        self.swap_button.setObjectName("swapButton")
-        layout.addWidget(self.swap_button, 0, 2, 2, 1)
+        # Add widgets to grid layout
+        # Row 0: From label and combo
+        main_layout.addWidget(from_label, 0, 0)
+        main_layout.addWidget(self.from_station_combo, 0, 1)
+        
+        # Row 1: To label and combo  
+        main_layout.addWidget(to_label, 1, 0)
+        main_layout.addWidget(self.to_station_combo, 1, 1)
+        
+        # Add swap button spanning both rows, aligned to top
+        main_layout.addWidget(self.swap_button, 0, 2, 2, 1, Qt.AlignmentFlag.AlignTop)
+        
+        # Set column stretch - allow combo column to expand
+        main_layout.setColumnStretch(1, 1)  # Combo boxes can expand
+        main_layout.setColumnStretch(0, 0)  # Labels fixed width
+        main_layout.setColumnStretch(2, 0)  # Button fixed width
     
     def _connect_signals(self):
         """Connect signals and slots."""

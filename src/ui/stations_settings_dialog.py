@@ -117,28 +117,23 @@ class StationsSettingsDialog(QDialog):
         self.setWindowTitle("Train Settings")
         self.setModal(True)
         
-        # Platform-specific sizing
-        if sys.platform.startswith('linux'):
-            # Detect small screen
-            screen = QApplication.primaryScreen()
-            if screen:
-                screen_geometry = screen.availableGeometry()
-                is_small_screen = screen_geometry.width() <= 1440 or screen_geometry.height() <= 900
-            else:
-                is_small_screen = False
-            
-            if is_small_screen:
-                # Optimize for small screens - reduce width to fit better
-                self.setMinimumSize(850, 700)  # Reduced width from 900
-                self.resize(900, 750)  # Reduced from 1000x850
-            else:
-                # Linux normal screens
-                self.setMinimumSize(850, 650)  # Reduced from 900x700
-                self.resize(950, 750)  # Reduced from 1000x800
+        # Use Linux implementation for all platforms - it works great
+        # Detect small screen
+        screen = QApplication.primaryScreen()
+        if screen:
+            screen_geometry = screen.availableGeometry()
+            is_small_screen = screen_geometry.width() <= 1440 or screen_geometry.height() <= 900
         else:
-            # Windows/Mac sizing remains unchanged
-            self.setMinimumSize(800, 600)
-            self.resize(900, 700)
+            is_small_screen = False
+        
+        if is_small_screen:
+            # Optimize for small screens - increase height for better alignment space
+            self.setMinimumSize(850, 750)  # Increased height from 700 to 750
+            self.resize(900, 800)  # Increased height from 750 to 800
+        else:
+            # Normal screens - increase height for better alignment space
+            self.setMinimumSize(850, 700)  # Increased height from 650 to 700
+            self.resize(950, 800)  # Increased height from 750 to 800
         
         # Center the dialog on Linux
         if sys.platform.startswith('linux'):
@@ -201,15 +196,9 @@ class StationsSettingsDialog(QDialog):
         """Set up the complete user interface."""
         main_layout = QVBoxLayout(self)
         
-        # Platform-specific spacing and margins
-        if sys.platform.startswith('linux'):
-            # Reduced spacing to give more room for content
-            main_layout.setSpacing(8)  # Reduced from 12
-            main_layout.setContentsMargins(15, 15, 15, 15)  # Reduced from 20
-        else:
-            # Windows/Mac spacing remains unchanged
-            main_layout.setSpacing(10)
-            main_layout.setContentsMargins(15, 15, 15, 15)
+        # Use Linux layout settings for all platforms - reduced spacing to give more room for content
+        main_layout.setSpacing(8)  # Reduced from 12
+        main_layout.setContentsMargins(15, 15, 15, 15)  # Reduced from 20
         
         # Create tab widget for different sections
         self.tab_widget = QTabWidget()
@@ -219,11 +208,7 @@ class StationsSettingsDialog(QDialog):
         self._create_route_tab()
         self._create_preferences_tab()
         
-        # Create status bar
-        self._create_status_bar()
-        main_layout.addWidget(self.status_label)
-        
-        # Create button bar
+        # Create button bar with integrated status
         button_layout = self._create_button_bar()
         main_layout.addLayout(button_layout)
         
@@ -237,22 +222,18 @@ class StationsSettingsDialog(QDialog):
         
         layout = QVBoxLayout(route_tab)
         
-        # Platform-specific spacing
-        if sys.platform.startswith('linux'):
-            layout.setSpacing(10)  # Reduced from 20 to save vertical space
-        else:
-            layout.setSpacing(15)
+        # Use Linux implementation for all platforms - reduced spacing to save vertical space
+        layout.setSpacing(10)  # Reduced from 20 to save vertical space
         
         # Station selection section
         station_group = QGroupBox("Station Selection")
         station_layout = QVBoxLayout(station_group)
         
-        # Platform-specific layout adjustments
-        if sys.platform.startswith('linux'):
-            station_layout.setContentsMargins(5, 5, 5, 5)  # Very tight margins
-            station_layout.setSpacing(0)  # No spacing
-            # Set a maximum height for the station group
-            station_group.setMaximumHeight(150)  # Limit the height
+        # Use Linux layout adjustments for all platforms
+        station_layout.setContentsMargins(5, 5, 5, 5)  # Very tight margins
+        station_layout.setSpacing(0)  # No spacing
+        # Set a maximum height for the station group
+        station_group.setMaximumHeight(150)  # Limit the height
         
         self.station_selection_widget = StationSelectionWidget(self, self.theme_manager)
         station_layout.addWidget(self.station_selection_widget)
@@ -294,11 +275,8 @@ class StationsSettingsDialog(QDialog):
         
         layout = QVBoxLayout(preferences_tab)
         
-        # Platform-specific spacing
-        if sys.platform.startswith('linux'):
-            layout.setSpacing(20)
-        else:
-            layout.setSpacing(15)
+        # Use Linux implementation for all platforms
+        layout.setSpacing(20)
         
         # Preferences widget
         self.preferences_widget = PreferencesWidget(self, self.theme_manager)
@@ -319,8 +297,12 @@ class StationsSettingsDialog(QDialog):
             self.status_label.setFont(QFont("Arial", 9))  # Smaller font
     
     def _create_button_bar(self):
-        """Create the dialog button bar."""
+        """Create the dialog button bar with integrated status."""
         layout = QHBoxLayout()
+        
+        # Create and add status label on the left
+        self._create_status_bar()
+        layout.addWidget(self.status_label)
         
         # Add stretch to push buttons to the right
         layout.addStretch()
