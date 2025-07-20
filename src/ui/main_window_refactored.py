@@ -126,7 +126,7 @@ class MainWindow(QMainWindow):
         
         # Connect initialization signals
         self.initialization_manager.initialization_completed.connect(self._on_initialization_completed)
-        # self.initialization_manager.nasa_data_ready.connect(self._on_nasa_data_ready)
+        # self.initialization_manager.astronomy_data_ready.connect(self._on_astronomy_data_ready)
         
         # Apply theme to all widgets after creation
         self.apply_theme_to_all_widgets()
@@ -371,9 +371,9 @@ class MainWindow(QMainWindow):
         """Handle astronomy loading state change."""
         self.event_handler_manager.on_astronomy_loading_changed(is_loading)
 
-    def on_nasa_link_clicked(self, url: str):
-        """Handle NASA link clicks."""
-        self.event_handler_manager.on_nasa_link_clicked(url)
+    def on_astronomy_link_clicked(self, url: str):
+        """Handle astronomy link clicks."""
+        self.event_handler_manager.on_astronomy_link_clicked(url)
 
     # Settings dialog delegates
     def show_stations_settings_dialog(self):

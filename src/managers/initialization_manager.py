@@ -4,8 +4,8 @@ Author: Oliver Ernster
 
 This module provides optimized initialization of widgets in the specified order:
 1. Weather widgets
-2. Train widgets  
-3. NASA widgets (with parallel data fetching)
+2. Train widgets
+3. Astronomy widgets (with parallel data fetching)
 
 The manager ensures all widgets appear on the main UI almost simultaneously
 by using parallel threading for data-intensive operations.
@@ -26,11 +26,11 @@ from ..managers.config_manager import ConfigManager
 
 logger = logging.getLogger(__name__)
 
-class NASADataWorker(QThread):
+class AstronomyDataWorker(QThread):
     """
-    Worker thread for parallel NASA data fetching.
+    Worker thread for parallel astronomy data fetching.
     
-    This worker runs in a separate thread to fetch NASA astronomy data
+    This worker runs in a separate thread to fetch astronomy data
     without blocking the main UI initialization process.
     """
     
@@ -46,7 +46,7 @@ class NASADataWorker(QThread):
         self.should_stop = False
         
     def run(self):
-        """Run the NASA data fetching in background thread."""
+        """Run the astronomy data fetching in background thread."""
         try:
             self.fetch_started.emit()
 
@@ -73,7 +73,7 @@ class NASADataWorker(QThread):
                         
             except Exception as e:
                 if not self.should_stop:
-                    error_msg = f"Failed to fetch NASA data: {e}"
+                    error_msg = f"Failed to fetch astronomy data: {e}"
                     logger.error(error_msg)
                     self.fetch_error.emit(error_msg)
             finally:
@@ -81,18 +81,18 @@ class NASADataWorker(QThread):
                 
         except Exception as e:
             if not self.should_stop:
-                error_msg = f"NASA data worker thread error: {e}"
+                error_msg = f"Astronomy data worker thread error: {e}"
                 logger.error(error_msg)
                 self.fetch_error.emit(error_msg)
         finally:
             if not self.should_stop:
                 self.fetch_completed.emit()
-                logger.debug("NASA data worker thread completed")
+                logger.debug("Astronomy data worker thread completed")
     
     def stop(self):
         """Stop the worker thread gracefully."""
         self.should_stop = True
-        logger.debug("NASA data worker thread stop requested")
+        logger.debug("Astronomy data worker thread stop requested")
 
 class InitializationManager(QObject):
     """
@@ -100,10 +100,10 @@ class InitializationManager(QObject):
     
     Handles the initialization of widgets in the specified order:
     1. Weather widgets (immediate)
-    2. Train widgets (immediate) 
-    3. NASA widgets (immediate UI, parallel data fetch)
+    2. Train widgets (immediate)
+    3. Astronomy widgets (immediate UI, parallel data fetch)
     
-    Uses parallel threading to ensure NASA data fetching doesn't block
+    Uses parallel threading to ensure astronomy data fetching doesn't block
     the UI initialization process.
     """
     
@@ -111,8 +111,8 @@ class InitializationManager(QObject):
     initialization_started = Signal()
     weather_initialized = Signal()
     train_initialized = Signal()
-    nasa_initialized = Signal()
-    nasa_data_ready = Signal()
+    astronomy_initialized = Signal()
+    astronomy_data_ready = Signal()
     initialization_completed = Signal()
     initialization_error = Signal(str)
     
@@ -126,8 +126,8 @@ class InitializationManager(QObject):
         self.astronomy_manager: Optional[AstronomyManager] = None
         self.train_manager: Optional[TrainManager] = None
         
-        # NASA data worker
-        self.nasa_worker: Optional[NASADataWorker] = None
+        # Astronomy data worker
+        self.astronomy_worker: Optional[AstronomyDataWorker] = None
         
         # Initialization state
         self.is_initializing = False
@@ -161,8 +161,8 @@ class InitializationManager(QObject):
             # Step 2: Initialize Train Widgets (immediate)
             self._initialize_train_widgets(main_window)
             
-            # Step 3: Initialize NASA Widgets (immediate UI, parallel data fetch)
-            self._initialize_nasa_widgets(main_window)
+            # Step 3: Initialize Astronomy Widgets (immediate UI, parallel data fetch)
+            self._initialize_astronomy_widgets(main_window)
             
             # Complete initialization
             elapsed_time = time.time() - self.initialization_start_time
@@ -280,16 +280,16 @@ class InitializationManager(QObject):
             logger.error(f"Train widget initialization failed: {e}")
             raise
     
-    def _initialize_nasa_widgets(self, main_window) -> None:
-        """Initialize NASA widgets with parallel data fetching."""
+    def _initialize_astronomy_widgets(self, main_window) -> None:
+        """Initialize astronomy widgets with parallel data fetching."""
         try:
-            logger.debug("Initializing NASA widgets...")
+            logger.debug("Initializing astronomy widgets...")
             
             # CRITICAL FIX: Only initialize if astronomy widget actually exists
             # This prevents trying to initialize astronomy when it's disabled
             if not main_window.astronomy_widget:
-                logger.info("NASA widgets skipped (astronomy widget does not exist - astronomy disabled)")
-                self.nasa_initialized.emit()
+                logger.info("Astronomy widgets skipped (astronomy widget does not exist - astronomy disabled)")
+                self.astronomy_initialized.emit()
                 return
             
             # Initialize astronomy manager if config available
@@ -329,14 +329,14 @@ class InitializationManager(QObject):
                 else:
                     logger.debug("Astronomy widget visibility preserved (user preference)")
                 
-                # Start parallel NASA data fetching (API-free mode) only if manager is new
-                if not hasattr(self, '_nasa_fetch_started'):
-                    self._start_parallel_nasa_fetch()
-                    self._nasa_fetch_started = True
-                    logger.debug("NASA data fetch started in parallel")
+                # Start parallel astronomy data fetching (API-free mode) only if manager is new
+                if not hasattr(self, '_astronomy_fetch_started'):
+                    self._start_parallel_astronomy_fetch()
+                    self._astronomy_fetch_started = True
+                    logger.debug("Astronomy data fetch started in parallel")
 
             else:
-                logger.info("NASA widgets skipped (disabled or no config)")
+                logger.info("Astronomy widgets skipped (disabled or no config)")
                 # CRITICAL FIX: Don't override user's manual visibility preference
                 # Only hide if this is the first initialization
                 if not hasattr(main_window, '_astronomy_widget_initialized'):
@@ -344,33 +344,33 @@ class InitializationManager(QObject):
                     main_window._astronomy_widget_initialized = True
                     logger.debug("Astronomy widget visibility set to False (first initialization)")
             
-            self.nasa_initialized.emit()
+            self.astronomy_initialized.emit()
             
         except Exception as e:
-            logger.error(f"NASA widget initialization failed: {e}")
+            logger.error(f"Astronomy widget initialization failed: {e}")
             raise
     
-    def _start_parallel_nasa_fetch(self) -> None:
-        """Start parallel NASA data fetching in background thread."""
+    def _start_parallel_astronomy_fetch(self) -> None:
+        """Start parallel astronomy data fetching in background thread."""
         try:
             if not self.astronomy_manager:
-                logger.warning("Cannot start NASA fetch: no astronomy manager")
+                logger.warning("Cannot start astronomy fetch: no astronomy manager")
                 return
 
             # Create and configure worker thread
-            self.nasa_worker = NASADataWorker(self.astronomy_manager)
+            self.astronomy_worker = AstronomyDataWorker(self.astronomy_manager)
             
             # Connect worker signals
-            self.nasa_worker.data_fetched.connect(self._on_nasa_data_fetched)
-            self.nasa_worker.fetch_error.connect(self._on_nasa_fetch_error)
-            self.nasa_worker.fetch_started.connect(self._on_nasa_fetch_started)
-            self.nasa_worker.fetch_completed.connect(self._on_nasa_fetch_completed)
+            self.astronomy_worker.data_fetched.connect(self._on_astronomy_data_fetched)
+            self.astronomy_worker.fetch_error.connect(self._on_astronomy_fetch_error)
+            self.astronomy_worker.fetch_started.connect(self._on_astronomy_fetch_started)
+            self.astronomy_worker.fetch_completed.connect(self._on_astronomy_fetch_completed)
             
             # Start the worker thread
-            self.nasa_worker.start()
+            self.astronomy_worker.start()
             
         except Exception as e:
-            logger.error(f"Failed to start parallel NASA fetch: {e}")
+            logger.error(f"Failed to start parallel astronomy fetch: {e}")
     
     def _fetch_weather_data(self) -> None:
         """Fetch initial weather data (non-blocking)."""
@@ -413,44 +413,44 @@ class InitializationManager(QObject):
         except Exception as e:
             logger.warning(f"Failed to apply theme to weather widget: {e}")
     
-    def _on_nasa_data_fetched(self, forecast_data) -> None:
-        """Handle NASA data fetch completion."""
+    def _on_astronomy_data_fetched(self, forecast_data) -> None:
+        """Handle astronomy data fetch completion."""
         
-        self.nasa_data_ready.emit()
+        self.astronomy_data_ready.emit()
         
         # Start auto-refresh for astronomy if enabled
-        if (self.astronomy_manager and 
-            self.config and 
-            hasattr(self.config, "astronomy") and 
-            self.config.astronomy and 
+        if (self.astronomy_manager and
+            self.config and
+            hasattr(self.config, "astronomy") and
+            self.config.astronomy and
             self.config.astronomy.enabled):
             self.astronomy_manager.start_auto_refresh()
-            logger.debug("NASA auto-refresh started")
+            logger.debug("Astronomy auto-refresh started")
     
-    def _on_nasa_fetch_error(self, error_message: str) -> None:
-        """Handle NASA data fetch error."""
-        logger.warning(f"NASA data fetch failed: {error_message}")
+    def _on_astronomy_fetch_error(self, error_message: str) -> None:
+        """Handle astronomy data fetch error."""
+        logger.warning(f"Astronomy data fetch failed: {error_message}")
         # Don't emit error signal - let the widget handle placeholder display
     
-    def _on_nasa_fetch_started(self) -> None:
-        """Handle NASA fetch start."""
-        logger.debug("NASA data fetch started in background thread")
+    def _on_astronomy_fetch_started(self) -> None:
+        """Handle astronomy fetch start."""
+        logger.debug("Astronomy data fetch started in background thread")
     
-    def _on_nasa_fetch_completed(self) -> None:
-        """Handle NASA fetch completion."""
-        logger.debug("NASA data fetch completed in background thread")
+    def _on_astronomy_fetch_completed(self) -> None:
+        """Handle astronomy fetch completion."""
+        logger.debug("Astronomy data fetch completed in background thread")
     
     def shutdown(self) -> None:
         """Shutdown initialization manager and cleanup resources."""
         logger.debug("Shutting down initialization manager...")
         
-        # Stop NASA worker if running
-        if self.nasa_worker and self.nasa_worker.isRunning():
-            self.nasa_worker.stop()
-            self.nasa_worker.wait(3000)  # Wait up to 3 seconds
-            if self.nasa_worker.isRunning():
-                logger.warning("NASA worker thread did not stop gracefully")
-                self.nasa_worker.terminate()
+        # Stop astronomy worker if running
+        if self.astronomy_worker and self.astronomy_worker.isRunning():
+            self.astronomy_worker.stop()
+            self.astronomy_worker.wait(3000)  # Wait up to 3 seconds
+            if self.astronomy_worker.isRunning():
+                logger.warning("Astronomy worker thread did not stop gracefully")
+                self.astronomy_worker.terminate()
         
         # Shutdown managers
         if self.weather_manager:
@@ -468,7 +468,7 @@ class InitializationManager(QObject):
             "has_weather_manager": self.weather_manager is not None,
             "has_astronomy_manager": self.astronomy_manager is not None,
             "has_train_manager": self.train_manager is not None,
-            "nasa_worker_running": (self.nasa_worker and self.nasa_worker.isRunning()),
+            "astronomy_worker_running": (self.astronomy_worker and self.astronomy_worker.isRunning()),
             "initialization_time": (
                 time.time() - self.initialization_start_time 
                 if self.initialization_start_time > 0 else 0

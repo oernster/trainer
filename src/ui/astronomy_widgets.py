@@ -353,7 +353,7 @@ class AstronomyEventDetails(QFrame):
     displaying detailed astronomy event information.
     """
 
-    nasa_link_clicked = Signal(str)
+    astronomy_link_clicked = Signal(str)
 
     def __init__(self, parent=None):
         """Initialize astronomy event details."""
@@ -557,8 +557,8 @@ class AstronomyEventDetails(QFrame):
             layout.addWidget(visibility_label)
 
         # NASA link button
-        if event.nasa_url:
-            link_button = QPushButton("🔗 View on NASA Website")
+        if event.primary_url:
+            link_button = QPushButton("🔗 View on Astronomy Website")
             link_button.setStyleSheet(
                 """
                 QPushButton {
@@ -577,19 +577,19 @@ class AstronomyEventDetails(QFrame):
                 }
             """
             )
-            if event.nasa_url:
+            if event.primary_url:
                 link_button.clicked.connect(
-                    lambda url=event.nasa_url: self._open_nasa_link(url)
+                    lambda url=event.primary_url: self._open_astronomy_link(url)
                 )
             layout.addWidget(link_button)
 
         return widget
 
-    def _open_nasa_link(self, url: str) -> None:
+    def _open_astronomy_link(self, url: str) -> None:
         """Open NASA link in browser."""
         try:
             QDesktopServices.openUrl(QUrl(url))
-            self.nasa_link_clicked.emit(url)
+            self.astronomy_link_clicked.emit(url)
             logger.info(f"Opened NASA link: {url}")
         except Exception as e:
             logger.error(f"Failed to open NASA link {url}: {e}")
@@ -603,7 +603,7 @@ class AstronomyExpandablePanel(QWidget):
     """
 
     expansion_changed = Signal(bool)
-    nasa_link_clicked = Signal(str)
+    astronomy_link_clicked = Signal(str)
 
     def __init__(self, parent=None):
         """Initialize expandable panel."""
@@ -637,7 +637,7 @@ class AstronomyExpandablePanel(QWidget):
 
         # Content widget
         self._content_widget = AstronomyEventDetails()
-        self._content_widget.nasa_link_clicked.connect(self.nasa_link_clicked.emit)
+        self._content_widget.astronomy_link_clicked.connect(self.astronomy_link_clicked.emit)
         self._content_area.setWidget(self._content_widget)
 
         layout.addWidget(self._content_area)
@@ -786,7 +786,7 @@ class AstronomyWidget(QWidget):
 
     astronomy_refresh_requested = Signal()
     astronomy_event_clicked = Signal(AstronomyEvent)
-    nasa_link_clicked = Signal(str)
+    astronomy_link_clicked = Signal(str)
 
     def __init__(self, parent=None, scale_factor=1.0):
         """Initialize astronomy widget."""
@@ -907,7 +907,7 @@ class AstronomyWidget(QWidget):
         
         if primary_link:
             # Open the event-specific link
-            self._open_nasa_link(primary_link)
+            self._open_astronomy_link(primary_link)
             logger.info(f"Opened event-specific link for {event.event_type.value}: {primary_link}")
         else:
             # Get suggested links for this event type
@@ -918,7 +918,7 @@ class AstronomyWidget(QWidget):
                 if suggested_links:
                     # Open the highest priority suggested link
                     best_link = min(suggested_links, key=lambda x: x.priority)
-                    self._open_nasa_link(best_link.url)
+                    self._open_astronomy_link(best_link.url)
                     logger.info(f"Opened suggested link for {event.event_type.value}: {best_link.name} - {best_link.url}")
                 else:
                     # Final fallback to general NASA astronomy page
@@ -946,12 +946,12 @@ class AstronomyWidget(QWidget):
         if tonight_links:
             # Open the highest priority tonight's sky link
             primary_link = min(tonight_links, key=lambda x: x.priority)
-            self._open_nasa_link(primary_link.url)
+            self._open_astronomy_link(primary_link.url)
             logger.info(f"Opened {primary_link.name}: {primary_link.url}")
         else:
             # Fallback to EarthSky if no links available
             sky_url = "https://earthsky.org/tonight/"
-            self._open_nasa_link(sky_url)
+            self._open_astronomy_link(sky_url)
             logger.info("Opened EarthSky's current astronomical events for tonight")
 
     def _open_observatories_view(self) -> None:
@@ -964,7 +964,7 @@ class AstronomyWidget(QWidget):
         if observatory_links:
             # Open the highest priority observatory link (Hubble)
             primary_link = min(observatory_links, key=lambda x: x.priority)
-            self._open_nasa_link(primary_link.url)
+            self._open_astronomy_link(primary_link.url)
             logger.info(f"Opened {primary_link.name}: {primary_link.url}")
         else:
             # Fallback to NASA if no links available
@@ -980,7 +980,7 @@ class AstronomyWidget(QWidget):
         if agency_links:
             # Open the highest priority space agency link (NASA)
             primary_link = min(agency_links, key=lambda x: x.priority)
-            self._open_nasa_link(primary_link.url)
+            self._open_astronomy_link(primary_link.url)
             logger.info(f"Opened {primary_link.name}: {primary_link.url}")
         else:
             # Fallback to NASA if no links available
@@ -996,12 +996,12 @@ class AstronomyWidget(QWidget):
         if educational_links:
             # Open the highest priority educational link
             primary_link = min(educational_links, key=lambda x: x.priority)
-            self._open_nasa_link(primary_link.url)
+            self._open_astronomy_link(primary_link.url)
             logger.info(f"Opened {primary_link.name}: {primary_link.url}")
         else:
             # Fallback to NASA education
             edu_url = "https://www.nasa.gov/audience/foreducators/"
-            self._open_nasa_link(edu_url)
+            self._open_astronomy_link(edu_url)
             logger.info("Opened NASA Education")
 
     def _open_live_data_view(self) -> None:
@@ -1014,12 +1014,12 @@ class AstronomyWidget(QWidget):
         if live_data_links:
             # Open the highest priority live data link
             primary_link = min(live_data_links, key=lambda x: x.priority)
-            self._open_nasa_link(primary_link.url)
+            self._open_astronomy_link(primary_link.url)
             logger.info(f"Opened {primary_link.name}: {primary_link.url}")
         else:
             # Fallback to NASA live data
             live_url = "https://www.nasa.gov/live/"
-            self._open_nasa_link(live_url)
+            self._open_astronomy_link(live_url)
             logger.info("Opened NASA Live")
 
     def _open_community_view(self) -> None:
@@ -1032,27 +1032,27 @@ class AstronomyWidget(QWidget):
         if community_links:
             # Open the highest priority community link
             primary_link = min(community_links, key=lambda x: x.priority)
-            self._open_nasa_link(primary_link.url)
+            self._open_astronomy_link(primary_link.url)
             logger.info(f"Opened {primary_link.name}: {primary_link.url}")
         else:
             # Fallback to Reddit astronomy
             community_url = "https://www.reddit.com/r/astronomy/"
-            self._open_nasa_link(community_url)
+            self._open_astronomy_link(community_url)
             logger.info("Opened Reddit Astronomy")
 
     def _open_nasa_astronomy_page(self) -> None:
         """Open NASA astronomy page in browser."""
-        nasa_url = "https://science.nasa.gov/astrophysics/"
-        self._open_nasa_link(nasa_url)
+        primary_url = "https://science.nasa.gov/astrophysics/"
+        self._open_astronomy_link(primary_url)
 
-    def _open_nasa_link(self, url: str) -> None:
+    def _open_astronomy_link(self, url: str) -> None:
         """Open NASA link in browser."""
         try:
             from PySide6.QtGui import QDesktopServices
             from PySide6.QtCore import QUrl
 
             QDesktopServices.openUrl(QUrl(url))
-            self.nasa_link_clicked.emit(url)
+            self.astronomy_link_clicked.emit(url)
             logger.info(f"Opened NASA link: {url}")
         except Exception as e:
             logger.error(f"Failed to open NASA link {url}: {e}")

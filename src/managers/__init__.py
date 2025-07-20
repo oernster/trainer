@@ -8,7 +8,7 @@ configuration management, theme management, and update management.
 from .config_manager import ConfigManager, ConfigData, ConfigurationError
 from .theme_manager import ThemeManager
 
-# Note: TrainManager not imported here to avoid circular import with api_manager
+# Note: TrainManager not imported here to avoid circular imports
 
 __all__ = [
     "ConfigManager",

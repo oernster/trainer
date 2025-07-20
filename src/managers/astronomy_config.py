@@ -111,68 +111,7 @@ class AstronomyCacheConfig:
         return self.duration_hours * 3600
 
 
-@dataclass
-class AstronomyServiceConfig:
-    """Configuration for individual NASA API services."""
-
-    apod: bool = True  # Astronomy Picture of the Day
-    neows: bool = True  # Near Earth Object Web Service
-    iss: bool = True  # International Space Station
-    epic: bool = False  # Earth Polychromatic Imaging Camera
-    mars_weather: bool = False  # Mars Weather Service
-    exoplanets: bool = False  # Exoplanet Archive
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AstronomyServiceConfig":
-        """Create service config from dictionary."""
-        return cls(
-            apod=data.get("apod", True),
-            neows=data.get("neows", True),
-            iss=data.get("iss", True),
-            epic=data.get("epic", False),
-            mars_weather=data.get("mars_weather", False),
-            exoplanets=data.get("exoplanets", False),
-        )
-
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert service config to dictionary."""
-        return {
-            "apod": self.apod,
-            "neows": self.neows,
-            "iss": self.iss,
-            "epic": self.epic,
-            "mars_weather": self.mars_weather,
-            "exoplanets": self.exoplanets,
-        }
-
-    def get_enabled_services(self) -> List[str]:
-        """Get list of enabled service names."""
-        enabled = []
-        if self.apod:
-            enabled.append("apod")
-        if self.neows:
-            enabled.append("neows")
-        if self.iss:
-            enabled.append("iss")
-        if self.epic:
-            enabled.append("epic")
-        if self.mars_weather:
-            enabled.append("mars_weather")
-        if self.exoplanets:
-            enabled.append("exoplanets")
-        return enabled
-
-    def is_service_enabled(self, service_name: str) -> bool:
-        """Check if a specific service is enabled."""
-        service_map = {
-            "apod": self.apod,
-            "neows": self.neows,
-            "iss": self.iss,
-            "epic": self.epic,
-            "mars_weather": self.mars_weather,
-            "exoplanets": self.exoplanets,
-        }
-        return service_map.get(service_name, False)
+# AstronomyServiceConfig class removed - no longer needed since we're not using NASA APIs
 
 
 @dataclass
@@ -425,74 +364,41 @@ class AstronomyConfigManager:
         self._config = AstronomyConfig.create_default()
         return self._config
 
-    def update_api_key(self, api_key: str) -> None:
-        """Update NASA API key."""
-        config = self.get_config()
-        # Create new config with updated API key (immutable pattern)
-        updated_config = AstronomyConfig(
-            enabled=config.enabled,
-            nasa_api_key=api_key,
-            location_name=config.location_name,
-            location_latitude=config.location_latitude,
-            location_longitude=config.location_longitude,
-            timezone=config.timezone,
-            update_interval_minutes=config.update_interval_minutes,
-            timeout_seconds=config.timeout_seconds,
-            max_retries=config.max_retries,
-            retry_delay_seconds=config.retry_delay_seconds,
-            services=config.services,
-            display=config.display,
-            cache=config.cache,
-        )
-        self.save_config(updated_config)
-
     def update_location(self, name: str, latitude: float, longitude: float) -> None:
         """Update location settings."""
         config = self.get_config()
         # Create new config with updated location (immutable pattern)
         updated_config = AstronomyConfig(
             enabled=config.enabled,
-            nasa_api_key=config.nasa_api_key,
             location_name=name,
             location_latitude=latitude,
             location_longitude=longitude,
             timezone=config.timezone,
-            update_interval_minutes=config.update_interval_minutes,
-            timeout_seconds=config.timeout_seconds,
-            max_retries=config.max_retries,
-            retry_delay_seconds=config.retry_delay_seconds,
-            services=config.services,
             display=config.display,
             cache=config.cache,
+            enabled_link_categories=config.enabled_link_categories,
         )
         self.save_config(updated_config)
 
-    def toggle_service(self, service_name: str, enabled: bool) -> None:
-        """Toggle a specific astronomy service."""
+    def toggle_link_category(self, category: str, enabled: bool) -> None:
+        """Toggle a specific link category."""
         config = self.get_config()
+        updated_categories = config.enabled_link_categories.copy()
+        
+        if enabled and category not in updated_categories:
+            updated_categories.append(category)
+        elif not enabled and category in updated_categories:
+            updated_categories.remove(category)
 
-        # Update service configuration
-        services_dict = config.services.to_dict()
-        if service_name in services_dict:
-            services_dict[service_name] = enabled
-            new_services = AstronomyServiceConfig.from_dict(services_dict)
-
-            # Create new config with updated services
-            updated_config = AstronomyConfig(
-                enabled=config.enabled,
-                nasa_api_key=config.nasa_api_key,
-                location_name=config.location_name,
-                location_latitude=config.location_latitude,
-                location_longitude=config.location_longitude,
-                timezone=config.timezone,
-                update_interval_minutes=config.update_interval_minutes,
-                timeout_seconds=config.timeout_seconds,
-                max_retries=config.max_retries,
-                retry_delay_seconds=config.retry_delay_seconds,
-                services=new_services,
-                display=config.display,
-                cache=config.cache,
-            )
-            self.save_config(updated_config)
-        else:
-            raise ValueError(f"Unknown astronomy service: {service_name}")
+        # Create new config with updated link categories
+        updated_config = AstronomyConfig(
+            enabled=config.enabled,
+            location_name=config.location_name,
+            location_latitude=config.location_latitude,
+            location_longitude=config.location_longitude,
+            timezone=config.timezone,
+            display=config.display,
+            cache=config.cache,
+            enabled_link_categories=updated_categories,
+        )
+        self.save_config(updated_config)

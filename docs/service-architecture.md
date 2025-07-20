@@ -30,8 +30,12 @@ graph TB
         
         subgraph "External Services"
             WAS[Weather API Service]
-            AAS[Astronomy API Service]
-            TAS[Train API Service]
+            HMPAS[Hybrid Moon Phase API Service]
+        end
+        
+        subgraph "Static Data Services"
+            TDS[Train Data Service]
+            AES[Astronomy Event Service]
         end
         
         subgraph "Infrastructure Services"
@@ -58,16 +62,18 @@ graph TB
     TM --> TS
     
     WM --> WAS
-    AM --> AAS
-    TM --> TAS
+    AM --> HMPAS
+    AM --> AES
+    TM --> TDS
     
     RCS --> CAS
     TDS --> LS
     CS --> ES
     
     WAS --> API
-    AAS --> API
-    TAS --> API
+    HMPAS --> API
+    TDS --> FS
+    AES --> FS
     CAS --> MEM
     CS --> FS
 ```
@@ -400,25 +406,25 @@ classDiagram
         +validate_location(location) bool
     }
     
-    class AstronomyAPIService {
-        -astronomy_endpoints: dict
+    class HybridMoonPhaseAPIService {
+        -moon_phase_endpoints: dict
         
-        +get_astronomy_data(lat, lon) AstronomyData
-        +get_space_events() List[SpaceEvent]
-        +validate_coordinates(lat, lon) bool
+        +get_moon_phase_data(date) MoonPhaseData
+        +get_lunar_events(date_range) List[LunarEvent]
+        +validate_date_range(start, end) bool
     }
     
-    class TrainAPIService {
-        -train_endpoints: dict
+    class StaticTrainDataService {
+        -timetable_data: dict
         
-        +get_departures(station, time) List[Departure]
-        +get_arrivals(station, time) List[Arrival]
-        +get_service_details(service_id) ServiceDetails
+        +generate_departures(route, time) List[Departure]
+        +calculate_journey_time(route) Duration
+        +validate_route(from_station, to_station) bool
     }
     
     BaseAPIService <|-- WeatherAPIService
-    BaseAPIService <|-- AstronomyAPIService
-    BaseAPIService <|-- TrainAPIService
+    BaseAPIService <|-- HybridMoonPhaseAPIService
+    StaticDataService <|-- StaticTrainDataService
 ```
 
 ### API Error Handling

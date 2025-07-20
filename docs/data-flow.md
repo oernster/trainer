@@ -9,17 +9,18 @@ The Train Times application follows a unidirectional data flow pattern where dat
 ```mermaid
 flowchart TD
     subgraph "External Data Sources"
-        API1[Train API]
-        API2[Weather API]
-        API3[Astronomy API]
+        API1[Weather API]
+        API2[Hybrid Moon Phase APIs]
         FS[File System]
         Cache[Local Cache]
+        SD[Static Data]
     end
     
     subgraph "Data Access Layer"
-        TAS[Train API Service]
         WAS[Weather API Service]
-        AAS[Astronomy API Service]
+        HMPAS[Hybrid Moon Phase API Service]
+        TDS[Train Data Service]
+        AES[Astronomy Event Service]
         CS[Configuration Service]
         CacheS[Cache Service]
     end
@@ -40,16 +41,19 @@ flowchart TD
         AW[Astronomy Widget]
     end
     
-    API1 --> TAS
-    API2 --> WAS
-    API3 --> AAS
+    API1 --> WAS
+    API2 --> HMPAS
     FS --> CS
+    FS --> TDS
+    FS --> AES
     Cache --> CacheS
+    SD --> TDS
+    SD --> AES
     
-    TAS --> RCS
-    TAS --> TDS
     WAS --> WM
-    AAS --> AM
+    HMPAS --> AM
+    AES --> AM
+    TDS --> TM
     CS --> TM
     CacheS --> TDS
     
@@ -326,9 +330,10 @@ stateDiagram-v2
 sequenceDiagram
     participant Timer as Refresh Timer
     participant AM as Astronomy Manager
-    participant AAS as Astronomy API Service
-    participant NASA as NASA API
-    participant Proc as Data Processor
+    participant HMPAS as Hybrid Moon Phase API Service
+    participant AES as Astronomy Event Service
+    participant API as Moon Phase APIs
+    participant Calc as Enhanced Calculator
     participant Cache as Astronomy Cache
     participant AW as Astronomy Widget
     participant UI as UI Display
@@ -339,18 +344,22 @@ sequenceDiagram
     alt Cache Valid
         Cache-->>AM: cached_astronomy_data
     else Cache Expired/Missing
-        AM->>AAS: fetch_astronomy_data(lat, lon)
-        AAS->>NASA: get_space_events()
-        NASA-->>AAS: space_events_json
-        AAS->>AAS: parse_api_response()
-        AAS-->>AM: parsed_astronomy_data
+        AM->>HMPAS: get_moon_phase_data(date)
+        HMPAS->>API: fetch_moon_phase_data()
         
-        AM->>Proc: process_astronomy_data(raw_data)
-        Proc->>Proc: filter_relevant_events()
-        Proc->>Proc: format_display_data()
-        Proc-->>AM: processed_data
+        alt API Success
+            API-->>HMPAS: api_moon_data
+        else API Failure
+            HMPAS->>Calc: calculate_enhanced_moon_phase(date)
+            Calc-->>HMPAS: calculated_moon_data
+        end
         
-        AM->>Cache: store_data(processed_data)
+        HMPAS-->>AM: moon_phase_data
+        AM->>AES: generate_static_events(date_range)
+        AES-->>AM: astronomy_events
+        
+        AM->>AM: combine_data(moon_data, events)
+        AM->>Cache: store_data(combined_data)
     end
     
     AM->>AW: astronomy_updated.emit(data)

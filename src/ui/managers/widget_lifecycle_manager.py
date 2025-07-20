@@ -152,7 +152,7 @@ class WidgetLifecycleManager:
         astronomy_widget = self.ui_layout_manager.astronomy_widget if self.ui_layout_manager else None
         if astronomy_widget:
             astronomy_widget.astronomy_refresh_requested.connect(self.main_window.refresh_astronomy)
-            astronomy_widget.nasa_link_clicked.connect(self.main_window.on_nasa_link_clicked)
+            astronomy_widget.astronomy_link_clicked.connect(self.main_window.on_astronomy_link_clicked)
             logger.info("Astronomy widget signals connected")
     
     def update_weather_status(self, enabled: bool) -> None:

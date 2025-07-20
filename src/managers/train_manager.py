@@ -21,7 +21,6 @@ from PySide6.QtCore import QObject, Signal, QTimer
 
 from ..models.train_data import TrainData
 from ..managers.config_manager import ConfigData
-from ..api.api_manager import APIManager
 from ..core.services.service_factory import ServiceFactory
 from ..core.interfaces.i_route_service import IRouteService
 from ..core.interfaces.i_station_service import IStationService
@@ -98,9 +97,6 @@ class TrainManager(QObject):
         self.train_data_service = TrainDataService(config)
         self.configuration_service = ConfigurationService(config, self.__class__.config_manager)
         self.timetable_service = TimetableService()
-        
-        # Legacy API manager for fallback
-        self.api_manager: Optional[APIManager] = None
 
     def _load_route_from_config(self) -> None:
         """Load route path from configuration."""
@@ -141,15 +137,7 @@ class TrainManager(QObject):
             logger.info("Route changed, triggering refresh")
             self.fetch_trains()
 
-    async def initialize_api(self) -> None:
-        """Initialize API manager for fallback."""
-        try:
-            if self.configuration_service.config:
-                self.api_manager = APIManager(self.configuration_service.config)
-                logger.info("API manager initialized")
-        except Exception as e:
-            logger.error(f"Failed to initialize API manager: {e}")
-            self.error_occurred.emit(f"API initialization failed: {e}")
+    # API initialization method removed - now using static data generation
 
     def fetch_trains(self) -> None:
         """Fetch train data asynchronously."""

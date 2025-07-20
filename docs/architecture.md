@@ -275,23 +275,23 @@ graph TB
     end
     
     subgraph "External Services"
-        TA[Train API]
         WA[Weather API]
-        AA[Astronomy API]
+        HMA[Hybrid Moon Phase APIs]
     end
     
     subgraph "Local Storage"
         CF[Config Files]
         CA[Cache]
         L[Logs]
+        SD[Static Data]
     end
     
     M --> UI
     UI --> BL
     BL --> SL
-    SL --> TA
     SL --> WA
-    SL --> AA
+    SL --> HMA
+    SL --> SD
     C --> CF
     SL --> CA
     M --> L

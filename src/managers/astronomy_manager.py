@@ -25,6 +25,7 @@ from ..models.astronomy_data import (
 )
 from ..managers.astronomy_config import AstronomyConfig
 from ..models.astronomy_data import MoonPhase
+from ..services.moon_phase_service import HybridMoonPhaseService
 
 logger = logging.getLogger(__name__)
 
@@ -59,11 +60,14 @@ class AstronomyManager(QObject):
         self._current_forecast: Optional[AstronomyForecastData] = None
         self._is_loading = False
 
+        # Initialize hybrid moon phase service for accurate calculations
+        self._moon_phase_service = HybridMoonPhaseService()
+
         # Auto-refresh timer
         self._refresh_timer = QTimer()
         self._refresh_timer.timeout.connect(self._auto_refresh)
 
-        logger.debug(f"AstronomyManager initialized (enabled: {config.enabled}, API-free mode)")
+        logger.debug(f"AstronomyManager initialized (enabled: {config.enabled}, hybrid moon phase service)")
 
     def _generate_static_astronomy_events(self) -> List[AstronomyEvent]:
         """Generate static astronomy events for demonstration."""
@@ -170,9 +174,9 @@ class AstronomyManager(QObject):
             
             # Create AstronomyData for each date with proper moon phases
             for event_date, date_events in sorted(events_by_date.items()):
-                # Calculate moon phase for this date
+                # Calculate moon phase for this date using hybrid service
                 moon_phase = self._calculate_moon_phase_for_date(event_date)
-                moon_illumination = self._calculate_moon_illumination(moon_phase)
+                moon_illumination = self._calculate_moon_illumination(moon_phase, event_date)
                 
                 daily_data = AstronomyData(
                     date=event_date,
@@ -188,7 +192,7 @@ class AstronomyManager(QObject):
                 location=location,
                 daily_astronomy=daily_astronomy,
                 last_updated=datetime.now(),
-                data_source="Static Generator"
+                data_source="Static Generator + Hybrid Moon Phase API"
             )
 
             # Validate data
@@ -236,11 +240,12 @@ class AstronomyManager(QObject):
 
     def _emit_cache_status(self) -> None:
         """Emit cache status information."""
-        # API-free mode - emit basic cache info
+        # Hybrid mode - emit cache info including moon phase service status
         cache_info = {
             "manager_last_update": self._last_update_time,
             "has_current_forecast": self._current_forecast is not None,
-            "cache_type": "static_generator"
+            "cache_type": "hybrid_generator",
+            "moon_phase_service": "available"
         }
         self.cache_status_changed.emit(cache_info)
 
@@ -299,13 +304,14 @@ class AstronomyManager(QObject):
         """Get comprehensive cache information."""
         info = {
             "enabled": self._config.enabled,
-            "has_api_manager": False,  # API-free mode
+            "has_api_manager": True,  # Hybrid moon phase service available
             "has_current_forecast": self._current_forecast is not None,
             "last_update_time": self._last_update_time,
             "is_loading": self._is_loading,
             "auto_refresh_active": self.is_auto_refresh_active(),
             "data_stale": self.is_data_stale(),
-            "cache_type": "static_generator"
+            "cache_type": "hybrid_generator",
+            "moon_phase_service": "hybrid_api"
         }
 
         return info
@@ -367,8 +373,27 @@ class AstronomyManager(QObject):
 
     def get_enabled_services(self) -> list[str]:
         """Get list of enabled astronomy services."""
-        # Return default services for API-free mode
-        return ["Static Generator", "Astronomy Links"]
+        # Return services including hybrid moon phase service
+        return ["Static Generator", "Hybrid Moon Phase API", "Astronomy Links"]
+    
+    def get_current_moon_phase(self) -> Optional[Dict[str, Any]]:
+        """Get current moon phase data using the hybrid service."""
+        if not self._config.enabled:
+            return None
+            
+        try:
+            moon_data = self._moon_phase_service.get_moon_phase_sync(datetime.now().date())
+            return {
+                'phase_name': moon_data.phase.value.replace("_", " ").title(),
+                'illumination_percent': moon_data.illumination * 100,  # Convert to percentage
+                'phase': moon_data.phase.value,
+                'source': moon_data.source.value,
+                'confidence': moon_data.confidence,
+                'timestamp': moon_data.timestamp.isoformat()
+            }
+        except Exception as e:
+            logger.warning(f"Failed to get current moon phase: {e}")
+            return None
 
     def shutdown(self) -> None:
         """Shutdown astronomy manager and cleanup resources."""
@@ -384,48 +409,67 @@ class AstronomyManager(QObject):
         logger.debug("Astronomy manager shutdown complete")
 
     def _calculate_moon_phase_for_date(self, target_date) -> MoonPhase:
-        """Calculate moon phase for a given date using a simplified lunar cycle."""
-        from datetime import date
-        
-        # Use a known new moon date as reference (January 1, 2024 was approximately new moon)
-        reference_date = date(2024, 1, 1)
-        days_since_reference = (target_date - reference_date).days
-        
-        # Lunar cycle is approximately 29.53 days
-        lunar_cycle_days = 29.53
-        cycle_position = (days_since_reference % lunar_cycle_days) / lunar_cycle_days
-        
-        # Map cycle position to moon phases
-        if cycle_position < 0.0625:  # 0-1.8 days
+        """Calculate moon phase for a given date using the hybrid moon phase service."""
+        try:
+            # Convert date to datetime for the service
+            if hasattr(target_date, 'date'):
+                # target_date is already datetime, get the date part
+                target_date_obj = target_date.date()
+            else:
+                # target_date is already a date object
+                target_date_obj = target_date
+            
+            # Get moon phase data from hybrid service (synchronous version)
+            moon_data = self._moon_phase_service.get_moon_phase_sync(target_date_obj)
+            
+            # Return the MoonPhase enum directly (no mapping needed)
+            return moon_data.phase
+            
+        except Exception as e:
+            logger.warning(f"Failed to get moon phase from hybrid service: {e}")
+            # Fallback to a simple calculation if service fails
             return MoonPhase.NEW_MOON
-        elif cycle_position < 0.1875:  # 1.8-5.5 days
-            return MoonPhase.WAXING_CRESCENT
-        elif cycle_position < 0.3125:  # 5.5-9.2 days
-            return MoonPhase.FIRST_QUARTER
-        elif cycle_position < 0.4375:  # 9.2-12.9 days
-            return MoonPhase.WAXING_GIBBOUS
-        elif cycle_position < 0.5625:  # 12.9-16.6 days
-            return MoonPhase.FULL_MOON
-        elif cycle_position < 0.6875:  # 16.6-20.3 days
-            return MoonPhase.WANING_GIBBOUS
-        elif cycle_position < 0.8125:  # 20.3-24.0 days
-            return MoonPhase.LAST_QUARTER
-        else:  # 24.0-29.5 days
-            return MoonPhase.WANING_CRESCENT
 
-    def _calculate_moon_illumination(self, moon_phase: MoonPhase) -> float:
-        """Calculate approximate moon illumination percentage based on phase."""
-        illumination_map = {
-            MoonPhase.NEW_MOON: 0.0,
-            MoonPhase.WAXING_CRESCENT: 0.25,
-            MoonPhase.FIRST_QUARTER: 0.5,
-            MoonPhase.WAXING_GIBBOUS: 0.75,
-            MoonPhase.FULL_MOON: 1.0,
-            MoonPhase.WANING_GIBBOUS: 0.75,
-            MoonPhase.LAST_QUARTER: 0.5,
-            MoonPhase.WANING_CRESCENT: 0.25,
-        }
-        return illumination_map.get(moon_phase, 0.5)
+    def _calculate_moon_illumination(self, moon_phase: MoonPhase, target_date=None) -> float:
+        """Calculate moon illumination percentage using the hybrid moon phase service."""
+        try:
+            # If we have a date, get precise illumination from service
+            if target_date is not None:
+                if hasattr(target_date, 'date'):
+                    target_date_obj = target_date.date()
+                else:
+                    target_date_obj = target_date
+                
+                moon_data = self._moon_phase_service.get_moon_phase_sync(target_date_obj)
+                return moon_data.illumination  # Already in 0.0-1.0 range
+            
+            # Fallback to approximate mapping if no date provided
+            illumination_map = {
+                MoonPhase.NEW_MOON: 0.0,
+                MoonPhase.WAXING_CRESCENT: 0.25,
+                MoonPhase.FIRST_QUARTER: 0.5,
+                MoonPhase.WAXING_GIBBOUS: 0.75,
+                MoonPhase.FULL_MOON: 1.0,
+                MoonPhase.WANING_GIBBOUS: 0.75,
+                MoonPhase.LAST_QUARTER: 0.5,
+                MoonPhase.WANING_CRESCENT: 0.25,
+            }
+            return illumination_map.get(moon_phase, 0.5)
+            
+        except Exception as e:
+            logger.warning(f"Failed to get moon illumination from hybrid service: {e}")
+            # Fallback to approximate mapping
+            illumination_map = {
+                MoonPhase.NEW_MOON: 0.0,
+                MoonPhase.WAXING_CRESCENT: 0.25,
+                MoonPhase.FIRST_QUARTER: 0.5,
+                MoonPhase.WAXING_GIBBOUS: 0.75,
+                MoonPhase.FULL_MOON: 1.0,
+                MoonPhase.WANING_GIBBOUS: 0.75,
+                MoonPhase.LAST_QUARTER: 0.5,
+                MoonPhase.WANING_CRESCENT: 0.25,
+            }
+            return illumination_map.get(moon_phase, 0.5)
 
 class AstronomyManagerFactory:
     """

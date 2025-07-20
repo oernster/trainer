@@ -100,7 +100,6 @@ class AstronomyEvent:
     start_time: datetime
     end_time: Optional[datetime] = None
     visibility_info: Optional[str] = None
-    nasa_url: Optional[str] = None  # Kept for backward compatibility
     image_url: Optional[str] = None
     priority: AstronomyEventPriority = AstronomyEventPriority.MEDIUM
     metadata: Dict[str, Any] = field(default_factory=dict)
@@ -123,8 +122,6 @@ class AstronomyEvent:
             raise ValueError("End time cannot be before start time")
 
         # Validate URLs if provided
-        if self.nasa_url and not self._is_valid_url(self.nasa_url):
-            raise ValueError(f"Invalid NASA URL: {self.nasa_url}")
 
         if self.image_url and not self._is_valid_url(self.image_url):
             raise ValueError(f"Invalid image URL: {self.image_url}")
@@ -240,9 +237,7 @@ class AstronomyEvent:
             return self.related_links
 
     def get_primary_link(self) -> Optional[str]:
-        """Get the primary link for this event (nasa_url or first suggested link)."""
-        if self.nasa_url:
-            return self.nasa_url
+        """Get the primary link for this event (first suggested link)."""
         
         suggested_links = self.get_suggested_links()
         if suggested_links:
@@ -262,8 +257,6 @@ class AstronomyEvent:
     def has_multiple_links(self) -> bool:
         """Check if this event has multiple associated links."""
         link_count = 0
-        if self.nasa_url:
-            link_count += 1
         link_count += len(self.get_suggested_links())
         return link_count > 1
 
@@ -403,7 +396,7 @@ class AstronomyForecastData:
     location: "Location"  # Forward reference to avoid circular import
     daily_astronomy: List[AstronomyData] = field(default_factory=list)
     last_updated: datetime = field(default_factory=datetime.now)
-    data_source: str = "NASA"
+    data_source: str = "Static Generator"
     data_version: str = field(default=__version__)
     forecast_days: int = 7
 

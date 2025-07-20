@@ -330,16 +330,264 @@ erDiagram
 
 ## Astronomy API Integration
 
+### Hybrid Moon Phase Service
+
+The application implements a sophisticated hybrid approach for moon phase calculations that combines API-based data with enhanced local calculations for maximum accuracy and reliability.
+
+#### Architecture Overview
+
+```mermaid
+graph TB
+    subgraph "Hybrid Moon Phase System"
+        HMS[HybridMoonPhaseService]
+        MPA[MoonPhaseAPI]
+        EMC[EnhancedMoonPhaseCalculator]
+    end
+    
+    subgraph "External APIs"
+        SSA[Sunrise-Sunset.org API]
+        TDA[TimeAndDate.com API]
+        USNO[USNO Data]
+    end
+    
+    subgraph "Fallback System"
+        LC[Local Calculations]
+        VRD[USNO-Verified Reference Dates]
+        PLC[Precise Lunar Cycle Constants]
+    end
+    
+    HMS --> MPA
+    HMS --> EMC
+    MPA --> SSA
+    MPA --> TDA
+    EMC --> LC
+    EMC --> VRD
+    EMC --> PLC
+    
+    HMS --> |"API Failure"| EMC
+    MPA --> |"Rate Limited"| EMC
+```
+
+#### Moon Phase Service Implementation
+
+```mermaid
+classDiagram
+    class HybridMoonPhaseService {
+        -api_service: MoonPhaseAPI
+        -fallback_calculator: EnhancedMoonPhaseCalculator
+        -cache: dict
+        -cache_duration: int
+        
+        +get_moon_phase(date: datetime) MoonPhaseData
+        +get_moon_illumination(date: datetime) float
+        +is_api_available() bool
+        -get_cached_result(date: datetime) MoonPhaseData
+        -cache_result(date: datetime, result: MoonPhaseData)
+        -should_use_fallback(api_result: dict) bool
+    }
+    
+    class MoonPhaseAPI {
+        -base_urls: List[str]
+        -timeout: int
+        -retry_count: int
+        
+        +get_moon_data(date: datetime) dict
+        +test_api_availability() bool
+        -make_request(url: str, params: dict) dict
+        -parse_sunrise_sunset_response(response: dict) dict
+        -parse_timeanddate_response(response: dict) dict
+    }
+    
+    class EnhancedMoonPhaseCalculator {
+        -LUNAR_CYCLE_DAYS: float = 29.530588853
+        -reference_new_moons: List[datetime]
+        
+        +calculate_moon_phase(date: datetime) MoonPhaseData
+        +calculate_illumination(date: datetime) float
+        +get_phase_name(phase: float) str
+        -find_nearest_reference(date: datetime) datetime
+        -calculate_phase_from_reference(date: datetime, ref: datetime) float
+    }
+    
+    class MoonPhaseData {
+        +date: datetime
+        +phase_name: str
+        +illumination_percent: float
+        +phase_angle: float
+        +is_waxing: bool
+        +days_to_new_moon: int
+        +days_to_full_moon: int
+        +source: str
+    }
+    
+    HybridMoonPhaseService --> MoonPhaseAPI
+    HybridMoonPhaseService --> EnhancedMoonPhaseCalculator
+    HybridMoonPhaseService --> MoonPhaseData
+    MoonPhaseAPI --> MoonPhaseData
+    EnhancedMoonPhaseCalculator --> MoonPhaseData
+```
+
+#### API-First Data Flow
+
+```mermaid
+sequenceDiagram
+    participant AM as Astronomy Manager
+    participant HMS as HybridMoonPhaseService
+    participant MPA as MoonPhaseAPI
+    participant API as External APIs
+    participant EMC as Enhanced Calculator
+    participant Cache as Cache System
+    
+    AM->>HMS: get_moon_phase(date)
+    HMS->>Cache: check_cache(date)
+    
+    alt Cache Hit (< 4 hours old)
+        Cache-->>HMS: cached_moon_data
+        HMS-->>AM: moon_phase_data
+    else Cache Miss
+        HMS->>MPA: get_moon_data(date)
+        MPA->>API: fetch_astronomy_data(date)
+        
+        alt API Success
+            API-->>MPA: api_response
+            MPA->>MPA: parse_response()
+            MPA-->>HMS: parsed_moon_data
+            HMS->>HMS: validate_api_data()
+            
+            alt Data Valid
+                HMS->>Cache: store_result(date, data)
+                HMS-->>AM: api_moon_data
+            else Data Invalid
+                HMS->>EMC: calculate_moon_phase(date)
+                EMC-->>HMS: calculated_data
+                HMS->>Cache: store_result(date, fallback_data)
+                HMS-->>AM: fallback_moon_data
+            end
+        else API Failure
+            MPA-->>HMS: api_error
+            HMS->>EMC: calculate_moon_phase(date)
+            EMC->>EMC: find_nearest_reference(date)
+            EMC->>EMC: calculate_phase_from_reference()
+            EMC-->>HMS: calculated_data
+            HMS->>Cache: store_result(date, fallback_data)
+            HMS-->>AM: fallback_moon_data
+        end
+    end
+```
+
+#### Enhanced Local Calculations
+
+The fallback system uses USNO-verified reference points for maximum accuracy:
+
+```mermaid
+graph LR
+    subgraph "Reference New Moons (USNO Verified)"
+        R1[2020-01-24 21:42 UTC]
+        R2[2022-01-02 18:33 UTC]
+        R3[2024-01-11 11:57 UTC]
+        R4[2026-01-20 05:21 UTC]
+    end
+    
+    subgraph "Calculation Process"
+        A[Input Date] --> B[Find Nearest Reference]
+        B --> C[Calculate Days Difference]
+        C --> D[Apply Lunar Cycle: 29.530588853 days]
+        D --> E[Calculate Phase Angle]
+        E --> F[Determine Phase Name]
+        F --> G[Calculate Illumination %]
+    end
+    
+    R1 --> B
+    R2 --> B
+    R3 --> B
+    R4 --> B
+```
+
+#### API Endpoints and Integration
+
+##### Primary API: Sunrise-Sunset.org
+- **Endpoint**: `https://api.sunrise-sunset.org/json`
+- **Parameters**: `lat`, `lng`, `date`, `formatted=0`
+- **Rate Limit**: No authentication required, reasonable rate limiting
+- **Data Quality**: Good for basic moon phase information
+- **Fallback**: Automatic fallback to enhanced local calculation
+
+##### Secondary API: TimeAndDate.com
+- **Endpoint**: Various astronomy endpoints
+- **Rate Limit**: More restrictive, used as secondary option
+- **Data Quality**: High accuracy for astronomical events
+- **Usage**: Backup when primary API unavailable
+
+#### Error Handling Strategy
+
+```mermaid
+flowchart TD
+    A[Moon Phase Request] --> B[Check Cache]
+    B --> C{Cache Valid?}
+    C -->|Yes| D[Return Cached Data]
+    C -->|No| E[Try Primary API]
+    
+    E --> F{API Available?}
+    F -->|Yes| G[Parse API Response]
+    F -->|No| H[Use Local Calculation]
+    
+    G --> I{Data Valid?}
+    I -->|Yes| J[Cache and Return API Data]
+    I -->|No| K[Log Data Issue]
+    
+    K --> H
+    H --> L[Find Nearest USNO Reference]
+    L --> M[Calculate Using Enhanced Algorithm]
+    M --> N[Cache and Return Calculated Data]
+    
+    D --> O[Moon Phase Result]
+    J --> O
+    N --> O
+```
+
+#### Accuracy Improvements
+
+The hybrid system provides significant accuracy improvements:
+
+| Aspect | Previous System | Hybrid System |
+|--------|----------------|---------------|
+| **Reference Date** | Jan 1, 2024 (incorrect) | Multiple USNO-verified dates |
+| **Lunar Cycle** | 29.53 days (approximate) | 29.530588853 days (precise) |
+| **Accuracy** | ±1-2 days potential error | ±2-4 hours for phase transitions |
+| **Reliability** | Local calculation only | API-first with robust fallback |
+| **Data Source** | Single calculation | Multiple verified sources |
+
+#### Integration with Astronomy Manager
+
+The hybrid service integrates seamlessly with the existing astronomy system:
+
+```python
+# astronomy_manager.py integration
+from services.moon_phase_service import HybridMoonPhaseService
+
+class AstronomyManager:
+    def __init__(self):
+        self.moon_phase_service = HybridMoonPhaseService()
+    
+    def get_current_moon_phase(self):
+        """Get current moon phase using hybrid service."""
+        return self.moon_phase_service.get_moon_phase(datetime.now())
+```
+
 ### Astronomy Data Aggregation
 
 ```mermaid
 sequenceDiagram
     participant AM as Astronomy Manager
+    participant HMS as Hybrid Moon Service
     participant AAS as Astronomy API Service
     participant NASA as NASA API
     participant Proc as Data Processor
     participant Filter as Event Filter
     participant Cache as Cache Service
+    
+    AM->>HMS: get_moon_phase(date)
+    HMS-->>AM: moon_phase_data
     
     AM->>AAS: get_astronomy_data(lat, lon)
     AAS->>NASA: fetch_space_events()

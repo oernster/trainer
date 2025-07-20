@@ -221,9 +221,9 @@ class EventHandlerManager:
         logger.debug(f"Astronomy loading state: {is_loading}")
         # Astronomy widget will handle the loading state directly
     
-    def on_nasa_link_clicked(self, url: str) -> None:
+    def on_astronomy_link_clicked(self, url: str) -> None:
         """
-        Handle NASA link click from astronomy widget.
+        Handle astronomy link click from astronomy widget.
         
         Args:
             url: URL to open
@@ -231,9 +231,9 @@ class EventHandlerManager:
         try:
             if url:
                 QDesktopServices.openUrl(QUrl(url))
-                logger.info(f"Opened NASA link: {url}")
+                logger.info(f"Opened astronomy link: {url}")
         except Exception as e:
-            logger.error(f"Error opening NASA link: {e}")
+            logger.error(f"Error opening astronomy link: {e}")
     
     def on_train_data_updated(self, train_data) -> None:
         """

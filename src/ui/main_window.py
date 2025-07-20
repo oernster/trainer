@@ -124,7 +124,7 @@ class MainWindow(QMainWindow):
         
         # Connect initialization signals
         self.initialization_manager.initialization_completed.connect(self._on_initialization_completed)
-        self.initialization_manager.nasa_data_ready.connect(self._on_nasa_data_ready)
+        self.initialization_manager.astronomy_data_ready.connect(self._on_astronomy_data_ready)
         
         # Apply theme to all widgets after creation
         self.apply_theme_to_all_widgets()
@@ -671,8 +671,8 @@ class MainWindow(QMainWindow):
                 self.astronomy_widget.astronomy_refresh_requested.connect(
                     self.refresh_astronomy
                 )
-                self.astronomy_widget.nasa_link_clicked.connect(
-                    self.on_nasa_link_clicked
+                self.astronomy_widget.astronomy_link_clicked.connect(
+                    self.on_astronomy_link_clicked
                 )
                 logger.info("Astronomy widget signals connected (no config)")
             
@@ -686,8 +686,8 @@ class MainWindow(QMainWindow):
                 self.astronomy_widget.astronomy_refresh_requested.connect(
                     self.refresh_astronomy
                 )
-                self.astronomy_widget.nasa_link_clicked.connect(
-                    self.on_nasa_link_clicked
+                self.astronomy_widget.astronomy_link_clicked.connect(
+                    self.on_astronomy_link_clicked
                 )
 
                 # Update astronomy widget config
@@ -1077,9 +1077,9 @@ class MainWindow(QMainWindow):
         else:
             logger.debug("Astronomy data loading complete")
 
-    def on_nasa_link_clicked(self, url: str):
-        """Handle NASA link clicks."""
-        logger.info(f"NASA link clicked: {url}")
+    def on_astronomy_link_clicked(self, url: str):
+        """Handle astronomy link clicks."""
+        logger.info(f"Astronomy link clicked: {url}")
         # Link will be opened automatically by the astronomy widget
 
     def show_error_message(self, title: str, message: str):
@@ -2076,8 +2076,8 @@ class MainWindow(QMainWindow):
             QTimer.singleShot(100, self._final_menu_sync)
             logger.debug("Widgets not ready for menu sync, retrying in 100ms")
 
-    def _on_nasa_data_ready(self) -> None:
-        """Handle NASA data ready signal from parallel fetch."""
+    def _on_astronomy_data_ready(self) -> None:
+        """Handle astronomy data ready signal from parallel fetch."""
         
         # The astronomy widget will be automatically updated via signals
 
