@@ -163,7 +163,7 @@ class WeatherItemWidget(WeatherDisplayComponent):
         base_icon_size = 32 if self._scale_factor < 1.0 else 48
         scaled_icon_size = int(base_icon_size * self._scale_factor)
         self._icon_label.setStyleSheet(
-            f"font-size: {scaled_icon_size}px; font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji';"
+            f"font-size: {scaled_icon_size}px; font-family: 'Apple Color Emoji';"
         )
         layout.addWidget(self._icon_label)
 

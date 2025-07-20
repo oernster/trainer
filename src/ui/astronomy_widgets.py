@@ -114,13 +114,13 @@ class AstronomyEventIcon(QLabel):
                 border-radius: {scaled_border_radius}px;
                 padding: {scaled_padding}px;
                 font-size: {font_size};
-                font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji';
+                font-family: 'Apple Color Emoji';
             }}
             AstronomyEventIcon:hover {{
                 border: 1px solid #1976d2;
                 background-color: rgba(25, 118, 210, 0.1);
                 font-size: {font_size};
-                font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji';
+                font-family: 'Apple Color Emoji';
             }}
         """
         )
@@ -207,7 +207,7 @@ class DailyAstronomyPanel(QFrame):
             base_moon_size = 24 if self._scale_factor < 1.0 else 32
         scaled_moon_size = int(base_moon_size * self._scale_factor)
         self._moon_label.setStyleSheet(
-            f"background: transparent; border: none; font-size: {scaled_moon_size}px; font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji';"
+            f"background: transparent; border: none; font-size: {scaled_moon_size}px; font-family: 'Apple Color Emoji';"
         )
         layout.addWidget(self._moon_label)
 
