@@ -11,13 +11,14 @@ import sys
 from pathlib import Path
 from typing import List, Optional, Dict
 from PySide6.QtWidgets import (
-    QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, 
+    QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QScrollArea, QFrame, QWidget
 )
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
 from ...models.train_data import TrainData, CallingPoint
 from ...core.services.interchange_detection_service import InterchangeDetectionService
+# Underground formatter removed as part of underground code removal
 from .train_widgets_base import BaseTrainWidget
 
 logger = logging.getLogger(__name__)
@@ -42,12 +43,16 @@ class RouteDisplayDialog(QDialog):
         self.current_theme = theme
         self.train_manager = train_manager
         
+        # Underground formatter removed
+        
         # Cache for station data to avoid repeated loading
         self._station_to_files_cache: Optional[Dict] = None
         self._line_to_file_cache: Optional[Dict] = None
         self._station_coordinates_cache: Optional[Dict] = None
         
-        self.setWindowTitle(f"Route - {train_data.format_departure_time()} to {train_data.destination}")
+        # Format destination with underground indicator if needed
+        destination_text = self._format_station_name(train_data.destination)
+        self.setWindowTitle(f"Route - {train_data.format_departure_time()} to {destination_text}")
         self.setModal(True)
         self.resize(450, 400)
         
@@ -89,8 +94,9 @@ class RouteDisplayDialog(QDialog):
 
     def _create_header(self, layout: QVBoxLayout) -> None:
         """Create the dialog header with train information."""
+        destination_text = self._format_station_name(self.train_data.destination)
         header_label = QLabel(
-            f"🚂 {self.train_data.format_departure_time()} → {self.train_data.destination}"
+            f"🚂 {self.train_data.format_departure_time()} → {destination_text}"
         )
         header_font = QFont()
         header_font.setPointSize(14)
@@ -232,7 +238,10 @@ class RouteDisplayDialog(QDialog):
 
         # Station name with special formatting for origin/destination
         station_label = QLabel()
-        station_label.setText(calling_point.station_name)
+        
+        # Format station name with underground indicator if needed
+        formatted_name = self._format_station_name(calling_point.station_name)
+        station_label.setText(formatted_name)
         station_label.setTextFormat(Qt.TextFormat.RichText)
         
         station_font = QFont()
@@ -474,3 +483,7 @@ class RouteDisplayDialog(QDialog):
         except Exception as e:
             logger.error(f"Failed to build station-to-files mapping: {e}")
             return {}
+    
+    def _format_station_name(self, station_name: str) -> str:
+        """Format station name - underground detection removed."""
+        return station_name

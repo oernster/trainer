@@ -113,6 +113,24 @@ class Station:
         """Check if this station serves a specific railway line."""
         return self.interchange is not None and line_name in self.interchange
     
+    def is_underground_station(self) -> bool:
+        """Check if this is a pure underground station."""
+        from core.services.underground_detection_service import UndergroundDetectionService
+        service = UndergroundDetectionService()
+        return service.is_underground_station(self)
+    
+    def get_underground_system(self) -> Optional[str]:
+        """Get the underground system this station belongs to."""
+        from core.services.underground_detection_service import UndergroundDetectionService
+        service = UndergroundDetectionService()
+        return service.get_underground_system(self)
+    
+    def is_mixed_station(self) -> bool:
+        """Check if this station has both underground and mainline connections."""
+        from core.services.underground_detection_service import UndergroundDetectionService
+        service = UndergroundDetectionService()
+        return service.is_mixed_station(self)
+    
     def to_dict(self) -> Dict[str, Any]:
         """Convert station to dictionary representation."""
         return {

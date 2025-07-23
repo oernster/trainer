@@ -1,8 +1,4 @@
-"""
-Core Services Package
-
-Service implementations for the railway application.
-"""
+"""Core services package."""
 
 from .json_data_repository import JsonDataRepository
 from .station_service import StationService
@@ -17,6 +13,7 @@ from .service_factory import (
     validate_services,
     shutdown_services
 )
+# Underground services removed
 
 __all__ = [
     'JsonDataRepository',

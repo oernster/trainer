@@ -48,6 +48,8 @@ class RouteDetailsWidget(QWidget):
         self.route_data = {}
         self.preferences = {}
         
+        # Initialize formatter (removed underground formatter)
+        
         # Detect small screen for platform-specific adjustments
         screen = QApplication.primaryScreen()
         if screen:
@@ -292,6 +294,9 @@ class RouteDetailsWidget(QWidget):
             from_station = self.route_data.get('from_station', 'N/A')
             to_station = self.route_data.get('to_station', 'N/A')
             
+            # Underground routing has been removed
+            is_underground_route = False
+            
             # Check if we should show intermediate stations
             show_intermediate = self.preferences.get('show_intermediate_stations', True)
             
@@ -299,8 +304,11 @@ class RouteDetailsWidget(QWidget):
                 # Show full route with intermediate stations
                 full_path = self.route_data.get('full_path', [])
                 if full_path and len(full_path) > 2:
-                    # Use full path which includes all intermediate stations
-                    route_line = ' → '.join(full_path)
+                    # Format each station in the path
+                    formatted_path = []
+                    for station in full_path:
+                        formatted_path.append(station)
+                    route_line = ' → '.join(formatted_path)
                 else:
                     # Fallback to via stations if full_path not available
                     via_stations = self.route_data.get('via_stations', [])
@@ -322,6 +330,8 @@ class RouteDetailsWidget(QWidget):
                     route_line = f"{from_station} → {to_station}"
             
             details = [route_line]
+            
+            # Underground connection info has been removed
             
             # Changes and route type on one line
             changes = self.route_data.get('changes', 0)

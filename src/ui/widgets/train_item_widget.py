@@ -14,6 +14,7 @@ from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont
 from ...models.train_data import TrainData
 from ...core.services.interchange_detection_service import InterchangeDetectionService
+# Underground formatter removed as part of underground code removal
 from .train_widgets_base import BaseTrainWidget
 
 logger = logging.getLogger(__name__)
@@ -53,6 +54,8 @@ class TrainItemWidget(QFrame):
         self.train_data = train_data
         self.train_manager = train_manager
         self.preferences = preferences or {}
+        
+        # Underground detection service removed
 
         self._setup_ui()
         self._apply_theme_styles()
@@ -95,8 +98,9 @@ class TrainItemWidget(QFrame):
         time_info.setFont(time_font)
         left_layout.addWidget(time_info)
 
-        # Arrow and destination
-        destination_info = QLabel(f"→ {self.train_data.destination}")
+        # Arrow and destination (with underground formatting if needed)
+        destination_text = self._format_destination()
+        destination_info = QLabel(destination_text)
         dest_font = QFont()
         dest_font.setPointSize(12)
         destination_info.setFont(dest_font)
@@ -258,11 +262,14 @@ class TrainItemWidget(QFrame):
                         widget.deleteLater()
                         break
             
-            # Recreate the calling points section
-            self._create_calling_points_section(layout)
+            # Recreate the calling points section - type cast to avoid Pylance errors
+            if layout is not None:
+                self._create_calling_points_section(layout)
 
     def _create_calling_points_display(self, layout: QVBoxLayout, calling_points: List) -> None:
         """Create the display for calling points."""
+        # Underground detection removed - use calling points as-is
+        
         # Show "Stops:" prefix on first line
         first_line_layout = QHBoxLayout()
         stops_label = QLabel("Stops:")
@@ -309,6 +316,8 @@ class TrainItemWidget(QFrame):
         station_name = calling_points[index].station_name
         prev_station = calling_points[index-1].station_name
         
+        # Check for walking connections only - underground detection removed
+        
         # Check for walking connections in segments
         is_walking_connection = False
         walking_info = ""
@@ -323,11 +332,23 @@ class TrainItemWidget(QFrame):
                 
                 if connects_stations:
                     line_name = getattr(segment, 'line_name', '')
-                    service_pattern = getattr(segment, 'service_pattern', '')
+                    service_pattern = getattr(segment, 'service_pattern', '') if hasattr(segment, 'service_pattern') else ''
                     
+                    # Underground detection removed
+                    
+                    # Detect walking segments
                     is_walking_segment = (line_name == 'WALKING' or service_pattern == 'WALKING')
                     
-                    if is_walking_segment:
+                    # Special case for Farnborough North to Farnborough (main)
+                    is_farnborough_connection = (
+                        (prev_station == "Farnborough North" and station_name == "Farnborough (main)") or
+                        (prev_station == "Farnborough (main)" and station_name == "Farnborough North")
+                    )
+                    
+                    # Show walking if either:
+                    # 1. This is explicitly a walking segment, OR
+                    # 2. This is the special Farnborough connection AND avoid_walking is not enabled
+                    if is_walking_segment or (is_farnborough_connection and not self.preferences.get('avoid_walking', False)):
                         is_walking_connection = True
                         walking_distance = getattr(segment, 'distance_km', None)
                         walking_time = getattr(segment, 'journey_time_minutes', None)
@@ -365,8 +386,11 @@ class TrainItemWidget(QFrame):
     def _create_station_label(self, calling_point) -> QLabel:
         """Create a styled station label."""
         station_label = QLabel()
-        station_label.setText(calling_point.station_name)
-        station_label.setTextFormat(Qt.TextFormat.RichText)
+        
+        # Get station name
+        station_name = calling_point.station_name
+        
+        station_label.setText(station_name)
         
         station_font = QFont()
         station_font.setPointSize(9)
@@ -649,3 +673,20 @@ class TrainItemWidget(QFrame):
         if theme != self.current_theme:
             self.current_theme = theme
             self._apply_theme_styles()
+    
+    def _format_destination(self) -> str:
+        """Format destination without underground indicator."""
+        destination = self.train_data.destination
+        
+        # Don't show underground indicators - just show the destination name
+        return f"→ {destination}"
+    
+    def _should_simplify_route_display(self, calling_points: List) -> bool:
+        """Check if we should simplify the route display."""
+        # Always return False since we use _skip_underground_stations instead
+        return False
+    
+    def _get_simplified_calling_points(self, calling_points: List) -> List:
+        """Get simplified calling points for routes involving underground."""
+        # This method is replaced by _skip_underground_stations
+        return calling_points

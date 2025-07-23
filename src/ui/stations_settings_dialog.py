@@ -510,6 +510,13 @@ class StationsSettingsDialog(QDialog):
         """Handle failed route calculation."""
         QMessageBox.warning(self, "Route Calculation Failed", error_message)
         self._update_status(f"Route calculation failed: {error_message}")
+        
+        # Clear any previous route data to prevent UI inconsistency
+        self.dialog_state.clear_route_data()
+        if self.route_details_widget:
+            self.route_details_widget.clear_route_data()
+            
+        logger.info(f"Cleared route data after calculation failure: {error_message}")
     
     def _on_calculation_started(self):
         """Handle calculation start."""

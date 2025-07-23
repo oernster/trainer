@@ -12,6 +12,14 @@
   },
   "connections": [
     {
+      "from_station": "Farnborough North",
+      "to_station": "Farnborough",
+      "connection_type": "WALKING",
+      "time_minutes": 10,
+      "walking_distance_m": 800,
+      "description": "Walk between Farnborough North and Farnborough Main station"
+    },
+    {
       "from_station": "London Waterloo",
       "to_station": "London Kings Cross",
       "connection_type": "UNDERGROUND",

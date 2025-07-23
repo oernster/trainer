@@ -47,12 +47,22 @@ class Route:
     service_patterns: Optional[List[str]] = None
     full_path: Optional[List[str]] = None  # Complete path including all intermediate stations
     
+    # Underground routing fields
+    routing_type: str = "regular"  # regular, underground_to_regular, etc.
+    underground_exit_station: Optional[str] = None
+    underground_entry_station: Optional[str] = None
+    underground_connection_time_minutes: Optional[int] = None
+    has_underground_segment: bool = False
+    has_cross_system_underground: bool = False
+    is_underground_only: bool = False
+    
     def __post_init__(self):
         """Validate and calculate route data."""
         if not self.from_station or not self.to_station:
             raise ValueError("From and to stations cannot be empty")
         
-        if not self.segments:
+        # Allow empty segments only for same station routing
+        if not self.segments and self.routing_type != "same_station":
             raise ValueError("Route must have at least one segment")
         
         # Calculate changes required
@@ -164,6 +174,12 @@ class Route:
     
     def get_route_description(self) -> str:
         """Get a human-readable description of the route."""
+        # Handle special routing types
+        if hasattr(self, 'routing_type'):
+            if self.routing_type == "same_station":
+                return "Same station"
+        
+        # Regular route description
         if self.is_direct:
             line = self.segments[0].line_name
             return f"Direct service on {line}"
@@ -175,6 +191,12 @@ class Route:
             return f"Change once - via {lines[0]} then {lines[1]}"
         else:
             return f"{changes} changes required via {', '.join(lines)}"
+    
+    @property
+    def is_underground_route(self) -> bool:
+        """Check if this route involves underground systems."""
+        return self.routing_type != "regular"
+    
     
     def get_detailed_description(self) -> List[str]:
         """Get detailed step-by-step route description."""
@@ -225,7 +247,16 @@ class Route:
             "distance_display": self.get_distance_display(),
             "route_description": self.get_route_description(),
             "detailed_description": self.get_detailed_description(),
-            "full_path": self.full_path  # Include full path for persistence
+            "full_path": self.full_path,  # Include full path for persistence
+            # Underground routing fields
+            "routing_type": self.routing_type,
+            "underground_exit_station": self.underground_exit_station,
+            "underground_entry_station": self.underground_entry_station,
+            "underground_connection_time_minutes": self.underground_connection_time_minutes,
+            "has_underground_segment": self.has_underground_segment,
+            "has_cross_system_underground": self.has_cross_system_underground,
+            "is_underground_only": self.is_underground_only,
+            "is_underground_route": self.is_underground_route
         }
     
     @classmethod
@@ -252,7 +283,15 @@ class Route:
             changes_required=data.get("changes_required", 0),
             route_type=data.get("route_type", "direct"),
             service_patterns=data.get("service_patterns"),
-            full_path=data.get("full_path")  # Include full path when creating from dict
+            full_path=data.get("full_path"),  # Include full path when creating from dict
+            # Underground routing fields
+            routing_type=data.get("routing_type", "regular"),
+            underground_exit_station=data.get("underground_exit_station"),
+            underground_entry_station=data.get("underground_entry_station"),
+            underground_connection_time_minutes=data.get("underground_connection_time_minutes"),
+            has_underground_segment=data.get("has_underground_segment", False),
+            has_cross_system_underground=data.get("has_cross_system_underground", False),
+            is_underground_only=data.get("is_underground_only", False)
         )
     
     def __str__(self) -> str:
