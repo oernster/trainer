@@ -515,8 +515,8 @@ class TrainItemWidget(QFrame):
         is_walking = ("<font color='#f44336'" in station_name)
         
         if not is_walking:
-            if self._is_major_interchange(station_name):
-                # Use orange/yellow for interchange stations
+            if self._is_actual_user_journey_interchange(station_name):
+                # Use orange/yellow ONLY for stations where user actually changes trains
                 interchange_color = colors["warning"]
                 label.setStyleSheet(f"""
                     QLabel {{
@@ -702,25 +702,169 @@ class TrainItemWidget(QFrame):
                 self.route_clicked.emit(self.train_data)
         super().mousePressEvent(event)
 
-    def _is_major_interchange(self, station_name: str) -> bool:
-        """Check if a station is where the passenger actually changes trains/lines during this journey."""
+    def _is_actual_user_journey_interchange(self, station_name: str) -> bool:
+        """
+        Two-step logic as requested:
+        
+        STEP 1: IF user changes lines → Mark orange
+        STEP 2: IF user changes lines BUT stays on same physical train → Remove orange (override)
+        """
         clean_name = station_name.replace(" (Cross Country Line)", "").strip()
         
-        # Check if we have route_segments data for line changes
-        if hasattr(self.train_data, 'route_segments') and self.train_data.route_segments:
-            # Use the InterchangeDetectionService for intelligent detection
-            interchange_service = InterchangeDetectionService()
-            interchanges = interchange_service.detect_user_journey_interchanges(self.train_data.route_segments)
-            
-            # Check if this station is marked as a user journey change
-            for interchange in interchanges:
-                if interchange.station_name == clean_name and interchange.is_user_journey_change:
-                    return True
-            
+        # Check if we have route segments to analyze
+        if not hasattr(self.train_data, 'route_segments') or not self.train_data.route_segments:
             return False
+        
+        # STEP 1: Check if user changes lines at this station
+        line_change_detected = False
+        same_physical_train = False
+        
+        # Look for consecutive segments that connect at this station
+        for i in range(len(self.train_data.route_segments) - 1):
+            current_segment = self.train_data.route_segments[i]
+            next_segment = self.train_data.route_segments[i + 1]
+            
+            # Check if this station connects two segments
+            current_to = getattr(current_segment, 'to_station', '')
+            next_from = getattr(next_segment, 'from_station', '')
+            
+            if current_to == clean_name and next_from == clean_name:
+                # This station connects segments - check for line change
+                current_line = getattr(current_segment, 'line_name', '')
+                next_line = getattr(next_segment, 'line_name', '')
+                
+                # Skip if either line name is empty
+                if not current_line or not next_line:
+                    continue
+                
+                # STEP 1: Check if lines are different
+                if current_line != next_line:
+                    line_change_detected = True
+                    
+                    # STEP 2: Check if it's the same physical train (override)
+                    
+                    # Check train_service_id first (most reliable)
+                    current_train_service_id = getattr(current_segment, 'train_service_id', None)
+                    next_train_service_id = getattr(next_segment, 'train_service_id', None)
+                    
+                    if current_train_service_id is not None and next_train_service_id is not None:
+                        if current_train_service_id == next_train_service_id:
+                            same_physical_train = True
+                            break
+                        else:
+                            # Different service IDs = different trains
+                            break
+                    
+                    # Check service patterns as fallback
+                    current_service = getattr(current_segment, 'service_pattern', None)
+                    next_service = getattr(next_segment, 'service_pattern', None)
+                    
+                    if current_service is not None and next_service is not None:
+                        if current_service == next_service:
+                            same_physical_train = True
+                            break
+                    
+                    # Check train IDs as fallback
+                    current_train_id = getattr(current_segment, 'train_id', None)
+                    next_train_id = getattr(next_segment, 'train_id', None)
+                    
+                    if current_train_id is not None and next_train_id is not None:
+                        if current_train_id == next_train_id:
+                            same_physical_train = True
+                            break
+                    
+                    # Check operators as final fallback
+                    current_operator = getattr(current_segment, 'operator', '')
+                    next_operator = getattr(next_segment, 'operator', '')
+                    
+                    if current_operator and next_operator and current_operator == next_operator:
+                        same_physical_train = True
+                        break
+                    
+                    # If we get here, it's a real train change
+                    break
+        
+        # Apply the two-step logic
+        if line_change_detected:
+            if same_physical_train:
+                return False
+            else:
+                return True
         else:
-            # If no route data is available, return False (conservative approach)
             return False
+
+    def _is_line_change_station(self, station_name: str) -> bool:
+        """Check if this station is where the user actually changes from one train line to another."""
+        clean_name = station_name.replace(" (Cross Country Line)", "").strip()
+        
+        # Check if we have route segments to analyze
+        if not hasattr(self.train_data, 'route_segments') or not self.train_data.route_segments:
+            return False
+        
+        # Look for actual line changes at this station
+        for i, segment in enumerate(self.train_data.route_segments):
+            # Check if this segment ends at our station
+            if hasattr(segment, 'to_station') and segment.to_station == clean_name:
+                # Check if there's a next segment with a different line
+                if i < len(self.train_data.route_segments) - 1:
+                    next_segment = self.train_data.route_segments[i + 1]
+                    
+                    # Get line names
+                    current_line = getattr(segment, 'line_name', '')
+                    next_line = getattr(next_segment, 'line_name', '')
+                    
+                    # Skip walking segments
+                    if current_line == 'WALKING' or next_line == 'WALKING':
+                        continue
+                    
+                    # Skip if either line name is empty
+                    if not current_line or not next_line:
+                        continue
+                    
+                    # Normalize line names for comparison (handle variations)
+                    current_normalized = self._normalize_line_name(current_line)
+                    next_normalized = self._normalize_line_name(next_line)
+                    
+                    # If normalized lines are different, this is a line change
+                    if current_normalized != next_normalized:
+                        self.logger.debug(f"Line change detected at {clean_name}: {current_line} ({current_normalized}) → {next_line} ({next_normalized})")
+                        return True
+                    else:
+                        self.logger.debug(f"Same line at {clean_name}: {current_line} ({current_normalized}) = {next_line} ({next_normalized})")
+        
+        return False
+    
+    def _normalize_line_name(self, line_name: str) -> str:
+        """Normalize line names to handle variations of the same line."""
+        if not line_name:
+            return ""
+        
+        # Convert to lowercase for comparison
+        normalized = line_name.lower().strip()
+        
+        # Handle South Western Railway variations
+        if any(term in normalized for term in ['south western', 'swr']):
+            return "south_western"
+        
+        # Handle Reading to Basingstoke variations
+        if 'reading' in normalized and 'basingstoke' in normalized:
+            return "reading_basingstoke"
+        
+        # Handle Great Western variations
+        if any(term in normalized for term in ['great western', 'gwr']):
+            return "great_western"
+        
+        # Handle Cross Country variations
+        if 'cross country' in normalized:
+            return "cross_country"
+        
+        # Return the original normalized name for other lines
+        return normalized
+
+    def _is_major_interchange(self, station_name: str) -> bool:
+        """Check if a station is where the passenger actually changes trains/lines during this journey."""
+        # This method is kept for backward compatibility but now delegates to the actual user journey interchange detection
+        return self._is_actual_user_journey_interchange(station_name)
 
     def get_theme_colors(self, theme: str) -> dict[str, str]:
         """

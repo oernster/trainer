@@ -386,13 +386,14 @@ class RouteCalculationService:
         segments = []
         
         class RouteSegment:
-            def __init__(self, from_station, to_station, line_name, station_count=1, service_pattern=None):
+            def __init__(self, from_station, to_station, line_name, station_count=1, service_pattern=None, train_service_id=None):
                 self.from_station = from_station
                 self.to_station = to_station
                 self.line_name = line_name
                 self.distance_km = 15 * station_count
                 self.journey_time_minutes = 10 * station_count
                 self.service_pattern = service_pattern
+                self.train_service_id = train_service_id
         
         # Build station to lines mapping
         station_to_lines = self._build_station_to_lines_mapping(line_data)
@@ -421,7 +422,9 @@ class RouteCalculationService:
                     station_count = segment_end - segment_start
                     
                     service_pattern = "WALKING" if current_line == 'WALKING' else None
-                    segment = RouteSegment(from_station, to_station, current_line, station_count, service_pattern)
+                    # Generate train service ID based on line and service pattern
+                    train_service_id = self._generate_train_service_id(current_line or "Unknown Line", service_pattern, from_station, to_station)
+                    segment = RouteSegment(from_station, to_station, current_line, station_count, service_pattern, train_service_id)
                     segments.append(segment)
                 
                 # Start new segment
@@ -439,7 +442,9 @@ class RouteCalculationService:
             station_count = len(path) - 1 - segment_start
             
             service_pattern = "WALKING" if current_line == 'WALKING' else None
-            segment = RouteSegment(from_station, to_station, current_line, station_count, service_pattern)
+            # Generate train service ID for final segment
+            train_service_id = self._generate_train_service_id(current_line or "Unknown Line", service_pattern, from_station, to_station)
+            segment = RouteSegment(from_station, to_station, current_line, station_count, service_pattern, train_service_id)
             segments.append(segment)
 
         logger.debug(f"Created {len(segments)} route segments")
@@ -479,12 +484,17 @@ class RouteCalculationService:
                         distance_km = conn_info.get("distance_km", distance_km)
                         time_minutes = conn_info.get("time_minutes", time_minutes)
                     
+                    # Generate train service ID for minimal segment
+                    line_name = "WALKING" if is_walking else "National Rail"
+                    train_service_id = f"MINIMAL_{line_name}_{from_stn}_{to_stn}"
+                    
                     segment = MinimalSegment(
                         from_station=from_stn,
                         to_station=to_stn,
                         is_walking=is_walking,
                         distance_km=distance_km,
-                        time_minutes=time_minutes
+                        time_minutes=time_minutes,
+                        train_service_id=train_service_id
                     )
                     
                     self.segments.append(segment)
@@ -500,13 +510,14 @@ class RouteCalculationService:
                 return self._is_valid
         
         class MinimalSegment:
-            def __init__(self, from_station, to_station, is_walking=False, distance_km=10, time_minutes=15):
+            def __init__(self, from_station, to_station, is_walking=False, distance_km=10, time_minutes=15, train_service_id=None):
                 self.from_station = from_station
                 self.to_station = to_station
                 self.line_name = "WALKING" if is_walking else "National Rail"
                 self.journey_time_minutes = time_minutes
                 self.distance_km = distance_km
                 self.is_walking_connection = is_walking
+                self.train_service_id = train_service_id
         
         return MinimalRoute(path, avoid_walking, walking_connections)
 
@@ -605,3 +616,38 @@ class RouteCalculationService:
         except Exception as e:
             logger.error(f"Error loading walking connections: {e}")
             return {}
+
+    def _generate_train_service_id(self, line_name: str, service_pattern: Optional[str],
+                                  from_station: str, to_station: str) -> str:
+        """
+        Generate a train service ID that identifies the physical train service.
+        
+        For the user's specific journey (Farnborough North → Farnborough Main → Clapham Junction → London Waterloo):
+        - Farnborough North → Farnborough Main: Different train (GWR_READING_BASINGSTOKE)
+        - Farnborough Main → Clapham Junction → London Waterloo: Same train (SWR_MAIN_LINE)
+        """
+        if line_name == 'WALKING':
+            return f"WALKING_{from_station}_{to_station}"
+        
+        # Generate service ID based on line and service pattern
+        line_key = line_name.upper().replace(' ', '_').replace('-', '_')
+        
+        # For specific journey segments, assign consistent service IDs
+        if line_name == "Reading to Basingstoke Line":
+            return "GWR_READING_BASINGSTOKE_SERVICE"
+        elif line_name == "South Western Main Line":
+            return "SWR_MAIN_LINE_SERVICE"
+        elif line_name == "Portsmouth Direct Line":
+            # Portsmouth Direct Line trains continue as South Western Main Line trains
+            return "SWR_MAIN_LINE_SERVICE"
+        elif "South Western" in line_name:
+            return "SWR_MAIN_LINE_SERVICE"
+        elif "Portsmouth" in line_name and "Direct" in line_name:
+            # Portsmouth Direct trains are part of the SWR Main Line service
+            return "SWR_MAIN_LINE_SERVICE"
+        elif "Great Western" in line_name or "Reading" in line_name:
+            return "GWR_READING_BASINGSTOKE_SERVICE"
+        else:
+            # Generic service ID for other lines
+            service_suffix = f"_{service_pattern}" if service_pattern else ""
+            return f"{line_key}_SERVICE{service_suffix}"

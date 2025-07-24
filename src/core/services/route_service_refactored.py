@@ -88,19 +88,6 @@ class RouteServiceRefactored(IRouteService):
             self.logger.warning(f"To station does not exist: {to_station}")
             return None
         
-        # Check if we should use Underground black box routing
-        if self.underground_handler.should_use_black_box_routing(from_station, to_station):
-            # For Underground-to-Underground routes, use direct black box route
-            if (self.underground_handler.is_london_underground_station(from_station) and
-                self.underground_handler.is_london_underground_station(to_station)):
-                black_box_route = self.underground_handler.create_black_box_route(from_station, to_station)
-                if black_box_route:
-                    # Cache the result
-                    self._route_cache[cache_key] = [black_box_route]
-                    return black_box_route
-            
-            # For terminus-to-underground routes, use the existing logic
-            return self._calculate_terminus_to_underground_route(normalized_from, to_station, preferences)
         
         # Build network graph
         graph = self.network_builder.build_network_graph()
@@ -692,7 +679,8 @@ class RouteServiceRefactored(IRouteService):
                 line_name="London Underground",
                 distance_km=self.underground_handler._estimate_underground_distance(best_terminus, to_station),
                 journey_time_minutes=self.underground_handler._estimate_underground_time(best_terminus, to_station),
-                service_pattern="UNDERGROUND"
+                service_pattern="UNDERGROUND",
+                train_service_id="LONDON_UNDERGROUND_SERVICE"
             )
             
             # Combine segments
@@ -772,7 +760,8 @@ class RouteServiceRefactored(IRouteService):
             line_name="London Underground",
             distance_km=self.underground_handler._estimate_underground_distance(from_station, to_station),
             journey_time_minutes=self.underground_handler._estimate_underground_time(from_station, to_station),
-            service_pattern="UNDERGROUND"
+            service_pattern="UNDERGROUND",
+            train_service_id="LONDON_UNDERGROUND_SERVICE"
         )
         
         return Route(

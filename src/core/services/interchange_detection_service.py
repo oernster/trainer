@@ -317,7 +317,19 @@ class InterchangeDetectionService:
         Check if this station is just a through station for the user's journey,
         meaning they don't need to change trains here.
         """
-        # Check if both segments have the same service pattern or train ID
+        # Primary check: Use train_service_id if available (most reliable)
+        current_train_service_id = getattr(current_segment, 'train_service_id', None)
+        next_train_service_id = getattr(next_segment, 'train_service_id', None)
+        
+        if current_train_service_id and next_train_service_id:
+            if current_train_service_id == next_train_service_id:
+                self.logger.debug(f"Same train service ID detected: {current_train_service_id}")
+                return True
+            else:
+                self.logger.debug(f"Different train service IDs: {current_train_service_id} != {next_train_service_id}")
+                return False
+        
+        # Fallback: Check if both segments have the same service pattern or train ID
         # This would indicate it's the same physical train continuing
         current_service = getattr(current_segment, 'service_pattern', None)
         next_service = getattr(next_segment, 'service_pattern', None)
@@ -351,6 +363,15 @@ class InterchangeDetectionService:
             "Fleet": [
                 ("South Western Main Line", "Reading to Basingstoke Line"),
                 ("Reading to Basingstoke Line", "South Western Main Line"),
+            ],
+            "Clapham Junction": [
+                # Clapham Junction is a through station for South Western services
+                # Trains from Reading/Basingstoke line continue through to London without passenger changes
+                ("South Western Main Line", "Reading to Basingstoke Line"),
+                ("Reading to Basingstoke Line", "South Western Main Line"),
+                # Portsmouth Direct Line trains continue as South Western Main Line trains
+                ("Portsmouth Direct Line", "South Western Main Line"),
+                ("South Western Main Line", "Portsmouth Direct Line"),
             ]
         }
         

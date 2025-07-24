@@ -85,13 +85,17 @@ class RouteConverter:
                             segment_time = 30  # Default 30 minutes for Underground black box
                             self.logger.debug(f"Set default 30min journey time for Underground segment: {segment_from} -> {segment_to}")
                     
+                    # Generate train service ID for this segment
+                    train_service_id = self._generate_train_service_id(current_line, service_pattern, segment_from, segment_to)
+                    
                     segment = RouteSegment(
                         from_station=segment_from,
                         to_station=segment_to,
                         line_name=current_line,
                         distance_km=segment_distance,
                         journey_time_minutes=segment_time,
-                        service_pattern=service_pattern
+                        service_pattern=service_pattern,
+                        train_service_id=train_service_id
                     )
                     
                     segments.append(segment)
@@ -142,13 +146,17 @@ class RouteConverter:
                     segment_time = 30  # Default 30 minutes for Underground black box
                     self.logger.debug(f"Set default 30min journey time for final Underground segment: {segment_from} -> {segment_to}")
             
+            # Generate train service ID for final segment
+            train_service_id = self._generate_train_service_id(current_line, service_pattern, segment_from, segment_to)
+            
             segment = RouteSegment(
                 from_station=segment_from,
                 to_station=segment_to,
                 line_name=current_line,
                 distance_km=segment_distance,
                 journey_time_minutes=segment_time,
-                service_pattern=service_pattern
+                service_pattern=service_pattern,
+                train_service_id=train_service_id
             )
             
             segments.append(segment)
@@ -293,12 +301,16 @@ class RouteConverter:
     def create_direct_route(self, from_station: str, to_station: str, line_name: str,
                           journey_time: int, distance: float) -> Route:
         """Create a direct route between two stations on the same line."""
+        # Generate train service ID for direct route
+        train_service_id = self._generate_train_service_id(line_name, None, from_station, to_station)
+        
         segment = RouteSegment(
             from_station=from_station,
             to_station=to_station,
             line_name=line_name,
             journey_time_minutes=journey_time,
-            distance_km=distance
+            distance_km=distance,
+            train_service_id=train_service_id
         )
         
         # Create full path for direct route
@@ -399,10 +411,15 @@ class RouteConverter:
         # Create route segments
         segments = []
         for i in range(len(path) - 1):
+            line_name = lines[i] if i < len(lines) else lines[-1]
+            # Generate train service ID for circular route segment
+            train_service_id = self._generate_train_service_id(line_name, None, path[i], path[i + 1])
+            
             segment = RouteSegment(
                 from_station=path[i],
                 to_station=path[i + 1],
-                line_name=lines[i] if i < len(lines) else lines[-1]
+                line_name=line_name,
+                train_service_id=train_service_id
             )
             segments.append(segment)
         
@@ -474,3 +491,40 @@ class RouteConverter:
         except Exception as e:
             self.logger.error(f"Failed to load line data for {line_name}: {e}")
             return None
+
+    def _generate_train_service_id(self, line_name: str, service_pattern: Optional[str],
+                                  from_station: str, to_station: str) -> str:
+        """
+        Generate a train service ID that identifies the physical train service.
+        
+        For the user's specific journey (Farnborough North → Farnborough Main → Clapham Junction → London Waterloo):
+        - Farnborough North → Farnborough Main: Different train (GWR_READING_BASINGSTOKE)
+        - Farnborough Main → Clapham Junction → London Waterloo: Same train (SWR_MAIN_LINE)
+        """
+        if line_name == 'WALKING':
+            return f"WALKING_{from_station}_{to_station}"
+        
+        # Generate service ID based on line and service pattern
+        line_key = line_name.upper().replace(' ', '_').replace('-', '_')
+        
+        # For specific journey segments, assign consistent service IDs
+        if line_name == "Reading to Basingstoke Line":
+            return "GWR_READING_BASINGSTOKE_SERVICE"
+        elif line_name == "South Western Main Line":
+            return "SWR_MAIN_LINE_SERVICE"
+        elif line_name == "Portsmouth Direct Line":
+            # Portsmouth Direct Line trains continue as South Western Main Line trains
+            return "SWR_MAIN_LINE_SERVICE"
+        elif "South Western" in line_name:
+            return "SWR_MAIN_LINE_SERVICE"
+        elif "Portsmouth" in line_name and "Direct" in line_name:
+            # Portsmouth Direct trains are part of the SWR Main Line service
+            return "SWR_MAIN_LINE_SERVICE"
+        elif "Great Western" in line_name or "Reading" in line_name:
+            return "GWR_READING_BASINGSTOKE_SERVICE"
+        elif line_name == "London Underground":
+            return "LONDON_UNDERGROUND_SERVICE"
+        else:
+            # Generic service ID for other lines
+            service_suffix = f"_{service_pattern}" if service_pattern else ""
+            return f"{line_key}_SERVICE{service_suffix}"

@@ -4,18 +4,21 @@ Essential stations filter for reducing UI complexity and preventing crashes.
 This module filters train calling points to show only essential stations:
 - FROM station (origin)
 - TO station (destination)
-- Platform/train changes (interchanges)
+- Actual user journey interchanges (where user must change trains)
 - Underground segments (🚇 Underground)
 - Walk segments
 - Major London terminals
 
 This reduces UI complexity from 20+ stations to 3-5 stations per train,
 preventing Qt rendering crashes while preserving important information.
+
+For direct journeys with no changes, only origin and destination are shown.
 """
 
 import logging
 from typing import List, Set, Optional
 from ...models.train_data import CallingPoint
+from .interchange_detection_service import InterchangeDetectionService
 
 logger = logging.getLogger(__name__)
 
@@ -38,14 +41,17 @@ class EssentialStationsFilter:
     }
     
     @classmethod
-    def filter_to_essential_stations(cls, calling_points: List[CallingPoint], 
+    def filter_to_essential_stations(cls, calling_points: List[CallingPoint],
                                    route_segments: Optional[List] = None) -> List[CallingPoint]:
         """
         Filter calling points to show only essential stations.
         
+        For direct journeys with no train changes, only origin and destination are shown.
+        For journeys with changes, actual interchange stations are included.
+        
         Args:
             calling_points: Full list of calling points
-            route_segments: Route segments for detecting service pattern changes
+            route_segments: Route segments for detecting actual user journey changes
             
         Returns:
             Filtered list containing only essential stations
@@ -53,8 +59,8 @@ class EssentialStationsFilter:
         if not calling_points:
             return []
             
-        if len(calling_points) <= 3:
-            # Already minimal, no filtering needed
+        if len(calling_points) <= 2:
+            # Only origin and destination, no filtering needed
             return calling_points
             
         logger.info(f"Filtering {len(calling_points)} calling points to essential stations only")
@@ -65,11 +71,28 @@ class EssentialStationsFilter:
         essential_stations.append(calling_points[0])
         logger.debug(f"Added FROM station: {calling_points[0].station_name}")
         
+        # Get actual user journey interchanges using InterchangeDetectionService
+        actual_interchanges = set()
+        if route_segments:
+            try:
+                interchange_service = InterchangeDetectionService()
+                interchange_points = interchange_service.detect_user_journey_interchanges(route_segments)
+                
+                # Extract station names where user actually needs to change trains
+                for interchange in interchange_points:
+                    if interchange.is_user_journey_change:
+                        actual_interchanges.add(interchange.station_name)
+                        logger.debug(f"Detected actual interchange: {interchange.station_name}")
+                
+                logger.info(f"Found {len(actual_interchanges)} actual user journey interchanges")
+            except Exception as e:
+                logger.warning(f"Error detecting interchanges: {e}")
+        
         # Process intermediate stations
         for i in range(1, len(calling_points) - 1):
             current = calling_points[i]
             
-            if cls._is_essential_station(current, calling_points, i, route_segments):
+            if cls._is_essential_station(current, calling_points, i, route_segments, actual_interchanges):
                 essential_stations.append(current)
                 logger.debug(f"Added essential station: {current.station_name}")
             else:
@@ -87,8 +110,9 @@ class EssentialStationsFilter:
         return essential_stations
     
     @classmethod
-    def _is_essential_station(cls, current: CallingPoint, all_points: List[CallingPoint], 
-                            index: int, route_segments: Optional[List] = None) -> bool:
+    def _is_essential_station(cls, current: CallingPoint, all_points: List[CallingPoint],
+                            index: int, route_segments: Optional[List] = None,
+                            actual_interchanges: Optional[Set[str]] = None) -> bool:
         """
         Determine if a station is essential and should be shown.
         
@@ -97,6 +121,7 @@ class EssentialStationsFilter:
             all_points: All calling points for context
             index: Index of current point in the list
             route_segments: Route segments for service pattern detection
+            actual_interchanges: Set of station names where user actually changes trains
             
         Returns:
             True if station is essential, False if it can be hidden
@@ -118,17 +143,13 @@ class EssentialStationsFilter:
             logger.debug(f"Essential: London terminal - {station_name}")
             return True
         
-        # Show stations where service pattern changes (train changes/interchanges)
-        if cls._is_service_change_station(current, all_points, index, route_segments):
-            logger.debug(f"Essential: Service change - {station_name}")
+        # Show stations where user actually needs to change trains
+        if actual_interchanges and station_name in actual_interchanges:
+            logger.debug(f"Essential: Actual user journey interchange - {station_name}")
             return True
         
-        # Show stations that are likely interchange points based on name patterns
-        if cls._is_likely_interchange(station_name):
-            logger.debug(f"Essential: Likely interchange - {station_name}")
-            return True
-        
-        # Skip regular intermediate stations
+        # Skip regular intermediate stations (no longer using heuristic-based detection)
+        logger.debug(f"Skipping intermediate station (no actual interchange required): {station_name}")
         return False
     
     @classmethod
@@ -144,80 +165,6 @@ class EssentialStationsFilter:
                 "walking" in station_name.lower() or
                 "🚶" in station_name)
     
-    @classmethod
-    def _is_service_change_station(cls, current: CallingPoint, all_points: List[CallingPoint],
-                                 index: int, route_segments: Optional[List] = None) -> bool:
-        """
-        Check if this station represents a service change (train change/interchange).
-        
-        This is detected by:
-        1. Service pattern changes in route segments
-        2. Operator changes (if available)
-        3. Significant time gaps suggesting train changes
-        """
-        if not route_segments or index == 0:
-            return False
-            
-        try:
-            # Look for service pattern changes in route segments
-            # Find segments that correspond to this station
-            for i, segment in enumerate(route_segments):
-                if not hasattr(segment, 'to_station') or not hasattr(segment, 'service_pattern'):
-                    continue
-                    
-                if segment.to_station == current.station_name:
-                    # Check if next segment has different service pattern
-                    if i < len(route_segments) - 1:
-                        next_segment = route_segments[i + 1]
-                        if (hasattr(next_segment, 'service_pattern') and
-                            segment.service_pattern != next_segment.service_pattern):
-                            logger.debug(f"Service pattern change at {current.station_name}: "
-                                       f"{segment.service_pattern} → {next_segment.service_pattern}")
-                            return True
-            
-            # Check for significant time gaps (>15 minutes) suggesting train changes
-            if index > 0 and index < len(all_points) - 1:
-                prev_point = all_points[index - 1]
-                next_point = all_points[index + 1]
-                
-                if (current.scheduled_departure and prev_point.scheduled_arrival and
-                    current.scheduled_departure and next_point.scheduled_arrival):
-                    
-                    # Time spent at this station
-                    if current.scheduled_departure and current.scheduled_arrival:
-                        stop_duration = (current.scheduled_departure - current.scheduled_arrival).total_seconds() / 60
-                        if stop_duration > 15:  # More than 15 minutes suggests train change
-                            logger.debug(f"Long stop at {current.station_name}: {stop_duration:.0f} minutes")
-                            return True
-            
-        except Exception as e:
-            logger.warning(f"Error checking service change for {current.station_name}: {e}")
-        
-        return False
-    
-    @classmethod
-    def _is_likely_interchange(cls, station_name: str) -> bool:
-        """
-        Check if station name suggests it's likely an interchange.
-        
-        Interchange stations often have these characteristics:
-        - "Junction" in the name
-        - "Central" in the name (major stations)
-        - "Parkway" (major interchange stations)
-        - Airport stations
-        """
-        name_lower = station_name.lower()
-        
-        interchange_indicators = [
-            "junction", "central", "parkway", "airport", "international",
-            "interchange", "cross", "bridge"
-        ]
-        
-        for indicator in interchange_indicators:
-            if indicator in name_lower:
-                return True
-        
-        return False
 
 
 class EssentialStationsConfig:

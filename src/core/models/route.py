@@ -20,6 +20,7 @@ class RouteSegment:
     distance_km: Optional[float] = None
     journey_time_minutes: Optional[int] = None
     service_pattern: Optional[str] = None
+    train_service_id: Optional[str] = None  # Identifies the physical train service
     
     def __post_init__(self):
         """Validate route segment data."""
@@ -229,7 +230,8 @@ class Route:
                     "line_name": seg.line_name,
                     "distance_km": seg.distance_km,
                     "journey_time_minutes": seg.journey_time_minutes,
-                    "service_pattern": seg.service_pattern
+                    "service_pattern": seg.service_pattern,
+                    "train_service_id": seg.train_service_id
                 }
                 for seg in self.segments
             ],
@@ -269,7 +271,8 @@ class Route:
                 line_name=seg["line_name"],
                 distance_km=seg.get("distance_km"),
                 journey_time_minutes=seg.get("journey_time_minutes"),
-                service_pattern=seg.get("service_pattern")
+                service_pattern=seg.get("service_pattern"),
+                train_service_id=seg.get("train_service_id")
             )
             for seg in data["segments"]
         ]

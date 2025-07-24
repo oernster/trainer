@@ -187,15 +187,27 @@ class UndergroundRoutingHandler:
         from_is_underground = self.is_london_underground_station(from_station)
         to_is_underground = self.is_london_underground_station(to_station)
         
+        # If destination is a London terminal that serves National Rail, prefer National Rail
+        if self.is_london_terminal(to_station):
+            # Check if there's a direct National Rail connection
+            if self.data_repository.validate_station_exists(from_station) and self.data_repository.validate_station_exists(to_station):
+                # Both stations exist in National Rail network, prefer National Rail routing
+                self.logger.info(f"Preferring National Rail routing: {to_station} is a London terminal with National Rail services")
+                return False
+        
         # Use black box routing if:
-        # 1. The destination is an Underground station (terminus-to-underground routes)
-        # 2. Both stations are Underground stations (underground-to-underground routes)
+        # 1. Both stations are Underground stations (underground-to-underground routes)
+        # 2. The destination is Underground-only (not a mixed terminal)
         if to_is_underground:
             if from_is_underground:
                 self.logger.info(f"Using black box routing: both {from_station} and {to_station} are Underground stations")
+                return True
+            elif self.is_underground_only_station(to_station):
+                self.logger.info(f"Using black box routing: destination {to_station} is Underground-only station")
+                return True
             else:
-                self.logger.info(f"Using black box routing: destination {to_station} is Underground station")
-            return True
+                self.logger.info(f"Preferring National Rail routing: destination {to_station} serves both Underground and National Rail")
+                return False
         
         return False
     
@@ -220,7 +232,8 @@ class UndergroundRoutingHandler:
             line_name="London Underground",
             distance_km=self._estimate_underground_distance(from_station, to_station),
             journey_time_minutes=self._estimate_underground_time(from_station, to_station),
-            service_pattern="UNDERGROUND"
+            service_pattern="UNDERGROUND",
+            train_service_id="LONDON_UNDERGROUND_SERVICE"
         )
         
         route = Route(
@@ -323,7 +336,8 @@ class UndergroundRoutingHandler:
                     line_name="London Underground",
                     distance_km=segment.distance_km,
                     journey_time_minutes=segment.journey_time_minutes,
-                    service_pattern="UNDERGROUND"
+                    service_pattern="UNDERGROUND",
+                    train_service_id="LONDON_UNDERGROUND_SERVICE"
                 )
                 enhanced_segments.append(black_box_segment)
                 self.logger.debug(f"Replaced segment with black box: {segment.from_station} -> {segment.to_station}")
