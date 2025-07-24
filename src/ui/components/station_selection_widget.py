@@ -285,7 +285,7 @@ class StationSelectionWidget(QWidget):
         if from_station == to_station:
             return False, "From and To stations must be different"
         
-        # Check if stations exist in the list
+        # Check if stations exist in the list (includes both National Rail and Underground stations)
         if from_station not in self.stations:
             return False, f"From station '{from_station}' is not valid"
         

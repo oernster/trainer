@@ -14,7 +14,7 @@ from ..interfaces.i_route_service import IRouteService
 
 from .json_data_repository import JsonDataRepository
 from .station_service import StationService
-from .route_service import RouteService
+from .route_service_refactored import RouteServiceRefactored
 
 
 class ServiceFactory:
@@ -69,8 +69,8 @@ class ServiceFactory:
         """Get or create the route service instance."""
         if self._route_service is None:
             data_repo = self.get_data_repository()
-            self._route_service = RouteService(data_repo)
-            self.logger.info("Created RouteService instance")
+            self._route_service = RouteServiceRefactored(data_repo)
+            self.logger.info("Created RouteServiceRefactored instance")
         
         return self._route_service
     

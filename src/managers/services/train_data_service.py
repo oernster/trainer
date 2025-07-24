@@ -87,8 +87,8 @@ class TrainDataService:
             # Determine service type based on route complexity
             service_type = self._determine_service_type(route_result)
             
-            # Generate realistic operator
-            operator = self._select_operator(train_index)
+            # Generate realistic operator (check for Underground routes first)
+            operator = self._select_operator_for_route(route_result, train_index)
             
             # Generate unique identifiers
             service_id = f"SVC{train_index+1:03d}{departure_time.strftime('%H%M')}"
@@ -161,13 +161,35 @@ class TrainDataService:
     def _select_operator(self, train_index: int) -> str:
         """Select realistic operator based on train index."""
         operators = [
-            "Great Western Railway", 
-            "South Western Railway", 
-            "Southern", 
-            "CrossCountry", 
+            "Great Western Railway",
+            "South Western Railway",
+            "Southern",
+            "CrossCountry",
             "Chiltern Railways"
         ]
         return operators[train_index % len(operators)]
+
+    def _select_operator_for_route(self, route_result, train_index: int) -> str:
+        """Select appropriate operator based on route type (Underground vs National Rail)."""
+        # Check if this is an Underground-only route
+        if hasattr(route_result, 'segments') and route_result.segments:
+            # Check if all segments are Underground
+            underground_segments = 0
+            total_segments = 0
+            
+            for segment in route_result.segments:
+                if hasattr(segment, 'service_pattern'):
+                    total_segments += 1
+                    if getattr(segment, 'service_pattern', '') == 'UNDERGROUND':
+                        underground_segments += 1
+            
+            # If all segments are Underground, use Underground operator
+            if total_segments > 0 and underground_segments == total_segments:
+                logger.debug(f"Route has {underground_segments}/{total_segments} Underground segments - using Underground operator")
+                return "London Underground"
+        
+        # For mixed or National Rail routes, use regular operator selection
+        return self._select_operator(train_index)
 
     def _generate_calling_points_from_route(self, route_result, from_station: str, to_station: str,
                                            departure_time: datetime, arrival_time: datetime) -> List[CallingPoint]:
@@ -240,38 +262,117 @@ class TrainDataService:
         return calling_points
 
     def _extract_intermediate_stations(self, route_result, from_station: str, to_station: str) -> List[str]:
-        """Extract intermediate stations from route result."""
+        """Extract intermediate stations from route result, respecting Underground black box segments."""
         intermediate_stations = []
         
-        # Try to get from full_path first (most authoritative)
-        if hasattr(route_result, 'full_path') and route_result.full_path:
+        # Check if we have route segments to analyze
+        if hasattr(route_result, 'segments') and route_result.segments:
+            # Extract stations from segments, but handle Underground black box segments specially
+            for segment in route_result.segments:
+                if not hasattr(segment, 'service_pattern') or not hasattr(segment, 'from_station') or not hasattr(segment, 'to_station'):
+                    continue
+                
+                # For Underground black box segments, only add the endpoints (not intermediate stations)
+                if getattr(segment, 'service_pattern', '') == 'UNDERGROUND':
+                    logger.debug(f"Underground black box segment: {segment.from_station} -> {segment.to_station} (showing endpoints only)")
+                    # Add the from_station if it's not origin/destination and not already added
+                    from_station_name = segment.from_station
+                    to_station_name = segment.to_station
+                    
+                    if (from_station_name != from_station and from_station_name != to_station and
+                        from_station_name not in intermediate_stations):
+                        intermediate_stations.append(from_station_name)
+                    
+                    if (to_station_name != from_station and to_station_name != to_station and
+                        to_station_name not in intermediate_stations):
+                        intermediate_stations.append(to_station_name)
+                    continue
+                
+                # For normal National Rail segments, add ALL intermediate stations
+                from_station_name = segment.from_station
+                to_station_name = segment.to_station
+                
+                if (from_station_name != from_station and from_station_name != to_station and
+                    from_station_name not in intermediate_stations):
+                    intermediate_stations.append(from_station_name)
+                
+                if (to_station_name != from_station and to_station_name != to_station and
+                    to_station_name not in intermediate_stations):
+                    intermediate_stations.append(to_station_name)
+            
+            logger.debug(f"Extracted {len(intermediate_stations)} intermediate stations from segments (National Rail + Underground endpoints)")
+        
+        # Fallback: Try to get from full_path but filter out Underground-only stations
+        elif hasattr(route_result, 'full_path') and route_result.full_path:
             full_path = route_result.full_path
             if len(full_path) > 2:
-                intermediate_stations = full_path[1:-1]  # Exclude origin and destination
-                logger.debug(f"Using full_path with {len(intermediate_stations)} intermediate stations")
+                # Filter the full path to exclude Underground-only stations
+                for station in full_path[1:-1]:  # Exclude origin and destination
+                    # Only add if it's not an Underground-only station or if it's a major terminus
+                    if self._should_show_station_in_calling_points(station):
+                        intermediate_stations.append(station)
+                logger.debug(f"Using filtered full_path with {len(intermediate_stations)} intermediate stations")
+        
+        # If we still don't have enough stations, try to use full_path regardless of segments
+        if len(intermediate_stations) <= 1 and hasattr(route_result, 'full_path') and route_result.full_path:
+            logger.debug("Segments didn't provide enough detail, using full_path as primary source")
+            intermediate_stations = []
+            full_path = route_result.full_path
+            if len(full_path) > 2:
+                for station in full_path[1:-1]:  # Exclude origin and destination
+                    if self._should_show_station_in_calling_points(station):
+                        intermediate_stations.append(station)
+                logger.debug(f"Using full_path as primary source with {len(intermediate_stations)} intermediate stations")
         
         # Fallback to intermediate_stations property
         elif hasattr(route_result, 'intermediate_stations') and route_result.intermediate_stations:
-            intermediate_stations = route_result.intermediate_stations
-            logger.debug(f"Using intermediate_stations property with {len(intermediate_stations)} stations")
-        
-        # Add transfer stations from route segments
-        if hasattr(route_result, 'segments'):
-            transfer_stations = self._extract_transfer_stations(
-                route_result.segments, intermediate_stations, from_station, to_station
-            )
-            
-            # Merge transfer stations into intermediate stations
-            for transfer_station in transfer_stations:
-                if transfer_station not in intermediate_stations:
-                    # Insert in correct position based on segment order
-                    insert_position = self._find_insert_position(
-                        transfer_station, intermediate_stations, route_result.segments
-                    )
-                    intermediate_stations.insert(insert_position, transfer_station)
-                    logger.info(f"Added transfer station {transfer_station} at position {insert_position}")
+            # Filter intermediate stations as well
+            for station in route_result.intermediate_stations:
+                if self._should_show_station_in_calling_points(station):
+                    intermediate_stations.append(station)
+            logger.debug(f"Using filtered intermediate_stations property with {len(intermediate_stations)} stations")
         
         return intermediate_stations
+
+    def _should_show_station_in_calling_points(self, station_name: str) -> bool:
+        """
+        Determine if a station should be shown in calling points.
+        
+        Args:
+            station_name: The station name to check
+            
+        Returns:
+            True if the station should be shown, False if it should be hidden (Underground black box)
+        """
+        # Always show major London terminals even if they're Underground stations
+        london_terminals = [
+            "London Waterloo", "London Liverpool Street", "London Victoria",
+            "London Paddington", "London Kings Cross", "London St Pancras",
+            "London Euston", "London Bridge", "London Charing Cross",
+            "London Cannon Street", "London Fenchurch Street", "London Marylebone"
+        ]
+        
+        if station_name in london_terminals:
+            return True
+        
+        # Try to load Underground stations to check if this is Underground-only
+        try:
+            from ...core.services.underground_routing_handler import UndergroundRoutingHandler
+            from ...core.services.json_data_repository import JsonDataRepository
+            
+            data_repo = JsonDataRepository()
+            underground_handler = UndergroundRoutingHandler(data_repo)
+            
+            # If it's an Underground-only station (not mixed), hide it
+            if underground_handler.is_underground_only_station(station_name):
+                logger.debug(f"Hiding Underground-only station from calling points: {station_name}")
+                return False
+            
+        except Exception as e:
+            logger.warning(f"Could not check Underground status for {station_name}: {e}")
+        
+        # Default: show the station
+        return True
 
     def _extract_transfer_stations(self, segments, existing_stations: List[str],
                                   from_station: str, to_station: str) -> List[str]:

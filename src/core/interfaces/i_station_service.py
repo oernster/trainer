@@ -101,6 +101,16 @@ class IStationService(ABC):
         pass
     
     @abstractmethod
+    def get_all_station_names_with_underground(self) -> List[str]:
+        """
+        Get all station names including Underground stations for autocomplete.
+        
+        Returns:
+            List of all station names including Underground-only stations
+        """
+        pass
+    
+    @abstractmethod
     def get_stations_on_line(self, line_name: str) -> List[Station]:
         """
         Get all stations on a specific railway line.

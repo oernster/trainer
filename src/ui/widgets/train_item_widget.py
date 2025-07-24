@@ -14,7 +14,7 @@ from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont
 from ...models.train_data import TrainData
 from ...core.services.interchange_detection_service import InterchangeDetectionService
-# Underground formatter removed as part of underground code removal
+from ...ui.formatters.underground_formatter import UndergroundFormatter
 from .train_widgets_base import BaseTrainWidget
 
 logger = logging.getLogger(__name__)
@@ -55,7 +55,8 @@ class TrainItemWidget(QFrame):
         self.train_manager = train_manager
         self.preferences = preferences or {}
         
-        # Underground detection service removed
+        # Initialize Underground formatter for black box routing
+        self.underground_formatter = UndergroundFormatter()
 
         self._setup_ui()
         self._apply_theme_styles()
@@ -334,7 +335,8 @@ class TrainItemWidget(QFrame):
                     line_name = getattr(segment, 'line_name', '')
                     service_pattern = getattr(segment, 'service_pattern', '') if hasattr(segment, 'service_pattern') else ''
                     
-                    # Underground detection removed
+                    # Check for Underground black box segments
+                    is_underground_segment = self.underground_formatter.is_underground_segment(segment)
                     
                     # Detect walking segments
                     is_walking_segment = (line_name == 'WALKING' or service_pattern == 'WALKING')
@@ -366,17 +368,39 @@ class TrainItemWidget(QFrame):
             arrow_label = QLabel(f"→ <font color='#f44336'>{walking_info}</font> →")
             arrow_label.setTextFormat(Qt.TextFormat.RichText)
         else:
-            arrow_label = QLabel("→")
-            colors = self.get_theme_colors(self.current_theme)
-            arrow_label.setStyleSheet(f"""
-                QLabel {{
-                    background-color: transparent;
-                    color: {colors['primary_accent']};
-                    border: none;
-                    margin: 0px;
-                    padding: 0px;
-                }}
-            """)
+            # Check if this is an Underground segment
+            is_underground_connection = False
+            underground_info = ""
+            
+            if hasattr(self.train_data, 'route_segments') and self.train_data.route_segments:
+                for segment in self.train_data.route_segments:
+                    segment_from = getattr(segment, 'from_station', '')
+                    segment_to = getattr(segment, 'to_station', '')
+                    
+                    connects_stations = ((segment_from == prev_station and segment_to == station_name) or
+                                       (segment_from == station_name and segment_to == prev_station))
+                    
+                    if connects_stations and self.underground_formatter.is_underground_segment(segment):
+                        is_underground_connection = True
+                        underground_info = "Underground (10-40min)"
+                        break
+            
+            if is_underground_connection:
+                # Use TfL red color for Underground segments
+                arrow_label = QLabel(f"→ <font color='#DC241F'>🚇 {underground_info}</font> →")
+                arrow_label.setTextFormat(Qt.TextFormat.RichText)
+            else:
+                arrow_label = QLabel("→")
+                colors = self.get_theme_colors(self.current_theme)
+                arrow_label.setStyleSheet(f"""
+                    QLabel {{
+                        background-color: transparent;
+                        color: {colors['primary_accent']};
+                        border: none;
+                        margin: 0px;
+                        padding: 0px;
+                    }}
+                """)
         
         arrow_font = QFont()
         arrow_font.setPointSize(9)
@@ -675,11 +699,21 @@ class TrainItemWidget(QFrame):
             self._apply_theme_styles()
     
     def _format_destination(self) -> str:
-        """Format destination without underground indicator."""
+        """Format destination with Underground indicator if route involves Underground."""
         destination = self.train_data.destination
         
-        # Don't show underground indicators - just show the destination name
-        return f"→ {destination}"
+        # Check if route involves Underground segments
+        has_underground = False
+        if hasattr(self.train_data, 'route_segments') and self.train_data.route_segments:
+            for segment in self.train_data.route_segments:
+                if self.underground_formatter.is_underground_segment(segment):
+                    has_underground = True
+                    break
+        
+        if has_underground:
+            return f"→ {destination} 🚇"
+        else:
+            return f"→ {destination}"
     
     def _should_simplify_route_display(self, calling_points: List) -> bool:
         """Check if we should simplify the route display."""

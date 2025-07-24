@@ -287,8 +287,15 @@ class SettingsHandler(QObject):
             # Validate stations exist (if station service is available)
             if self.station_service:
                 try:
-                    all_stations = self.station_service.get_all_stations()
-                    station_names = [station.name for station in all_stations]
+                    # Use the same Underground-inclusive method as autocomplete
+                    try:
+                        station_names = self.station_service.get_all_station_names_with_underground()
+                        logger.debug(f"Using Underground-inclusive validation with {len(station_names)} stations")
+                    except AttributeError:
+                        # Fallback to regular stations if the new method doesn't exist
+                        all_stations = self.station_service.get_all_stations()
+                        station_names = [station.name for station in all_stations]
+                        logger.debug(f"Using fallback validation with {len(station_names)} stations")
                     
                     if from_station not in station_names:
                         return {

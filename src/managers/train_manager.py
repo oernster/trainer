@@ -69,13 +69,12 @@ class TrainManager(QObject):
         # Route state
         self.from_station: Optional[str] = None
         self.to_station: Optional[str] = None
-        self.route_path: Optional[List[str]] = None
+        # Note: route_path removed - UI should get route data directly from RouteService
         
         # Initialize services
         self._initialize_services(config)
         
-        # Load route path from config if available
-        self._load_route_from_config()
+        # Note: No longer loading route_path from config - UI gets route data from RouteService
         
         logger.info("Refactored TrainManager initialized with service-oriented architecture")
 
@@ -98,12 +97,7 @@ class TrainManager(QObject):
         self.configuration_service = ConfigurationService(config, self.__class__.config_manager)
         self.timetable_service = TimetableService()
 
-    def _load_route_from_config(self) -> None:
-        """Load route path from configuration."""
-        route_path = self.configuration_service.get_route_path_from_config()
-        if route_path:
-            self.route_path = route_path
-            logger.info(f"Loaded route path from config with {len(route_path)} stations")
+    # Note: _load_route_from_config removed - UI gets route data directly from RouteService
 
     # Reference to config_manager for direct access (maintained for compatibility)
     config_manager = None
@@ -117,23 +111,18 @@ class TrainManager(QObject):
         """Set the current route and trigger refresh."""
         old_from = self.from_station
         old_to = self.to_station
-        old_path = self.route_path
         
         self.from_station = from_station
         self.to_station = to_station
         
-        # Update route path and persist
-        if route_path is not None:
-            self.route_path = route_path
-            self.configuration_service.set_route_path(from_station, to_station, route_path)
-        else:
-            self.route_path = None
-            self.configuration_service.set_route_path(from_station, to_station, None)
+        # Note: No longer storing route_path - UI gets route data directly from RouteService
+        # Just persist the from/to stations for configuration
+        self.configuration_service.set_route_path(from_station, to_station, None)
         
         logger.info(f"Route set: {self.from_station} -> {self.to_station}")
         
         # Trigger refresh if route changed
-        if old_from != from_station or old_to != to_station or old_path != self.route_path:
+        if old_from != from_station or old_to != to_station:
             logger.info("Route changed, triggering refresh")
             self.fetch_trains()
 
@@ -240,13 +229,7 @@ class TrainManager(QObject):
             logger.warning(f"No route found from {self.from_station} to {self.to_station}")
             return []
 
-        # Store route path for future use
-        if hasattr(route_result, 'full_path') and route_result.full_path:
-            self.route_path = route_result.full_path
-            # Persist to config
-            self.configuration_service.set_route_path(
-                self.from_station, self.to_station, self.route_path
-            )
+        # Note: No longer storing detailed route_path - UI gets route data directly from RouteService
 
         # Generate trains from route
         departure_time = datetime.now()

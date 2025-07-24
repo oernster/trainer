@@ -166,6 +166,24 @@ class StationService(IStationService):
         stations = self.get_all_stations()
         return [station.name for station in stations]
     
+    def get_all_station_names_with_underground(self) -> List[str]:
+        """Get all station names including Underground stations for autocomplete."""
+        # Get National Rail stations
+        national_rail_stations = set(self.get_all_station_names())
+        
+        # Get Underground stations
+        underground_stations = set()
+        try:
+            from .underground_routing_handler import UndergroundRoutingHandler
+            underground_handler = UndergroundRoutingHandler(self.data_repository)
+            underground_stations = underground_handler.load_london_underground_stations()
+        except Exception as e:
+            self.logger.warning(f"Could not load Underground stations: {e}")
+        
+        # Combine both sets and return sorted list
+        all_stations = national_rail_stations.union(underground_stations)
+        return sorted(list(all_stations))
+    
     def get_railway_lines_for_station(self, station_name: str) -> List[str]:
         """Get all railway lines that serve a station."""
         lines = self.data_repository.get_lines_serving_station(station_name)

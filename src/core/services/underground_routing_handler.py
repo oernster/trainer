@@ -71,7 +71,39 @@ class UndergroundRoutingHandler:
             True if the station is a London Underground station, False otherwise
         """
         underground_stations = self.load_london_underground_stations()
-        return station_name in underground_stations
+        
+        # Check exact match first
+        if station_name in underground_stations:
+            return True
+        
+        # Try normalized variations for London terminals
+        # Handle "London Liverpool Street" -> "Liverpool Street" etc.
+        normalized_name = station_name
+        if normalized_name.startswith("London "):
+            normalized_name = normalized_name[7:]  # Remove "London " prefix
+            if normalized_name in underground_stations:
+                return True
+        
+        # Handle common station name variations
+        # King's Cross St. Pancras variations
+        if "king" in station_name.lower() and ("cross" in station_name.lower() or "pancras" in station_name.lower()):
+            # Try "Kings Cross St Pancras" (the version in our JSON)
+            if "Kings Cross St Pancras" in underground_stations:
+                return True
+        
+        # Handle apostrophe and period variations
+        # Remove apostrophes and periods for comparison
+        clean_name = station_name.replace("'", "").replace(".", "")
+        if clean_name in underground_stations:
+            return True
+        
+        # Try adding/removing common punctuation
+        for station in underground_stations:
+            clean_station = station.replace("'", "").replace(".", "")
+            if clean_name == clean_station:
+                return True
+        
+        return False
     
     def is_underground_only_station(self, station_name: str) -> bool:
         """
@@ -152,20 +184,18 @@ class UndergroundRoutingHandler:
         Returns:
             True if black box routing should be used, False otherwise
         """
-        # Use black box routing if both stations are in London and at least one is Underground-only
-        from_is_london = "London" in from_station
-        to_is_london = "London" in to_station
+        from_is_underground = self.is_london_underground_station(from_station)
+        to_is_underground = self.is_london_underground_station(to_station)
         
-        # If both stations are in London
-        if from_is_london and to_is_london:
-            # Check if either is Underground-only
-            from_underground_only = self.is_underground_only_station(from_station)
-            to_underground_only = self.is_underground_only_station(to_station)
-            
-            # Use black box if either station is Underground-only
-            if from_underground_only or to_underground_only:
-                self.logger.info(f"Using black box routing: {from_station} -> {to_station} (Underground-only stations)")
-                return True
+        # Use black box routing if:
+        # 1. The destination is an Underground station (terminus-to-underground routes)
+        # 2. Both stations are Underground stations (underground-to-underground routes)
+        if to_is_underground:
+            if from_is_underground:
+                self.logger.info(f"Using black box routing: both {from_station} and {to_station} are Underground stations")
+            else:
+                self.logger.info(f"Using black box routing: destination {to_station} is Underground station")
+            return True
         
         return False
     
@@ -325,21 +355,50 @@ class UndergroundRoutingHandler:
         Returns:
             Estimated distance in kilometers
         """
-        # Simple estimation based on typical Underground distances
-        # This could be enhanced with actual Underground network data
+        # More realistic distance estimation based on London geography
         
-        # If both stations are in central London, assume shorter distance
-        central_london_indicators = ["Central", "City", "Covent Garden", "Oxford", "Piccadilly"]
+        # Central London stations (Zone 1)
+        central_london_indicators = [
+            "Central", "City", "Covent Garden", "Oxford", "Piccadilly", "Leicester",
+            "Charing Cross", "Westminster", "Victoria", "Liverpool Street", "Kings Cross",
+            "Euston", "Paddington", "Waterloo", "London Bridge", "Bank", "Monument"
+        ]
         
-        from_central = any(indicator in from_station for indicator in central_london_indicators)
-        to_central = any(indicator in to_station for indicator in central_london_indicators)
+        # Inner London stations (Zones 2-3)
+        inner_london_indicators = [
+            "Clapham", "Camden", "Islington", "Hammersmith", "Kensington", "Chelsea",
+            "Canary Wharf", "Greenwich", "Wimbledon"
+        ]
         
-        if from_central and to_central:
-            return 3.0  # Short central London journey
-        elif from_central or to_central:
-            return 8.0  # One end in central London
+        # Outer London stations (Zones 4-6)
+        outer_london_indicators = [
+            "Heathrow", "Stanmore", "Epping", "Upminster", "Croydon", "Richmond"
+        ]
+        
+        def get_zone(station_name):
+            if any(indicator in station_name for indicator in central_london_indicators):
+                return 1  # Central London
+            elif any(indicator in station_name for indicator in inner_london_indicators):
+                return 2  # Inner London
+            elif any(indicator in station_name for indicator in outer_london_indicators):
+                return 3  # Outer London
+            else:
+                return 2  # Default to inner London
+        
+        from_zone = get_zone(from_station)
+        to_zone = get_zone(to_station)
+        
+        # Distance estimation based on zones
+        if from_zone == 1 and to_zone == 1:
+            return 2.5  # Central to central: 2-3km
+        elif (from_zone == 1 and to_zone == 2) or (from_zone == 2 and to_zone == 1):
+            return 5.0  # Central to inner: 4-6km
+        elif from_zone == 2 and to_zone == 2:
+            return 7.0  # Inner to inner: 6-8km
+        elif (from_zone <= 2 and to_zone == 3) or (from_zone == 3 and to_zone <= 2):
+            return 12.0  # Inner/central to outer: 10-15km
         else:
-            return 15.0  # Cross-London journey
+            return 15.0  # Outer to outer: 12-18km
     
     def _estimate_underground_time(self, from_station: str, to_station: str) -> int:
         """
@@ -362,7 +421,13 @@ class UndergroundRoutingHandler:
         if distance > 10:
             base_time += 5  # 5 minutes for one change
         
-        return max(10, int(base_time))  # Minimum 10 minutes
+        # Realistic Underground time estimates (10-40 minutes):
+        # - Short journeys: 10-15 minutes
+        # - Medium journeys: 15-25 minutes
+        # - Long journeys: 25-40 minutes
+        
+        estimated_time = max(10, min(40, int(base_time)))  # Between 10-40 minutes
+        return estimated_time
     
     def get_underground_statistics(self) -> dict:
         """

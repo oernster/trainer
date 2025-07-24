@@ -2,7 +2,7 @@
 
 from .json_data_repository import JsonDataRepository
 from .station_service import StationService
-from .route_service import RouteService
+from .route_service_refactored import RouteServiceRefactored as RouteService
 from .service_factory import (
     ServiceFactory,
     get_service_factory,

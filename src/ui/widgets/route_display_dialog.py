@@ -18,7 +18,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
 from ...models.train_data import TrainData, CallingPoint
 from ...core.services.interchange_detection_service import InterchangeDetectionService
-# Underground formatter removed as part of underground code removal
+from ...ui.formatters.underground_formatter import UndergroundFormatter
 from .train_widgets_base import BaseTrainWidget
 
 logger = logging.getLogger(__name__)
@@ -43,7 +43,8 @@ class RouteDisplayDialog(QDialog):
         self.current_theme = theme
         self.train_manager = train_manager
         
-        # Underground formatter removed
+        # Initialize Underground formatter for black box routing
+        self.underground_formatter = UndergroundFormatter()
         
         # Cache for station data to avoid repeated loading
         self._station_to_files_cache: Optional[Dict] = None
@@ -138,18 +139,10 @@ class RouteDisplayDialog(QDialog):
 
     def _get_filtered_calling_points(self) -> List[CallingPoint]:
         """Get filtered calling points for display."""
-        # First check if we can get the full route path from the train manager
-        full_path = None
-        if self.train_manager and hasattr(self.train_manager, 'route_path') and self.train_manager.route_path:
-            full_path = self.train_manager.route_path
-            logger.info(f"Using full route path from train manager with {len(full_path)} stations")
-        
-        # If we have a full path, use it to create a more comprehensive display
-        if full_path and len(full_path) >= 2:
-            return self._create_calling_points_from_full_path(full_path)
-        else:
-            # Fall back to using original calling points
-            return self._filter_original_calling_points()
+        # Use the calling points from train data (which now respects Underground black box)
+        # instead of the old train_manager.route_path which contains detailed routing
+        logger.info("Using calling points from train data (respects Underground black box)")
+        return self._filter_original_calling_points()
 
     def _create_calling_points_from_full_path(self, full_path: List[str]) -> List[CallingPoint]:
         """Create calling points from the full route path."""
@@ -299,6 +292,18 @@ class RouteDisplayDialog(QDialog):
         station_name = calling_point.station_name
         is_walking = ("<font color='#f44336'" in station_name)
         
+        # Check if this is part of an Underground segment
+        is_underground_station = False
+        if hasattr(self.train_data, 'route_segments') and self.train_data.route_segments:
+            for segment in self.train_data.route_segments:
+                if self.underground_formatter.is_underground_segment(segment):
+                    segment_from = getattr(segment, 'from_station', '')
+                    segment_to = getattr(segment, 'to_station', '')
+                    
+                    if station_name == segment_from or station_name == segment_to:
+                        is_underground_station = True
+                        break
+        
         if calling_point.is_origin:
             frame.setStyleSheet("""
                 QFrame {
@@ -313,6 +318,16 @@ class RouteDisplayDialog(QDialog):
                 QFrame {
                     background-color: rgba(244, 67, 54, 0.2);
                     border-left: 3px solid #f44336;
+                    border-radius: 4px;
+                    margin: 1px;
+                }
+            """)
+        elif is_underground_station and not calling_point.is_origin and not calling_point.is_destination:
+            # Style Underground stations with TfL red
+            frame.setStyleSheet("""
+                QFrame {
+                    background-color: rgba(220, 36, 31, 0.2);
+                    border-left: 3px solid #DC241F;
                     border-radius: 4px;
                     margin: 1px;
                 }
@@ -485,5 +500,21 @@ class RouteDisplayDialog(QDialog):
             return {}
     
     def _format_station_name(self, station_name: str) -> str:
-        """Format station name - underground detection removed."""
-        return station_name
+        """Format station name with Underground indicator if applicable."""
+        # Check if this station is part of an Underground segment
+        has_underground_connection = False
+        
+        if hasattr(self.train_data, 'route_segments') and self.train_data.route_segments:
+            for segment in self.train_data.route_segments:
+                if self.underground_formatter.is_underground_segment(segment):
+                    segment_from = getattr(segment, 'from_station', '')
+                    segment_to = getattr(segment, 'to_station', '')
+                    
+                    if station_name == segment_from or station_name == segment_to:
+                        has_underground_connection = True
+                        break
+        
+        if has_underground_connection:
+            return f"{station_name} 🚇"
+        else:
+            return station_name

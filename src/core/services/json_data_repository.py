@@ -27,12 +27,20 @@ class JsonDataRepository(IDataRepository):
         Args:
             data_directory: Path to directory containing JSON data files
         """
-        from ...utils.data_path_resolver import get_data_directory
-        
-        if data_directory is None:
-            self.data_directory = get_data_directory()
-        else:
-            self.data_directory = Path(data_directory)
+        try:
+            from ...utils.data_path_resolver import get_data_directory
+            if data_directory is None:
+                self.data_directory = get_data_directory()
+            else:
+                self.data_directory = Path(data_directory)
+        except ImportError:
+            # Fallback for standalone execution
+            import os
+            if data_directory is None:
+                data_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'data')
+                self.data_directory = Path(data_dir)
+            else:
+                self.data_directory = Path(data_directory)
         
         self.lines_directory = self.data_directory / "lines"
         self.logger = logging.getLogger(__name__)

@@ -408,11 +408,18 @@ class StationsSettingsDialog(QDialog):
             # Try to use the core station service first
             if self.station_service:
                 try:
-                    all_stations = self.station_service.get_all_stations()
-                    stations = [station.name for station in all_stations]
-                    logger.info(f"Loaded {len(stations)} stations from core service")
+                    # Use the new method that includes Underground stations for autocomplete
+                    stations = self.station_service.get_all_station_names_with_underground()
+                    logger.info(f"Loaded {len(stations)} stations (including Underground) from core service")
                 except Exception as e:
-                    logger.warning(f"Failed to load from core service: {e}")
+                    logger.warning(f"Failed to load from core service with Underground: {e}")
+                    # Fallback to regular stations if the new method fails
+                    try:
+                        all_stations = self.station_service.get_all_stations()
+                        stations = [station.name for station in all_stations]
+                        logger.info(f"Loaded {len(stations)} stations from core service (fallback)")
+                    except Exception as e2:
+                        logger.warning(f"Failed to load from core service fallback: {e2}")
             
             # Fallback to station database if core service fails
             if not stations and self.station_database:
