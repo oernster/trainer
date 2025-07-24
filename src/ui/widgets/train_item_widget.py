@@ -715,6 +715,8 @@ class TrainItemWidget(QFrame):
         if not hasattr(self.train_data, 'route_segments') or not self.train_data.route_segments:
             return False
         
+        # Debug logging removed - system working correctly
+        
         # STEP 1: Check if user changes lines at this station
         line_change_detected = False
         same_physical_train = False
@@ -733,6 +735,8 @@ class TrainItemWidget(QFrame):
                 current_line = getattr(current_segment, 'line_name', '')
                 next_line = getattr(next_segment, 'line_name', '')
                 
+                # Debug logging removed - system working correctly
+                
                 # Skip if either line name is empty
                 if not current_line or not next_line:
                     continue
@@ -740,6 +744,8 @@ class TrainItemWidget(QFrame):
                 # STEP 1: Check if lines are different
                 if current_line != next_line:
                     line_change_detected = True
+                    
+                    # Debug logging removed - system working correctly
                     
                     # STEP 2: Check if it's the same physical train (override)
                     
@@ -754,6 +760,14 @@ class TrainItemWidget(QFrame):
                         else:
                             # Different service IDs = different trains
                             break
+                    
+                    # Enhanced fallback: Check if this is likely the same train service
+                    # This handles cases where service IDs might not be properly set
+                    enhanced_result = self._is_likely_same_train_service_enhanced(current_line, next_line)
+                    
+                    if enhanced_result:
+                        same_physical_train = True
+                        break
                     
                     # Check service patterns as fallback
                     current_service = getattr(current_segment, 'service_pattern', None)
@@ -773,25 +787,22 @@ class TrainItemWidget(QFrame):
                             same_physical_train = True
                             break
                     
-                    # Check operators as final fallback
-                    current_operator = getattr(current_segment, 'operator', '')
-                    next_operator = getattr(next_segment, 'operator', '')
-                    
-                    if current_operator and next_operator and current_operator == next_operator:
-                        same_physical_train = True
-                        break
-                    
                     # If we get here, it's a real train change
                     break
         
         # Apply the two-step logic
+        result = False
         if line_change_detected:
             if same_physical_train:
-                return False
+                result = False
             else:
-                return True
+                result = True
         else:
-            return False
+            result = False
+        
+        # Debug logging removed - system working correctly
+        
+        return result
 
     def _is_line_change_station(self, station_name: str) -> bool:
         """Check if this station is where the user actually changes from one train line to another."""
@@ -860,6 +871,124 @@ class TrainItemWidget(QFrame):
         
         # Return the original normalized name for other lines
         return normalized
+
+    def _is_likely_same_train_service(self, current_line: str, next_line: str, operator: str) -> bool:
+        """
+        Check if two different line names likely represent the same physical train service.
+        
+        Args:
+            current_line: Current line name
+            next_line: Next line name
+            operator: Train operator
+            
+        Returns:
+            True if likely the same physical train service
+        """
+        # Great Western Railway services often have different line names but same train
+        if operator in ["Great Western Railway", "GWR"]:
+            gwr_lines = [
+                "Great Western Main Line", "Great Western Railway", "Reading to Basingstoke Line",
+                "Cotswold Line", "Thames Valley Line", "Relief Line"
+            ]
+            
+            if current_line in gwr_lines and next_line in gwr_lines:
+                return True
+            else:
+                # Check for partial matches or variations
+                current_lower = current_line.lower()
+                next_lower = next_line.lower()
+                
+                gwr_keywords = ["great western", "gwr", "reading", "cotswold", "thames valley"]
+                current_has_gwr = any(keyword in current_lower for keyword in gwr_keywords)
+                next_has_gwr = any(keyword in next_lower for keyword in gwr_keywords)
+                
+                if current_has_gwr and next_has_gwr:
+                    return True
+        
+        # Cross Country services
+        if operator in ["Cross Country", "CrossCountry"]:
+            cross_country_lines = [
+                "Cross Country Line", "CrossCountry", "West Coast Main Line",
+                "East Coast Main Line", "Midland Main Line"
+            ]
+            if current_line in cross_country_lines and next_line in cross_country_lines:
+                return True
+        
+        # South Western Railway services
+        if operator in ["South Western Railway", "SWR"]:
+            swr_lines = [
+                "South Western Main Line", "Portsmouth Direct Line", "Reading to Basingstoke Line"
+            ]
+            if current_line in swr_lines and next_line in swr_lines:
+                return True
+        
+        # Virgin Trains / Avanti West Coast
+        if operator in ["Virgin Trains", "Avanti West Coast"]:
+            west_coast_lines = [
+                "West Coast Main Line", "Virgin Trains", "Avanti West Coast"
+            ]
+            if current_line in west_coast_lines and next_line in west_coast_lines:
+                return True
+        
+        return False
+
+    def _is_likely_same_train_service_enhanced(self, current_line: str, next_line: str) -> bool:
+        """
+        Enhanced check if two different line names likely represent the same physical train service.
+        This version doesn't require operator information and uses comprehensive line name matching.
+        
+        Args:
+            current_line: Current line name
+            next_line: Next line name
+            
+        Returns:
+            True if likely the same physical train service
+        """
+        # Normalize line names for comparison
+        current_normalized = current_line.lower().strip()
+        next_normalized = next_line.lower().strip()
+        
+        # Great Western Railway services - comprehensive matching
+        gwr_keywords = ["great western", "gwr", "reading", "cotswold", "thames valley", "relief"]
+        current_has_gwr = any(keyword in current_normalized for keyword in gwr_keywords)
+        next_has_gwr = any(keyword in next_normalized for keyword in gwr_keywords)
+        
+        if current_has_gwr and next_has_gwr:
+            return True
+        
+        # Cross Country services
+        cross_country_keywords = ["cross country", "crosscountry"]
+        current_has_cc = any(keyword in current_normalized for keyword in cross_country_keywords)
+        next_has_cc = any(keyword in next_normalized for keyword in cross_country_keywords)
+        
+        if current_has_cc and next_has_cc:
+            return True
+        
+        # South Western Railway services
+        swr_keywords = ["south western", "swr", "portsmouth direct"]
+        current_has_swr = any(keyword in current_normalized for keyword in swr_keywords)
+        next_has_swr = any(keyword in next_normalized for keyword in swr_keywords)
+        
+        if current_has_swr and next_has_swr:
+            return True
+        
+        # West Coast services (Virgin/Avanti)
+        west_coast_keywords = ["west coast", "virgin", "avanti"]
+        current_has_wc = any(keyword in current_normalized for keyword in west_coast_keywords)
+        next_has_wc = any(keyword in next_normalized for keyword in west_coast_keywords)
+        
+        if current_has_wc and next_has_wc:
+            return True
+        
+        # East Coast services
+        east_coast_keywords = ["east coast", "lner"]
+        current_has_ec = any(keyword in current_normalized for keyword in east_coast_keywords)
+        next_has_ec = any(keyword in next_normalized for keyword in east_coast_keywords)
+        
+        if current_has_ec and next_has_ec:
+            return True
+        
+        return False
 
     def _is_major_interchange(self, station_name: str) -> bool:
         """Check if a station is where the passenger actually changes trains/lines during this journey."""

@@ -30,12 +30,12 @@ class TrainListWidget(QScrollArea):
     # Signal emitted when a route button is clicked
     route_selected = Signal(TrainData)
 
-    def __init__(self, max_trains: int = 50, train_manager=None, preferences: Optional[dict] = None, parent: Optional[QWidget] = None):
+    def __init__(self, max_trains: int = 15, train_manager=None, preferences: Optional[dict] = None, parent: Optional[QWidget] = None):
         """
         Initialize train list widget.
 
         Args:
-            max_trains: Maximum number of trains to display
+            max_trains: Maximum number of trains to display (default 15 for optimal display)
             train_manager: Train manager instance for accessing route data
             preferences: User preferences dictionary
             parent: Parent widget

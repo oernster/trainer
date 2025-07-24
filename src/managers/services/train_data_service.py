@@ -597,8 +597,8 @@ class TrainDataService:
                 )
                 processed_trains.append(fallback_train)
         
-        # Limit to max trains
-        max_trains_limit = 100
+        # Limit to max trains - ensure we always try to provide at least 15 trains when available
+        max_trains_limit = max(100, 15)  # Keep the higher limit but ensure minimum of 15
         limited_trains = processed_trains[:max_trains_limit]
         
         # Calculate reduction statistics

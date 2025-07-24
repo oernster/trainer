@@ -372,6 +372,27 @@ class InterchangeDetectionService:
                 # Portsmouth Direct Line trains continue as South Western Main Line trains
                 ("Portsmouth Direct Line", "South Western Main Line"),
                 ("South Western Main Line", "Portsmouth Direct Line"),
+            ],
+            # Add through stations for Great Western Railway services
+            "Reading": [
+                ("Great Western Main Line", "Great Western Railway"),
+                ("Great Western Railway", "Great Western Main Line"),
+            ],
+            "Oxford": [
+                ("Great Western Main Line", "Great Western Railway"),
+                ("Great Western Railway", "Great Western Main Line"),
+            ],
+            "Banbury": [
+                ("Great Western Main Line", "Cross Country Line"),
+                ("Cross Country Line", "Great Western Main Line"),
+                ("Great Western Railway", "Cross Country"),
+                ("Cross Country", "Great Western Railway"),
+            ],
+            "Rugby": [
+                ("Cross Country Line", "West Coast Main Line"),
+                ("West Coast Main Line", "Cross Country Line"),
+                ("Cross Country", "West Coast Main Line"),
+                ("West Coast Main Line", "Cross Country"),
             ]
         }
         

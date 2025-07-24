@@ -520,8 +520,12 @@ class RouteConverter:
         elif "Portsmouth" in line_name and "Direct" in line_name:
             # Portsmouth Direct trains are part of the SWR Main Line service
             return "SWR_MAIN_LINE_SERVICE"
-        elif "Great Western" in line_name or "Reading" in line_name:
-            return "GWR_READING_BASINGSTOKE_SERVICE"
+        elif "Great Western" in line_name or "Reading" in line_name or "GWR" in line_name:
+            # All Great Western Railway services use the same service ID
+            return "GWR_MAIN_LINE_SERVICE"
+        elif "Cross Country" in line_name or "CrossCountry" in line_name:
+            # All Cross Country services use the same service ID
+            return "CROSS_COUNTRY_SERVICE"
         elif line_name == "London Underground":
             return "LONDON_UNDERGROUND_SERVICE"
         else:
