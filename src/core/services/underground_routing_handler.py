@@ -198,6 +198,7 @@ class UndergroundRoutingHandler:
         # Use black box routing if:
         # 1. Both stations are Underground stations (underground-to-underground routes)
         # 2. The destination is Underground-only (not a mixed terminal)
+        # 3. The origin is Underground-only and destination is not underground (underground-to-national-rail routes)
         if to_is_underground:
             if from_is_underground:
                 self.logger.info(f"Using black box routing: both {from_station} and {to_station} are Underground stations")
@@ -208,6 +209,18 @@ class UndergroundRoutingHandler:
             else:
                 self.logger.info(f"Preferring National Rail routing: destination {to_station} serves both Underground and National Rail")
                 return False
+        
+        # Handle underground-to-national-rail routes (e.g., Sloane Square to Fleet)
+        if from_is_underground and not to_is_underground:
+            # Check if origin is underground-only or if we should route via terminus
+            if self.is_underground_only_station(from_station):
+                self.logger.info(f"Using black box routing: origin {from_station} is Underground-only, routing via terminus to {to_station}")
+                return True
+            else:
+                # Mixed station origin - check if destination exists in National Rail network
+                if self.data_repository.validate_station_exists(to_station):
+                    self.logger.info(f"Using black box routing: routing from Underground station {from_station} via terminus to {to_station}")
+                    return True
         
         return False
     

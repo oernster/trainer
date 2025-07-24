@@ -77,7 +77,14 @@ class RouteServiceRefactored(IRouteService):
                     return black_box_route
             
             # For terminus-to-underground routes, use the existing logic
-            return self._calculate_terminus_to_underground_route(normalized_from, to_station, preferences)
+            if (not self.underground_handler.is_london_underground_station(from_station) and
+                self.underground_handler.is_london_underground_station(to_station)):
+                return self._calculate_terminus_to_underground_route(normalized_from, to_station, preferences)
+            
+            # For underground-to-terminus routes (reverse case), use new logic
+            if (self.underground_handler.is_london_underground_station(from_station) and
+                not self.underground_handler.is_london_underground_station(to_station)):
+                return self._calculate_underground_to_terminus_route(from_station, normalized_to, preferences)
         
         # For non-Underground routes, validate stations exist in National Rail network
         if not self.data_repository.validate_station_exists(normalized_from):
@@ -158,11 +165,22 @@ class RouteServiceRefactored(IRouteService):
                     return routes
             
             # For terminus-to-underground routes, use the existing logic
-            terminus_route = self._calculate_terminus_to_underground_route(normalized_from, to_station, preferences)
-            if terminus_route:
-                routes.append(terminus_route)
-                self._route_cache[cache_key] = routes
-                return routes
+            if (not self.underground_handler.is_london_underground_station(from_station) and
+                self.underground_handler.is_london_underground_station(to_station)):
+                terminus_route = self._calculate_terminus_to_underground_route(normalized_from, to_station, preferences)
+                if terminus_route:
+                    routes.append(terminus_route)
+                    self._route_cache[cache_key] = routes
+                    return routes
+            
+            # For underground-to-terminus routes (reverse case), use new logic
+            if (self.underground_handler.is_london_underground_station(from_station) and
+                not self.underground_handler.is_london_underground_station(to_station)):
+                underground_route = self._calculate_underground_to_terminus_route(from_station, normalized_to, preferences)
+                if underground_route:
+                    routes.append(underground_route)
+                    self._route_cache[cache_key] = routes
+                    return routes
         
         # Build network graph
         graph = self.network_builder.build_network_graph()
@@ -773,6 +791,88 @@ class RouteServiceRefactored(IRouteService):
             changes_required=0,
             full_path=[from_station, to_station]
         )
+    
+    def _calculate_underground_to_terminus_route(self, from_station: str, to_station: str,
+                                               preferences: Optional[Dict[str, Any]] = None) -> Optional[Route]:
+        """
+        Calculate a route from Underground station to national rail station via London terminus.
+        
+        Args:
+            from_station: Underground starting station
+            to_station: National rail destination station
+            preferences: User preferences
+            
+        Returns:
+            Route with underground-to-terminus pattern or None
+        """
+        self.logger.info(f"Calculating underground-to-terminus route: {from_station} → {to_station}")
+        
+        # Get the best London terminus for this route (based on destination)
+        best_terminus = self._get_best_london_terminus_for_route(to_station, from_station)
+        
+        if not best_terminus:
+            self.logger.warning(f"No suitable London terminus found for {from_station} → {to_station}")
+            return None
+        
+        # If ending at the terminus, just create Underground segment
+        if to_station == best_terminus:
+            return self._create_underground_only_route(from_station, to_station)
+        
+        # Calculate route from terminus to destination
+        graph = self.network_builder.build_network_graph()
+        path_node = self.pathfinder.dijkstra_shortest_path(
+            best_terminus, to_station, graph, 'time', preferences
+        )
+        
+        if not path_node:
+            self.logger.warning(f"No route found from terminus {best_terminus} to {to_station}")
+            return None
+        
+        try:
+            # Convert to route
+            mainline_route = self.route_converter.path_to_route(path_node, graph)
+            
+            # Add Underground segment from origin to terminus
+            underground_segment = RouteSegment(
+                from_station=from_station,
+                to_station=best_terminus,
+                line_name="London Underground",
+                distance_km=self.underground_handler._estimate_underground_distance(from_station, best_terminus),
+                journey_time_minutes=self.underground_handler._estimate_underground_time(from_station, best_terminus),
+                service_pattern="UNDERGROUND",
+                train_service_id="LONDON_UNDERGROUND_SERVICE"
+            )
+            
+            # Combine segments (Underground first, then mainline)
+            all_segments = [underground_segment] + mainline_route.segments
+            
+            # Create combined route
+            total_time = (underground_segment.journey_time_minutes or 0) + (mainline_route.total_journey_time_minutes or 0)
+            total_distance = (underground_segment.distance_km or 0) + (mainline_route.total_distance_km or 0)
+            
+            # Create full path
+            full_path = [from_station, best_terminus]
+            if mainline_route.full_path and len(mainline_route.full_path) > 1:
+                full_path.extend(mainline_route.full_path[1:])  # Skip terminus, include destination
+            else:
+                full_path.append(to_station)
+            
+            combined_route = Route(
+                from_station=from_station,
+                to_station=to_station,
+                segments=all_segments,
+                total_distance_km=total_distance,
+                total_journey_time_minutes=total_time,
+                changes_required=1 + mainline_route.changes_required,  # +1 for Underground change
+                full_path=full_path
+            )
+            
+            self.logger.info(f"Created underground-to-terminus route: {from_station} → {best_terminus} → {to_station}")
+            return combined_route
+            
+        except Exception as e:
+            self.logger.error(f"Failed to create underground-to-terminus route: {e}")
+            return None
 
     def _routes_similar(self, route1: Route, route2: Route, threshold: float = 0.8) -> bool:
         """Check if two routes are similar."""
