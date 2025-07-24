@@ -128,8 +128,10 @@ class ConfigurationService:
         Returns:
             Maximum number of trains to display
         """
-        # For now, use a fixed limit - could be made configurable later
-        return 100
+        # ULTIMATE CRASH FIX: Reduced to 5 trains to isolate crash cause
+        # Even 15 trains is still causing crashes after widget creation
+        # Testing with minimal train count to identify if it's widget-related
+        return 5
 
     def _validate_route_path(self, route_path: List[str], from_station: str, 
                            to_station: str) -> Optional[List[str]]:

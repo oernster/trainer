@@ -90,8 +90,9 @@ class TrainData:
     current_location: Optional[str]
     train_uid: str
     service_id: str
-    calling_points: List[CallingPoint]
+    calling_points: List[CallingPoint]  # Filtered essential stations for main display
     route_segments: Optional[List] = None  # Route segments for interchange detection
+    full_calling_points: Optional[List[CallingPoint]] = None  # Complete route for route dialog
 
     @property
     def is_delayed(self) -> bool:

@@ -330,10 +330,21 @@ class NetworkGraphBuilder:
                     if stations_on_same_line:
                         continue
                 
-                # Skip UNDERGROUND connections entirely - we don't want any underground routing
+                # Allow UNDERGROUND connections to major terminals for cross-London routing
                 if connection_type == 'UNDERGROUND':
-                    self.logger.debug(f"Skipping UNDERGROUND connection: {from_station} ↔ {to_station}")
-                    continue
+                    # Only allow Underground connections to/from major London terminals
+                    london_terminals = ["London Waterloo", "London Liverpool Street", "London Victoria", "London Paddington",
+                                      "London Kings Cross", "London St Pancras", "London Euston", "London Bridge"]
+                    
+                    from_is_terminal = from_station in london_terminals
+                    to_is_terminal = to_station in london_terminals
+                    
+                    # Allow Underground connections if at least one endpoint is a major terminal
+                    if not (from_is_terminal or to_is_terminal):
+                        self.logger.debug(f"Skipping UNDERGROUND connection (no major terminal): {from_station} ↔ {to_station}")
+                        continue
+                    else:
+                        self.logger.info(f"Allowing UNDERGROUND connection to major terminal: {from_station} ↔ {to_station}")
                 
                 # Skip connections involving non-terminal London stations
                 from_is_london = "London" in from_station

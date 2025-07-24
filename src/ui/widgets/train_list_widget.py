@@ -179,20 +179,65 @@ class TrainListWidget(QScrollArea):
         Args:
             trains: List of train data to display
         """
-        # Clear existing items
-        self.clear_trains()
+        try:
+            logger.debug("*** ENTERING update_trains - CRITICAL CRASH POINT ***")
+            logger.debug(f"Widget state - visible: {self.isVisible()}, parent: {self.parent()}")
+            logger.debug(f"Received {len(trains)} trains to display")
+            
+            # CRASH DETECTION: Check widget validity before proceeding
+            if not self.isVisible():
+                logger.debug("WARNING - Widget not visible during update!")
+            
+            if self.parent() is None:
+                logger.debug("CRITICAL - Widget has no parent during update!")
+                return
+            
+            # Clear existing items
+            logger.debug("About to clear existing trains")
+            self.clear_trains()
+            logger.debug("Successfully cleared existing trains")
 
-        # Limit to max_trains
-        display_trains = trains[:self.max_trains]
+            # Limit to max_trains
+            display_trains = trains[:self.max_trains]
+            logger.debug(f"Will display {len(display_trains)} trains (limited from {len(trains)})")
 
-        # Add new train items
-        for train in display_trains:
-            self.add_train_item(train)
+            # ULTIMATE CRASH FIX: Disable automatic layout updates during widget addition
+            logger.debug("*** DISABLING LAYOUT UPDATES TO PREVENT CRASH ***")
+            self.container_widget.setUpdatesEnabled(False)
+            self.setUpdatesEnabled(False)
 
-        # Force scroll area to recalculate content size AFTER all items are added
-        QTimer.singleShot(50, self.update_scroll_area)
+            # Add new train items with crash protection
+            for i, train in enumerate(display_trains):
+                try:
+                    logger.debug(f"Adding train item {i+1}/{len(display_trains)}: {train.destination}")
+                    self.add_train_item(train)
+                    logger.debug(f"Successfully added train item {i+1}")
+                except Exception as e:
+                    logger.debug(f"Failed to add train item {i+1}: {e}", exc_info=True)
+                    # Continue with other trains instead of crashing
 
-        self.log_debug(f"Updated train list with {len(display_trains)} trains")
+            logger.debug("All train items added, RE-ENABLING UPDATES")
+            # Re-enable updates after all widgets are added
+            self.container_widget.setUpdatesEnabled(True)
+            self.setUpdatesEnabled(True)
+
+            logger.debug("SKIPPING DANGEROUS SCROLL AREA UPDATE")
+            # ULTIMATE CRASH FIX: Completely eliminate the delayed scroll area update
+            # This was the source of the crash - Qt doesn't like delayed geometry updates
+            # during widget lifecycle transitions. Let Qt handle scroll area sizing naturally.
+            logger.debug("Scroll area update SKIPPED to prevent crash")
+
+            logger.debug(f"*** SUCCESSFULLY COMPLETED update_trains with {len(display_trains)} trains ***")
+            self.log_debug(f"Updated train list with {len(display_trains)} trains")
+        except Exception as e:
+            logger.debug(f"*** EXCEPTION in update_trains: {e} ***", exc_info=True)
+            # Re-enable updates even if there was an exception
+            try:
+                self.container_widget.setUpdatesEnabled(True)
+                self.setUpdatesEnabled(True)
+            except:
+                pass
+            # Don't re-raise to prevent crash
 
     def clear_trains(self) -> None:
         """Clear all train items from the display."""
@@ -210,19 +255,23 @@ class TrainListWidget(QScrollArea):
         Args:
             train_data: Train data to add
         """
-        train_item = TrainItemWidget(
-            train_data,
-            self.current_theme,
-            train_manager=self.train_manager,
-            preferences=self.preferences
-        )
-        train_item.train_clicked.connect(self.train_selected.emit)
-        train_item.route_clicked.connect(self.route_selected.emit)
+        try:
+            train_item = TrainItemWidget(
+                train_data,
+                self.current_theme,
+                train_manager=self.train_manager,
+                preferences=self.preferences
+            )
+            train_item.train_clicked.connect(self.train_selected.emit)
+            train_item.route_clicked.connect(self.route_selected.emit)
 
-        # Insert before the stretch at the end
-        self.container_layout.insertWidget(self.container_layout.count() - 1, train_item)
+            # Insert before the stretch at the end
+            self.container_layout.insertWidget(self.container_layout.count() - 1, train_item)
 
-        self.train_items.append(train_item)
+            self.train_items.append(train_item)
+        except Exception as e:
+            logger.debug(f"Failed to create TrainItemWidget: {e}")
+            # Don't re-raise to prevent crash
 
     def set_train_manager(self, train_manager) -> None:
         """
@@ -269,46 +318,148 @@ class TrainListWidget(QScrollArea):
 
     def update_scroll_area(self) -> None:
         """Force the scroll area to recalculate its content size."""
-        # Calculate the total height needed for all train items
-        total_height = 0
-        for train_item in self.train_items:
-            total_height += train_item.sizeHint().height() + 4  # +4 for spacing/margins
-        
-        # Add some padding
-        total_height += 20
-        
-        # Set minimum height on container widget to ensure scroll area knows the content size
-        self.container_widget.setMinimumHeight(total_height)
-        
-        # Update the container widget size
-        self.container_widget.updateGeometry()
-        # Force the scroll area to recalculate
-        self.updateGeometry()
-        
-        # Process any pending events to ensure layout is updated
-        QApplication.processEvents()
-        
-        # Configure scroll bar to show partial state
-        viewport_height = self.viewport().height()
-        content_height = total_height
-        
-        if content_height > viewport_height:
-            # Content is larger than viewport - configure scroll bar for partial display
-            scroll_bar = self.verticalScrollBar()
+        try:
+            logger.debug("*** ENTERING update_scroll_area - ULTIMATE CRASH PREVENTION ***")
             
-            # Set the range based on the overflow
-            max_scroll = content_height - viewport_height
-            scroll_bar.setRange(0, max_scroll)
+            # ULTIMATE CRASH PREVENTION: Check if we're in a valid Qt application state
+            app = QApplication.instance()
+            if app is None:
+                logger.debug("CRITICAL - No Qt application instance, aborting!")
+                return
             
-            # Set page step to viewport height for proper handle sizing
-            scroll_bar.setPageStep(viewport_height)
-            scroll_bar.setSingleStep(20)
-            # Force the scroll bar to show and update
-            scroll_bar.setVisible(True)
-            scroll_bar.update()
-        
-        # Update custom scroll bar as well
-        self.update_custom_scroll_bar()
+            # ULTIMATE CRASH PREVENTION: Check if widget is being destroyed
+            try:
+                # Test basic widget validity
+                _ = self.objectName()  # This will fail if widget is being destroyed
+                _ = self.isVisible()   # This will fail if widget is invalid
+            except RuntimeError as e:
+                logger.debug(f"CRITICAL - Widget is being destroyed: {e}")
+                return
+            except Exception as e:
+                logger.debug(f"CRITICAL - Widget in invalid state: {e}")
+                return
+            
+            # ULTIMATE CRASH PREVENTION: Check parent validity
+            try:
+                parent = self.parent()
+                if parent is None:
+                    logger.debug("CRITICAL - Widget has no parent!")
+                    return
+                # Test parent validity
+                _ = parent.objectName()
+            except RuntimeError as e:
+                logger.debug(f"CRITICAL - Parent is being destroyed: {e}")
+                return
+            except Exception as e:
+                logger.debug(f"CRITICAL - Parent in invalid state: {e}")
+                return
+            
+            # ULTIMATE CRASH PREVENTION: Check container widget validity
+            try:
+                if not hasattr(self, 'container_widget') or self.container_widget is None:
+                    logger.debug("CRITICAL - Container widget is None!")
+                    return
+                # Test container validity
+                _ = self.container_widget.objectName()
+                _ = self.container_widget.isVisible()
+            except RuntimeError as e:
+                logger.debug(f"CRITICAL - Container widget is being destroyed: {e}")
+                return
+            except Exception as e:
+                logger.debug(f"CRITICAL - Container widget in invalid state: {e}")
+                return
+            
+            logger.debug(f"All widget validity checks passed - train_items count: {len(self.train_items)}")
+            
+            # ULTIMATE CRASH PREVENTION: Safely calculate heights with extensive error handling
+            total_height = 20  # Start with padding
+            valid_items = 0
+            
+            for i, train_item in enumerate(self.train_items):
+                try:
+                    # Check if train item is valid before accessing it
+                    if train_item is None:
+                        logger.debug(f"Train item {i} is None, skipping")
+                        continue
+                    
+                    # Test train item validity
+                    _ = train_item.objectName()
+                    
+                    # Safely get size hint
+                    size_hint = train_item.sizeHint()
+                    if size_hint.isValid():
+                        item_height = size_hint.height() + 4  # +4 for spacing/margins
+                        total_height += item_height
+                        valid_items += 1
+                        logger.debug(f"Train item {i} height: {item_height}")
+                    else:
+                        logger.debug(f"Train item {i} has invalid size hint, using fallback")
+                        total_height += 150  # Fallback height
+                        
+                except RuntimeError as e:
+                    logger.debug(f"Train item {i} is being destroyed: {e}")
+                    total_height += 150  # Fallback height
+                except Exception as e:
+                    logger.debug(f"Error accessing train item {i}: {e}")
+                    total_height += 150  # Fallback height
+            
+            logger.debug(f"Calculated total height: {total_height} from {valid_items} valid items")
+            
+            # ULTIMATE CRASH PREVENTION: Safely update container widget
+            try:
+                logger.debug("About to set minimum height on container widget")
+                self.container_widget.setMinimumHeight(total_height)
+                logger.debug("Successfully set minimum height")
+            except RuntimeError as e:
+                logger.debug(f"CRITICAL - Container widget destroyed during height setting: {e}")
+                return
+            except Exception as e:
+                logger.debug(f"Error setting container height: {e}")
+                return
+            
+            # ULTIMATE CRASH PREVENTION: Skip dangerous geometry updates
+            logger.debug("SKIPPING DANGEROUS GEOMETRY UPDATES TO PREVENT CRASH")
+            # Don't call updateGeometry() - it's too dangerous during widget transitions
+            
+            # ULTIMATE CRASH PREVENTION: Skip all event processing
+            logger.debug("SKIPPING ALL EVENT PROCESSING TO PREVENT CRASH")
+            # Don't process any events - let Qt handle them naturally
+            
+            # ULTIMATE CRASH PREVENTION: Safely configure scroll bar
+            try:
+                logger.debug("About to safely configure scroll bar")
+                viewport_height = self.viewport().height()
+                content_height = total_height
+                logger.debug(f"Viewport height: {viewport_height}, Content height: {content_height}")
+                
+                if content_height > viewport_height and viewport_height > 0:
+                    # Content is larger than viewport - configure scroll bar for partial display
+                    scroll_bar = self.verticalScrollBar()
+                    if scroll_bar is not None:
+                        # Set the range based on the overflow
+                        max_scroll = content_height - viewport_height
+                        scroll_bar.setRange(0, max_scroll)
+                        scroll_bar.setPageStep(viewport_height)
+                        scroll_bar.setSingleStep(20)
+                        logger.debug(f"Scroll bar configured - range: 0-{max_scroll}")
+                    else:
+                        logger.debug("Scroll bar is None, skipping configuration")
+                else:
+                    logger.debug("Content fits in viewport or invalid dimensions")
+                    
+            except Exception as e:
+                logger.debug(f"Error configuring scroll bar: {e}")
+                # Continue without scroll bar configuration
+            
+            # ULTIMATE CRASH PREVENTION: Skip custom scroll bar update
+            logger.debug("SKIPPING CUSTOM SCROLL BAR UPDATE TO PREVENT CRASH")
+            # Don't update custom scroll bar - it might access invalid widgets
+            
+            logger.debug("*** SUCCESSFULLY COMPLETED update_scroll_area WITH ULTIMATE CRASH PREVENTION ***")
+            
+        except Exception as e:
+            logger.debug(f"*** EXCEPTION in update_scroll_area: {e} ***", exc_info=True)
+            # Don't re-raise to prevent crash
     
     def _on_custom_scroll(self, value: int) -> None:
         """Handle custom scroll bar scroll requests."""

@@ -26,6 +26,12 @@ class TrainDataService:
             config: Application configuration
         """
         self.config = config
+        
+        # CRASH FIX: Cache JsonDataRepository to prevent multiple instances
+        # Each instance loads 72 railway lines and 859 stations from disk
+        # Multiple instances during train generation cause memory pressure and crashes
+        self._data_repo_cache = None
+        self._underground_handler_cache = None
 
     def generate_trains_from_route(self, route_result, from_station: str, to_station: str,
                                   departure_time: datetime, max_trains: int = 100) -> List[TrainData]:
@@ -42,35 +48,43 @@ class TrainDataService:
         Returns:
             List of generated train data
         """
-        if not route_result:
-            logger.warning("No route result provided for train generation")
-            return []
-
-        logger.info(f"Generating trains for route: {from_station} -> {to_station}")
-
-        # Get time window from config
-        time_window_hours = self._get_time_window_hours()
-        
-        trains = []
-        current_time = departure_time
-        train_count = 0
-        
-        # Generate trains at realistic intervals
-        while train_count < max_trains and current_time < departure_time + timedelta(hours=time_window_hours):
-            train_data = self._create_train_from_route(
-                route_result, from_station, to_station, current_time, train_count
-            )
+        try:
             
-            if train_data:
-                trains.append(train_data)
-                train_count += 1
-            
-            # Next train at standard intervals (10-20 minutes)
-            interval_minutes = random.randint(10, 20)
-            current_time += timedelta(minutes=interval_minutes)
+            if not route_result:
+                logger.warning("No route result provided for train generation")
+                return []
 
-        logger.info(f"Generated {len(trains)} realistic trains")
-        return trains
+            logger.info(f"Generating trains for route: {from_station} -> {to_station}")
+
+            # Get time window from config
+            time_window_hours = self._get_time_window_hours()
+            
+            trains = []
+            current_time = departure_time
+            train_count = 0
+            
+            
+            # Generate trains at realistic intervals
+            while train_count < max_trains and current_time < departure_time + timedelta(hours=time_window_hours):
+                
+                train_data = self._create_train_from_route(
+                    route_result, from_station, to_station, current_time, train_count
+                )
+                
+                
+                if train_data:
+                    trains.append(train_data)
+                    train_count += 1
+                
+                # Next train at standard intervals (10-20 minutes)
+                interval_minutes = random.randint(10, 20)
+                current_time += timedelta(minutes=interval_minutes)
+
+            logger.info(f"Generated {len(trains)} realistic trains")
+            return trains
+            
+        except Exception as e:
+            raise
 
     def _create_train_from_route(self, route_result, from_station: str, to_station: str,
                                 departure_time: datetime, train_index: int) -> Optional[TrainData]:
@@ -272,17 +286,23 @@ class TrainDataService:
                 if not hasattr(segment, 'service_pattern') or not hasattr(segment, 'from_station') or not hasattr(segment, 'to_station'):
                     continue
                 
-                # For Underground black box segments, only add the endpoints (not intermediate stations)
+                # For Underground black box segments, add a special Underground indicator instead of endpoints
                 if getattr(segment, 'service_pattern', '') == 'UNDERGROUND':
-                    logger.debug(f"Underground black box segment: {segment.from_station} -> {segment.to_station} (showing endpoints only)")
+                    logger.debug(f"Underground black box segment: {segment.from_station} -> {segment.to_station} (using black box display)")
+                    
                     # Add the from_station if it's not origin/destination and not already added
                     from_station_name = segment.from_station
-                    to_station_name = segment.to_station
-                    
                     if (from_station_name != from_station and from_station_name != to_station and
                         from_station_name not in intermediate_stations):
                         intermediate_stations.append(from_station_name)
                     
+                    # Add Underground black box indicator with TfL red styling
+                    underground_indicator = "<font color='#DC241F'>🚇 Underground (10-40min)</font>"
+                    if underground_indicator not in intermediate_stations:
+                        intermediate_stations.append(underground_indicator)
+                    
+                    # Add the to_station if it's not origin/destination and not already added
+                    to_station_name = segment.to_station
                     if (to_station_name != from_station and to_station_name != to_station and
                         to_station_name not in intermediate_stations):
                         intermediate_stations.append(to_station_name)
@@ -357,14 +377,20 @@ class TrainDataService:
         
         # Try to load Underground stations to check if this is Underground-only
         try:
-            from ...core.services.underground_routing_handler import UndergroundRoutingHandler
-            from ...core.services.json_data_repository import JsonDataRepository
             
-            data_repo = JsonDataRepository()
-            underground_handler = UndergroundRoutingHandler(data_repo)
+            # CRASH FIX: Use cached instances to prevent repeated JSON loading
+            # Creating new JsonDataRepository instances for each station check
+            # causes massive memory pressure (72 lines + 859 stations loaded repeatedly)
+            if self._data_repo_cache is None:
+                from ...core.services.json_data_repository import JsonDataRepository
+                self._data_repo_cache = JsonDataRepository()
+            
+            if self._underground_handler_cache is None:
+                from ...core.services.underground_routing_handler import UndergroundRoutingHandler
+                self._underground_handler_cache = UndergroundRoutingHandler(self._data_repo_cache)
             
             # If it's an Underground-only station (not mixed), hide it
-            if underground_handler.is_underground_only_station(station_name):
+            if self._underground_handler_cache.is_underground_only_station(station_name):
                 logger.debug(f"Hiding Underground-only station from calling points: {station_name}")
                 return False
             
@@ -504,9 +530,10 @@ class TrainDataService:
             trains: Raw train data
 
         Returns:
-            Processed and filtered train data
+            Processed and filtered train data with essential stations only
         """
         from ...utils.helpers import filter_trains_by_status, sort_trains_by_departure
+        from ...core.services.essential_stations_filter import EssentialStationsFilter
         
         # Filter by status - never show cancelled trains
         filtered_trains = filter_trains_by_status(trains, include_cancelled=False)
@@ -514,11 +541,75 @@ class TrainDataService:
         # Sort by departure time
         sorted_trains = sort_trains_by_departure(filtered_trains)
         
+        # Apply essential stations filter to reduce UI complexity while preserving full route
+        processed_trains = []
+        for train in sorted_trains:
+            try:
+                # Filter calling points to essential stations only for main display
+                essential_calling_points = EssentialStationsFilter.filter_to_essential_stations(
+                    train.calling_points, train.route_segments
+                )
+                
+                # Create new TrainData with filtered calling points for main display
+                # but preserve full calling points for route dialog
+                filtered_train = TrainData(
+                    departure_time=train.departure_time,
+                    scheduled_departure=train.scheduled_departure,
+                    destination=train.destination,
+                    platform=train.platform,
+                    operator=train.operator,
+                    service_type=train.service_type,
+                    status=train.status,
+                    delay_minutes=train.delay_minutes,
+                    estimated_arrival=train.estimated_arrival,
+                    journey_duration=train.journey_duration,
+                    current_location=train.current_location,
+                    train_uid=train.train_uid,
+                    service_id=train.service_id,
+                    calling_points=essential_calling_points,  # Filtered for main display
+                    route_segments=train.route_segments,
+                    full_calling_points=train.calling_points  # Complete route for route dialog
+                )
+                
+                processed_trains.append(filtered_train)
+                
+            except Exception as e:
+                logger.warning(f"Error filtering stations for train {train.service_id}: {e}")
+                # Fall back to original train data if filtering fails
+                # Ensure full_calling_points is set even in fallback
+                fallback_train = TrainData(
+                    departure_time=train.departure_time,
+                    scheduled_departure=train.scheduled_departure,
+                    destination=train.destination,
+                    platform=train.platform,
+                    operator=train.operator,
+                    service_type=train.service_type,
+                    status=train.status,
+                    delay_minutes=train.delay_minutes,
+                    estimated_arrival=train.estimated_arrival,
+                    journey_duration=train.journey_duration,
+                    current_location=train.current_location,
+                    train_uid=train.train_uid,
+                    service_id=train.service_id,
+                    calling_points=train.calling_points,  # Use original as both
+                    route_segments=train.route_segments,
+                    full_calling_points=train.calling_points  # Same as calling_points in fallback
+                )
+                processed_trains.append(fallback_train)
+        
         # Limit to max trains
         max_trains_limit = 100
-        limited_trains = sorted_trains[:max_trains_limit]
+        limited_trains = processed_trains[:max_trains_limit]
         
-        logger.info(f"Processed {len(trains)} -> {len(limited_trains)} trains")
+        # Calculate reduction statistics
+        if trains:
+            original_stations = sum(len(train.calling_points) for train in trains[:len(limited_trains)])
+            filtered_stations = sum(len(train.calling_points) for train in limited_trains)
+            reduction_percent = int((1 - filtered_stations / original_stations) * 100) if original_stations > 0 else 0
+            
+            logger.info(f"Processed {len(trains)} -> {len(limited_trains)} trains")
+            logger.info(f"Reduced stations: {original_stations} -> {filtered_stations} ({reduction_percent}% reduction)")
+        
         return limited_trains
 
     def _get_time_window_hours(self) -> int:

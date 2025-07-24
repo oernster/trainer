@@ -66,6 +66,21 @@ class MainWindow(QMainWindow):
     def __init__(self, config_manager: Optional[ConfigManager] = None):
         """Initialize the main window."""
         super().__init__()
+        
+        # Initialize crash detection system (but keep it lightweight for normal operation)
+        try:
+            from ..utils.crash_detector import get_crash_detector
+            self.crash_detector = get_crash_detector()
+            logger.debug("Crash detection system initialized")
+        except ImportError:
+            self.crash_detector = None
+            logger.debug("Crash detection system not available")
+        
+        # Add refresh debounce timer to prevent rapid successive refreshes
+        self._refresh_debounce_timer = QTimer()
+        self._refresh_debounce_timer.setSingleShot(True)
+        self._refresh_debounce_timer.timeout.connect(self._emit_debounced_refresh)
+        self._pending_refresh = False
 
         # Make window completely invisible during initialization
         self.setVisible(False)
@@ -118,6 +133,10 @@ class MainWindow(QMainWindow):
         # Setup UI with theme already applied
         self.setup_ui()
         self.setup_application_icon()
+        
+        # Register main window for crash monitoring if available
+        if self.crash_detector:
+            self.crash_detector.register_widget("main_window", self)
         
         # Initialize the optimized initialization manager
         self.initialization_manager = InitializationManager(self.config_manager, self)
@@ -272,6 +291,11 @@ class MainWindow(QMainWindow):
         # Get current preferences from config
         current_preferences = self._get_current_preferences()
         self.train_list_widget = TrainListWidget(max_trains=50, preferences=current_preferences)
+        
+        # Register train list widget for crash monitoring if available
+        if self.crash_detector:
+            self.crash_detector.register_widget("train_list_widget", self.train_list_widget)
+            logger.debug("Registered train_list_widget for crash monitoring")
         
         # Unified widget margins (based on proven Linux implementation)
         if self.is_small_screen:
@@ -938,20 +962,24 @@ class MainWindow(QMainWindow):
         Args:
             trains: List of train data to display
         """
+        logger.debug(f"Updating train display with {len(trains)} trains")
+        
         if self.train_list_widget:
             self.train_list_widget.update_trains(trains)
+            
             # Connect train selection signal if not already connected
             if not hasattr(self, '_train_selection_connected'):
                 self.train_list_widget.train_selected.connect(self.show_train_details)
                 self._train_selection_connected = True
+                
             # Connect route selection signal if not already connected
             if not hasattr(self, '_route_selection_connected'):
                 self.train_list_widget.route_selected.connect(self.show_route_details)
                 self._route_selection_connected = True
+        else:
+            logger.warning("No train_list_widget available for display update")
 
-        # Status bar removed - no longer updating train count
-
-        logger.debug(f"Updated display with {len(trains)} trains")
+        logger.debug(f"Train display updated successfully with {len(trains)} trains")
 
     def update_last_update_time(self, timestamp: str):
         """
@@ -1235,8 +1263,8 @@ class MainWindow(QMainWindow):
                     via_stations
                 )
                 
-                # Trigger refresh to load trains with new route data
-                self.refresh_requested.emit()
+                # Trigger refresh to load trains with new route data (with debounce)
+                self._trigger_debounced_refresh()
                 logger.info("Route changed - refreshing train data for new route")
 
                 # Update weather system if configuration changed
@@ -2130,3 +2158,21 @@ class MainWindow(QMainWindow):
             y = (screen_geometry.height() - window_geometry.height()) // 2
             self.move(x, y)
             logger.debug(f"Centered main window at ({x}, {y})")
+    
+    def _trigger_debounced_refresh(self):
+        """Trigger a debounced refresh to prevent rapid successive refresh requests."""
+        logger.debug("Triggering debounced refresh")
+        self._pending_refresh = True
+        
+        # Stop any existing timer and start a new one with 500ms delay
+        self._refresh_debounce_timer.stop()
+        self._refresh_debounce_timer.start(500)  # 500ms debounce
+    
+    def _emit_debounced_refresh(self):
+        """Emit the actual refresh signal after debounce delay."""
+        if self._pending_refresh:
+            self._pending_refresh = False
+            logger.debug("Emitting debounced refresh signal")
+            self.refresh_requested.emit()
+        else:
+            logger.debug("No pending refresh, skipping signal emission")

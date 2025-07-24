@@ -133,8 +133,10 @@ class SettingsHandler(QObject):
             True if saved successfully, False otherwise
         """
         try:
+            
             # Validate settings before saving
             validation_result = self._validate_settings(from_station, to_station, route_data)
+            
             if not validation_result['valid']:
                 QMessageBox.warning(
                     self.parent_dialog,
@@ -142,6 +144,7 @@ class SettingsHandler(QObject):
                     validation_result['message']
                 )
                 return False
+            
             
             if not self.config_manager:
                 logger.error("No config manager available for saving")
@@ -187,18 +190,36 @@ class SettingsHandler(QObject):
                     
                     # Validate route path
                     if route_path and len(route_path) >= 2:
-                        # Ensure first and last stations match from/to
-                        if route_path[0] != from_station or route_path[-1] != to_station:
-                            logger.warning(f"Route path endpoints ({route_path[0]}, {route_path[-1]}) "
-                                          f"don't match from/to stations ({from_station}, {to_station})")
-                            # Fix the route path to match from/to stations
-                            if route_path[0] != from_station:
-                                route_path[0] = from_station
-                            if route_path[-1] != to_station:
-                                route_path[-1] = to_station
+                        # Filter out Underground black box indicators for endpoint validation
+                        filtered_route_path = []
+                        for station in route_path:
+                            # Skip Underground black box indicators for validation
+                            if ("Underground" in station and ("10-40min" in station or "🚇" in station)):
+                                continue
+                            filtered_route_path.append(station)
+                        
+                        # Ensure first and last stations match from/to (using filtered path)
+                        if filtered_route_path and len(filtered_route_path) >= 2:
+                            if filtered_route_path[0] != from_station or filtered_route_path[-1] != to_station:
+                                logger.warning(f"Route path endpoints ({filtered_route_path[0]}, {filtered_route_path[-1]}) "
+                                              f"don't match from/to stations ({from_station}, {to_station})")
+                                # Fix the route path to match from/to stations
+                                if filtered_route_path[0] != from_station:
+                                    # Find the first non-Underground station and replace it
+                                    for i, station in enumerate(route_path):
+                                        if not ("Underground" in station and ("10-40min" in station or "🚇" in station)):
+                                            route_path[i] = from_station
+                                            break
+                                if filtered_route_path[-1] != to_station:
+                                    # Find the last non-Underground station and replace it
+                                    for i in range(len(route_path) - 1, -1, -1):
+                                        station = route_path[i]
+                                        if not ("Underground" in station and ("10-40min" in station or "🚇" in station)):
+                                            route_path[i] = to_station
+                                            break
                         
                         config.stations.route_path = route_path
-                        logger.info(f"Saved route path with {len(route_path)} stations: {' → '.join(route_path)}")
+                        logger.info(f"Saved route path with {len(route_path)} stations (including Underground indicators)")
                     else:
                         logger.warning("Invalid route path, not saving")
             
@@ -208,18 +229,22 @@ class SettingsHandler(QObject):
                 logger.debug(f"Theme preserved in config before save: {current_theme}")
             
             # Save configuration with force_flush to ensure persistence
-            if hasattr(self.config_manager, 'save_config') and 'force_flush' in self.config_manager.save_config.__code__.co_varnames:
-                # Use force_flush if available
-                self.config_manager.save_config(config, force_flush=True)
-                logger.debug("Saved configuration with force_flush=True")
-            else:
-                # Fallback to regular save
-                self.config_manager.save_config(config)
-                logger.debug("Saved configuration (force_flush not available)")
-            
-            logger.info(f"Settings saved successfully: {from_station} → {to_station}")
-            self.settings_saved.emit()
-            return True
+            try:
+                if hasattr(self.config_manager, 'save_config') and 'force_flush' in self.config_manager.save_config.__code__.co_varnames:
+                    # Use force_flush if available
+                    self.config_manager.save_config(config, force_flush=True)
+                    logger.debug("Saved configuration with force_flush=True")
+                else:
+                    # Fallback to regular save
+                    self.config_manager.save_config(config)
+                    logger.debug("Saved configuration (force_flush not available)")
+                
+                logger.info(f"Settings saved successfully: {from_station} -> {to_station}")
+                self.settings_saved.emit()
+                return True
+            except Exception as save_error:
+                import traceback
+                raise save_error
             
         except Exception as e:
             error_msg = f"Error saving settings: {e}"
@@ -257,7 +282,13 @@ class SettingsHandler(QObject):
             
             # Validate that route has been calculated if stations are selected
             if from_station and to_station:
-                if not route_data or not route_data.get('journey_time'):
+                # Check for route data with multiple possible time field names
+                has_journey_time = (route_data and
+                                  (route_data.get('journey_time') or
+                                   route_data.get('total_journey_time_minutes') or
+                                   route_data.get('total_journey_time')))
+                
+                if not has_journey_time:
                     return {
                         'valid': False,
                         'message': 'Please click "Find Route" to calculate the route before saving settings.'
@@ -275,14 +306,27 @@ class SettingsHandler(QObject):
                             'message': 'Route path is invalid. Please recalculate the route.'
                         }
                     
-                    # Check if route path matches from/to stations
-                    if route_path[0] != from_station or route_path[-1] != to_station:
-                        logger.warning(f"Route path endpoints ({route_path[0]}, {route_path[-1]}) "
-                                      f"don't match from/to stations ({from_station}, {to_station})")
-                        return {
-                            'valid': False,
-                            'message': 'Route path does not match selected stations. Please recalculate the route.'
-                        }
+                    # Filter out Underground black box indicators for validation
+                    filtered_route_path = []
+                    
+                    for station in route_path:
+                        # Skip Underground black box indicators
+                        if ("Underground" in station and ("10-40min" in station or "🚇" in station)):
+                            logger.debug(f"Skipping Underground black box indicator in validation: {station}")
+                            continue
+                        filtered_route_path.append(station)
+                    
+                    # Check if filtered route path matches from/to stations
+                    if filtered_route_path and len(filtered_route_path) >= 2:
+                        if filtered_route_path[0] != from_station or filtered_route_path[-1] != to_station:
+                            logger.warning(f"Route path endpoints ({filtered_route_path[0]}, {filtered_route_path[-1]}) "
+                                          f"don't match from/to stations ({from_station}, {to_station})")
+                            return {
+                                'valid': False,
+                                'message': 'Route path does not match selected stations. Please recalculate the route.'
+                            }
+                    else:
+                        logger.debug("Route path contains only Underground indicators, skipping endpoint validation")
             
             # Validate stations exist (if station service is available)
             if self.station_service:

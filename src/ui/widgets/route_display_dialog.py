@@ -139,10 +139,13 @@ class RouteDisplayDialog(QDialog):
 
     def _get_filtered_calling_points(self) -> List[CallingPoint]:
         """Get filtered calling points for display."""
-        # Use the calling points from train data (which now respects Underground black box)
-        # instead of the old train_manager.route_path which contains detailed routing
-        logger.info("Using calling points from train data (respects Underground black box)")
-        return self._filter_original_calling_points()
+        # Use full_calling_points if available (complete route), otherwise fall back to calling_points
+        if hasattr(self.train_data, 'full_calling_points') and self.train_data.full_calling_points:
+            logger.info(f"Using full calling points for route dialog ({len(self.train_data.full_calling_points)} stations)")
+            return self._filter_calling_points_list(self.train_data.full_calling_points)
+        else:
+            logger.info("Using filtered calling points from train data (full_calling_points not available)")
+            return self._filter_calling_points_list(self.train_data.calling_points)
 
     def _create_calling_points_from_full_path(self, full_path: List[str]) -> List[CallingPoint]:
         """Create calling points from the full route path."""
@@ -196,10 +199,9 @@ class RouteDisplayDialog(QDialog):
         logger.info(f"Created {len(filtered_calling_points)} calling points from full route path")
         return filtered_calling_points
 
-    def _filter_original_calling_points(self) -> List[CallingPoint]:
-        """Filter original calling points to remove duplicates."""
-        calling_points = self.train_data.calling_points
-        logger.info(f"Falling back to original {len(calling_points)} calling points in route dialog")
+    def _filter_calling_points_list(self, calling_points: List[CallingPoint]) -> List[CallingPoint]:
+        """Filter calling points list to remove duplicates."""
+        logger.info(f"Processing {len(calling_points)} calling points in route dialog")
         
         # Remove duplicate stations (keep the one with more complete information)
         seen_stations = set()

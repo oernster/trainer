@@ -194,15 +194,29 @@ class PathfindingAlgorithm:
                 if next_station in visited:
                     continue
                 
-                # Skip underground stations entirely (black box approach)
+                # Allow Underground routing for cross-London journeys
                 is_london_station = "London" in next_station
-                london_terminals = ["London Waterloo", "London Liverpool Street", "London Victoria", "London Paddington"]
+                london_terminals = ["London Waterloo", "London Liverpool Street", "London Victoria", "London Paddington",
+                                  "London Kings Cross", "London St Pancras", "London Euston", "London Bridge"]
                 is_london_terminal = next_station in london_terminals
                 
-                # Skip if it's a London station but not a major terminal
-                if is_london_station and not is_london_terminal:
-                    self.logger.debug(f"Skipping non-terminal London station: {next_station}")
+                # Calculate if this is a cross-London journey that might benefit from Underground
+                from_is_london = "London" in start
+                to_is_london = "London" in end
+                
+                # Allow Underground routing if:
+                # 1. It's a London terminal (always allow)
+                # 2. It's a cross-London journey where Underground might be beneficial
+                # 3. The journey is longer than 50km (likely cross-London)
+                journey_distance = current.distance
+                is_cross_london_journey = (not from_is_london and not to_is_london and journey_distance > 30)
+                
+                # Skip non-terminal London stations ONLY if it's not a beneficial cross-London journey
+                if is_london_station and not is_london_terminal and not is_cross_london_journey:
+                    self.logger.debug(f"Skipping non-terminal London station: {next_station} (not cross-London journey)")
                     continue
+                elif is_london_station and not is_london_terminal and is_cross_london_journey:
+                    self.logger.info(f"Allowing Underground routing for cross-London journey: {next_station}")
                 
                 # If both start and end are on common lines, ONLY allow connections on those lines
                 if common_lines:
@@ -368,6 +382,11 @@ class PathfindingAlgorithm:
                 # Choose weight based on function
                 weight = self._calculate_weight(
                     weight_func, new_time, new_distance, new_changes, best_connection
+                )
+                
+                # Apply Underground routing bonus for cross-London journeys
+                weight = self._apply_underground_routing_bonus(
+                    weight, best_connection, current, start, end
                 )
                 
                 # Apply penalties for walking connections
@@ -613,3 +632,60 @@ class PathfindingAlgorithm:
         except Exception as e:
             self.logger.error(f"Failed to load interchange connections: {e}")
             return {}
+    
+    def _apply_underground_routing_bonus(self, weight: float, connection: Dict, current: 'PathNode',
+                                       start: str, end: str) -> float:
+        """Apply bonus for Underground routing when it's beneficial for cross-London journeys."""
+        # Check if this connection involves Underground routing
+        if connection.get('line') != 'London Underground':
+            return weight
+        
+        # Calculate journey characteristics
+        from_is_london = "London" in start
+        to_is_london = "London" in end
+        journey_distance = current.distance
+        to_station = connection.get('to_station', '')
+        
+        # Major London terminals that are well-connected via Underground
+        major_terminals = [
+            "London Waterloo", "London Liverpool Street", "London Victoria", "London Paddington",
+            "London Kings Cross", "London St Pancras", "London Euston", "London Bridge"
+        ]
+        
+        # Check if this Underground connection goes to a major terminal
+        connects_to_major_terminal = to_station in major_terminals
+        
+        # Apply different bonuses based on journey type
+        bonus_factor = 1.0  # Default: no bonus
+        original_weight = weight
+        
+        # 1. Cross-London journeys (National Rail -> Underground -> National Rail)
+        is_cross_london_journey = (not from_is_london and not to_is_london and journey_distance > 20)
+        
+        # 2. Routes to major terminals (faster than complex National Rail routing)
+        if connects_to_major_terminal:
+            if is_cross_london_journey:
+                # Major bonus for cross-London routes via major terminals
+                # Underground crossing London typically takes 25-30 minutes vs 2+ hours via National Rail
+                bonus_factor = 0.4  # 60% weight reduction - makes Underground very attractive
+                self.logger.info(f"Major Underground bonus (cross-London via terminal): {current.station} -> {to_station}")
+            elif journey_distance > 15:
+                # Medium bonus for routes to terminals from moderate distances
+                bonus_factor = 0.6  # 40% weight reduction
+                self.logger.info(f"Medium Underground bonus (to terminal): {current.station} -> {to_station}")
+            else:
+                # Small bonus for short routes to terminals
+                bonus_factor = 0.8  # 20% weight reduction
+                self.logger.info(f"Small Underground bonus (short to terminal): {current.station} -> {to_station}")
+        elif is_cross_london_journey:
+            # Standard bonus for cross-London journeys not via major terminals
+            bonus_factor = 0.7  # 30% weight reduction
+            self.logger.info(f"Standard Underground bonus (cross-London): {current.station} -> {to_station}")
+        
+        # Apply the bonus
+        if bonus_factor < 1.0:
+            weight = weight * bonus_factor
+            self.logger.info(f"Underground routing bonus applied: {current.station} -> {to_station} "
+                           f"(weight: {original_weight:.1f} -> {weight:.1f}, factor: {bonus_factor})")
+        
+        return weight

@@ -34,8 +34,9 @@ class UndergroundFormatter:
         Returns:
             True if this is an Underground segment, False otherwise
         """
-        return (segment.service_pattern == "UNDERGROUND" or 
-                segment.line_name == "London Underground")
+        return (segment.service_pattern == "UNDERGROUND" or
+                segment.line_name == "London Underground" or
+                segment.line_name == "UNDERGROUND")
     
     def format_underground_segment_text(self, segment: RouteSegment) -> str:
         """

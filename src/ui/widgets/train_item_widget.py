@@ -58,29 +58,54 @@ class TrainItemWidget(QFrame):
         # Initialize Underground formatter for black box routing
         self.underground_formatter = UndergroundFormatter()
 
-        self._setup_ui()
-        self._apply_theme_styles()
+        try:
+            self._setup_ui()
+            self._apply_theme_styles()
 
-        # Set frame style but don't make entire widget clickable
-        self.setFrameStyle(QFrame.Shape.Box)
+            # Set frame style but don't make entire widget clickable
+            self.setFrameStyle(QFrame.Shape.Box)
+        except Exception as e:
+            # Create minimal fallback UI
+            self._create_fallback_ui()
 
     def _setup_ui(self) -> None:
         """Setup the train item UI layout."""
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(12, 8, 12, 8)
-        layout.setSpacing(4)
+        try:
+            layout = QVBoxLayout(self)
+            layout.setContentsMargins(12, 8, 12, 8)
+            layout.setSpacing(4)
 
-        # Main train info line
-        self._create_main_info_line(layout)
-        
-        # Second line: Operator, service type, duration, status
-        self._create_details_line(layout)
-        
-        # Third line: Calling points (intermediate stations) - with wrapping
-        self._create_calling_points_section(layout)
-        
-        # Fourth line: Current location and arrival time
-        self._create_location_line(layout)
+            # Main train info line
+            self._create_main_info_line(layout)
+            
+            # Second line: Operator, service type, duration, status
+            self._create_details_line(layout)
+            
+            # Third line: Calling points (intermediate stations) - with wrapping
+            self._create_calling_points_section(layout)
+            
+            # Fourth line: Current location and arrival time
+            self._create_location_line(layout)
+        except Exception as e:
+            # Create minimal fallback
+            self._create_fallback_ui()
+    
+    def _create_fallback_ui(self) -> None:
+        """Create minimal fallback UI when main UI creation fails."""
+        try:
+            layout = QVBoxLayout(self)
+            layout.setContentsMargins(12, 8, 12, 8)
+            
+            # Just show basic train info without Underground formatting
+            basic_info = QLabel(f"{self.train_data.format_departure_time()} → {self.train_data.destination}")
+            basic_info.setFont(QFont("Arial", 12))
+            layout.addWidget(basic_info)
+            
+            operator_info = QLabel(f"{self.train_data.operator} • {self.train_data.format_delay()}")
+            operator_info.setFont(QFont("Arial", 10))
+            layout.addWidget(operator_info)
+        except Exception as e:
+            logger.error(f"Error creating fallback UI: {e}")
 
     def _create_main_info_line(self, layout: QVBoxLayout) -> None:
         """Create the main train information line."""
@@ -167,38 +192,50 @@ class TrainItemWidget(QFrame):
 
     def _create_calling_points_section(self, layout: QVBoxLayout) -> None:
         """Create the calling points section with station information."""
-        calling_points_widget = QWidget()
-        calling_points_widget.setStyleSheet("""
-            QWidget {
-                background-color: transparent;
-                border: none;
-                margin: 0px;
-                padding: 0px;
-            }
-        """)
-        calling_points_main_layout = QVBoxLayout(calling_points_widget)
-        calling_points_main_layout.setContentsMargins(0, 0, 0, 0)
-        calling_points_main_layout.setSpacing(2)
-        
-        # Check if we should show intermediate stations
-        show_intermediate = self.preferences.get('show_intermediate_stations', True)
-        
-        # Get all calling points to show complete journey
-        all_calling_points = self.train_data.calling_points
-        
-        # Remove duplicate stations while preserving order and keeping the most important one
-        filtered_calling_points = self._filter_calling_points(all_calling_points)
-        
-        if not show_intermediate:
-            # When intermediate stations are hidden, only show origin, destination, and interchange stations
-            filtered_calling_points = self._filter_for_essential_stations_only(filtered_calling_points)
-        
-        if filtered_calling_points and len(filtered_calling_points) >= 2:
-            self._create_calling_points_display(calling_points_main_layout, filtered_calling_points)
-        else:
-            self._create_direct_service_display(calling_points_main_layout)
-        
-        layout.addWidget(calling_points_widget)
+        try:
+            calling_points_widget = QWidget()
+            calling_points_widget.setStyleSheet("""
+                QWidget {
+                    background-color: transparent;
+                    border: none;
+                    margin: 0px;
+                    padding: 0px;
+                }
+            """)
+            calling_points_main_layout = QVBoxLayout(calling_points_widget)
+            calling_points_main_layout.setContentsMargins(0, 0, 0, 0)
+            calling_points_main_layout.setSpacing(2)
+            
+            # Check if we should show intermediate stations
+            show_intermediate = self.preferences.get('show_intermediate_stations', True)
+            
+            # Get all calling points to show complete journey
+            all_calling_points = self.train_data.calling_points
+            
+            # Remove duplicate stations while preserving order and keeping the most important one
+            filtered_calling_points = self._filter_calling_points(all_calling_points)
+            
+            if not show_intermediate:
+                # When intermediate stations are hidden, only show origin, destination, and interchange stations
+                filtered_calling_points = self._filter_for_essential_stations_only(filtered_calling_points)
+            
+            if filtered_calling_points and len(filtered_calling_points) >= 2:
+                self._create_calling_points_display(calling_points_main_layout, filtered_calling_points)
+            else:
+                self._create_direct_service_display(calling_points_main_layout)
+            
+            layout.addWidget(calling_points_widget)
+        except Exception as e:
+            # Create minimal fallback
+            try:
+                fallback_widget = QWidget()
+                fallback_layout = QVBoxLayout(fallback_widget)
+                fallback_label = QLabel("Route information unavailable")
+                fallback_label.setFont(QFont("Arial", 9))
+                fallback_layout.addWidget(fallback_label)
+                layout.addWidget(fallback_widget)
+            except Exception as e2:
+                logger.error(f"Error creating fallback calling points: {e2}")
 
     def _filter_calling_points(self, calling_points: List) -> List:
         """Filter calling points to remove duplicates while preserving important ones."""
@@ -269,48 +306,62 @@ class TrainItemWidget(QFrame):
 
     def _create_calling_points_display(self, layout: QVBoxLayout, calling_points: List) -> None:
         """Create the display for calling points."""
-        # Underground detection removed - use calling points as-is
-        
-        # Show "Stops:" prefix on first line
-        first_line_layout = QHBoxLayout()
-        stops_label = QLabel("Stops:")
-        stops_font = QFont()
-        stops_font.setPointSize(9)
-        stops_font.setBold(True)
-        stops_label.setFont(stops_font)
-        first_line_layout.addWidget(stops_label)
-        
-        # Limit stations per line to avoid overcrowding
-        max_stations_per_line = 3
-        current_line_layout = first_line_layout
-        stations_in_current_line = 0
-        
-        for i, calling_point in enumerate(calling_points):
-            station_name = calling_point.station_name
+        try:
+            # Underground detection removed - use calling points as-is
             
-            # Check if we need a new line
-            if stations_in_current_line >= max_stations_per_line:
-                current_line_layout.addStretch()
-                layout.addLayout(current_line_layout)
-                
-                # Start new line with indentation
-                current_line_layout = QHBoxLayout()
-                indent_label = QLabel("    ")  # 4 spaces for indentation
-                current_line_layout.addWidget(indent_label)
-                stations_in_current_line = 0
+            # Show "Stops:" prefix on first line
+            first_line_layout = QHBoxLayout()
+            stops_label = QLabel("Stops:")
+            stops_font = QFont()
+            stops_font.setPointSize(9)
+            stops_font.setBold(True)
+            stops_label.setFont(stops_font)
+            first_line_layout.addWidget(stops_label)
             
-            # Add arrow between stations
-            if i > 0:
-                self._add_station_arrow(current_line_layout, calling_points, i)
+            # Limit stations per line to avoid overcrowding
+            max_stations_per_line = 3
+            current_line_layout = first_line_layout
+            stations_in_current_line = 0
             
-            # Create station label
-            station_label = self._create_station_label(calling_point)
-            current_line_layout.addWidget(station_label)
-            stations_in_current_line += 1
-        
-        # Finish the last line
-        current_line_layout.addStretch()
-        layout.addLayout(current_line_layout)
+            for i, calling_point in enumerate(calling_points):
+                try:
+                    station_name = calling_point.station_name
+                    
+                    # Check if we need a new line
+                    if stations_in_current_line >= max_stations_per_line:
+                        current_line_layout.addStretch()
+                        layout.addLayout(current_line_layout)
+                        
+                        # Start new line with indentation
+                        current_line_layout = QHBoxLayout()
+                        indent_label = QLabel("    ")  # 4 spaces for indentation
+                        current_line_layout.addWidget(indent_label)
+                        stations_in_current_line = 0
+                    
+                    # Add arrow between stations
+                    if i > 0:
+                        self._add_station_arrow(current_line_layout, calling_points, i)
+                    
+                    # Create station label
+                    station_label = self._create_station_label(calling_point)
+                    current_line_layout.addWidget(station_label)
+                    stations_in_current_line += 1
+                except Exception as e:
+                    # Continue with next station
+                    continue
+            
+            # Finish the last line
+            current_line_layout.addStretch()
+            layout.addLayout(current_line_layout)
+        except Exception as e:
+            # Create minimal fallback
+            try:
+                fallback_layout = QHBoxLayout()
+                fallback_label = QLabel("Stops: Route display error")
+                fallback_layout.addWidget(fallback_label)
+                layout.addLayout(fallback_layout)
+            except Exception as e2:
+                logger.error(f"Error creating fallback calling points display: {e2}")
 
     def _add_station_arrow(self, layout: QHBoxLayout, calling_points: List, index: int) -> None:
         """Add arrow between stations with walking connection detection."""
@@ -363,44 +414,67 @@ class TrainItemWidget(QFrame):
                             walking_info = "Walking connection"
                         break
         
-        # Create appropriate arrow
-        if is_walking_connection and walking_info:
-            arrow_label = QLabel(f"→ <font color='#f44336'>{walking_info}</font> →")
-            arrow_label.setTextFormat(Qt.TextFormat.RichText)
-        else:
-            # Check if this is an Underground segment
-            is_underground_connection = False
-            underground_info = ""
-            
-            if hasattr(self.train_data, 'route_segments') and self.train_data.route_segments:
-                for segment in self.train_data.route_segments:
-                    segment_from = getattr(segment, 'from_station', '')
-                    segment_to = getattr(segment, 'to_station', '')
-                    
-                    connects_stations = ((segment_from == prev_station and segment_to == station_name) or
-                                       (segment_from == station_name and segment_to == prev_station))
-                    
-                    if connects_stations and self.underground_formatter.is_underground_segment(segment):
-                        is_underground_connection = True
-                        underground_info = "Underground (10-40min)"
-                        break
-            
-            if is_underground_connection:
-                # Use TfL red color for Underground segments
-                arrow_label = QLabel(f"→ <font color='#DC241F'>🚇 {underground_info}</font> →")
-                arrow_label.setTextFormat(Qt.TextFormat.RichText)
-            else:
-                arrow_label = QLabel("→")
-                colors = self.get_theme_colors(self.current_theme)
+        # Create appropriate arrow with crash protection
+        try:
+            if is_walking_connection and walking_info:
+                # Use plain text for walking connections to avoid Qt HTML rendering crashes
+                arrow_label = QLabel(f"→ {walking_info} →")
+                # Apply red color via stylesheet instead of HTML
                 arrow_label.setStyleSheet(f"""
                     QLabel {{
                         background-color: transparent;
-                        color: {colors['primary_accent']};
+                        color: #f44336;
                         border: none;
                         margin: 0px;
                         padding: 0px;
                     }}
                 """)
+            else:
+                # Check if this is an Underground segment
+                is_underground_connection = False
+                underground_info = ""
+                
+                if hasattr(self.train_data, 'route_segments') and self.train_data.route_segments:
+                    for segment in self.train_data.route_segments:
+                        segment_from = getattr(segment, 'from_station', '')
+                        segment_to = getattr(segment, 'to_station', '')
+                        
+                        connects_stations = ((segment_from == prev_station and segment_to == station_name) or
+                                           (segment_from == station_name and segment_to == prev_station))
+                        
+                        if connects_stations and self.underground_formatter.is_underground_segment(segment):
+                            is_underground_connection = True
+                            underground_info = "Underground (10-40min)"
+                            break
+                
+                if is_underground_connection:
+                    # TEMPORARILY DISABLE Underground formatting to test crash
+                    arrow_label = QLabel("→")
+                    colors = self.get_theme_colors(self.current_theme)
+                    arrow_label.setStyleSheet(f"""
+                        QLabel {{
+                            background-color: transparent;
+                            color: {colors['primary_accent']};
+                            border: none;
+                            margin: 0px;
+                            padding: 0px;
+                        }}
+                    """)
+                else:
+                    arrow_label = QLabel("→")
+                    colors = self.get_theme_colors(self.current_theme)
+                    arrow_label.setStyleSheet(f"""
+                        QLabel {{
+                            background-color: transparent;
+                            color: {colors['primary_accent']};
+                            border: none;
+                            margin: 0px;
+                            padding: 0px;
+                        }}
+                    """)
+        except Exception as e:
+            # Fallback to simple arrow
+            arrow_label = QLabel("→")
         
         arrow_font = QFont()
         arrow_font.setPointSize(9)
@@ -700,20 +774,22 @@ class TrainItemWidget(QFrame):
     
     def _format_destination(self) -> str:
         """Format destination with Underground indicator if route involves Underground."""
-        destination = self.train_data.destination
-        
-        # Check if route involves Underground segments
-        has_underground = False
-        if hasattr(self.train_data, 'route_segments') and self.train_data.route_segments:
-            for segment in self.train_data.route_segments:
-                if self.underground_formatter.is_underground_segment(segment):
-                    has_underground = True
-                    break
-        
-        if has_underground:
-            return f"→ {destination} 🚇"
-        else:
+        try:
+            destination = self.train_data.destination
+            
+            # Check if route involves Underground segments
+            has_underground = False
+            if hasattr(self.train_data, 'route_segments') and self.train_data.route_segments:
+                for segment in self.train_data.route_segments:
+                    if self.underground_formatter.is_underground_segment(segment):
+                        has_underground = True
+                        break
+            
+            # TEMPORARILY DISABLE Underground indicator to test crash
             return f"→ {destination}"
+        except Exception as e:
+            # Fallback to basic destination
+            return f"→ {getattr(self.train_data, 'destination', 'Unknown')}"
     
     def _should_simplify_route_display(self, calling_points: List) -> bool:
         """Check if we should simplify the route display."""

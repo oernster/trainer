@@ -74,13 +74,24 @@ class RouteConverter:
                                     is_walking_segment = True
                                     self.logger.debug(f"Marking segment as walking: {hop_from} -> {hop_to} (line: {current_line})")
                     
+                    # Determine service pattern
+                    service_pattern = None
+                    if is_walking_segment:
+                        service_pattern = "WALKING"
+                    elif current_line == "UNDERGROUND":
+                        service_pattern = "UNDERGROUND"
+                        # Ensure Underground segments have a reasonable journey time
+                        if segment_time <= 0:
+                            segment_time = 30  # Default 30 minutes for Underground black box
+                            self.logger.debug(f"Set default 30min journey time for Underground segment: {segment_from} -> {segment_to}")
+                    
                     segment = RouteSegment(
                         from_station=segment_from,
                         to_station=segment_to,
                         line_name=current_line,
                         distance_km=segment_distance,
                         journey_time_minutes=segment_time,
-                        service_pattern="WALKING" if is_walking_segment else None
+                        service_pattern=service_pattern
                     )
                     
                     segments.append(segment)
@@ -120,13 +131,24 @@ class RouteConverter:
                             is_walking_segment = True
                             self.logger.debug(f"Marking final segment as walking: {hop_from} -> {hop_to} (line: {current_line})")
             
+            # Determine service pattern for final segment
+            service_pattern = None
+            if is_walking_segment:
+                service_pattern = "WALKING"
+            elif current_line == "UNDERGROUND":
+                service_pattern = "UNDERGROUND"
+                # Ensure Underground segments have a reasonable journey time
+                if segment_time <= 0:
+                    segment_time = 30  # Default 30 minutes for Underground black box
+                    self.logger.debug(f"Set default 30min journey time for final Underground segment: {segment_from} -> {segment_to}")
+            
             segment = RouteSegment(
                 from_station=segment_from,
                 to_station=segment_to,
                 line_name=current_line,
                 distance_km=segment_distance,
                 journey_time_minutes=segment_time,
-                service_pattern="WALKING" if is_walking_segment else None
+                service_pattern=service_pattern
             )
             
             segments.append(segment)

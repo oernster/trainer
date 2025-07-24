@@ -13,9 +13,12 @@ The original monolithic TrainManager (3,120 lines) has been refactored into:
 
 import asyncio
 import logging
+import signal
+import sys
 import threading
+from collections import deque
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from PySide6.QtCore import QObject, Signal, QTimer
 
@@ -65,6 +68,11 @@ class TrainManager(QObject):
         self.current_trains: List[TrainData] = []
         self.last_update: Optional[datetime] = None
         self.is_fetching = False
+        
+        # Thread synchronization and queue management
+        self._fetch_lock = threading.Lock()
+        self._fetch_queue: deque = deque(maxlen=1)  # Only keep the most recent request
+        self._queue_lock = threading.Lock()
         
         # Route state
         self.from_station: Optional[str] = None
@@ -119,27 +127,75 @@ class TrainManager(QObject):
         # Just persist the from/to stations for configuration
         self.configuration_service.set_route_path(from_station, to_station, None)
         
-        logger.info(f"Route set: {self.from_station} -> {self.to_station}")
-        
-        # Trigger refresh if route changed
+        # Don't trigger automatic refresh here - let the UI handle refresh timing
+        # This prevents multiple concurrent fetches during rapid route switching
         if old_from != from_station or old_to != to_station:
-            logger.info("Route changed, triggering refresh")
-            self.fetch_trains()
+            logger.debug("Route changed, but NOT triggering automatic fetch to prevent overload")
 
     # API initialization method removed - now using static data generation
 
     def fetch_trains(self) -> None:
-        """Fetch train data asynchronously."""
-        if self.is_fetching:
-            logger.warning("Fetch already in progress, skipping")
-            return
+        """Fetch train data asynchronously using queue mechanism."""
+        try:
+            # Add fetch request to queue (only keeps most recent due to maxlen=1)
+            with self._queue_lock:
+                fetch_request = (self.from_station, self.to_station, datetime.now())
+                self._fetch_queue.append(fetch_request)
 
-        # Run async fetch using QTimer to integrate with Qt event loop
-        QTimer.singleShot(0, self._start_async_fetch)
+            # Start processing if not already running
+            if not self.is_fetching:
+                # ULTIMATE CRASH FIX: Eliminate QTimer.singleShot entirely - call directly
+                # The QTimer.singleShot was causing delayed execution that could happen after widget destruction
+                try:
+                    # Check if manager is still valid before calling _process_fetch_queue
+                    if hasattr(self, '_fetch_queue') and hasattr(self, 'is_fetching'):
+                        try:
+                            # Test object validity
+                            _ = self.objectName()
+                            self._process_fetch_queue()
+                        except RuntimeError as e:
+                            logger.error(f"TrainManager destroyed before queue processing: {e}")
+                        except Exception as e:
+                            logger.error(f"Error in queue processing: {e}")
+                    else:
+                        logger.error("TrainManager attributes missing, skipping queue processing")
+                except Exception as e:
+                    logger.error(f"Exception in direct queue processing: {e}")
+            
+        except Exception as e:
+            logger.error(f"Exception in fetch_trains: {e}", exc_info=True)
+            raise
+
+    def _process_fetch_queue(self) -> None:
+        """Process the fetch queue and execute the most recent request."""
+        with self._queue_lock:
+            if not self._fetch_queue:
+                logger.debug("Queue is empty, nothing to process")
+                return
+            
+            # Get the most recent request (queue only keeps 1 item due to maxlen=1)
+            fetch_request = self._fetch_queue.popleft()
+            from_station, to_station, timestamp = fetch_request
+            
+        logger.debug(f"Processing queued fetch: {from_station} -> {to_station}")
+        
+        # Update current route if it changed
+        if self.from_station != from_station or self.to_station != to_station:
+            self.from_station = from_station
+            self.to_station = to_station
+            logger.debug(f"Updated route to: {self.from_station} -> {self.to_station}")
+        
+        # Start the actual fetch
+        self._start_async_fetch()
 
     def _start_async_fetch(self) -> None:
         """Start async fetch in a way compatible with Qt."""
         def run_async():
+            # Use threading lock to prevent concurrent fetches
+            if not self._fetch_lock.acquire(blocking=False):
+                logger.warning("Another fetch is already in progress, skipping")
+                return
+                
             try:
                 # Create new event loop for this thread
                 loop = asyncio.new_event_loop()
@@ -150,6 +206,9 @@ class TrainManager(QObject):
                 logger.error(f"Error in async fetch thread: {e}")
                 self.error_occurred.emit(f"Fetch error: {e}")
                 self.is_fetching = False
+            finally:
+                # Always release the lock
+                self._fetch_lock.release()
 
         # Run in separate thread
         thread = threading.Thread(target=run_async, daemon=True)
@@ -161,85 +220,107 @@ class TrainManager(QObject):
             return
 
         self.is_fetching = True
+        logger.debug(f"Starting train fetch for {self.from_station} -> {self.to_station}")
         self.status_changed.emit("Loading train data...")
 
         try:
+            logger.debug("About to check station configuration")
             # Check if we have valid station configuration
             if not self.configuration_service.has_valid_station_config():
-                logger.info("No valid station configuration - showing empty train list")
+                logger.debug("No valid station configuration - showing empty train list")
                 self._emit_empty_results()
                 return
 
+            logger.debug("Station configuration valid, about to fetch trains from services")
             # Fetch trains using services
             trains = await self._fetch_trains_from_services()
             
+            logger.debug(f"Fetched {len(trains) if trains else 0} trains from services")
             if trains:
-                logger.info("Successfully fetched trains using services")
+                logger.debug("Successfully fetched trains using services")
             else:
-                logger.warning("No trains returned from services")
+                logger.debug("No trains returned from services")
 
+            logger.debug("About to process train data")
             # Process the data
             processed_trains = self.train_data_service.process_train_data(trains)
+            logger.debug(f"Processed {len(processed_trains)} trains")
 
+            logger.debug("About to update state and emit signals")
             # Update state and emit signals
             self._update_state_and_emit(processed_trains)
+            logger.debug("Successfully completed train fetch")
 
         except Exception as e:
             error_msg = f"Error loading train data: {e}"
-            logger.error(error_msg, exc_info=True)
+            logger.error(f"Exception in train fetch: {e}", exc_info=True)
             self.error_occurred.emit(error_msg)
             self.connection_changed.emit(False, "Error")
 
         finally:
+            logger.debug("Setting is_fetching to False")
             self.is_fetching = False
 
     async def _fetch_trains_from_services(self) -> List[TrainData]:
         """Fetch train data using service layer."""
         if not self.from_station or not self.to_station:
-            logger.warning(f"No route configured - from_station: {self.from_station}, to_station: {self.to_station}")
+            logger.debug(f"No route configured - from_station: {self.from_station}, to_station: {self.to_station}")
             return []
 
-        logger.info(f"Fetching trains from {self.from_station} to {self.to_station}")
+        logger.debug(f"Fetching trains from {self.from_station} to {self.to_station}")
 
         # Try timetable service first
+        logger.debug("Checking timetable service availability")
         if self.timetable_service.is_available():
+            logger.debug("Timetable service available, fetching from timetable")
             trains = self.timetable_service.fetch_trains_from_timetable(
                 self.from_station, self.to_station
             )
             if trains:
+                logger.debug(f"Got {len(trains)} trains from timetable service")
                 return trains
+            else:
+                logger.debug("No trains from timetable service")
 
         # Generate trains from route calculation
+        logger.debug("About to generate trains from route calculation")
         return await self._generate_trains_from_route()
 
     async def _generate_trains_from_route(self) -> List[TrainData]:
         """Generate trains from route calculation."""
+        logger.debug("Starting _generate_trains_from_route")
         if not self.from_station or not self.to_station:
+            logger.debug("No from/to station, returning empty list")
             return []
             
+        logger.debug("Getting route preferences")
         # Get route preferences
         preferences = self.configuration_service.get_route_preferences()
+        logger.debug(f"Got preferences: {preferences}")
         
+        logger.debug("About to calculate route")
         # Calculate route
         route_result = self.route_calculation_service.calculate_route(
             self.from_station, self.to_station, preferences
         )
+        logger.debug("Route calculation completed")
         
         if not route_result:
-            logger.warning(f"No route found from {self.from_station} to {self.to_station}")
+            logger.debug(f"No route found from {self.from_station} to {self.to_station}")
             return []
 
-        # Note: No longer storing detailed route_path - UI gets route data directly from RouteService
+        logger.debug("Route found, about to generate trains")
 
         # Generate trains from route
         departure_time = datetime.now()
         max_trains = self.configuration_service.get_max_trains_limit()
+        logger.debug(f"About to generate {max_trains} trains from route")
         
         trains = self.train_data_service.generate_trains_from_route(
             route_result, self.from_station, self.to_station, departure_time, max_trains
         )
+        logger.debug(f"Generated {len(trains)} trains from route calculation")
 
-        logger.info(f"Generated {len(trains)} trains from route calculation")
         return trains
 
     def _emit_empty_results(self) -> None:
@@ -253,24 +334,52 @@ class TrainManager(QObject):
 
     def _update_state_and_emit(self, processed_trains: List[TrainData]) -> None:
         """Update state and emit signals."""
+        logger.debug("*** ENTERING _update_state_and_emit - SIGNAL EMISSION POINT ***")
+        logger.debug(f"About to update state with {len(processed_trains)} trains")
+        
         self.current_trains = processed_trains
         self.last_update = datetime.now()
+        logger.debug(f"State updated with {len(processed_trains)} trains")
 
-        # Emit signals
-        self.trains_updated.emit(processed_trains)
-        self.connection_changed.emit(True, "Connected (Offline)")
-        self.last_update_changed.emit(self.last_update.strftime("%H:%M:%S"))
+        # Emit signals with crash detection
+        try:
+            # CRASH DETECTION: Check if we're in a valid state to emit signals
+            from PySide6.QtCore import QCoreApplication
+            app = QCoreApplication.instance()
+            if app is None:
+                logger.error("CRITICAL - No QApplication instance during signal emission!")
+                return
+            
+            logger.debug("About to emit trains_updated signal")
+            self.trains_updated.emit(processed_trains)
+            logger.debug("trains_updated signal emitted successfully")
+            
+            logger.debug("About to emit connection_changed signal")
+            self.connection_changed.emit(True, "Connected (Offline)")
+            logger.debug("connection_changed signal emitted successfully")
+            
+            logger.debug("About to emit last_update_changed signal")
+            self.last_update_changed.emit(self.last_update.strftime("%H:%M:%S"))
+            logger.debug("last_update_changed signal emitted successfully")
 
-        # Generate status message
-        stats = calculate_journey_stats(processed_trains)
-        status_msg = f"Updated: {len(processed_trains)} trains loaded"
-        if stats["delayed"] > 0:
-            status_msg += f", {stats['delayed']} delayed"
-        if stats["cancelled"] > 0:
-            status_msg += f", {stats['cancelled']} cancelled"
+            # Generate status message
+            logger.debug("About to calculate journey stats")
+            stats = calculate_journey_stats(processed_trains)
+            status_msg = f"Updated: {len(processed_trains)} trains loaded"
+            if stats["delayed"] > 0:
+                status_msg += f", {stats['delayed']} delayed"
+            if stats["cancelled"] > 0:
+                status_msg += f", {stats['cancelled']} cancelled"
+            logger.debug(f"Generated status message: {status_msg}")
 
-        self.status_changed.emit(status_msg)
-        logger.info(f"Successfully loaded {len(processed_trains)} trains")
+            logger.debug("About to emit status_changed signal")
+            self.status_changed.emit(status_msg)
+            logger.debug("status_changed signal emitted successfully")
+            
+            logger.debug(f"*** SUCCESSFULLY COMPLETED _update_state_and_emit with {len(processed_trains)} trains ***")
+        except Exception as e:
+            logger.error(f"*** EXCEPTION during signal emission: {e} ***", exc_info=True)
+            raise
 
     # Public API methods (maintained for backward compatibility)
     

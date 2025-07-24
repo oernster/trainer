@@ -13,7 +13,7 @@ from PySide6.QtWidgets import (
     QTabWidget, QWidget, QGroupBox, QMessageBox, QApplication, QSizePolicy
 )
 from PySide6.QtCore import Qt, Signal, QTimer
-from PySide6.QtGui import QFont
+from PySide6.QtGui import QFont, QIcon
 
 # Import components
 from .components.station_selection_widget import StationSelectionWidget
@@ -604,6 +604,7 @@ class StationsSettingsDialog(QDialog):
     def _save_settings(self):
         """Save settings and close dialog."""
         try:
+            
             if not self.station_selection_widget:
                 return
             
@@ -612,6 +613,7 @@ class StationsSettingsDialog(QDialog):
             preferences = self.preferences_widget.get_preferences() if self.preferences_widget else {}
             departure_time = self.route_details_widget.get_departure_time() if self.route_details_widget else "08:00"
             route_data = self.dialog_state.get_route_data()
+            
             
             # Ensure route_data is complete and has full_path
             if route_data and 'full_path' not in route_data:
@@ -675,17 +677,28 @@ class StationsSettingsDialog(QDialog):
             )
             
             if success:
+                
+                # CRASH DETECTION: Check parent window state before signal emission
+                if self.parent_window is None:
+                    self.accept()
+                    return
+                
                 # Emit both signals for compatibility
                 self.settings_changed.emit()
+                
                 self.settings_saved.emit()
                 
                 # Signal the main window to refresh trains with the new route
-                if self.parent_window is not None and hasattr(self.parent_window, 'route_changed'):
+                if hasattr(self.parent_window, 'route_changed'):
                     self.parent_window.route_changed.emit(from_station, to_station)
+                else:
+                    logger.debug("Parent window has no route_changed signal")
                 
                 # Also emit refresh signal if available
-                if self.parent_window is not None and hasattr(self.parent_window, 'refresh_requested'):
+                if hasattr(self.parent_window, 'refresh_requested'):
                     self.parent_window.refresh_requested.emit()
+                else:
+                    logger.debug("Parent window has no refresh_requested signal")
                 
                 # Direct call to train manager if available
                 if self.parent_window is not None and hasattr(self.parent_window, 'train_manager') and self.parent_window.train_manager:
@@ -773,9 +786,16 @@ class StationsSettingsDialog(QDialog):
     def closeEvent(self, event):
         """Handle dialog close event."""
         try:
+            
+            # CRASH DETECTION: Check if signals are still being processed
+            if hasattr(self, '_signals_processing'):
+                # Wait briefly for signals to complete
+                from PySide6.QtCore import QTimer
+                QTimer.singleShot(100, lambda: event.accept())
+                return
+            
             # Accept the close event
             event.accept()
             
         except Exception as e:
-            logger.error(f"Error during dialog close: {e}")
             event.accept()

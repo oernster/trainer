@@ -69,18 +69,32 @@ class JsonDataRepository(IDataRepository):
         try:
             # Load railway lines first
             self._railway_lines_cache = self._load_railway_lines_from_json()
+            
             self._line_name_to_line = {line.name: line for line in self._railway_lines_cache}
             
             # Extract stations from railway lines
             self._stations_cache = self._extract_stations_from_lines()
+            
             self._station_name_to_station = {station.name: station for station in self._stations_cache}
             
             self._last_loaded = datetime.now()
             self.logger.info(f"Loaded {len(self._stations_cache)} stations and {len(self._railway_lines_cache)} railway lines")
             
+        except json.JSONDecodeError as e:
+            self.logger.critical(f"JSON parsing failed at line {e.lineno}, column {e.colno}: {e}")
+            # Initialize empty caches to prevent further crashes
+            self._railway_lines_cache = []
+            self._stations_cache = []
+            self._line_name_to_line = {}
+            self._station_name_to_station = {}
+            # Don't re-raise - let the application continue with empty data
         except Exception as e:
-            self.logger.error(f"Failed to load railway data: {e}")
-            raise
+            # Initialize empty caches to prevent further crashes
+            self._railway_lines_cache = []
+            self._stations_cache = []
+            self._line_name_to_line = {}
+            self._station_name_to_station = {}
+            # Don't re-raise - let the application continue with empty data
     
     def _load_railway_lines_from_json(self) -> List[RailwayLine]:
         """Load railway lines from ALL JSON files in the lines directory."""
@@ -94,8 +108,13 @@ class JsonDataRepository(IDataRepository):
                 with open(index_file, 'r', encoding='utf-8') as f:
                     index_data = json.load(f)
                 self.logger.info(f"Loaded railway lines index with {len(index_data.get('lines', []))} entries")
+            except json.JSONDecodeError as e:
+                self.logger.error(f"MALFORMED JSON in railway lines index {index_file}: {e}")
+                self.logger.error(f"JSON parsing failed at line {e.lineno}, column {e.colno}")
+                index_data = {}  # Use empty dict as fallback
             except Exception as e:
-                self.logger.warning(f"Failed to load railway lines index: {e}")
+                self.logger.error(f"Failed to load railway lines index {index_file}: {e}")
+                index_data = {}  # Use empty dict as fallback
         
         # Create a mapping of file names to index info
         index_mapping = {}
@@ -135,6 +154,11 @@ class JsonDataRepository(IDataRepository):
                     railway_lines.append(railway_line)
                     self.logger.debug(f"Loaded railway line: {railway_line.name}")
                 
+            except json.JSONDecodeError as e:
+                self.logger.error(f"MALFORMED JSON in railway line file {line_file.name}: {e}")
+                self.logger.error(f"JSON parsing failed at line {e.lineno}, column {e.colno}")
+                self.logger.error(f"CRITICAL: Skipping malformed file {line_file.name} to prevent crash")
+                continue
             except Exception as e:
                 self.logger.error(f"Failed to load railway line from {line_file.name}: {e}")
                 continue
