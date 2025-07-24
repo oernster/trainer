@@ -87,15 +87,17 @@ class StationSelectionWidget(QWidget):
         from_label.setFont(font)
         to_label.setFont(font)
         
-        # Create combo boxes
+        # Create combo boxes - ENSURE THEY ARE ENABLED BY DEFAULT
         self.from_station_combo = QComboBox()
         self.from_station_combo.setEditable(True)
+        self.from_station_combo.setEnabled(True)  # Explicitly enable
         self.from_station_combo.setInsertPolicy(QComboBox.InsertPolicy.NoInsert)
         self.from_station_combo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.from_station_combo.setMinimumWidth(200)
         
         self.to_station_combo = QComboBox()
         self.to_station_combo.setEditable(True)
+        self.to_station_combo.setEnabled(True)  # Explicitly enable
         self.to_station_combo.setInsertPolicy(QComboBox.InsertPolicy.NoInsert)
         self.to_station_combo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.to_station_combo.setMinimumWidth(200)
@@ -186,6 +188,14 @@ class StationSelectionWidget(QWidget):
         try:
             self.stations = sorted(stations) if stations else []
             
+            # Store current enabled state to restore after population
+            from_enabled = self.from_station_combo.isEnabled() if self.from_station_combo else True
+            to_enabled = self.to_station_combo.isEnabled() if self.to_station_combo else True
+            
+            # CRITICAL: Store current selections before clearing
+            current_from = self.from_station_combo.currentText() if self.from_station_combo else ""
+            current_to = self.to_station_combo.currentText() if self.to_station_combo else ""
+            
             # Clear existing items
             if self.from_station_combo:
                 self.from_station_combo.clear()
@@ -196,6 +206,19 @@ class StationSelectionWidget(QWidget):
                 from_completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
                 from_completer.setFilterMode(Qt.MatchFlag.MatchContains)
                 self.from_station_combo.setCompleter(from_completer)
+                
+                # CRITICAL: Ensure combo remains enabled and editable after population
+                self.from_station_combo.setEnabled(from_enabled)
+                self.from_station_combo.setEditable(True)
+                line_edit = self.from_station_combo.lineEdit()
+                if line_edit:
+                    line_edit.setEnabled(True)
+                    line_edit.setReadOnly(False)
+                
+                # CRITICAL: Restore previous selection if it existed
+                if current_from:
+                    self.set_from_station(current_from)
+                    logger.debug(f"Restored FROM station after repopulation: {current_from}")
             
             if self.to_station_combo:
                 self.to_station_combo.clear()
@@ -206,8 +229,21 @@ class StationSelectionWidget(QWidget):
                 to_completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
                 to_completer.setFilterMode(Qt.MatchFlag.MatchContains)
                 self.to_station_combo.setCompleter(to_completer)
+                
+                # CRITICAL: Ensure combo remains enabled and editable after population
+                self.to_station_combo.setEnabled(to_enabled)
+                self.to_station_combo.setEditable(True)
+                line_edit = self.to_station_combo.lineEdit()
+                if line_edit:
+                    line_edit.setEnabled(True)
+                    line_edit.setReadOnly(False)
+                
+                # CRITICAL: Restore previous selection if it existed
+                if current_to:
+                    self.set_to_station(current_to)
+                    logger.debug(f"Restored TO station after repopulation: {current_to}")
             
-            logger.debug(f"Populated station combos with {len(self.stations)} stations")
+            logger.debug(f"Populated station combos with {len(self.stations)} stations - fields remain enabled, selections preserved")
             
         except Exception as e:
             logger.error(f"Error populating stations: {e}")
@@ -215,20 +251,46 @@ class StationSelectionWidget(QWidget):
     def set_from_station(self, station_name: str):
         """Set the from station."""
         if self.from_station_combo and station_name:
-            index = self.from_station_combo.findText(station_name)
-            if index >= 0:
-                self.from_station_combo.setCurrentIndex(index)
-            else:
-                self.from_station_combo.setCurrentText(station_name)
+            try:
+                # First try to find exact match
+                index = self.from_station_combo.findText(station_name, Qt.MatchFlag.MatchExactly)
+                if index >= 0:
+                    self.from_station_combo.setCurrentIndex(index)
+                    logger.debug(f"Set FROM station by index: {station_name}")
+                else:
+                    # If not found, set as text directly (for editable combo)
+                    self.from_station_combo.setCurrentText(station_name)
+                    logger.debug(f"Set FROM station by text: {station_name}")
+                
+                # Verify it was set correctly
+                current_text = self.from_station_combo.currentText()
+                if current_text != station_name:
+                    logger.warning(f"FROM station setting verification failed: expected '{station_name}', got '{current_text}'")
+                    
+            except Exception as e:
+                logger.error(f"Error setting FROM station to '{station_name}': {e}")
     
     def set_to_station(self, station_name: str):
         """Set the to station."""
         if self.to_station_combo and station_name:
-            index = self.to_station_combo.findText(station_name)
-            if index >= 0:
-                self.to_station_combo.setCurrentIndex(index)
-            else:
-                self.to_station_combo.setCurrentText(station_name)
+            try:
+                # First try to find exact match
+                index = self.to_station_combo.findText(station_name, Qt.MatchFlag.MatchExactly)
+                if index >= 0:
+                    self.to_station_combo.setCurrentIndex(index)
+                    logger.debug(f"Set TO station by index: {station_name}")
+                else:
+                    # If not found, set as text directly (for editable combo)
+                    self.to_station_combo.setCurrentText(station_name)
+                    logger.debug(f"Set TO station by text: {station_name}")
+                
+                # Verify it was set correctly
+                current_text = self.to_station_combo.currentText()
+                if current_text != station_name:
+                    logger.warning(f"TO station setting verification failed: expected '{station_name}', got '{current_text}'")
+                    
+            except Exception as e:
+                logger.error(f"Error setting TO station to '{station_name}': {e}")
     
     def get_from_station(self) -> str:
         """Get the current from station."""

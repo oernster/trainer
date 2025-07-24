@@ -49,30 +49,30 @@ class SettingsHandler(QObject):
         try:
             if not self.config_manager:
                 logger.warning("No config manager available")
-                return {}
+                return self.get_default_settings()
             
             config = self.config_manager.load_config()
             settings = {}
             
             # Load station settings - try new format first, then old format
-            from_station = None
-            to_station = None
+            from_station = ""
+            to_station = ""
             
-            # Try new format first
+            # Try new format first (Pydantic model attributes)
             if hasattr(config, 'stations') and config.stations:
                 if hasattr(config.stations, 'from_name') and config.stations.from_name:
                     from_station = config.stations.from_name
                 if hasattr(config.stations, 'to_name') and config.stations.to_name:
                     to_station = config.stations.to_name
             
-            # Fallback to old format
+            # Fallback to old format (for backward compatibility)
             if not from_station and hasattr(config, 'default_from_station') and config.default_from_station:
                 from_station = config.default_from_station
             if not to_station and hasattr(config, 'default_to_station') and config.default_to_station:
                 to_station = config.default_to_station
             
-            settings['from_station'] = from_station or ""
-            settings['to_station'] = to_station or ""
+            settings['from_station'] = from_station
+            settings['to_station'] = to_station
             
             # Load preferences
             preferences = {}
@@ -107,15 +107,33 @@ class SettingsHandler(QObject):
                     settings['route_data'] = route_data
                     logger.info(f"Loaded route path with {len(route_path)} stations")
             
-            logger.info(f"Settings loaded successfully: {list(settings.keys())}")
+            logger.info(f"Settings loaded successfully: FROM='{from_station}', TO='{to_station}'")
             self.settings_loaded.emit(settings)
             return settings
             
         except Exception as e:
             error_msg = f"Error loading settings: {e}"
-            logger.error(error_msg)
+            logger.error(error_msg, exc_info=True)
             self.settings_error.emit(error_msg)
-            return {}
+            # Return default settings instead of empty dict
+            return self.get_default_settings()
+    
+    def get_station_settings(self) -> Dict[str, str]:
+        """
+        Get just the station settings (from_station, to_station).
+        
+        Returns:
+            Dictionary with from_station and to_station keys
+        """
+        try:
+            settings = self.load_settings()
+            return {
+                'from_station': settings.get('from_station', ''),
+                'to_station': settings.get('to_station', '')
+            }
+        except Exception as e:
+            logger.error(f"Error getting station settings: {e}")
+            return {'from_station': '', 'to_station': ''}
     
     def save_settings(self, from_station: str, to_station: str, preferences: Dict[str, Any],
                      departure_time: str = "08:00", route_data: Optional[Dict[str, Any]] = None) -> bool:
