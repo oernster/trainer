@@ -37,7 +37,13 @@ class EssentialStationsFilter:
     # Underground indicators that should always be preserved
     UNDERGROUND_INDICATORS = {
         "🚇 Underground (10-40min)",
-        "<font color='#DC241F'>🚇 Underground (10-40min)</font>"
+        "<font color='#DC241F'>🚇 Underground (10-40min)</font>",
+        "🚇 Glasgow Subway (5-20min)",
+        "<font color='#DC241F'>🚇 Glasgow Subway (5-20min)</font>",
+        "🚇 Tyne & Wear Metro (8-35min)",
+        "<font color='#DC241F'>🚇 Tyne & Wear Metro (8-35min)</font>",
+        "🚇 London Underground (10-40min)",
+        "<font color='#DC241F'>🚇 London Underground (10-40min)</font>"
     }
     
     @classmethod
@@ -156,7 +162,8 @@ class EssentialStationsFilter:
     def _is_underground_indicator(cls, station_name: str) -> bool:
         """Check if this is an Underground segment indicator."""
         return (station_name in cls.UNDERGROUND_INDICATORS or
-                "Underground" in station_name and "🚇" in station_name)
+                ("🚇" in station_name and any(system in station_name for system in
+                 ["Underground", "Glasgow Subway", "Tyne & Wear Metro", "London Underground"])))
     
     @classmethod
     def _is_walk_indicator(cls, station_name: str) -> bool:

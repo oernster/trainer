@@ -23,10 +23,35 @@ class UndergroundFormatter:
         self.underground_background = "#DC241F32"  # Semi-transparent red
         self.regular_color = "#333333"
         self.regular_background = "#F5F5F5"
+        
+        # System-specific information
+        self.system_info = {
+            "London Underground": {
+                "name": "London Underground",
+                "emoji": "🚇",
+                "color": "#DC241F",  # TfL red
+                "time_range": "10-40min",
+                "short_name": "London Underground"
+            },
+            "Glasgow Subway": {
+                "name": "Glasgow Subway",
+                "emoji": "🚇",
+                "color": "#FF6600",  # SPT orange
+                "time_range": "5-20min",
+                "short_name": "Glasgow Subway"
+            },
+            "Tyne and Wear Metro": {
+                "name": "Tyne and Wear Metro",
+                "emoji": "🚇",
+                "color": "#FFD700",  # Metro yellow
+                "time_range": "8-35min",
+                "short_name": "Tyne & Wear Metro"
+            }
+        }
     
     def is_underground_segment(self, segment: RouteSegment) -> bool:
         """
-        Check if a route segment is an Underground black box segment.
+        Check if a route segment is an Underground black box segment for any UK system.
         
         Args:
             segment: The route segment to check
@@ -35,8 +60,57 @@ class UndergroundFormatter:
             True if this is an Underground segment, False otherwise
         """
         return (segment.service_pattern == "UNDERGROUND" or
-                segment.line_name == "London Underground" or
+                segment.line_name in self.system_info or
                 segment.line_name == "UNDERGROUND")
+    
+    def get_underground_system_info(self, segment: RouteSegment) -> Dict[str, str]:
+        """
+        Get system-specific information for an underground segment.
+        
+        Args:
+            segment: The underground segment
+            
+        Returns:
+            Dictionary with system information
+        """
+        if not self.is_underground_segment(segment):
+            return {}
+        
+        # Check if line_name matches a known system (exact match first)
+        if segment.line_name in self.system_info:
+            return self.system_info[segment.line_name]
+        
+        # Check for system name variations (case-insensitive)
+        line_name_lower = segment.line_name.lower().strip()
+        
+        # Glasgow Subway variations
+        if any(term in line_name_lower for term in ["glasgow", "subway"]):
+            return self.system_info["Glasgow Subway"]
+        
+        # Tyne and Wear Metro variations
+        if any(term in line_name_lower for term in ["tyne", "wear", "metro", "nexus"]):
+            return self.system_info["Tyne and Wear Metro"]
+        
+        # London Underground variations
+        if any(term in line_name_lower for term in ["london", "underground", "tube", "tfl"]):
+            return self.system_info["London Underground"]
+        
+        # If service_pattern is UNDERGROUND but no system match, try to infer from stations
+        if segment.service_pattern == "UNDERGROUND":
+            # Try to determine system from station names
+            from_station = getattr(segment, 'from_station', '').lower()
+            to_station = getattr(segment, 'to_station', '').lower()
+            
+            # Glasgow indicators
+            if any(term in from_station or term in to_station for term in ["glasgow", "buchanan", "st enoch"]):
+                return self.system_info["Glasgow Subway"]
+            
+            # Tyne and Wear indicators
+            if any(term in from_station or term in to_station for term in ["newcastle", "gateshead", "sunderland", "central station"]):
+                return self.system_info["Tyne and Wear Metro"]
+        
+        # Default to London Underground for backwards compatibility
+        return self.system_info["London Underground"]
     
     def format_underground_segment_text(self, segment: RouteSegment) -> str:
         """
@@ -51,8 +125,14 @@ class UndergroundFormatter:
         if not self.is_underground_segment(segment):
             return f"{segment.from_station} → {segment.to_station}"
         
-        # Format as black box Underground segment with time range
-        return f"🚇 Use London Underground (10-40min)"
+        # Get system-specific information
+        system_info = self.get_underground_system_info(segment)
+        emoji = system_info.get("emoji", "🚇")
+        system_name = system_info.get("short_name", "Underground")
+        time_range = system_info.get("time_range", "10-40min")
+        
+        # Format as black box Underground segment with system-specific time range
+        return f"{emoji} Use {system_name} ({time_range})"
     
     def format_underground_segment_detailed(self, segment: RouteSegment) -> Dict[str, str]:
         """
@@ -72,14 +152,20 @@ class UndergroundFormatter:
                 "type": "regular"
             }
         
+        # Get system-specific information
+        system_info = self.get_underground_system_info(segment)
+        system_name = system_info.get("short_name", "Underground")
+        emoji = system_info.get("emoji", "🚇")
+        time_range = system_info.get("time_range", "10-40min")
+        
         return {
-            "line": "London Underground",
+            "line": system_name,
             "from": segment.from_station,
             "to": segment.to_station,
             "type": "underground",
-            "display_text": "Use London Underground",
-            "icon": "🚇",
-            "time": "(10-40min)",
+            "display_text": f"Use {system_name}",
+            "icon": emoji,
+            "time": f"({time_range})",
             "distance": f"{segment.distance_km:.1f}km" if segment.distance_km else "~5km"
         }
     
@@ -146,10 +232,15 @@ class UndergroundFormatter:
             }
             
             if is_underground:
+                # Get system-specific information
+                system_info = self.get_underground_system_info(segment)
+                system_name = system_info.get("short_name", "Underground")
+                emoji = system_info.get("emoji", "🚇")
+                
                 segment_info.update({
-                    "display_text": "🚇 Use London Underground",
-                    "icon": "🚇",
-                    "description": f"Travel from {segment.from_station} to {segment.to_station} using London Underground",
+                    "display_text": f"{emoji} Use {system_name}",
+                    "icon": emoji,
+                    "description": f"Travel from {segment.from_station} to {segment.to_station} using {system_name}",
                     "instructions": self.format_underground_instructions(segment)
                 })
             else:
@@ -212,14 +303,36 @@ class UndergroundFormatter:
         if not self.is_underground_segment(segment):
             return [f"Travel from {segment.from_station} to {segment.to_station} via {segment.line_name}"]
         
+        # Get system-specific information
+        system_info = self.get_underground_system_info(segment)
+        system_name = system_info.get("short_name", "Underground")
+        time_range = system_info.get("time_range", "10-40min")
+        
         instructions = [
-            f"Use London Underground to travel from {segment.from_station} to {segment.to_station}",
-            "Follow Underground signs and maps",
-            "Check TfL website or app for live service updates",
-            "Allow extra time for potential delays"
+            f"Use {system_name} to travel from {segment.from_station} to {segment.to_station}",
+            "Follow underground signs and maps",
         ]
         
-        instructions.append("Estimated journey time: 10-40 minutes")
+        # Add system-specific advice
+        if "London Underground" in system_name:
+            instructions.extend([
+                "Check TfL website or app for live service updates",
+                "Allow extra time for potential delays"
+            ])
+        elif "Glasgow Subway" in system_name:
+            instructions.extend([
+                "Check SPT website or app for service updates",
+                "Note: Glasgow Subway is a circular line"
+            ])
+        elif "Tyne" in system_name:
+            instructions.extend([
+                "Check Nexus website or app for service updates",
+                "Metro connects Newcastle, Gateshead, and Sunderland"
+            ])
+        else:
+            instructions.append("Check local transport website for service updates")
+        
+        instructions.append(f"Estimated journey time: {time_range}")
         
         return instructions
     
@@ -293,7 +406,10 @@ class UndergroundFormatter:
         parts = []
         for segment in route.segments:
             if self.is_underground_segment(segment):
-                parts.append(f"🚇 Underground")
+                system_info = self.get_underground_system_info(segment)
+                emoji = system_info.get("emoji", "🚇")
+                system_name = system_info.get("short_name", "Underground")
+                parts.append(f"{emoji} {system_name}")
             else:
                 parts.append(f"🚂 {segment.line_name}")
         
@@ -308,14 +424,14 @@ class UndergroundFormatter:
         """
         return {
             "underground_icon": "🚇",
-            "underground_text": "London Underground (black box routing)",
-            "underground_description": "Simplified routing through London Underground network",
+            "underground_text": "UK Underground Systems (black box routing)",
+            "underground_description": "Simplified routing through UK underground networks (London Underground, Glasgow Subway, Tyne & Wear Metro)",
             "regular_icon": "🚂",
             "regular_text": "National Rail",
             "regular_description": "Direct National Rail services"
         }
     
-    def _generate_route_summary_text(self, underground_segments: List[RouteSegment], 
+    def _generate_route_summary_text(self, underground_segments: List[RouteSegment],
                                    regular_segments: List[RouteSegment]) -> str:
         """
         Generate a summary text for the route.
@@ -330,7 +446,16 @@ class UndergroundFormatter:
         if not underground_segments:
             return "National Rail only"
         elif not regular_segments:
-            return "London Underground only"
+            # Determine which underground system(s) are used
+            systems = set()
+            for segment in underground_segments:
+                system_info = self.get_underground_system_info(segment)
+                systems.add(system_info.get("short_name", "Underground"))
+            
+            if len(systems) == 1:
+                return f"{list(systems)[0]} only"
+            else:
+                return "Underground systems only"
         else:
             return f"Mixed journey: {len(regular_segments)} National Rail + {len(underground_segments)} Underground segment(s)"
     
@@ -353,5 +478,6 @@ class UndergroundFormatter:
         Returns:
             Warning text string
         """
-        return ("Underground routing is simplified. Check TfL website or app for detailed "
-                "Underground journey planning, live service updates, and accessibility information.")
+        return ("Underground routing is simplified. Check the relevant transport authority website or app "
+                "(TfL for London Underground, SPT for Glasgow Subway, Nexus for Tyne & Wear Metro) for detailed "
+                "journey planning, live service updates, and accessibility information.")

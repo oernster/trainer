@@ -278,6 +278,8 @@ class TrainDataService:
     def _extract_intermediate_stations(self, route_result, from_station: str, to_station: str) -> List[str]:
         """Extract intermediate stations from route result, respecting Underground black box segments."""
         intermediate_stations = []
+        underground_segments_processed = []
+        underground_systems_added = set()  # Track which underground systems we've already added indicators for
         
         # Check if we have route segments to analyze
         if hasattr(route_result, 'segments') and route_result.segments:
@@ -290,22 +292,35 @@ class TrainDataService:
                 if getattr(segment, 'service_pattern', '') == 'UNDERGROUND':
                     logger.debug(f"Underground black box segment: {segment.from_station} -> {segment.to_station} (using black box display)")
                     
-                    # Add the from_station if it's not origin/destination and not already added
-                    from_station_name = segment.from_station
-                    if (from_station_name != from_station and from_station_name != to_station and
-                        from_station_name not in intermediate_stations):
-                        intermediate_stations.append(from_station_name)
+                    # Create a unique identifier for this underground segment to avoid duplicates
+                    segment_id = f"{segment.from_station}->{segment.to_station}-{getattr(segment, 'line_name', 'Underground')}"
+                    system_name = getattr(segment, 'line_name', 'Underground')
                     
-                    # Add Underground black box indicator with TfL red styling
-                    underground_indicator = "<font color='#DC241F'>🚇 Underground (10-40min)</font>"
-                    if underground_indicator not in intermediate_stations:
-                        intermediate_stations.append(underground_indicator)
-                    
-                    # Add the to_station if it's not origin/destination and not already added
-                    to_station_name = segment.to_station
-                    if (to_station_name != from_station and to_station_name != to_station and
-                        to_station_name not in intermediate_stations):
-                        intermediate_stations.append(to_station_name)
+                    # Only process each unique underground segment once
+                    if segment_id not in underground_segments_processed:
+                        underground_segments_processed.append(segment_id)
+                        
+                        # Add the from_station if it's not origin/destination and not already added
+                        from_station_name = segment.from_station
+                        if (from_station_name != from_station and from_station_name != to_station and
+                            from_station_name not in intermediate_stations):
+                            intermediate_stations.append(from_station_name)
+                        
+                        # Only add one underground indicator per system type to prevent duplicates
+                        if system_name not in underground_systems_added:
+                            underground_indicator = self._get_underground_indicator_for_segment(segment)
+                            if underground_indicator not in intermediate_stations:
+                                intermediate_stations.append(underground_indicator)
+                                underground_systems_added.add(system_name)
+                                logger.debug(f"Added underground indicator for {system_name}")
+                        else:
+                            logger.debug(f"Skipping duplicate underground indicator for {system_name}")
+                        
+                        # Add the to_station if it's not origin/destination and not already added
+                        to_station_name = segment.to_station
+                        if (to_station_name != from_station and to_station_name != to_station and
+                            to_station_name not in intermediate_stations):
+                            intermediate_stations.append(to_station_name)
                     continue
                 
                 # For normal National Rail segments, add ALL intermediate stations
@@ -321,6 +336,7 @@ class TrainDataService:
                     intermediate_stations.append(to_station_name)
             
             logger.debug(f"Extracted {len(intermediate_stations)} intermediate stations from segments (National Rail + Underground endpoints)")
+            logger.debug(f"Underground systems processed: {underground_systems_added}")
         
         # Fallback: Try to get from full_path but filter out Underground-only stations
         elif hasattr(route_result, 'full_path') and route_result.full_path:
@@ -627,3 +643,23 @@ class TrainDataService:
             return self.config.display.time_window_hours
             
         return 8  # Final fallback
+    
+    def _get_underground_indicator_for_segment(self, segment) -> str:
+        """Get system-specific underground indicator for a segment."""
+        try:
+            # Import the formatter to get system-specific information
+            from ...ui.formatters.underground_formatter import UndergroundFormatter
+            formatter = UndergroundFormatter()
+            
+            # Get system-specific information
+            if formatter.is_underground_segment(segment):
+                system_info = formatter.get_underground_system_info(segment)
+                system_name = system_info.get("short_name", "Underground")
+                time_range = system_info.get("time_range", "10-40min")
+                return f"<font color='#DC241F'>🚇 {system_name} ({time_range})</font>"
+            
+        except Exception as e:
+            logger.warning(f"Error getting underground system info for segment: {e}")
+        
+        # Fallback to generic underground indicator
+        return "<font color='#DC241F'>🚇 Underground (10-40min)</font>"

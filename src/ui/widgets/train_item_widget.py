@@ -157,13 +157,9 @@ class TrainItemWidget(QFrame):
         """Create the operator and service details line."""
         details_layout = QHBoxLayout()
 
-        # Left: Operator and service details
-        operator_text = (
-            f"{self.train_data.operator} • {self.train_data.service_type.value.title()}"
-        )
-        if self.train_data.journey_duration:
-            operator_text += f" • {self.train_data.format_journey_duration()}"
-
+        # Left: Operator and service details with underground system override
+        operator_text = self._format_operator_with_underground()
+        
         operator_info = QLabel(operator_text)
         operator_font = QFont()
         operator_font.setPointSize(10)
@@ -444,20 +440,25 @@ class TrainItemWidget(QFrame):
                         
                         if connects_stations and self.underground_formatter.is_underground_segment(segment):
                             is_underground_connection = True
-                            underground_info = "Underground (10-40min)"
+                            # Get system-specific information
+                            system_info = self.underground_formatter.get_underground_system_info(segment)
+                            system_name = system_info.get("short_name", "Underground")
+                            time_range = system_info.get("time_range", "10-40min")
+                            emoji = system_info.get("emoji", "🚇")
+                            underground_info = f"{emoji} {system_name} ({time_range})"
                             break
                 
                 if is_underground_connection:
-                    # TEMPORARILY DISABLE Underground formatting to test crash
-                    arrow_label = QLabel("→")
-                    colors = self.get_theme_colors(self.current_theme)
+                    # Always use red for underground connections, but show system-specific info with emoji
+                    arrow_label = QLabel(f"→ {underground_info} →")
                     arrow_label.setStyleSheet(f"""
                         QLabel {{
                             background-color: transparent;
-                            color: {colors['primary_accent']};
+                            color: #DC241F;
                             border: none;
                             margin: 0px;
                             padding: 0px;
+                            font-weight: bold;
                         }}
                     """)
                 else:
@@ -482,13 +483,26 @@ class TrainItemWidget(QFrame):
         layout.addWidget(arrow_label)
 
     def _create_station_label(self, calling_point) -> QLabel:
-        """Create a styled station label."""
+        """Create a styled station label with underground system differentiation."""
         station_label = QLabel()
         
         # Get station name
         station_name = calling_point.station_name
         
-        station_label.setText(station_name)
+        # Check if this station belongs to an underground system
+        underground_system = self._get_station_underground_system(station_name)
+        
+        if underground_system:
+            # Add system indicator to underground stations
+            system_indicators = {
+                "London Underground": "🚇L",
+                "Glasgow Subway": "🚇G",
+                "Tyne and Wear Metro": "🚇T"
+            }
+            indicator = system_indicators.get(underground_system, "🚇")
+            station_label.setText(f"{station_name} {indicator}")
+        else:
+            station_label.setText(station_name)
         
         station_font = QFont()
         station_font.setPointSize(9)
@@ -1052,14 +1066,28 @@ class TrainItemWidget(QFrame):
             
             # Check if route involves Underground segments
             has_underground = False
+            underground_systems = set()
             if hasattr(self.train_data, 'route_segments') and self.train_data.route_segments:
                 for segment in self.train_data.route_segments:
                     if self.underground_formatter.is_underground_segment(segment):
                         has_underground = True
-                        break
+                        # Get system-specific information
+                        system_info = self.underground_formatter.get_underground_system_info(segment)
+                        system_name = system_info.get("short_name", "Underground")
+                        underground_systems.add(system_name)
             
-            # TEMPORARILY DISABLE Underground indicator to test crash
-            return f"→ {destination}"
+            if has_underground:
+                if len(underground_systems) == 1:
+                    # Single underground system
+                    system_name = list(underground_systems)[0]
+                    return f"→ {destination} <font color='#DC241F'>🚇 Use {system_name}</font>"
+                elif len(underground_systems) > 1:
+                    # Multi-system route - don't show "Use [System]" as it's misleading
+                    return f"→ {destination} <font color='#DC241F'>🚇 Multi-system route</font>"
+                else:
+                    return f"→ {destination} <font color='#DC241F'>🚇 Use Underground</font>"
+            else:
+                return f"→ {destination}"
         except Exception as e:
             # Fallback to basic destination
             return f"→ {getattr(self.train_data, 'destination', 'Unknown')}"
@@ -1073,3 +1101,72 @@ class TrainItemWidget(QFrame):
         """Get simplified calling points for routes involving underground."""
         # This method is replaced by _skip_underground_stations
         return calling_points
+    
+    def _format_operator_with_underground(self) -> str:
+        """Format operator text with underground system override if applicable."""
+        try:
+            # Check if route involves Underground segments
+            underground_systems = []
+            
+            if hasattr(self.train_data, 'route_segments') and self.train_data.route_segments:
+                for segment in self.train_data.route_segments:
+                    if self.underground_formatter.is_underground_segment(segment):
+                        # Get system-specific information
+                        system_info = self.underground_formatter.get_underground_system_info(segment)
+                        system_name = system_info.get("short_name", "Underground")
+                        time_range = system_info.get("time_range", "10-40min")
+                        underground_systems.append((system_name, time_range))
+            
+            if underground_systems:
+                if len(underground_systems) == 1:
+                    # Single underground system
+                    system_name, time_range = underground_systems[0]
+                    operator_text = f"{system_name} • Fast • {time_range}"
+                else:
+                    # Multi-system route - show combined info
+                    unique_systems = list(set(sys[0] for sys in underground_systems))
+                    if len(unique_systems) == 1:
+                        # Same system, different segments
+                        system_name = unique_systems[0]
+                        time_range = underground_systems[0][1]  # Use first time range
+                        operator_text = f"{system_name} • Fast • {time_range}"
+                    else:
+                        # Different systems
+                        systems_text = " + ".join(unique_systems)
+                        operator_text = f"{systems_text} • Multi-system • 3-5hr"
+            else:
+                # Use original operator and service details
+                operator_text = (
+                    f"{self.train_data.operator} • {self.train_data.service_type.value.title()}"
+                )
+                if self.train_data.journey_duration:
+                    operator_text += f" • {self.train_data.format_journey_duration()}"
+            
+            return operator_text
+        except Exception as e:
+            # Fallback to basic operator info
+            return f"{getattr(self.train_data, 'operator', 'Unknown')} • {getattr(self.train_data.service_type, 'value', 'Unknown').title()}"
+    
+    def _get_station_underground_system(self, station_name: str) -> Optional[str]:
+        """Determine which underground system a station belongs to."""
+        try:
+            # Load the consolidated underground stations data
+            import json
+            import os
+            
+            data_path = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'uk_underground_stations.json')
+            
+            if os.path.exists(data_path):
+                with open(data_path, 'r', encoding='utf-8') as f:
+                    stations_data = json.load(f)
+                
+                # Check each system for the station
+                for system_name, stations in stations_data.items():
+                    for station in stations:
+                        if station.get('name') == station_name:
+                            return system_name
+            
+            return None
+        except Exception as e:
+            # If we can't determine the system, return None
+            return None

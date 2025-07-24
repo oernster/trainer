@@ -167,18 +167,25 @@ class StationService(IStationService):
         return [station.name for station in stations]
     
     def get_all_station_names_with_underground(self) -> List[str]:
-        """Get all station names including Underground stations for autocomplete."""
+        """Get all station names including all UK underground stations for autocomplete."""
         # Get National Rail stations
         national_rail_stations = set(self.get_all_station_names())
         
-        # Get Underground stations
+        # Get all UK underground stations
         underground_stations = set()
         try:
             from .underground_routing_handler import UndergroundRoutingHandler
             underground_handler = UndergroundRoutingHandler(self.data_repository)
-            underground_stations = underground_handler.load_london_underground_stations()
+            
+            # Load all underground systems and combine their stations
+            systems = underground_handler.load_underground_systems()
+            for system_key, system_data in systems.items():
+                system_stations = set(system_data.get('stations', []))
+                underground_stations.update(system_stations)
+                
+            self.logger.info(f"Loaded {len(underground_stations)} underground stations from {len(systems)} systems")
         except Exception as e:
-            self.logger.warning(f"Could not load Underground stations: {e}")
+            self.logger.warning(f"Could not load underground stations: {e}")
         
         # Combine both sets and return sorted list
         all_stations = national_rail_stations.union(underground_stations)
