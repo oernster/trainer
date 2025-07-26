@@ -199,3 +199,7 @@ config.json
 
 # App
 trainer.exe
+
+# Cache files
+src/cache/cache_metadata.json
+src/cache/station_data.cache

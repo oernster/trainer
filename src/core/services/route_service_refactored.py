@@ -65,6 +65,13 @@ class RouteServiceRefactored(IRouteService):
                 self.logger.debug(f"Using cached route for {normalized_from} → {normalized_to} with preferences")
                 return routes[0]  # Return best route
         
+        # Check if this is a cross-country route that should go through London
+        cross_country_route = self.underground_handler.create_cross_country_route(from_station, to_station)
+        if cross_country_route:
+            # Cache the result
+            self._route_cache[cache_key] = [cross_country_route]
+            return cross_country_route
+            
         # Check if we should use Underground black box routing for any UK underground system
         if self.underground_handler.should_use_black_box_routing(from_station, to_station):
             # For Underground-to-Underground routes (any UK system), use direct black box route
@@ -168,6 +175,13 @@ class RouteServiceRefactored(IRouteService):
             self.logger.debug(f"Using cached multiple routes for {normalized_from} → {normalized_to} with preferences")
             return self._route_cache[cache_key][:max_routes]
         
+        # Check if this is a cross-country route that should go through London
+        cross_country_route = self.underground_handler.create_cross_country_route(from_station, to_station)
+        if cross_country_route:
+            routes.append(cross_country_route)
+            self._route_cache[cache_key] = routes
+            return routes
+            
         # Check if we need multi-system routing (different underground systems)
         from_system = self.underground_handler.get_underground_system(from_station)
         to_system = self.underground_handler.get_underground_system(to_station)
@@ -670,7 +684,8 @@ class RouteServiceRefactored(IRouteService):
                 'avoid_walking': preferences.get('avoid_walking', False),
                 'prefer_direct': preferences.get('prefer_direct', False),
                 'avoid_london': preferences.get('avoid_london', False),
-                'max_walking_distance_km': preferences.get('max_walking_distance_km', 0.1)
+                'max_walking_distance_km': preferences.get('max_walking_distance_km', 0.1),
+                'enforce_wheelchair_access': preferences.get('enforce_wheelchair_access', False)
             }
             if any(routing_prefs.values()):
                 pref_key = frozenset(routing_prefs.items())

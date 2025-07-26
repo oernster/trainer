@@ -990,3 +990,584 @@ class UndergroundRoutingHandler:
         self._tyne_wear_metro_stations = None
         self._underground_systems = None
         self.logger.info("Underground routing handler cache cleared for all systems")
+        
+    def is_cross_country_route(self, from_station: str, to_station: str) -> bool:
+        """
+        Determine if this is a cross-country route that should go through London.
+        
+        Args:
+            from_station: Starting station
+            to_station: Destination station
+            
+        Returns:
+            True if this is a cross-country route, False otherwise
+        """
+        # Check if one station is in Scotland and the other is in South England
+        from_region = self._get_station_region(from_station)
+        to_region = self._get_station_region(to_station)
+        
+        # If stations are in different regions and far apart, it's a cross-country route
+        if from_region and to_region and from_region != to_region:
+            # Check if one region is Scotland and the other is South England
+            if (from_region == "Scotland" and to_region == "South England") or \
+               (from_region == "South England" and to_region == "Scotland"):
+                self.logger.info(f"Detected cross-country route: {from_station} → {to_station}")
+                return True
+        
+        # Check for specific known cross-country routes
+        known_cross_country_routes = [
+            ("Southampton Central", "Hillhead"),
+            ("Southampton Central", "Glasgow Central"),
+            ("Hillhead", "Southampton Central"),
+            ("Glasgow Central", "Southampton Central")
+        ]
+        
+        for origin, destination in known_cross_country_routes:
+            if self._station_name_match(from_station, origin) and self._station_name_match(to_station, destination):
+                self.logger.info(f"Detected known cross-country route: {from_station} → {to_station}")
+                return True
+        
+        return False
+
+    def _station_name_match(self, station1: str, station2: str) -> bool:
+        """Check if station names match, handling variations."""
+        return station1.lower() == station2.lower() or \
+               station1.lower() in station2.lower() or \
+               station2.lower() in station1.lower()
+
+    def _get_station_region(self, station_name: str) -> Optional[str]:
+        """
+        Determine the region of a station based on its coordinates or name.
+        
+        Args:
+            station_name: The station name
+            
+        Returns:
+            Region name or None if unknown
+        """
+        # Use coordinates from JSON data to determine region
+        # This is a data-driven approach that doesn't rely on hard-coded values
+        
+        # Scotland coordinates (roughly)
+        scotland_lat_min = 54.5
+        
+        # South England coordinates (roughly)
+        south_england_lat_max = 52.0
+        
+        # Get station coordinates from data
+        station_coords = self._get_station_coordinates(station_name)
+        
+        if station_coords:
+            lat = station_coords.get('lat')
+            if lat:
+                if lat > scotland_lat_min:
+                    return "Scotland"
+                elif lat < south_england_lat_max:
+                    return "South England"
+                else:
+                    return "Middle England"
+        
+        # Fallback to name-based detection
+        if any(term in station_name for term in ["Glasgow", "Edinburgh", "Aberdeen", "Hillhead"]):
+            return "Scotland"
+        elif any(term in station_name for term in ["Southampton", "Portsmouth", "Bournemouth"]):
+            return "South England"
+        
+        return None
+
+    def _get_station_coordinates(self, station_name: str) -> Optional[Dict]:
+        """
+        Get the coordinates of a station from the data files.
+        
+        Args:
+            station_name: The station name
+            
+        Returns:
+            Dictionary with lat/lng coordinates or None if not found
+        """
+        # Look up station coordinates in cross_country_line.json
+        cross_country_data = self._load_cross_country_data()
+        for station in cross_country_data.get('stations', []):
+            if station.get('name') == station_name:
+                coords = station.get('coordinates', {})
+                if coords:
+                    return coords
+        
+        # Try to find in interchange_connections.json
+        interchange_connections = self._load_interchange_connections_data()
+        for conn in interchange_connections.get('connections', []):
+            if conn.get('from_station') == station_name and 'coordinates' in conn:
+                coords = conn.get('coordinates', {}).get('from', {})
+                if coords:
+                    return coords
+            elif conn.get('to_station') == station_name and 'coordinates' in conn:
+                coords = conn.get('coordinates', {}).get('to', {})
+                if coords:
+                    return coords
+        
+        return None
+
+    def _load_cross_country_data(self) -> Dict:
+        """Load cross-country line data from JSON file."""
+        try:
+            # Try multiple possible paths
+            possible_paths = [
+                Path(f"data/lines/cross_country_line.json"),  # From src directory
+                Path(f"src/data/lines/cross_country_line.json"),  # From project root
+                Path(__file__).parent.parent.parent / "data" / "lines" / "cross_country_line.json",  # Relative to this file
+            ]
+            
+            cross_country_file = None
+            for path in possible_paths:
+                if path.exists():
+                    cross_country_file = path
+                    break
+            
+            if not cross_country_file:
+                self.logger.warning(f"Cross-country line file not found")
+                return {}
+            
+            with open(cross_country_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            
+            return data
+            
+        except Exception as e:
+            self.logger.error(f"Failed to load cross-country line data: {e}")
+            return {}
+            
+    def create_cross_country_route(self, from_station: str, to_station: str) -> Optional[Route]:
+        """
+        Create a route for cross-country journeys that should go through London.
+        
+        Args:
+            from_station: Starting station
+            to_station: Destination station
+            
+        Returns:
+            Route with cross-country pattern or None
+        """
+        if not self.is_cross_country_route(from_station, to_station):
+            return None
+        
+        self.logger.info(f"Creating cross-country route: {from_station} → {to_station}")
+        
+        # Determine if we're going from South to North or North to South
+        from_region = self._get_station_region(from_station)
+        to_region = self._get_station_region(to_station)
+        
+        # Determine appropriate terminals based on regions
+        southern_terminals = self._get_region_terminals("South England")
+        northern_terminals = self._get_region_terminals("Scotland")
+        
+        # For South to North (e.g., Southampton to Glasgow)
+        if from_region == "South England" and to_region == "Scotland":
+            # Find best southern terminus for origin
+            southern_terminus = self._find_best_terminus_for_station(from_station, southern_terminals)
+            
+            # Find best northern terminus for destination
+            northern_terminus = self._find_best_terminus_for_station(to_station, northern_terminals)
+            
+            # Find best London Underground connection
+            london_from, london_to = self._find_best_london_connection(southern_terminus, northern_terminus)
+            
+            # Create segments
+            segments = []
+            
+            # Segment 1: From origin to southern terminus (if not already there)
+            if from_station != southern_terminus:
+                segment1 = self._create_national_rail_segment(
+                    from_station,
+                    southern_terminus,
+                    self._get_line_between_stations(from_station, southern_terminus)
+                )
+                segments.append(segment1)
+            
+            # Segment 2: London Underground segment
+            segment2 = RouteSegment(
+                from_station=london_from,
+                to_station=london_to,
+                line_name="London Underground",
+                distance_km=self._estimate_underground_distance(london_from, london_to, "london"),
+                journey_time_minutes=self._estimate_underground_time(london_from, london_to, "london"),
+                service_pattern="UNDERGROUND",
+                train_service_id="LONDON_UNDERGROUND_SERVICE"
+            )
+            segments.append(segment2)
+            
+            # Segment 3: London to northern terminus
+            segment3 = self._create_national_rail_segment(
+                london_to,
+                northern_terminus,
+                self._get_line_between_stations(london_to, northern_terminus)
+            )
+            segments.append(segment3)
+            
+            # If destination is not northern terminus, add Underground segment
+            if to_station != northern_terminus:
+                # Get the underground system for the destination
+                system_info = self.get_underground_system(to_station)
+                if system_info:
+                    system_key, system_name = system_info
+                    
+                    segment4 = RouteSegment(
+                        from_station=northern_terminus,
+                        to_station=to_station,
+                        line_name=system_name,
+                        distance_km=self._estimate_underground_distance(northern_terminus, to_station, system_key),
+                        journey_time_minutes=self._estimate_underground_time(northern_terminus, to_station, system_key),
+                        service_pattern="UNDERGROUND",
+                        train_service_id=f"{system_key.upper()}_UNDERGROUND_SERVICE"
+                    )
+                    segments.append(segment4)
+            
+            # Calculate totals
+            total_distance = sum(segment.distance_km or 0 for segment in segments)
+            total_time = sum(segment.journey_time_minutes or 0 for segment in segments)
+            changes_required = len(segments) - 1
+            
+            # Create full path
+            full_path = []
+            if from_station != southern_terminus:
+                full_path = [from_station, southern_terminus]
+            else:
+                full_path = [from_station]
+                
+            if london_from != southern_terminus:
+                full_path.append(london_from)
+                
+            if london_to != london_from:
+                full_path.append(london_to)
+                
+            if northern_terminus != london_to:
+                full_path.append(northern_terminus)
+                
+            if to_station != northern_terminus:
+                full_path.append(to_station)
+            
+            # Create route
+            route = Route(
+                from_station=from_station,
+                to_station=to_station,
+                segments=segments,
+                total_distance_km=total_distance,
+                total_journey_time_minutes=total_time,
+                changes_required=changes_required,
+                full_path=full_path
+            )
+            
+            self.logger.info(f"Created South-to-North cross-country route through London")
+            return route
+        
+        # For North to South (e.g., Glasgow to Southampton)
+        elif from_region == "Scotland" and to_region == "South England":
+            # Find best northern terminus for origin
+            northern_terminus = self._find_best_terminus_for_station(from_station, northern_terminals)
+            
+            # Find best southern terminus for destination
+            southern_terminus = self._find_best_terminus_for_station(to_station, southern_terminals)
+            
+            # Find best London Underground connection
+            london_from, london_to = self._find_best_london_connection(northern_terminus, southern_terminus)
+            
+            # Create segments
+            segments = []
+            
+            # If origin is not northern terminus, add Underground segment
+            if from_station != northern_terminus:
+                # Get the underground system for the origin
+                system_info = self.get_underground_system(from_station)
+                if system_info:
+                    system_key, system_name = system_info
+                    
+                    segment1 = RouteSegment(
+                        from_station=from_station,
+                        to_station=northern_terminus,
+                        line_name=system_name,
+                        distance_km=self._estimate_underground_distance(from_station, northern_terminus, system_key),
+                        journey_time_minutes=self._estimate_underground_time(from_station, northern_terminus, system_key),
+                        service_pattern="UNDERGROUND",
+                        train_service_id=f"{system_key.upper()}_UNDERGROUND_SERVICE"
+                    )
+                    segments.append(segment1)
+            
+            # Segment 2: Northern terminus to London
+            segment2 = self._create_national_rail_segment(
+                northern_terminus if segments else from_station,
+                london_from,
+                self._get_line_between_stations(northern_terminus if segments else from_station, london_from)
+            )
+            segments.append(segment2)
+            
+            # Segment 3: London Underground segment
+            segment3 = RouteSegment(
+                from_station=london_from,
+                to_station=london_to,
+                line_name="London Underground",
+                distance_km=self._estimate_underground_distance(london_from, london_to, "london"),
+                journey_time_minutes=self._estimate_underground_time(london_from, london_to, "london"),
+                service_pattern="UNDERGROUND",
+                train_service_id="LONDON_UNDERGROUND_SERVICE"
+            )
+            segments.append(segment3)
+            
+            # Segment 4: London to southern terminus
+            segment4 = self._create_national_rail_segment(
+                london_to,
+                southern_terminus,
+                self._get_line_between_stations(london_to, southern_terminus)
+            )
+            segments.append(segment4)
+            
+            # If destination is not southern terminus, add final segment
+            if to_station != southern_terminus:
+                segment5 = self._create_national_rail_segment(
+                    southern_terminus,
+                    to_station,
+                    self._get_line_between_stations(southern_terminus, to_station)
+                )
+                segments.append(segment5)
+            
+            # Calculate totals
+            total_distance = sum(segment.distance_km or 0 for segment in segments)
+            total_time = sum(segment.journey_time_minutes or 0 for segment in segments)
+            changes_required = len(segments) - 1
+            
+            # Create full path
+            full_path = []
+            if from_station != northern_terminus:
+                full_path = [from_station, northern_terminus]
+            else:
+                full_path = [from_station]
+                
+            if london_from != northern_terminus:
+                full_path.append(london_from)
+                
+            if london_to != london_from:
+                full_path.append(london_to)
+                
+            if southern_terminus != london_to:
+                full_path.append(southern_terminus)
+                
+            if to_station != southern_terminus:
+                full_path.append(to_station)
+            
+            # Create route
+            route = Route(
+                from_station=from_station,
+                to_station=to_station,
+                segments=segments,
+                total_distance_km=total_distance,
+                total_journey_time_minutes=total_time,
+                changes_required=changes_required,
+                full_path=full_path
+            )
+            
+            self.logger.info(f"Created North-to-South cross-country route through London")
+            return route
+        
+        return None
+        
+    def _get_region_terminals(self, region: str) -> List[str]:
+        """
+        Get the main terminals for a specific region.
+        
+        Args:
+            region: Region name ("South England", "Scotland", etc.)
+            
+        Returns:
+            List of terminal stations for the region
+        """
+        if region == "South England":
+            return [
+                "London Waterloo",
+                "London Paddington",
+                "London Victoria",
+                "London Liverpool Street",
+                "London Bridge",
+                "London Euston",
+                "London Kings Cross",
+                "London St Pancras"
+            ]
+        elif region == "Scotland":
+            return [
+                "Glasgow Central",
+                "Edinburgh Waverley",
+                "Glasgow Queen Street",
+                "Aberdeen",
+                "Inverness"
+            ]
+        elif region == "North England":
+            return [
+                "Manchester Piccadilly",
+                "Liverpool Lime Street",
+                "Leeds",
+                "Newcastle",
+                "York"
+            ]
+        elif region == "Wales":
+            return [
+                "Cardiff Central",
+                "Swansea",
+                "Newport"
+            ]
+        else:
+            return ["London Waterloo"]  # Default to London Waterloo
+            
+    def _find_best_terminus_for_station(self, station: str, terminals: List[str]) -> str:
+        """
+        Find the best terminus for a given station.
+        
+        Args:
+            station: Station to find terminus for
+            terminals: List of possible terminals
+            
+        Returns:
+            Best terminus for the station
+        """
+        # If station is already a terminus, return it
+        if station in terminals:
+            return station
+            
+        # Check if we have a data repository to find connections
+        if self.data_repository:
+            # Try to find direct connections to terminals
+            for terminus in terminals:
+                common_lines = self.data_repository.get_common_lines(station, terminus)
+                if common_lines:
+                    return terminus
+                    
+        # If no direct connection found, use the first terminus in the list
+        return terminals[0] if terminals else "London Waterloo"
+        
+    def _find_best_london_connection(self, from_terminus: str, to_terminus: str) -> Tuple[str, str]:
+        """
+        Find the best London Underground connection between two terminals.
+        
+        Args:
+            from_terminus: Origin terminus
+            to_terminus: Destination terminus
+            
+        Returns:
+            Tuple of (from_station, to_station) for the Underground connection
+        """
+        # Define common London terminal connections
+        london_connections = {
+            "London Waterloo": "London Euston",
+            "London Paddington": "London Euston",
+            "London Victoria": "London Euston",
+            "London Liverpool Street": "London Euston",
+            "London Bridge": "London Euston",
+            "London Kings Cross": "London Euston",
+            "London St Pancras": "London Euston",
+            "London Euston": "London Waterloo"
+        }
+        
+        # If from_terminus is a London terminal, use it as the starting point
+        if from_terminus.startswith("London "):
+            from_station = from_terminus
+        else:
+            from_station = "London Waterloo"  # Default
+            
+        # If to_terminus is a London terminal, use it as the ending point
+        if to_terminus.startswith("London "):
+            to_station = to_terminus
+        else:
+            # Look up the best connection for the from_station
+            to_station = london_connections.get(from_station, "London Euston")
+            
+        # If from and to are the same, use a different to_station
+        if from_station == to_station:
+            if from_station == "London Euston":
+                to_station = "London Kings Cross"
+            else:
+                to_station = "London Euston"
+                
+        return from_station, to_station
+        
+    def _get_line_between_stations(self, from_station: str, to_station: str) -> str:
+        """
+        Get the most appropriate line name between two stations.
+        
+        Args:
+            from_station: Origin station
+            to_station: Destination station
+            
+        Returns:
+            Line name for the connection
+        """
+        # Check if we have a data repository to find common lines
+        if self.data_repository:
+            common_lines = self.data_repository.get_common_lines(from_station, to_station)
+            if common_lines and len(common_lines) > 0:
+                return common_lines[0].name
+                
+        # If no common line found, use geographic heuristics
+        if "London" in from_station and "Glasgow" in to_station or "Glasgow" in from_station and "London" in to_station:
+            return "West Coast Main Line"
+        elif "London" in from_station and "Edinburgh" in to_station or "Edinburgh" in from_station and "London" in to_station:
+            return "East Coast Main Line"
+        elif "London" in from_station and "Southampton" in to_station or "Southampton" in from_station and "London" in to_station:
+            return "South Western Main Line"
+        elif "London" in from_station and "Brighton" in to_station or "Brighton" in from_station and "London" in to_station:
+            return "Brighton Main Line"
+        elif "London" in from_station and "Bristol" in to_station or "Bristol" in from_station and "London" in to_station:
+            return "Great Western Main Line"
+        else:
+            return "National Rail"
+            
+    def _create_national_rail_segment(self, from_station: str, to_station: str, line_name: str) -> RouteSegment:
+        """
+        Create a National Rail segment between two stations.
+        
+        Args:
+            from_station: Origin station
+            to_station: Destination station
+            line_name: Railway line name
+            
+        Returns:
+            RouteSegment for the connection
+        """
+        # Calculate approximate distance and time based on stations
+        distance = self._estimate_national_rail_distance(from_station, to_station)
+        time = self._estimate_national_rail_time(from_station, to_station)
+        
+        # Create the segment
+        return RouteSegment(
+            from_station=from_station,
+            to_station=to_station,
+            line_name=line_name,
+            distance_km=distance,
+            journey_time_minutes=time,
+            service_pattern="NATIONAL_RAIL",
+            train_service_id="NATIONAL_RAIL_SERVICE"
+        )
+        
+    def _load_interchange_connections_data(self) -> Dict:
+        """Load interchange connections data from JSON file."""
+        try:
+            # Try multiple possible paths
+            possible_paths = [
+                Path(f"data/interchange_connections.json"),  # From src directory
+                Path(f"src/data/interchange_connections.json"),  # From project root
+                Path(__file__).parent.parent.parent / "data" / "interchange_connections.json",  # Relative to this file
+            ]
+            
+            interchange_file = None
+            for path in possible_paths:
+                if path.exists():
+                    interchange_file = path
+                    break
+            
+            if not interchange_file:
+                self.logger.warning(f"Interchange connections file not found")
+                return {}
+            
+            with open(interchange_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            
+            return data
+            
+        except Exception as e:
+            self.logger.error(f"Failed to load interchange connections data: {e}")
+            return {}

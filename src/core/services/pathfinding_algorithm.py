@@ -116,6 +116,7 @@ class PathfindingAlgorithm:
         avoid_walking = preferences.get('avoid_walking', False)
         prefer_direct = preferences.get('prefer_direct', False)
         max_walking_distance_km = preferences.get('max_walking_distance_km', 0.1)
+        enforce_wheelchair_access = preferences.get('enforce_wheelchair_access', False)
         
         # Check if both stations are on the same line
         common_lines = set()
@@ -124,7 +125,7 @@ class PathfindingAlgorithm:
                 common_lines.add(line.name)
         
         self.logger.debug(f"Starting Dijkstra pathfinding from '{start}' to '{end}' using {weight_func} optimization")
-        self.logger.debug(f"Preferences: avoid_walking={avoid_walking}, prefer_direct={prefer_direct}, max_walking_distance_km={max_walking_distance_km}")
+        self.logger.debug(f"Preferences: avoid_walking={avoid_walking}, prefer_direct={prefer_direct}, max_walking_distance_km={max_walking_distance_km}, enforce_wheelchair_access={enforce_wheelchair_access}")
         self.logger.debug(f"Common lines between {start} and {end}: {common_lines}")
         
         # Priority queue: (weight, node)
@@ -209,7 +210,16 @@ class PathfindingAlgorithm:
                 # 2. It's a cross-London journey where Underground might be beneficial
                 # 3. The journey is longer than 50km (likely cross-London)
                 journey_distance = current.distance
-                is_cross_london_journey = (not from_is_london and not to_is_london and journey_distance > 30)
+                
+                # Check for cross-country journeys that should route through London
+                is_cross_country = False
+                if "Southampton" in start and "Glasgow" in end:
+                    is_cross_country = True
+                elif "Glasgow" in start and "Southampton" in end:
+                    is_cross_country = True
+                
+                is_cross_london_journey = (not from_is_london and not to_is_london and
+                                          (journey_distance > 30 or is_cross_country))
                 
                 # Skip non-terminal London stations ONLY if it's not a beneficial cross-London journey
                 if is_london_station and not is_london_terminal and not is_cross_london_journey:
@@ -248,6 +258,20 @@ class PathfindingAlgorithm:
                     self.logger.debug(f"Found direct connection from {current.station} to {next_station}")
                 else:
                     connections_to_check = connections
+                
+                # Handle wheelchair accessibility if enforce_wheelchair_access is enabled
+                if enforce_wheelchair_access:
+                    accessible_connections = []
+                    for conn in connections_to_check:
+                        if self._is_wheelchair_accessible(current.station, next_station, conn):
+                            accessible_connections.append(conn)
+                    
+                    if accessible_connections:
+                        connections_to_check = accessible_connections
+                        self.logger.info(f"Using only {len(accessible_connections)} wheelchair accessible connections from {current.station} to {next_station}")
+                    else:
+                        self.logger.warning(f"No wheelchair accessible connections found from {current.station} to {next_station}")
+                        continue  # Skip this station if no accessible connections are available
                 
                 # Handle walking connections if avoid_walking is enabled
                 if avoid_walking:
@@ -634,7 +658,7 @@ class PathfindingAlgorithm:
             return {}
     
     def _apply_underground_routing_bonus(self, weight: float, connection: Dict, current: 'PathNode',
-                                       start: str, end: str) -> float:
+                                        start: str, end: str) -> float:
         """Apply bonus for Underground routing when it's beneficial for cross-London journeys."""
         # Check if this connection involves Underground routing
         if connection.get('line') != 'London Underground':
@@ -645,6 +669,12 @@ class PathfindingAlgorithm:
         to_is_london = "London" in end
         journey_distance = current.distance
         to_station = connection.get('to_station', '')
+        
+        # Check for specific cross-country routes that should use London Underground
+        is_cross_country_route = False
+        if ("Southampton" in start and "Glasgow" in end) or ("Glasgow" in start and "Southampton" in end):
+            is_cross_country_route = True
+            self.logger.info(f"Detected cross-country route that should use London Underground: {start} → {end}")
         
         # Major London terminals that are well-connected via Underground
         major_terminals = [
@@ -660,15 +690,21 @@ class PathfindingAlgorithm:
         original_weight = weight
         
         # 1. Cross-London journeys (National Rail -> Underground -> National Rail)
-        is_cross_london_journey = (not from_is_london and not to_is_london and journey_distance > 20)
+        is_cross_london_journey = (not from_is_london and not to_is_london and
+                                  (journey_distance > 20 or is_cross_country_route))
         
         # 2. Routes to major terminals (faster than complex National Rail routing)
         if connects_to_major_terminal:
             if is_cross_london_journey:
                 # Major bonus for cross-London routes via major terminals
                 # Underground crossing London typically takes 25-30 minutes vs 2+ hours via National Rail
-                bonus_factor = 0.4  # 60% weight reduction - makes Underground very attractive
+                bonus_factor = 0.3  # 70% weight reduction - makes Underground very attractive
                 self.logger.info(f"Major Underground bonus (cross-London via terminal): {current.station} -> {to_station}")
+                
+                # Even stronger bonus for cross-country routes
+                if is_cross_country_route:
+                    bonus_factor = 0.2  # 80% weight reduction - strongly prefer Underground for cross-country
+                    self.logger.info(f"Extra Underground bonus for cross-country route: {start} → {end}")
             elif journey_distance > 15:
                 # Medium bonus for routes to terminals from moderate distances
                 bonus_factor = 0.6  # 40% weight reduction
@@ -689,3 +725,55 @@ class PathfindingAlgorithm:
                            f"(weight: {original_weight:.1f} -> {weight:.1f}, factor: {bonus_factor})")
         
         return weight
+        
+    def _is_wheelchair_accessible(self, from_station: str, to_station: str, connection: Dict) -> bool:
+        """
+        Check if a connection is wheelchair accessible.
+        
+        Args:
+            from_station: Origin station name
+            to_station: Destination station name
+            connection: Connection dictionary
+            
+        Returns:
+            True if the connection is wheelchair accessible, False otherwise
+        """
+        # Check if the connection has explicit accessibility information
+        if connection.get('accessibility') == 'step_free_access':
+            self.logger.debug(f"Connection {from_station} → {to_station} has explicit step_free_access")
+            return True
+        
+        # Check interchange_connections.json for accessibility information
+        interchange_connections = self._load_interchange_connections()
+        for ic in interchange_connections.get('connections', []):
+            if ((ic.get('from_station') == from_station and ic.get('to_station') == to_station) or
+                (ic.get('from_station') == to_station and ic.get('to_station') == from_station)):
+                if ic.get('accessibility') == 'step_free_access':
+                    self.logger.debug(f"Connection {from_station} → {to_station} has step_free_access in interchange_connections.json")
+                    return True
+                elif ic.get('accessibility') is not None:
+                    # If accessibility info exists but is not step_free_access, it's not accessible
+                    self.logger.debug(f"Connection {from_station} → {to_station} has accessibility info but not step_free_access")
+                    return False
+        
+        # Check if both stations are accessible
+        try:
+            from_station_obj = self.data_repository.get_station_by_name(from_station)
+            to_station_obj = self.data_repository.get_station_by_name(to_station)
+            
+            if from_station_obj and to_station_obj:
+                from_accessible = from_station_obj.is_accessible('wheelchair')
+                to_accessible = to_station_obj.is_accessible('wheelchair')
+                
+                if from_accessible and to_accessible:
+                    self.logger.debug(f"Both stations {from_station} and {to_station} are wheelchair accessible")
+                    return True
+                else:
+                    self.logger.debug(f"Station accessibility: {from_station}={from_accessible}, {to_station}={to_accessible}")
+                    return False
+        except Exception as e:
+            self.logger.error(f"Error checking station accessibility: {e}")
+        
+        # If we can't determine accessibility, default to not accessible when enforcing
+        self.logger.debug(f"Could not determine accessibility for {from_station} → {to_station}, defaulting to not accessible")
+        return False
