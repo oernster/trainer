@@ -37,7 +37,6 @@ class PreferencesWidget(QWidget):
         
         # UI elements
         self.avoid_walking_checkbox = None
-        self.wheelchair_access_checkbox = None
         self.max_walking_distance_spin = None
         self.max_walking_distance_label = None
         
@@ -66,9 +65,6 @@ class PreferencesWidget(QWidget):
         self.avoid_walking_checkbox = QCheckBox("Avoid walking between stations when possible")
         layout.addWidget(self.avoid_walking_checkbox)
         
-        # Add wheelchair access checkbox
-        self.wheelchair_access_checkbox = QCheckBox("Enforce wheelchair access at all stations")
-        layout.addWidget(self.wheelchair_access_checkbox)
         
         # Add max walking distance configuration
         walking_layout = QGridLayout()
@@ -97,9 +93,6 @@ class PreferencesWidget(QWidget):
             # Also connect to update visibility of max walking distance control
             self.avoid_walking_checkbox.toggled.connect(self._update_walking_distance_visibility)
             
-        # Connect wheelchair access checkbox
-        if self.wheelchair_access_checkbox:
-            self.wheelchair_access_checkbox.toggled.connect(self._on_preferences_changed)
         
         # Spin widgets
         if self.max_walking_distance_spin:
@@ -132,7 +125,6 @@ class PreferencesWidget(QWidget):
             'show_intermediate_stations': True,  # Always show intermediate stations in route button
             'avoid_walking': self.avoid_walking_checkbox.isChecked() if self.avoid_walking_checkbox else False,
             'max_walking_distance_km': walking_distance_km,
-            'enforce_wheelchair_access': self.wheelchair_access_checkbox.isChecked() if self.wheelchair_access_checkbox else False,
         }
     
     def set_preferences(self, preferences: Dict[str, Any]):
@@ -141,9 +133,6 @@ class PreferencesWidget(QWidget):
             # Checkboxes
             if 'avoid_walking' in preferences and self.avoid_walking_checkbox:
                 self.avoid_walking_checkbox.setChecked(preferences['avoid_walking'])
-            
-            if 'enforce_wheelchair_access' in preferences and self.wheelchair_access_checkbox:
-                self.wheelchair_access_checkbox.setChecked(preferences['enforce_wheelchair_access'])
             
             if 'max_walking_distance_km' in preferences and self.max_walking_distance_spin:
                 # Convert km to meters for the spin widget
@@ -162,7 +151,6 @@ class PreferencesWidget(QWidget):
         """Reset all preferences to their default values."""
         defaults = {
             'avoid_walking': False,
-            'enforce_wheelchair_access': False,
             'max_walking_distance_km': 1.0,
         }
         self.set_preferences(defaults)
@@ -172,8 +160,6 @@ class PreferencesWidget(QWidget):
         """Enable or disable the widget."""
         if self.avoid_walking_checkbox:
             self.avoid_walking_checkbox.setEnabled(enabled)
-        if self.wheelchair_access_checkbox:
-            self.wheelchair_access_checkbox.setEnabled(enabled)
         if self.max_walking_distance_spin:
             self.max_walking_distance_spin.setEnabled(enabled)
         if self.max_walking_distance_label:

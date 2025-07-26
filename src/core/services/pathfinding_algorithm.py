@@ -116,7 +116,6 @@ class PathfindingAlgorithm:
         avoid_walking = preferences.get('avoid_walking', False)
         prefer_direct = preferences.get('prefer_direct', False)
         max_walking_distance_km = preferences.get('max_walking_distance_km', 0.1)
-        enforce_wheelchair_access = preferences.get('enforce_wheelchair_access', False)
         
         # Check if both stations are on the same line
         common_lines = set()
@@ -125,7 +124,7 @@ class PathfindingAlgorithm:
                 common_lines.add(line.name)
         
         self.logger.debug(f"Starting Dijkstra pathfinding from '{start}' to '{end}' using {weight_func} optimization")
-        self.logger.debug(f"Preferences: avoid_walking={avoid_walking}, prefer_direct={prefer_direct}, max_walking_distance_km={max_walking_distance_km}, enforce_wheelchair_access={enforce_wheelchair_access}")
+        self.logger.debug(f"Preferences: avoid_walking={avoid_walking}, prefer_direct={prefer_direct}, max_walking_distance_km={max_walking_distance_km}")
         self.logger.debug(f"Common lines between {start} and {end}: {common_lines}")
         
         # Priority queue: (weight, node)
@@ -259,19 +258,6 @@ class PathfindingAlgorithm:
                 else:
                     connections_to_check = connections
                 
-                # Handle wheelchair accessibility if enforce_wheelchair_access is enabled
-                if enforce_wheelchair_access:
-                    accessible_connections = []
-                    for conn in connections_to_check:
-                        if self._is_wheelchair_accessible(current.station, next_station, conn):
-                            accessible_connections.append(conn)
-                    
-                    if accessible_connections:
-                        connections_to_check = accessible_connections
-                        self.logger.info(f"Using only {len(accessible_connections)} wheelchair accessible connections from {current.station} to {next_station}")
-                    else:
-                        self.logger.warning(f"No wheelchair accessible connections found from {current.station} to {next_station}")
-                        continue  # Skip this station if no accessible connections are available
                 
                 # Handle walking connections if avoid_walking is enabled
                 if avoid_walking:
@@ -726,54 +712,3 @@ class PathfindingAlgorithm:
         
         return weight
         
-    def _is_wheelchair_accessible(self, from_station: str, to_station: str, connection: Dict) -> bool:
-        """
-        Check if a connection is wheelchair accessible.
-        
-        Args:
-            from_station: Origin station name
-            to_station: Destination station name
-            connection: Connection dictionary
-            
-        Returns:
-            True if the connection is wheelchair accessible, False otherwise
-        """
-        # Check if the connection has explicit accessibility information
-        if connection.get('accessibility') == 'step_free_access':
-            self.logger.debug(f"Connection {from_station} → {to_station} has explicit step_free_access")
-            return True
-        
-        # Check interchange_connections.json for accessibility information
-        interchange_connections = self._load_interchange_connections()
-        for ic in interchange_connections.get('connections', []):
-            if ((ic.get('from_station') == from_station and ic.get('to_station') == to_station) or
-                (ic.get('from_station') == to_station and ic.get('to_station') == from_station)):
-                if ic.get('accessibility') == 'step_free_access':
-                    self.logger.debug(f"Connection {from_station} → {to_station} has step_free_access in interchange_connections.json")
-                    return True
-                elif ic.get('accessibility') is not None:
-                    # If accessibility info exists but is not step_free_access, it's not accessible
-                    self.logger.debug(f"Connection {from_station} → {to_station} has accessibility info but not step_free_access")
-                    return False
-        
-        # Check if both stations are accessible
-        try:
-            from_station_obj = self.data_repository.get_station_by_name(from_station)
-            to_station_obj = self.data_repository.get_station_by_name(to_station)
-            
-            if from_station_obj and to_station_obj:
-                from_accessible = from_station_obj.is_accessible('wheelchair')
-                to_accessible = to_station_obj.is_accessible('wheelchair')
-                
-                if from_accessible and to_accessible:
-                    self.logger.debug(f"Both stations {from_station} and {to_station} are wheelchair accessible")
-                    return True
-                else:
-                    self.logger.debug(f"Station accessibility: {from_station}={from_accessible}, {to_station}={to_accessible}")
-                    return False
-        except Exception as e:
-            self.logger.error(f"Error checking station accessibility: {e}")
-        
-        # If we can't determine accessibility, default to not accessible when enforcing
-        self.logger.debug(f"Could not determine accessibility for {from_station} → {to_station}, defaulting to not accessible")
-        return False

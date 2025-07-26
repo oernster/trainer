@@ -597,9 +597,6 @@ class TrainItemWidget(BaseTrainWidget):
         # Check if this station belongs to an underground system
         underground_system = None
         
-        # Check if this station has wheelchair access
-        is_wheelchair_accessible = self._is_wheelchair_accessible(station_name)
-        
         # Build the station text with appropriate indicators
         station_text = station_name
         
@@ -608,10 +605,6 @@ class TrainItemWidget(BaseTrainWidget):
             # Use the loaded underground system indicators from configuration file
             indicator = self.underground_system_indicators.get(underground_system, "🚇")
             station_text += f" {indicator}"
-        
-        # Add wheelchair accessibility indicator if applicable
-        if is_wheelchair_accessible:
-            station_text += " ♿"
             
         station_label.setText(station_text)
         # Ensure text doesn't get truncated
@@ -975,57 +968,6 @@ class TrainItemWidget(BaseTrainWidget):
                 "success": "#81c784"
             }
     
-    def _is_wheelchair_accessible(self, station_name: str) -> bool:
-        """
-        Check if a station has wheelchair accessibility.
-        
-        Args:
-            station_name: Name of the station to check
-            
-        Returns:
-            True if the station is wheelchair accessible, False otherwise
-        """
-        # Check if this is an HTML-formatted station name
-        is_html_formatted = "<font" in station_name and "</font>" in station_name
-        
-        # Process station name based on whether it's HTML-formatted
-        if is_html_formatted:
-            # For HTML-formatted names, we need to be careful
-            # This is a simplified approach - a more robust solution would use HTML parsing
-            processed_name = station_name
-        else:
-            # Trim any leading and trailing spaces from the station name
-            processed_name = station_name.strip() if station_name else ""
-        
-        # Log for debugging
-        self.logger.debug(f"Checking wheelchair accessibility for station: {processed_name}")
-        
-        # Check if we have station data in the train manager
-        if not self.train_manager or not hasattr(self.train_manager, 'get_station_by_name'):
-            self.logger.debug(f"No train manager or get_station_by_name method available")
-            return False
-        
-        # Get station data
-        station = self.train_manager.get_station_by_name(processed_name)
-        if not station:
-            self.logger.debug(f"Station not found: {processed_name}")
-            return False
-        
-        # Check if station has accessibility information
-        if not hasattr(station, 'accessibility') or not station.accessibility:
-            self.logger.debug(f"No accessibility data for station: {processed_name}")
-            return False
-        
-        # Check if station has wheelchair access
-        if hasattr(station, 'is_accessible') and callable(station.is_accessible):
-            is_accessible = station.is_accessible()
-            self.logger.debug(f"Station {processed_name} wheelchair accessible: {is_accessible}")
-            return bool(is_accessible)
-        
-        # Fallback to checking accessibility dictionary directly
-        wheelchair_access = station.accessibility.get('wheelchair', False)
-        self.logger.debug(f"Station {processed_name} wheelchair access from dict: {wheelchair_access}")
-        return bool(wheelchair_access)
         
     def _make_log_safe(self, text: str) -> str:
         """

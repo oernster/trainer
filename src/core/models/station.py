@@ -100,10 +100,6 @@ class Station:
         """Check if the station has a specific facility."""
         return self.facilities is not None and facility in self.facilities
     
-    def is_accessible(self, accessibility_type: str = "wheelchair") -> bool:
-        """Check if the station has specific accessibility features."""
-        return (self.accessibility is not None and 
-                self.accessibility.get(accessibility_type, False))
     
     def get_lines(self) -> List[str]:
         """Get the list of railway lines serving this station."""
@@ -115,21 +111,57 @@ class Station:
     
     def is_underground_station(self) -> bool:
         """Check if this is a pure underground station."""
-        from core.services.underground_detection_service import UndergroundDetectionService
-        service = UndergroundDetectionService()
-        return service.is_underground_station(self)
+        from ...managers.services.train_data_service import TrainDataService
+        data_service = TrainDataService()
+        
+        # Initialize data repository if needed
+        if data_service._data_repo_cache is None:
+            from ..services.json_data_repository import JsonDataRepository
+            data_service._data_repo_cache = JsonDataRepository()
+        
+        # Use the cached underground handler from TrainDataService
+        if data_service._underground_handler_cache is None:
+            from ..services.underground_routing_handler import UndergroundRoutingHandler
+            data_service._underground_handler_cache = UndergroundRoutingHandler(data_service._data_repo_cache)
+        
+        return data_service._underground_handler_cache.is_underground_station(self.name)
     
     def get_underground_system(self) -> Optional[str]:
         """Get the underground system this station belongs to."""
-        from core.services.underground_detection_service import UndergroundDetectionService
-        service = UndergroundDetectionService()
-        return service.get_underground_system(self)
+        from ...managers.services.train_data_service import TrainDataService
+        data_service = TrainDataService()
+        
+        # Initialize data repository if needed
+        if data_service._data_repo_cache is None:
+            from ..services.json_data_repository import JsonDataRepository
+            data_service._data_repo_cache = JsonDataRepository()
+        
+        # Use the cached underground handler from TrainDataService
+        if data_service._underground_handler_cache is None:
+            from ..services.underground_routing_handler import UndergroundRoutingHandler
+            data_service._underground_handler_cache = UndergroundRoutingHandler(data_service._data_repo_cache)
+        
+        system_info = data_service._underground_handler_cache.get_underground_system(self.name)
+        if system_info:
+            return system_info[1]  # Return the system name (second element in tuple)
+        return None
     
     def is_mixed_station(self) -> bool:
         """Check if this station has both underground and mainline connections."""
-        from core.services.underground_detection_service import UndergroundDetectionService
-        service = UndergroundDetectionService()
-        return service.is_mixed_station(self)
+        from ...managers.services.train_data_service import TrainDataService
+        data_service = TrainDataService()
+        
+        # Initialize data repository if needed
+        if data_service._data_repo_cache is None:
+            from ..services.json_data_repository import JsonDataRepository
+            data_service._data_repo_cache = JsonDataRepository()
+        
+        # Use the cached underground handler from TrainDataService
+        if data_service._underground_handler_cache is None:
+            from ..services.underground_routing_handler import UndergroundRoutingHandler
+            data_service._underground_handler_cache = UndergroundRoutingHandler(data_service._data_repo_cache)
+        
+        return data_service._underground_handler_cache.is_mixed_station(self.name)
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert station to dictionary representation."""

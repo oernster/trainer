@@ -51,6 +51,15 @@
         "Bakerloo Line",
         "Waterloo & City Line"
       ],
+      "accessibility": {
+        "wheelchair": true,
+        "step_free_access": true,
+        "accessible_toilet": true,
+        "accessible_ticket_office": true,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": true
+      },
       "times": {
         "morning": [
           "06:00",
@@ -81,6 +90,15 @@
         "Brighton Main Line",
         "West London Line"
       ],
+      "accessibility": {
+        "wheelchair": true,
+        "step_free_access": true,
+        "accessible_toilet": true,
+        "accessible_ticket_office": true,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": true
+      },
       "times": {
         "morning": [
           "06:11",
@@ -111,6 +129,15 @@
         "District Line",
         "Tramlink"
       ],
+      "accessibility": {
+        "wheelchair": true,
+        "step_free_access": true,
+        "accessible_toilet": true,
+        "accessible_ticket_office": true,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": true
+      },
       "times": {
         "morning": [
           "06:16",
@@ -137,6 +164,15 @@
         "lng": -0.2297
       },
       "zone": 4,
+      "accessibility": {
+        "wheelchair": true,
+        "step_free_access": true,
+        "accessible_toilet": true,
+        "accessible_ticket_office": false,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": true
+      },
       "times": {
         "morning": [
           "06:33",
@@ -163,6 +199,15 @@
         "lng": -0.2547
       },
       "zone": 4,
+      "accessibility": {
+        "wheelchair": true,
+        "step_free_access": true,
+        "accessible_toilet": false,
+        "accessible_ticket_office": false,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": true
+      },
       "times": {
         "morning": [
           "06:35",
@@ -189,6 +234,15 @@
         "lng": -0.2714
       },
       "zone": 5,
+      "accessibility": {
+        "wheelchair": false,
+        "step_free_access": false,
+        "accessible_toilet": false,
+        "accessible_ticket_office": false,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": false
+      },
       "times": {
         "morning": [
           "06:44",
@@ -215,6 +269,15 @@
         "lng": -0.2997
       },
       "zone": 6,
+      "accessibility": {
+        "wheelchair": true,
+        "step_free_access": true,
+        "accessible_toilet": true,
+        "accessible_ticket_office": true,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": true
+      },
       "times": {
         "morning": [
           "06:43",
@@ -241,6 +304,15 @@
         "lng": -0.3333
       },
       "zone": 6,
+      "accessibility": {
+        "wheelchair": false,
+        "step_free_access": false,
+        "accessible_toilet": false,
+        "accessible_ticket_office": false,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": false
+      },
       "times": {
         "morning": [
           "07:09",
@@ -267,6 +339,15 @@
         "lng": -0.3667
       },
       "zone": 6,
+      "accessibility": {
+        "wheelchair": true,
+        "step_free_access": true,
+        "accessible_toilet": false,
+        "accessible_ticket_office": false,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": true
+      },
       "times": {
         "morning": [
           "07:20",
@@ -293,6 +374,15 @@
         "lng": -0.3833
       },
       "zone": 6,
+      "accessibility": {
+        "wheelchair": false,
+        "step_free_access": false,
+        "accessible_toilet": false,
+        "accessible_ticket_office": false,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": false
+      },
       "times": {
         "morning": [
           "07:34",
@@ -319,6 +409,15 @@
         "lng": -0.4167
       },
       "zone": 6,
+      "accessibility": {
+        "wheelchair": true,
+        "step_free_access": true,
+        "accessible_toilet": true,
+        "accessible_ticket_office": false,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": true
+      },
       "times": {
         "morning": [
           "07:44",
@@ -345,6 +444,15 @@
         "lng": -0.4597
       },
       "zone": 6,
+      "accessibility": {
+        "wheelchair": true,
+        "step_free_access": true,
+        "accessible_toilet": true,
+        "accessible_ticket_office": true,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": true
+      },
       "times": {
         "morning": [
           "07:29",
@@ -371,6 +479,15 @@
         "lng": -0.4833
       },
       "zone": 6,
+      "accessibility": {
+        "wheelchair": false,
+        "step_free_access": false,
+        "accessible_toilet": false,
+        "accessible_ticket_office": false,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": true
+      },
       "times": {
         "morning": [
           "08:25",
@@ -397,6 +514,15 @@
         "lng": -0.5
       },
       "zone": 6,
+      "accessibility": {
+        "wheelchair": true,
+        "step_free_access": true,
+        "accessible_toilet": false,
+        "accessible_ticket_office": false,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": true
+      },
       "times": {
         "morning": [
           "08:25",
@@ -426,6 +552,15 @@
       "interchange": [
         "Portsmouth Direct Line"
       ],
+      "accessibility": {
+        "wheelchair": true,
+        "step_free_access": true,
+        "accessible_toilet": true,
+        "accessible_ticket_office": true,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": true
+      },
       "times": {
         "morning": [
           "09:28",
@@ -451,6 +586,15 @@
         "lat": 51.3,
         "lng": -0.6333
       },
+      "accessibility": {
+        "wheelchair": true,
+        "step_free_access": true,
+        "accessible_toilet": false,
+        "accessible_ticket_office": false,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": true
+      },
       "times": {
         "morning": [
           "08:33",
@@ -475,6 +619,15 @@
       "coordinates": {
         "lat": 51.2833,
         "lng": -0.75
+      },
+      "accessibility": {
+        "wheelchair": true,
+        "step_free_access": true,
+        "accessible_toilet": true,
+        "accessible_ticket_office": true,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": true
       },
       "times": {
         "morning": [
@@ -504,6 +657,15 @@
       "interchange": [
         "South Western Railway"
       ],
+      "accessibility": {
+        "wheelchair": true,
+        "step_free_access": true,
+        "accessible_toilet": true,
+        "accessible_ticket_office": false,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": true
+      },
       "times": {
         "morning": [
           "10:06",
@@ -529,6 +691,15 @@
         "lat": 51.2667,
         "lng": -0.9
       },
+      "accessibility": {
+        "wheelchair": false,
+        "step_free_access": false,
+        "accessible_toilet": false,
+        "accessible_ticket_office": false,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": false
+      },
       "times": {
         "morning": [
           "08:42",
@@ -553,6 +724,15 @@
       "coordinates": {
         "lat": 51.25,
         "lng": -0.9167
+      },
+      "accessibility": {
+        "wheelchair": true,
+        "step_free_access": true,
+        "accessible_toilet": false,
+        "accessible_ticket_office": false,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": true
       },
       "times": {
         "morning": [
@@ -582,6 +762,15 @@
       "interchange": [
         "Reading to Basingstoke Line"
       ],
+      "accessibility": {
+        "wheelchair": true,
+        "step_free_access": true,
+        "accessible_toilet": true,
+        "accessible_ticket_office": true,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": true
+      },
       "times": {
         "morning": [
           "10:26",
@@ -606,6 +795,15 @@
       "coordinates": {
         "lat": 51.2167,
         "lng": -1.2333
+      },
+      "accessibility": {
+        "wheelchair": false,
+        "step_free_access": false,
+        "accessible_toilet": false,
+        "accessible_ticket_office": false,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": false
       },
       "times": {
         "morning": [
@@ -632,6 +830,15 @@
         "lat": 51.0667,
         "lng": -1.3167
       },
+      "accessibility": {
+        "wheelchair": true,
+        "step_free_access": true,
+        "accessible_toilet": true,
+        "accessible_ticket_office": true,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": true
+      },
       "times": {
         "morning": [
           "08:21",
@@ -656,6 +863,15 @@
       "coordinates": {
         "lat": 51.0333,
         "lng": -1.35
+      },
+      "accessibility": {
+        "wheelchair": false,
+        "step_free_access": false,
+        "accessible_toilet": false,
+        "accessible_ticket_office": false,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": false
       },
       "times": {
         "morning": [
@@ -685,6 +901,15 @@
       "interchange": [
         "Eastleigh to Fareham Line"
       ],
+      "accessibility": {
+        "wheelchair": true,
+        "step_free_access": true,
+        "accessible_toilet": true,
+        "accessible_ticket_office": true,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": true
+      },
       "times": {
         "morning": [
           "09:12",
@@ -714,6 +939,15 @@
         "West Coastway Line",
         "Wessex Main Line"
       ],
+      "accessibility": {
+        "wheelchair": true,
+        "step_free_access": true,
+        "accessible_toilet": true,
+        "accessible_ticket_office": true,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": true
+      },
       "times": {
         "morning": [
           "11:48",
@@ -738,6 +972,15 @@
       "coordinates": {
         "lat": 50.95,
         "lng": -1.3667
+      },
+      "accessibility": {
+        "wheelchair": true,
+        "step_free_access": true,
+        "accessible_toilet": true,
+        "accessible_ticket_office": true,
+        "bicycles_allowed": true,
+        "bicycle_restrictions": "Off-peak hours only",
+        "bicycle_storage": true
       },
       "times": {
         "morning": [

@@ -684,8 +684,7 @@ class RouteServiceRefactored(IRouteService):
                 'avoid_walking': preferences.get('avoid_walking', False),
                 'prefer_direct': preferences.get('prefer_direct', False),
                 'avoid_london': preferences.get('avoid_london', False),
-                'max_walking_distance_km': preferences.get('max_walking_distance_km', 0.1),
-                'enforce_wheelchair_access': preferences.get('enforce_wheelchair_access', False)
+                'max_walking_distance_km': preferences.get('max_walking_distance_km', 0.1)
             }
             if any(routing_prefs.values()):
                 pref_key = frozenset(routing_prefs.items())
