@@ -66,36 +66,72 @@ class InterchangeDetectionService:
         self._station_coordinates_cache: Optional[Dict[str, Dict[str, float]]] = None
         self._line_to_file_cache: Optional[Dict[str, str]] = None
         self._station_to_files_cache: Optional[Dict[str, List[str]]] = None
-        
-        # Known through services - lightweight initialization
-        self._known_through_services: Optional[Dict[str, List[Dict[str, str]]]] = None
+        self._line_interchanges_cache: Optional[Dict[str, List[Dict[str, Any]]]] = None
         
         # Thread locks for safe lazy loading
         self._coordinates_lock = threading.Lock()
         self._line_mapping_lock = threading.Lock()
         self._station_mapping_lock = threading.Lock()
+        self._interchanges_lock = threading.Lock()
         
         # Mark as initialized
         self._initialized = True
         
         self.logger.info("InterchangeDetectionService singleton initialized with lazy loading")
     
-    def _get_known_through_services(self) -> Dict[str, List[Dict[str, str]]]:
-        """Get known through services where passengers don't change trains (lazy loaded)."""
-        if self._known_through_services is None:
-            self._known_through_services = {
-                "Hook": [
-                    {"from_line": "South Western Main Line", "to_line": "Reading to Basingstoke Line"},
-                    {"from_line": "Reading to Basingstoke Line", "to_line": "South Western Main Line"}
-                ],
-                "Fleet": [
-                    {"from_line": "South Western Main Line", "to_line": "Reading to Basingstoke Line"},
-                    {"from_line": "Reading to Basingstoke Line", "to_line": "South Western Main Line"},
-                    {"from_line": "South Western Railway", "to_line": "South Western Railway Main Line"},
-                    {"from_line": "South Western Railway Main Line", "to_line": "South Western Railway"}
-                ]
-            }
-        return self._known_through_services
+    def _get_line_interchanges(self) -> Dict[str, List[Dict[str, Any]]]:
+        """
+        Get line interchanges data from the interchange_connections.json file with thread-safe lazy loading.
+        
+        Returns:
+            Dictionary mapping station names to lists of line connections
+        """
+        if self._line_interchanges_cache is not None:
+            return self._line_interchanges_cache
+        
+        with self._interchanges_lock:
+            # Double-check pattern to prevent race conditions
+            if self._line_interchanges_cache is not None:
+                return self._line_interchanges_cache
+            
+            self.logger.debug("Loading line interchanges data (lazy loading)")
+            
+            try:
+                # Try to use data path resolver
+                try:
+                    from ...utils.data_path_resolver import get_data_directory
+                    data_dir = get_data_directory()
+                except (ImportError, FileNotFoundError):
+                    # Fallback to old method
+                    data_dir = Path(__file__).parent.parent.parent / "data"
+                
+                interchange_file = data_dir / "interchange_connections.json"
+                
+                if not interchange_file.exists():
+                    self.logger.error(f"Interchange connections file not found: {interchange_file}")
+                    return {}
+                
+                with open(interchange_file, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    
+                    # Extract line interchanges data
+                    line_interchanges_data = data.get('line_interchanges', [])
+                    
+                    # Convert to dictionary for faster lookup
+                    line_interchanges = {}
+                    for item in line_interchanges_data:
+                        station = item.get('station', '')
+                        connections = item.get('connections', [])
+                        if station:
+                            line_interchanges[station] = connections
+                    
+                    self.logger.debug(f"Loaded line interchanges for {len(line_interchanges)} stations")
+                    self._line_interchanges_cache = line_interchanges
+                    return self._line_interchanges_cache
+                    
+            except Exception as e:
+                self.logger.error(f"Error loading line interchanges data: {e}")
+                return {}
     
     def detect_user_journey_interchanges(self, route_segments: List[Any]) -> List[InterchangePoint]:
         """
@@ -201,6 +237,19 @@ class InterchangeDetectionService:
                 description="Same train continues with different line designation"
             )
         
+        # Check if stations are on the same line - if so, NEVER consider walking
+        if self._are_stations_on_same_line(from_line, to_line):
+            self.logger.debug(f"Stations are on the same line, no walking needed: {from_line} -> {to_line}")
+            return InterchangePoint(
+                station_name=station_name,
+                from_line=from_line,
+                to_line=to_line,
+                interchange_type=InterchangeType.THROUGH_SERVICE,
+                walking_time_minutes=0,
+                is_user_journey_change=False,
+                description="Stations are on the same line, no change required"
+            )
+        
         # Validate that this is a legitimate interchange geographically
         if not self._is_valid_interchange_geographically(station_name, from_line, to_line):
             self.logger.debug(f"Invalid geographic interchange at {station_name}: {from_line} -> {to_line}")
@@ -231,15 +280,23 @@ class InterchangeDetectionService:
         )
     
     def _is_known_through_service(self, line1: str, line2: str, station_name: str) -> bool:
-        """Check if this represents a known through service."""
-        known_services = self._get_known_through_services()
+        """Check if this represents a known through service using data-driven approach."""
+        line_interchanges = self._get_line_interchanges()
         
-        if station_name not in known_services:
+        if station_name not in line_interchanges:
             return False
         
-        for service in known_services[station_name]:
-            if ((service["from_line"] == line1 and service["to_line"] == line2) or
-                (service["from_line"] == line2 and service["to_line"] == line1)):
+        connections = line_interchanges[station_name]
+        
+        for connection in connections:
+            from_line = connection.get("from_line", "")
+            to_line = connection.get("to_line", "")
+            requires_change = connection.get("requires_change", True)
+            
+            if not requires_change and (
+                (from_line == line1 and to_line == line2) or
+                (from_line == line2 and to_line == line1)
+            ):
                 return True
         
         return False
@@ -294,20 +351,23 @@ class InterchangeDetectionService:
     def _is_continuous_train_service(self, from_line: str, to_line: str, station_name: str) -> bool:
         """
         Check if this represents a continuous train service where the same physical train
-        continues its journey with different line designations.
+        continues its journey with different line designations using data-driven approach.
         """
-        # Known continuous services where the same train continues with different line names
-        continuous_services = [
-            # South Western Main Line continuing as Reading to Basingstoke Line
-            ("South Western Main Line", "Reading to Basingstoke Line"),
-            ("Reading to Basingstoke Line", "South Western Main Line"),
-            # Add other known continuous services here
-        ]
+        # Use the line interchanges data to determine if this is a continuous service
+        line_interchanges = self._get_line_interchanges()
         
-        for service_from, service_to in continuous_services:
-            if ((from_line == service_from and to_line == service_to) or
-                (from_line == service_to and to_line == service_from)):
-                return True
+        # Check all stations for continuous services between these lines
+        for station, connections in line_interchanges.items():
+            for connection in connections:
+                connection_from_line = connection.get("from_line", "")
+                connection_to_line = connection.get("to_line", "")
+                requires_change = connection.get("requires_change", True)
+                
+                if not requires_change and (
+                    (connection_from_line == from_line and connection_to_line == to_line) or
+                    (connection_from_line == to_line and connection_to_line == from_line)
+                ):
+                    return True
         
         return False
     
@@ -346,63 +406,8 @@ class InterchangeDetectionService:
             self.logger.debug(f"Same train ID detected: {current_train_id}")
             return True
         
-        # Check if this is a known through station for specific line combinations
-        through_stations = {
-            "Woking": [
-                # Woking is a through station for South Western services
-                ("South Western Main Line", "Reading to Basingstoke Line"),
-                ("Reading to Basingstoke Line", "South Western Main Line"),
-                # Woking is also a through station for Portsmouth Direct Line services
-                ("South Western Main Line", "Portsmouth Direct Line"),
-                ("Portsmouth Direct Line", "South Western Main Line"),
-            ],
-            "Hook": [
-                ("South Western Main Line", "Reading to Basingstoke Line"),
-                ("Reading to Basingstoke Line", "South Western Main Line"),
-            ],
-            "Fleet": [
-                ("South Western Main Line", "Reading to Basingstoke Line"),
-                ("Reading to Basingstoke Line", "South Western Main Line"),
-            ],
-            "Clapham Junction": [
-                # Clapham Junction is a through station for South Western services
-                # Trains from Reading/Basingstoke line continue through to London without passenger changes
-                ("South Western Main Line", "Reading to Basingstoke Line"),
-                ("Reading to Basingstoke Line", "South Western Main Line"),
-                # Portsmouth Direct Line trains continue as South Western Main Line trains
-                ("Portsmouth Direct Line", "South Western Main Line"),
-                ("South Western Main Line", "Portsmouth Direct Line"),
-            ],
-            # Add through stations for Great Western Railway services
-            "Reading": [
-                ("Great Western Main Line", "Great Western Railway"),
-                ("Great Western Railway", "Great Western Main Line"),
-            ],
-            "Oxford": [
-                ("Great Western Main Line", "Great Western Railway"),
-                ("Great Western Railway", "Great Western Main Line"),
-            ],
-            "Banbury": [
-                ("Great Western Main Line", "Cross Country Line"),
-                ("Cross Country Line", "Great Western Main Line"),
-                ("Great Western Railway", "Cross Country"),
-                ("Cross Country", "Great Western Railway"),
-            ],
-            "Rugby": [
-                ("Cross Country Line", "West Coast Main Line"),
-                ("West Coast Main Line", "Cross Country Line"),
-                ("Cross Country", "West Coast Main Line"),
-                ("West Coast Main Line", "Cross Country"),
-            ]
-        }
-        
-        if station_name in through_stations:
-            for through_from, through_to in through_stations[station_name]:
-                if ((from_line == through_from and to_line == through_to) or
-                    (from_line == through_to and to_line == through_from)):
-                    return True
-        
-        return False
+        # Use the line interchanges data to determine if this is a through station
+        return self._is_known_through_service(from_line, to_line, station_name)
     
     def _is_json_file_line_change(self, line1: str, line2: str) -> bool:
         """Check if a line change represents a change between different JSON files."""
@@ -464,25 +469,46 @@ class InterchangeDetectionService:
             return True  # Conservative: allow if validation fails
     
     def _calculate_interchange_walking_time(self, station_name: str, from_line: str, to_line: str) -> int:
-        """Calculate estimated walking time for an interchange."""
-        # Check for specific known interchange times
-        known_times = {
-            ("Farnborough (Main)", "Farnborough North"): 12,
-            ("Farnborough North", "Farnborough (Main)"): 12,
-        }
-        
-        # Check both directions
-        for (station1, station2), time in known_times.items():
-            if station_name in [station1, station2]:
-                return time
-        
-        # Default interchange times based on line types
-        if 'Underground' in from_line or 'Underground' in to_line:
-            return 3  # Underground interchanges are typically faster
-        elif 'Express' in from_line or 'Express' in to_line:
-            return 8  # Express services often use different platforms
-        else:
-            return 5  # Standard interchange time
+        """Calculate estimated walking time for an interchange using data-driven approach."""
+        try:
+            # Try to use data path resolver
+            try:
+                from ...utils.data_path_resolver import get_data_directory
+                data_dir = get_data_directory()
+            except (ImportError, FileNotFoundError):
+                # Fallback to old method
+                data_dir = Path(__file__).parent.parent.parent / "data"
+            
+            interchange_file = data_dir / "interchange_connections.json"
+            
+            if not interchange_file.exists():
+                self.logger.error(f"Interchange connections file not found: {interchange_file}")
+                return 5  # Default time if file not found
+            
+            with open(interchange_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                
+                # Check connections for walking times
+                connections = data.get('connections', [])
+                for connection in connections:
+                    from_station = connection.get('from_station', '')
+                    to_station = connection.get('to_station', '')
+                    time_minutes = connection.get('time_minutes', 0)
+                    
+                    if station_name in [from_station, to_station]:
+                        return time_minutes
+                
+                # Default interchange times based on line types
+                if 'Underground' in from_line or 'Underground' in to_line:
+                    return 3  # Underground interchanges are typically faster
+                elif 'Express' in from_line or 'Express' in to_line:
+                    return 8  # Express services often use different platforms
+                else:
+                    return 5  # Standard interchange time
+                    
+        except Exception as e:
+            self.logger.error(f"Error calculating interchange walking time: {e}")
+            return 5  # Default time if error occurs
     
     def _get_station_coordinates(self) -> Dict[str, Dict[str, float]]:
         """Get station coordinates from JSON files with thread-safe lazy loading."""
@@ -751,11 +777,51 @@ class InterchangeDetectionService:
             self._line_to_file_cache = None
         with self._station_mapping_lock:
             self._station_to_files_cache = None
-        
-        # Clear known through services as well
-        self._known_through_services = None
+        with self._interchanges_lock:
+            self._line_interchanges_cache = None
         
         self.logger.debug("InterchangeDetectionService cache cleared")
+    
+    def _are_stations_on_same_line(self, line1: str, line2: str) -> bool:
+        """
+        Check if two lines are effectively the same line (same physical train service).
+        This is a stronger check than just comparing line names, as it accounts for
+        lines that are operationally the same but have different names.
+        """
+        # If the line names are identical, they're definitely the same line
+        if line1 == line2:
+            return True
+            
+        # Check if these lines are part of the same network (same JSON file)
+        if not self._is_json_file_line_change(line1, line2):
+            return True
+            
+        # Check all stations for continuous services between these lines
+        line_interchanges = self._get_line_interchanges()
+        for station, connections in line_interchanges.items():
+            for connection in connections:
+                connection_from_line = connection.get("from_line", "")
+                connection_to_line = connection.get("to_line", "")
+                requires_change = connection.get("requires_change", True)
+                
+                if not requires_change and (
+                    (connection_from_line == line1 and connection_to_line == line2) or
+                    (connection_from_line == line2 and connection_to_line == line1)
+                ):
+                    return True
+        
+        # Known line pairs that are operationally the same
+        same_line_pairs = [
+            ("South Western Main Line", "South Western Railway"),
+            ("Great Western Main Line", "Great Western Railway"),
+            ("Cross Country Line", "Cross Country")
+        ]
+        
+        for pair in same_line_pairs:
+            if (line1 in pair and line2 in pair):
+                return True
+                
+        return False
     
     def _calculate_haversine_distance(self, coord1: Dict[str, float], coord2: Dict[str, float]) -> float:
         """

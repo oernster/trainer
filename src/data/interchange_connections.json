@@ -548,7 +548,8 @@
     "enabled": true,
     "max_distance_m": 1000,
     "walking_speed_mps": 1.4,
-    "description": "Automatically generate walking connections between stations within max_distance using Haversine calculation"
+    "description": "Automatically generate walking connections between stations within max_distance using Haversine calculation",
+    "respect_same_line": true
   },
   "direct_connections": [
     {
@@ -829,6 +830,219 @@
       "description": "Direct train on Bittern Line",
       "walking_distance_m": 0,
       "accessibility": "step_free_access"
+    }
+  ],
+  "line_interchanges": [
+    {
+      "station": "Hook",
+      "connections": [
+        {
+          "from_line": "South Western Main Line",
+          "to_line": "Reading to Basingstoke Line",
+          "requires_change": true,
+          "description": "Change required between South Western Main Line and Reading to Basingstoke Line"
+        },
+        {
+          "from_line": "Reading to Basingstoke Line",
+          "to_line": "South Western Main Line",
+          "requires_change": true,
+          "description": "Change required between Reading to Basingstoke Line and South Western Main Line"
+        }
+      ]
+    },
+    {
+      "station": "Woking",
+      "connections": [
+        {
+          "from_line": "South Western Main Line",
+          "to_line": "Portsmouth Direct Line",
+          "requires_change": false,
+          "description": "Through service between South Western Main Line and Portsmouth Direct Line"
+        },
+        {
+          "from_line": "Portsmouth Direct Line",
+          "to_line": "South Western Main Line",
+          "requires_change": false,
+          "description": "Through service between Portsmouth Direct Line and South Western Main Line"
+        }
+      ]
+    },
+    {
+      "station": "Clapham Junction",
+      "connections": [
+        {
+          "from_line": "South Western Main Line",
+          "to_line": "Portsmouth Direct Line",
+          "requires_change": false,
+          "description": "Through service between South Western Main Line and Portsmouth Direct Line"
+        },
+        {
+          "from_line": "Portsmouth Direct Line",
+          "to_line": "South Western Main Line",
+          "requires_change": false,
+          "description": "Through service between Portsmouth Direct Line and South Western Main Line"
+        }
+      ]
+    },
+    {
+      "station": "Reading",
+      "connections": [
+        {
+          "from_line": "Great Western Main Line",
+          "to_line": "Great Western Railway",
+          "requires_change": false,
+          "description": "Through service between Great Western Main Line and Great Western Railway"
+        },
+        {
+          "from_line": "Great Western Railway",
+          "to_line": "Great Western Main Line",
+          "requires_change": false,
+          "description": "Through service between Great Western Railway and Great Western Main Line"
+        }
+      ]
+    },
+    {
+      "station": "Oxford",
+      "connections": [
+        {
+          "from_line": "Great Western Main Line",
+          "to_line": "Great Western Railway",
+          "requires_change": false,
+          "description": "Through service between Great Western Main Line and Great Western Railway"
+        },
+        {
+          "from_line": "Great Western Railway",
+          "to_line": "Great Western Main Line",
+          "requires_change": false,
+          "description": "Through service between Great Western Railway and Great Western Main Line"
+        }
+      ]
+    },
+    {
+      "station": "Banbury",
+      "connections": [
+        {
+          "from_line": "Great Western Main Line",
+          "to_line": "Cross Country Line",
+          "requires_change": false,
+          "description": "Through service between Great Western Main Line and Cross Country Line"
+        },
+        {
+          "from_line": "Cross Country Line",
+          "to_line": "Great Western Main Line",
+          "requires_change": false,
+          "description": "Through service between Cross Country Line and Great Western Main Line"
+        },
+        {
+          "from_line": "Great Western Railway",
+          "to_line": "Cross Country",
+          "requires_change": false,
+          "description": "Through service between Great Western Railway and Cross Country"
+        },
+        {
+          "from_line": "Cross Country",
+          "to_line": "Great Western Railway",
+          "requires_change": false,
+          "description": "Through service between Cross Country and Great Western Railway"
+        }
+      ]
+    },
+    {
+      "station": "Rugby",
+      "connections": [
+        {
+          "from_line": "Cross Country Line",
+          "to_line": "West Coast Main Line",
+          "requires_change": false,
+          "description": "Through service between Cross Country Line and West Coast Main Line"
+        },
+        {
+          "from_line": "West Coast Main Line",
+          "to_line": "Cross Country Line",
+          "requires_change": false,
+          "description": "Through service between West Coast Main Line and Cross Country Line"
+        },
+        {
+          "from_line": "Cross Country",
+          "to_line": "West Coast Main Line",
+          "requires_change": false,
+          "description": "Through service between Cross Country and West Coast Main Line"
+        },
+        {
+          "from_line": "West Coast Main Line",
+          "to_line": "Cross Country",
+          "requires_change": false,
+          "description": "Through service between West Coast Main Line and Cross Country"
+        }
+      ]
+    },
+    {
+      "station": "Fleet",
+      "connections": [
+        {
+          "from_line": "South Western Railway",
+          "to_line": "South Western Railway Main Line",
+          "requires_change": false,
+          "description": "Through service between South Western Railway and South Western Railway Main Line"
+        },
+        {
+          "from_line": "South Western Railway Main Line",
+          "to_line": "South Western Railway",
+          "requires_change": false,
+          "description": "Through service between South Western Railway Main Line and South Western Railway"
+        }
+      ]
+    },
+    {
+      "station": "Brookwood",
+      "connections": [
+        {
+          "from_line": "South Western Main Line",
+          "to_line": "South Western Railway",
+          "requires_change": false,
+          "description": "Through service between South Western Main Line and South Western Railway"
+        },
+        {
+          "from_line": "South Western Railway",
+          "to_line": "South Western Main Line",
+          "requires_change": false,
+          "description": "Through service between South Western Railway and South Western Main Line"
+        },
+        {
+          "station": "Brookwood",
+          "connections": [
+            {
+              "from_line": "South Western Main Line",
+              "to_line": "Farnborough North Line",
+              "requires_change": false,
+              "description": "Through service between South Western Main Line and Farnborough North Line"
+            },
+            {
+              "from_line": "Farnborough North Line",
+              "to_line": "South Western Main Line",
+              "requires_change": false,
+              "description": "Through service between Farnborough North Line and South Western Main Line"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "station": "Farnborough (Main)",
+      "connections": [
+        {
+          "from_line": "South Western Main Line",
+          "to_line": "South Western Railway",
+          "requires_change": false,
+          "description": "Through service between South Western Main Line and South Western Railway"
+        },
+        {
+          "from_line": "South Western Railway",
+          "to_line": "South Western Main Line",
+          "requires_change": false,
+          "description": "Through service between South Western Railway and South Western Main Line"
+        }
+      ]
     }
   ]
 }
